@@ -14,6 +14,96 @@ Installing with SBT
 Hosted on Maven Central and can be installed via the following:
 
     libraryDependencies += "org.senkbeil" %% "scala-debugger-api" % "1.0.0"
+    
+Features
+--------
+
+Currently, the Scala debugger library supports low-level breakpoints and step functionality. Furthermore, it provides the low-level API to capture and process JDI (Java Debugger Interface) events from the JVM.
+
+### Breakpoints ###
+```scala
+val vm: ScalaVirtualMachine = /* Wrapper around standard Java JDI virtual machine */
+val sourceName = "some-file.scala"
+val sourceLineNumber = 109
+
+// Set a breakpoint for line 109 of some-file.scala
+vm.breakpointManager.setLineBreakpoint(sourceName, sourceLineNumber)
+
+// Capture all breakpoint events, resuming upon finishing the callback
+vm.eventManager.addResumingEventHandler(BreakpointEventType, e => {
+  val breakpointEvent = e.asInstanceOf[BreakpointEvent]
+  val location = breakpointEvent.location()
+  val fileName = location.sourcePath()
+  val lineNumber = location.lineNumber()
+
+  println(s"Reached breakpoint: $fileName:$lineNumber")
+  if (fileName == sourceName && lineNumber == sourceLineNumber) {
+    println("Hit desired breakpoint!")
+  }
+})
+```
+
+### Steps ###
+```scala
+val vm: ScalaVirtualMachine = /* Wrapper around standard Java JDI virtual machine */
+val sourceName = "some-file.scala"
+val sourceLineNumber = 109
+
+// Set a breakpoint for line 109 of some-file.scala (will step past this)
+vm.breakpointManager.setLineBreakpoint(sourceName, sourceLineNumber)
+
+// Capture all breakpoint events, resuming upon finishing the callback
+vm.eventManager.addResumingEventHandler(BreakpointEventType, e => {
+  val breakpointEvent = e.asInstanceOf[BreakpointEvent]
+  val location = breakpointEvent.location()
+  val fileName = location.sourcePath()
+  val lineNumber = location.lineNumber()
+
+  if (fileName == sourceName && lineNumber == sourceLineNumber) {
+    println("Hit desired breakpoint!")
+    vm.stepManager.stepOver(breakpointEvent.thread())
+  }
+})
+
+// Capture all step events, resuming upon finishing the callback
+vm.eventManager.addResumingEventHandler(StepEventType, e => {
+  val stepEvent = e.asInstanceOf[StepEvent]
+  val className = stepEvent.location().declaringType().name()
+  val lineNumber = stepEvent.location().lineNumber()
+
+  logger.debug(s"Stepped onto $className:$lineNumber")
+})
+```
+
+### JDI Implicit Wrappers ###
+```scala
+// Import implicit wrappers for standard JDI types like StackFrameReference and ThreadReference
+import org.senkbeil.debugger.wrappers._
+
+val vm: ScalaVirtualMachine = /* Wrapper around standard Java JDI virtual machine */
+val sourceName = "some-file.scala"
+val sourceLineNumber = 109
+
+// Set a breakpoint for line 109 of some-file.scala
+vm.breakpointManager.setLineBreakpoint(sourceName, sourceLineNumber)
+
+// Capture all breakpoint events, resuming upon finishing the callback
+vm.eventManager.addResumingEventHandler(BreakpointEventType, e => {
+  val breakpointEvent = e.asInstanceOf[BreakpointEvent]
+  
+  // Get the current stack frame where we hit the breakpoint
+  val threadReference = breakpointEvent.thread()
+  val currentFrame = threadReference.frame(0)
+
+  // Print out the list of local variables at the breakpoint
+  // NOTE: Retrieves the immediate value of each variable (non-recursive), so primitives are immediately available
+  println(currentFrame.thisVisibleVariableMap())
+  
+  // Print out the list of local fields (contained by "this") at the breakpoint
+  // NOTE: Retrieves the immediate value of each variable (non-recursive), so primitives are immediately available
+  println(currentFrame.thisVisibleFieldMap())
+})
+```
 
 Potential Development Gotchas
 -----------------------------
