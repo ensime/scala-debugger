@@ -20,7 +20,7 @@ Features
 
 Currently, the Scala debugger library supports low-level breakpoints and step functionality. Furthermore, it provides the low-level API to capture and process JDI (Java Debugger Interface) events from the JVM.
 
-### Breakpoints ###
+#### Breakpoints ####
 ```scala
 val vm: ScalaVirtualMachine = /* Wrapper around standard Java JDI virtual machine */
 val sourceName = "some-file.scala"
@@ -43,7 +43,7 @@ vm.eventManager.addResumingEventHandler(BreakpointEventType, e => {
 })
 ```
 
-### Steps ###
+#### Steps ####
 ```scala
 val vm: ScalaVirtualMachine = /* Wrapper around standard Java JDI virtual machine */
 val sourceName = "some-file.scala"
@@ -75,7 +75,7 @@ vm.eventManager.addResumingEventHandler(StepEventType, e => {
 })
 ```
 
-### JDI Implicit Wrappers ###
+#### JDI Implicit Wrappers ####
 ```scala
 // Import implicit wrappers for standard JDI types like StackFrameReference and ThreadReference
 import org.senkbeil.debugger.wrappers._
@@ -97,7 +97,7 @@ vm.eventManager.addResumingEventHandler(BreakpointEventType, e => {
 
   // Print out the list of local variables at the breakpoint
   // NOTE: Retrieves the immediate value of each variable (non-recursive), so primitives are immediately available
-  println(currentFrame.thisVisibleVariableMap())
+  println(currentFrame.localVisibleVariableMap())
   
   // Print out the list of local fields (contained by "this") at the breakpoint
   // NOTE: Retrieves the immediate value of each variable (non-recursive), so primitives are immediately available
