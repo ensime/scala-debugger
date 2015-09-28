@@ -1,7 +1,9 @@
 Scala Debugger
 ==============
 
-[![Build Status](https://travis-ci.org/rcsenkbeil/scala-debugger.svg?branch=master)](https://travis-ci.org/rcsenkbeil/scala-debugger)
+[![Build Status](https://travis-ci.org/chipsenkbeil/scala-debugger.svg?branch=master)](https://travis-ci.org/rcsenkbeil/scala-debugger)
+[![Scaladoc 2.10](https://img.shields.io/badge/Scaladoc-2.10-34B6A8.svg?style=flat)](www.javadoc.io/doc/org.senkbeil/scala-debugger-api_2.10)
+[![Scaladoc 2.11](https://img.shields.io/badge/Scaladoc-2.11-34B6A8.svg?style=flat)](www.javadoc.io/doc/org.senkbeil/scala-debugger-api_2.11)
 [![Join the chat at https://gitter.im/rcsenkbeil/scala-debugger](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rcsenkbeil/scala-debugger?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 A simple debugger library for Scala.
