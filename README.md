@@ -6,7 +6,7 @@ Scala Debugger
 [![Scaladoc 2.11](https://img.shields.io/badge/Scaladoc-2.11-34B6A8.svg?style=flat)](http://www.javadoc.io/doc/org.senkbeil/scala-debugger-api_2.11)
 [![Join the chat at https://gitter.im/rcsenkbeil/scala-debugger](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rcsenkbeil/scala-debugger?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-A simple debugger library for Scala.
+A simple debugger library for Scala. Check out the [wiki](https://github.com/chipsenkbeil/scala-debugger/wiki) for more information.
 
 Installing with SBT
 -------------------
