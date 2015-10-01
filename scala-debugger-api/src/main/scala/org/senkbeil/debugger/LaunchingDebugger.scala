@@ -112,6 +112,9 @@ class LaunchingDebugger private[debugger] (
       (className +: commandLineArguments).mkString(" "))
     virtualMachine.get.process().destroy()
 
+    // Invalidate the virtual machine mirror
+    virtualMachine.get.dispose()
+
     // Wipe our reference to the old virtual machine
     virtualMachine = None
   }

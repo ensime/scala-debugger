@@ -206,6 +206,37 @@ class LaunchingDebuggerSpec extends FunSpec with Matchers
 
         launchingDebugger.stop()
       }
+
+      it("should dispose of the virtual machine mirror") {
+        val launchingDebugger = new TestLaunchingDebugger(shouldJdiLoad = true)
+
+        // MOCK ===============================================================
+        val mockLaunchingConnector = mock[LaunchingConnector]
+
+        (mockLaunchingConnector.name _).expects()
+          .returning("com.sun.jdi.CommandLineLaunch")
+
+        (mockVirtualMachineManager.launchingConnectors _).expects()
+          .returning(Seq(mockLaunchingConnector).asJava)
+
+        (mockLaunchingConnector.defaultArguments _).expects().returning(Map(
+          "main" -> createConnectorArgumentMock(setter = true),
+          "options" -> createConnectorArgumentMock(
+            setter = true, getter = Some("")
+          ),
+          "suspend" -> createConnectorArgumentMock(setter = true)
+        ).asJava)
+
+        (mockLaunchingConnector.launch _).expects(*)
+          .returning(mockVirtualMachine).once()
+        // MOCK ===============================================================
+
+        launchingDebugger.start((_) => {})
+
+        (mockVirtualMachine.dispose _).expects().once()
+
+        launchingDebugger.stop()
+      }
     }
 
     describe("#process") {
