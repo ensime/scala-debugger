@@ -174,6 +174,8 @@ class LaunchingDebuggerSpec extends FunSpec with Matchers
         }
       }
 
+      // TODO: Add back the dispose of vm check when we figure out why dispose
+      //       is throwing a VMDisconnectedException for the launching debugger
       it("should stop the running JVM process") {
         val launchingDebugger = new TestLaunchingDebugger(shouldJdiLoad = true)
 
@@ -203,6 +205,9 @@ class LaunchingDebuggerSpec extends FunSpec with Matchers
         val mockProcess = mock[Process]
         (mockProcess.destroy _).expects().once()
         (mockVirtualMachine.process _).expects().returning(mockProcess).once()
+
+        // TODO: Re-enable when determine why dispose throws exception
+        //(mockVirtualMachine.dispose _).expects().once()
 
         launchingDebugger.stop()
       }
