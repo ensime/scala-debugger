@@ -50,8 +50,8 @@ object Common {
 
     pomExtra :=
       <scm>
-        <url>git@github.com:rcsenkbeil/scala-debugger.git</url>
-        <connection>scm:git:git@github.com:rcsenkbeil/scala-debugger.git</connection>
+        <url>git@github.com:chipsenkbeil/scala-debugger.git</url>
+        <connection>scm:git:git@github.com:chipsenkbeil/scala-debugger.git</connection>
       </scm>
       <developers>
         <developer>
