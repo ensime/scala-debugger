@@ -57,7 +57,6 @@ class AttachingDebuggerIntegrationSpec  extends FunSpec with Matchers
       className = "org.senkbeil.debugger.test.misc.AttachingMain",
       server = true,
       suspend = true,
-      hostname = "senkwich-linuxmint",
       port = port
     ))
   }
