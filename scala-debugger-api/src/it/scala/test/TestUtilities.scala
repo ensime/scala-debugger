@@ -73,7 +73,10 @@ trait TestUtilities { this: LogLike =>
       server = server
     )
 
-    Process(Seq("scala", s"-J$jdwpString", className)).run()
+    val processCollection = Seq("scala", s"-J$jdwpString", className)
+
+    logger.debug("Launching " + processCollection.mkString(" "))
+    Process(processCollection).run()
   }
 
   private def generateJdwpString(
