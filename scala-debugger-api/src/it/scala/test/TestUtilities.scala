@@ -1,8 +1,9 @@
 package test
 
-import org.senkbeil.utils.LogLike
+import java.io.File
+import java.net.URLClassLoader
 
-import scala.sys.process.Process
+import org.senkbeil.utils.LogLike
 
 /**
  * Contains helper methods for testing.
@@ -73,10 +74,26 @@ trait TestUtilities { this: LogLike =>
       server = server
     )
 
-    val processCollection = Seq("scala", s"-J$jdwpString", className)
+    val classpath = ClassLoader.getSystemClassLoader match {
+      case u: URLClassLoader =>
+        u.getURLs.map(_.getPath).map(new File(_))
+          .mkString(System.getProperty("path.separator"))
+      case _ => ""
+    }
+
+    val processCollection = Seq(
+      "java",
+      jdwpString,
+      "-classpath", classpath,
+      className
+    )
+
+    val processBuilder = new ProcessBuilder
+    processBuilder.command(processCollection: _*)
+    processBuilder.directory(new File(System.getProperty("user.dir")))
 
     logger.debug("Launching " + processCollection.mkString(" "))
-    Process(processCollection).run()
+    processBuilder.start()
   }
 
   private def generateJdwpString(

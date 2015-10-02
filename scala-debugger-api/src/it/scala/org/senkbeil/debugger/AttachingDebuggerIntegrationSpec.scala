@@ -3,9 +3,8 @@ package org.senkbeil.debugger
 import java.net.ServerSocket
 import java.util.concurrent.atomic.AtomicBoolean
 
-import scala.sys.process.Process
 import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{BeforeAndAfter, FunSpec, Matchers, ParallelTestExecution}
+import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
 import org.scalatest.concurrent.Eventually
 import test.{VirtualMachineFixtures, TestUtilities}
 
