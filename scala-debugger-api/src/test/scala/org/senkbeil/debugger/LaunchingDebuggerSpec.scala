@@ -174,6 +174,8 @@ class LaunchingDebuggerSpec extends FunSpec with Matchers
         }
       }
 
+      // TODO: Add back the dispose of vm check when we figure out why dispose
+      //       is throwing a VMDisconnectedException for the launching debugger
       it("should stop the running JVM process") {
         val launchingDebugger = new TestLaunchingDebugger(shouldJdiLoad = true)
 
@@ -204,36 +206,8 @@ class LaunchingDebuggerSpec extends FunSpec with Matchers
         (mockProcess.destroy _).expects().once()
         (mockVirtualMachine.process _).expects().returning(mockProcess).once()
 
-        launchingDebugger.stop()
-      }
-
-      it("should dispose of the virtual machine mirror") {
-        val launchingDebugger = new TestLaunchingDebugger(shouldJdiLoad = true)
-
-        // MOCK ===============================================================
-        val mockLaunchingConnector = mock[LaunchingConnector]
-
-        (mockLaunchingConnector.name _).expects()
-          .returning("com.sun.jdi.CommandLineLaunch")
-
-        (mockVirtualMachineManager.launchingConnectors _).expects()
-          .returning(Seq(mockLaunchingConnector).asJava)
-
-        (mockLaunchingConnector.defaultArguments _).expects().returning(Map(
-          "main" -> createConnectorArgumentMock(setter = true),
-          "options" -> createConnectorArgumentMock(
-            setter = true, getter = Some("")
-          ),
-          "suspend" -> createConnectorArgumentMock(setter = true)
-        ).asJava)
-
-        (mockLaunchingConnector.launch _).expects(*)
-          .returning(mockVirtualMachine).once()
-        // MOCK ===============================================================
-
-        launchingDebugger.start((_) => {})
-
-        (mockVirtualMachine.dispose _).expects().once()
+        // TODO: Re-enable when determine why dispose throws exception
+        //(mockVirtualMachine.dispose _).expects().once()
 
         launchingDebugger.stop()
       }

@@ -107,13 +107,14 @@ class LaunchingDebugger private[debugger] (
   def stop(): Unit = {
     assert(isRunning, "Debugger has not been started!")
 
+    // TODO: Investigate why dispose throws a VMDisconnectedException
+    // Invalidate the virtual machine mirror
+    //virtualMachine.get.dispose()
+
     // Kill the process associated with the local virtual machine
     logger.info("Shutting down process: " +
       (className +: commandLineArguments).mkString(" "))
     virtualMachine.get.process().destroy()
-
-    // Invalidate the virtual machine mirror
-    virtualMachine.get.dispose()
 
     // Wipe our reference to the old virtual machine
     virtualMachine = None
