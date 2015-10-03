@@ -1,8 +1,8 @@
-package org.senkbeil.debugger.filters
+package org.senkbeil.debugger.filters.jdi
 
 /**
- * Represents a filter used to limit requests to any class not specified
- * by this filter. Requests are checked by verifying the class containing the
+ * Represents a filter used to limit requests to only classes specified by
+ * this filter. Requests are checked by verifying the class containing the
  * current method being invoked.
  *
  * @note Only used by AccessWatchpointRequest, ClassPrepareRequest,
@@ -11,8 +11,8 @@ package org.senkbeil.debugger.filters
  *       MonitorContendedEnteredRequest, MonitorContendedEnterRequest,
  *       MonitorWaitedRequest, MonitorWaitRequest, and StepRequest.
  *
- * @param classPattern Classes whose names do not match this pattern will be
- *                     excluded, can only take normal characters and wildcard
+ * @param classPattern Classes whose names do match this pattern will be
+ *                     included, can only take normal characters and wildcard
  *                     "*", meaning "*.Foo" or "java.*"
  */
-case class ClassExclusionFilter(classPattern: String)
+case class ClassInclusionFilter(classPattern: String)

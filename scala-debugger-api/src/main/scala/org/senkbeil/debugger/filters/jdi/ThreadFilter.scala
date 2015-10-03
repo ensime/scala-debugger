@@ -1,4 +1,4 @@
-package org.senkbeil.debugger.filters
+package org.senkbeil.debugger.filters.jdi
 
 import com.sun.jdi.ThreadReference
 

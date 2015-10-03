@@ -1,4 +1,4 @@
-package org.senkbeil.debugger.filters
+package org.senkbeil.debugger.filters.jdi
 
 /**
  * Represents a filter used to limit requests to reference types with whom a

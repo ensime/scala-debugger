@@ -1,4 +1,4 @@
-package org.senkbeil.debugger.filters
+package org.senkbeil.debugger.filters.jdi
 
 /**
  * Represents a filter used to restrict events until the specific event has
