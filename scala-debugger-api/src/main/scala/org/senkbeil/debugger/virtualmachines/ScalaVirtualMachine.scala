@@ -113,7 +113,7 @@ class ScalaVirtualMachine(
     val mainThread = findMainThread().get
 
     // TODO: Investigate if necessary to suspend entire virtual machine or
-    //       just the main thread
+    //       just the main thread or not at all
     val tryClassName = suspendVirtualMachineAndExecute {
       val mainMethodFrames = mainThread.frames().asScala
         .map(_.location()).filter(_.method().name() == "main").toSeq
@@ -175,7 +175,7 @@ class ScalaVirtualMachine(
     val mainThread = findMainThread().get
 
     // TODO: Investigate if necessary to suspend entire virtual machine or
-    //       just the main thread
+    //       just the main thread or not at all
     // Retrieve command line arguments for connected JVM
     val tryArguments = suspendVirtualMachineAndExecute {
       suspendThreadAndExecute(mainThread) {

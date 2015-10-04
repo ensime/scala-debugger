@@ -29,7 +29,8 @@ class BreakpointManager(
   private var lineBreakpoints = Map[BreakpointBundleKey, BreakpointBundle]()
 
   private case class BreakpointInfo(
-    fileName: String, lineNumber: Int, enabled: Boolean, suspendPolicy: Int)
+    fileName: String, lineNumber: Int, enabled: Boolean, suspendPolicy: Int
+  )
   private val pendingLineBreakpoints: mutable.Map[String, Seq[BreakpointInfo]] =
     new ConcurrentHashMap[String, Seq[BreakpointInfo]]().asScala
 

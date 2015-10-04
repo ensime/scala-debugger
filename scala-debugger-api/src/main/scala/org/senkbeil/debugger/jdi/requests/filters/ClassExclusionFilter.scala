@@ -1,4 +1,6 @@
-package org.senkbeil.debugger.filters.jdi
+package org.senkbeil.debugger.jdi.requests.filters
+
+import org.senkbeil.debugger.jdi.requests.processors.{ClassExclusionProcessor, JDIRequestProcessor}
 
 /**
  * Represents a filter used to limit requests to any class not specified
@@ -15,4 +17,12 @@ package org.senkbeil.debugger.filters.jdi
  *                     excluded, can only take normal characters and wildcard
  *                     "*", meaning "*.Foo" or "java.*"
  */
-case class ClassExclusionFilter(classPattern: String)
+case class ClassExclusionFilter(classPattern: String) extends JDIRequestFilter {
+  /**
+   * Creates a new JDI request processor based on this filter.
+   *
+   * @return The new JDI request processor instance
+   */
+  override def toProcessor: JDIRequestProcessor =
+    new ClassExclusionProcessor(this)
+}
