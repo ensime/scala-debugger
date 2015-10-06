@@ -1,6 +1,8 @@
 package org.senkbeil.debugger.events
 
 import org.senkbeil.debugger.jdi.JDIHelperMethods
+import org.senkbeil.debugger.jdi.events.JDIEventFilterProcessor
+import org.senkbeil.debugger.jdi.events.filters.JDIEventFilter
 import org.senkbeil.utils.LogLike
 import com.sun.jdi.VirtualMachine
 import com.sun.jdi.event.{EventSet, Event}
@@ -115,15 +117,18 @@ class EventManager(
    *
    * @param eventType The type of the event to add a function
    * @param eventHandler The function to add
+   * @param eventFilters The filters used when determining whether or not to
+   *                     invoke the event handler
    */
   def addResumingEventHandler(
     eventType: EventType,
-    eventHandler: Event => Unit
+    eventHandler: Event => Unit,
+    eventFilters: JDIEventFilter*
   ): EventHandlerId = {
     // Convert the function to an "always true" event function
     val fullEventFunction = ((_: Unit) => true).compose(eventHandler)
 
-    addEventHandler(eventType, fullEventFunction)
+    addEventHandler(eventType, fullEventFunction, eventFilters: _*)
   }
 
   /**
@@ -132,10 +137,13 @@ class EventManager(
    *
    * @param eventType The type of the event to add a function
    * @param eventHandler The function to add
+   * @param eventFilters The filters used when determining whether or not to
+   *                     invoke the event handler
    */
   def addEventHandler(
     eventType: EventType,
-    eventHandler: EventHandler
+    eventHandler: EventHandler,
+    eventFilters: JDIEventFilter*
   ): EventHandlerId = {
     // Generate the id for this handler
     val eventHandlerId = newEventHandlerId()
@@ -150,10 +158,40 @@ class EventManager(
         _newMap
       }
 
-    // Store the handler
-    eventHandlerMap.put(eventHandlerId, eventHandler)
+    // Create a wrapper that contains our filtering logic
+    val wrapperEventHandler =
+      newWrapperEventHandler(eventHandler, eventFilters)
+
+    // Store the event handler with the filtering logic
+    eventHandlerMap.put(eventHandlerId, wrapperEventHandler)
 
     eventHandlerId
+  }
+
+  /**
+   * Generates a wrapper function around the event handler, using a filter
+   * processor to evaluate the provided filters to determine whether or not
+   * to invoke the event handler.
+   *
+   * @param eventHandler The event handler to wrap
+   * @param jdiEventFilters The filters to use when determining if the event
+   *                        handler should be invoked
+   *
+   * @return The wrapper around the event handler
+   */
+  protected def newWrapperEventHandler(
+    eventHandler: EventHandler,
+    jdiEventFilters: Seq[JDIEventFilter]
+  ): EventHandler = {
+    val jdiEventFilterProcessor =
+      new JDIEventFilterProcessor(jdiEventFilters: _*)
+
+    // Create a wrapper function that invokes the event handler only if the
+    // filter processor yields a positive result, otherwise skip this handler
+    (event: Event) => {
+      if (jdiEventFilterProcessor.process(event)) eventHandler(event)
+      else true
+    }
   }
 
   /**
