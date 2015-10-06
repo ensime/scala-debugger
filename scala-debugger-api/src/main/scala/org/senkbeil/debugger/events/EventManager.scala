@@ -3,13 +3,12 @@ package org.senkbeil.debugger.events
 import org.senkbeil.debugger.jdi.JDIHelperMethods
 import org.senkbeil.utils.LogLike
 import com.sun.jdi.VirtualMachine
-import com.sun.jdi.event.Event
+import com.sun.jdi.event.{EventSet, Event}
 
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.util.{Failure, Success, Try}
-
 import EventType._
+import scala.collection.JavaConverters._
 
 /**
  * Represents a manager for events coming in from a virtual machine.
@@ -34,10 +33,14 @@ class EventManager(
    * Represents an event callback, receiving the event and returning whether or
    * not to resume.
    */
-  type EventFunction = (Event) => Boolean
+  type EventHandler = (Event) => Boolean
 
-  private val eventMap =
-    new ConcurrentHashMap[EventType, Seq[EventFunction]]()
+  /** Represents the event id associated with the event handler. */
+  type EventHandlerId = String
+
+  /** Contains the events, associated handlers and their ids. */
+  private val eventTypeToHandlerIds =
+    new ConcurrentHashMap[EventType, ConcurrentHashMap[EventHandlerId, EventHandler]]()
 
   private var eventTaskId: Option[String] = None
 
@@ -60,49 +63,40 @@ class EventManager(
     }
 
     logger.trace("Starting event manager for virtual machine!")
-    eventTaskId = Some(loopingTaskRunner.addTask {
-      val eventQueue = _virtualMachine.eventQueue()
-      val eventSet = eventQueue.remove()
-      val eventSetIterator = eventSet.iterator()
-
-      // Indicates whether to resume (true) based on the result of a function
-      @inline def resumeOnResult(result: Try[Boolean]): Boolean = result match {
-        case Success(r) => r
-        case Failure(_) => onExceptionResume
-      }
-
-      // Flag used to indicate whether or not to resume the event set
-      var resume = true
-
-      // NOTE: Event sets are grouped into common events, so there is no need
-      //       to worry about the resume flag being affected by different types
-      //       of events
-      while (eventSetIterator.hasNext) {
-        val event = eventSetIterator.next()
-        val eventType = EventType.eventToEventType(event)
-
-        eventType.foreach(eType =>
-          logger.trace(s"Processing event: ${eType.toString}"))
-
-        // Execute all event functions for this event, collecting their results
-        // as the flag for resuming
-        resume &&= eventType.map(eventMap.get).map(events =>
-          // If contains events, process each and get collective result
-          if (events != null) events
-            .map(func => Try(func(event)))
-            .map(resumeOnResult)
-            .reduce(_ && _)
-          else true // No event to process, so just allow the flag to pass on
-        ).forall(_ == true)
-      }
-
-      // Only resume if the consensus of the events says to do so
-      if (resume) eventSet.resume()
-    })
+    eventTaskId = Some(loopingTaskRunner.addTask(eventHandlerTask()))
 
     eventTaskId.foreach(id =>
       logger.trace(s"Event process task: $id"))
   }
+
+  /**
+   * Represents the task to be added per event handler. Can be overridden to
+   * perform different tasks.
+   */
+  protected def eventHandlerTask(): Unit = {
+    val eventQueue = _virtualMachine.eventQueue()
+    val eventSet = eventQueue.remove()
+
+    // Process the set of events, returning whether or not the event
+    // set should resume
+    val eventSetProcessor = newEventSetProcessor(eventSet)
+    val resume = eventSetProcessor.process()
+  }
+
+  /**
+   * Creates a new event set processor. Can be overridden.
+   *
+   * @param eventSet The event set to process
+   *
+   * @return The new event set processor instance
+   */
+  protected def newEventSetProcessor(
+    eventSet: EventSet
+  ): EventSetProcessor = new EventSetProcessor(
+    eventSet                = eventSet,
+    eventFunctionRetrieval  = getHandlersForEventType,
+    onExceptionResume       = onExceptionResume
+  )
 
   /**
    * Ends the processing of events from the virtual machine.
@@ -120,14 +114,14 @@ class EventManager(
    * towards resuming the event set after completion.
    *
    * @param eventType The type of the event to add a function
-   * @param eventFunction The function to add
+   * @param eventHandler The function to add
    */
   def addResumingEventHandler(
     eventType: EventType,
-    eventFunction: Event => Unit
-  ): Unit = {
+    eventHandler: Event => Unit
+  ): EventHandlerId = {
     // Convert the function to an "always true" event function
-    val fullEventFunction = ((_: Unit) => true).compose(eventFunction)
+    val fullEventFunction = ((_: Unit) => true).compose(eventHandler)
 
     addEventHandler(eventType, fullEventFunction)
   }
@@ -137,17 +131,29 @@ class EventManager(
    * function contributes towards whether or not to resume the event set.
    *
    * @param eventType The type of the event to add a function
-   * @param eventFunction The function to add
+   * @param eventHandler The function to add
    */
   def addEventHandler(
     eventType: EventType,
-    eventFunction: EventFunction
-  ): Unit = eventMap.synchronized {
-    val oldEventFunctions =
-      if (eventMap.containsKey(eventType)) eventMap.get(eventType)
-      else Nil
+    eventHandler: EventHandler
+  ): EventHandlerId = {
+    // Generate the id for this handler
+    val eventHandlerId = newEventHandlerId()
 
-    eventMap.put(eventType, oldEventFunctions :+ eventFunction)
+    // Retrieve the existing id -> handler map or create one
+    val eventHandlerMap =
+      if (eventTypeToHandlerIds.containsKey(eventType)) {
+        eventTypeToHandlerIds.get(eventType)
+      } else {
+        val _newMap = new ConcurrentHashMap[EventHandlerId, EventHandler]()
+        eventTypeToHandlerIds.put(eventType, _newMap)
+        _newMap
+      }
+
+    // Store the handler
+    eventHandlerMap.put(eventHandlerId, eventHandler)
+
+    eventHandlerId
   }
 
   /**
@@ -155,29 +161,66 @@ class EventManager(
    * event class.
    *
    * @param eventType The type of event whose functions to retrieve
-   * @tparam T The type associated with the class
    *
    * @return The collection of event functions
    */
-  def getEventHandlers[T <: Event](eventType: EventType) : Seq[EventFunction] =
-    if (eventMap.containsKey(eventType)) eventMap.get(eventType) else Nil
+  def getHandlersForEventType(eventType: EventType) : Seq[EventHandler] = {
+    if (eventTypeToHandlerIds.containsKey(eventType)) {
+      eventTypeToHandlerIds.get(eventType).values().asScala.toSeq
+    } else {
+      Nil
+    }
+  }
+
+  /**
+   * Retrieves the collection of event handler functions for the specific
+   * event class.
+   *
+   * @param eventType The type of event whose functions to retrieve
+   *
+   * @return The collection of event functions
+   */
+  def getHandlerIdsForEventType(eventType: EventType): Seq[EventHandlerId] = {
+    if (eventTypeToHandlerIds.containsKey(eventType)) {
+      eventTypeToHandlerIds.get(eventType).keys().asScala.toSeq
+    } else {
+      Nil
+    }
+  }
+
+  /**
+   * Retrieves the handler with the specified id.
+   *
+   * @param eventHandlerId The id of the handler to retrieve
+   *
+   * @return Some event handler if found, otherwise None
+   */
+  def getEventHandler(eventHandlerId: EventHandlerId): Option[EventHandler] = {
+    eventTypeToHandlerIds.values().asScala
+      .find(_.containsKey(eventHandlerId))
+      .map(_.get(eventHandlerId))
+  }
 
   /**
    * Removes the event function from this manager.
    *
-   * @param eventType The event type whose function to remove
-   * @param eventFunction The function to remove
-   * @tparam T The class of the event
+   * @param eventHandlerId The id of the event handler to remove
+   *
+   * @return Some event handler if removed, otherwise None
    */
-  def removeEventHandler[T <: Event](
-    eventType: EventType,
-    eventFunction: EventFunction
-  ): Unit = eventMap.synchronized {
-    if (eventMap.containsKey(eventType)) {
-      val oldEventFunctions = eventMap.get(eventType)
-      eventMap.put(eventType, oldEventFunctions.filterNot(_ eq eventFunction))
-    }
+  def removeEventHandler(eventHandlerId: EventHandlerId): Option[EventHandler] = {
+    eventTypeToHandlerIds.values().asScala
+      .find(_.containsKey(eventHandlerId))
+      .map(_.remove(eventHandlerId))
   }
+
+  /**
+   * Generates an id for a new event handler.
+   *
+   * @return The id as a string
+   */
+  protected def newEventHandlerId(): String =
+    java.util.UUID.randomUUID().toString
 
   // ==========================================================================
   // = CONSTRUCTOR
