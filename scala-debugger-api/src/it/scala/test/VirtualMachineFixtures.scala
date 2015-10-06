@@ -14,7 +14,7 @@ import scala.util.Try
  * Provides fixture methods to provide virtual machines running specified
  * files.
  */
-trait VirtualMachineFixtures extends LogLike {
+trait VirtualMachineFixtures extends TestUtilities with LogLike {
   def withVirtualMachine(
     className: String,
     arguments: Seq[String] = Nil,
@@ -26,7 +26,7 @@ trait VirtualMachineFixtures extends LogLike {
     val launchingDebugger = LaunchingDebugger(
       className = className,
       commandLineArguments = arguments,
-      jvmOptions = Seq("-classpath", System.getProperty("java.class.path")),
+      jvmOptions = Seq("-classpath", jvmClasspath),
       suspend = true // This should always be true for our tests, using resume
                      // above to indicate whether should resume after start
     )

@@ -88,6 +88,15 @@ class ListeningDebugger private[debugger] (
   def isRunning: Boolean = components.nonEmpty
 
   /**
+   * Indicates whether or not the listening debugger supports multiple JVM
+   * connections or just a single JVM connecting.
+   *
+   * @return True if multiple JVMs can connect to this debugger, otherwise false
+   */
+  def supportsMultipleConnections: Boolean =
+    findListeningConnector.exists(_.supportsMultipleConnections())
+
+  /**
    * Starts the debugger, resulting in opening the specified socket to listen
    * for remote JVM connections.
    *

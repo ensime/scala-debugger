@@ -41,6 +41,17 @@ trait TestUtilities { this: LogLike =>
   }
 
   /**
+   * Retrieves a JVM classpath string that contains the current classpath.
+   * @return
+   */
+  def jvmClasspath: String = ClassLoader.getSystemClassLoader match {
+    case u: URLClassLoader =>
+      u.getURLs.map(_.getPath).map(new File(_))
+        .mkString(System.getProperty("path.separator"))
+    case _ => System.getProperty("java.class.path")
+  }
+
+  /**
    * Spawns a new Scala process using the provided class name as the entrypoint.
    *
    * @note Assumes that scala is available on the path!
@@ -74,17 +85,10 @@ trait TestUtilities { this: LogLike =>
       server = server
     )
 
-    val classpath = ClassLoader.getSystemClassLoader match {
-      case u: URLClassLoader =>
-        u.getURLs.map(_.getPath).map(new File(_))
-          .mkString(System.getProperty("path.separator"))
-      case _ => ""
-    }
-
     val processCollection = Seq(
       "java",
       jdwpString,
-      "-classpath", classpath,
+      "-classpath", jvmClasspath,
       className
     )
 
