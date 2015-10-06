@@ -2,6 +2,7 @@ package org.senkbeil.debugger.events
 
 import java.util.concurrent.{ExecutorService, Executors, ConcurrentHashMap, LinkedBlockingQueue}
 
+import scala.reflect.ClassTag
 import scala.util.Try
 
 /**
