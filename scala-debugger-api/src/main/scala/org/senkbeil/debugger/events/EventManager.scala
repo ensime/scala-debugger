@@ -80,7 +80,7 @@ class EventManager(
     // Process the set of events, returning whether or not the event
     // set should resume
     val eventSetProcessor = newEventSetProcessor(eventSet)
-    val resume = eventSetProcessor.process()
+    eventSetProcessor.process()
   }
 
   /**
