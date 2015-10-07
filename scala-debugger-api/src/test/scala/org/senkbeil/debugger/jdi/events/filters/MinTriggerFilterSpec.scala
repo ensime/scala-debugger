@@ -12,7 +12,7 @@ class MinTriggerFilterSpec extends FunSpec with Matchers
   describe("MinTriggerFilter") {
     describe("#toProcessor") {
       it("should return a processor containing the min trigger filter") {
-        minTriggerFilter.toProcessor.filter should be (minTriggerFilter)
+        minTriggerFilter.toProcessor.argument should be (minTriggerFilter)
       }
     }
   }

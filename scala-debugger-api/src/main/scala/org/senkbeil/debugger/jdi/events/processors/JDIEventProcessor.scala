@@ -1,6 +1,7 @@
 package org.senkbeil.debugger.jdi.events.processors
 
 import com.sun.jdi.event.Event
+import org.senkbeil.debugger.jdi.events.JDIEventArgument
 import org.senkbeil.debugger.jdi.events.filters.JDIEventFilter
 
 /**
@@ -23,9 +24,9 @@ trait JDIEventProcessor {
   def reset(): Unit
 
   /**
-   * Represents the filter contained by this processor.
+   * Represents the argument contained by this processor.
    *
-   * @return The specific filter instance
+   * @return The specific argument instance
    */
-  val filter: JDIEventFilter
+  val argument: JDIEventArgument
 }

@@ -15,7 +15,7 @@ class ClassReferenceFilterSpec extends FunSpec with Matchers
   describe("ClassReferenceFilter") {
     describe("#toProcessor") {
       it("should return a processor containing the class reference filter") {
-        classReferenceFilter.toProcessor.filter should be (classReferenceFilter)
+        classReferenceFilter.toProcessor.argument should be (classReferenceFilter)
       }
     }
   }

@@ -3,7 +3,8 @@ package org.senkbeil.debugger.jdi.events.processors
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.sun.jdi.event.Event
-import org.senkbeil.debugger.jdi.events.filters.{JDIEventFilter, MaxTriggerFilter}
+import org.senkbeil.debugger.jdi.events.JDIEventArgument
+import org.senkbeil.debugger.jdi.events.filters.MaxTriggerFilter
 
 /**
  * Represents a processor for the max trigger filter.
@@ -34,5 +35,5 @@ class MaxTriggerProcessor(
    */
   override def reset(): Unit = internalCount.set(0)
 
-  override val filter: JDIEventFilter = maxTriggerFilter
+  override val argument: JDIEventArgument = maxTriggerFilter
 }

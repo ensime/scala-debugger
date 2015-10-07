@@ -15,7 +15,7 @@ class InstanceFilterSpec extends FunSpec with Matchers
   describe("InstanceFilter") {
     describe("#toProcessor") {
       it("should return a processor containing the instance filter") {
-        instanceFilter.toProcessor.filter should be (instanceFilter)
+        instanceFilter.toProcessor.argument should be (instanceFilter)
       }
     }
   }

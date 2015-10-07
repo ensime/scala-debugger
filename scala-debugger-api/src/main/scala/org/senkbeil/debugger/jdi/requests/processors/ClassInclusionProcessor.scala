@@ -1,7 +1,8 @@
 package org.senkbeil.debugger.jdi.requests.processors
 
 import com.sun.jdi.request._
-import org.senkbeil.debugger.jdi.requests.filters.{JDIRequestFilter, ClassInclusionFilter}
+import org.senkbeil.debugger.jdi.requests.JDIRequestArgument
+import org.senkbeil.debugger.jdi.requests.filters.ClassInclusionFilter
 
 /**
  * Represents a processor for the class exclusion filter.
@@ -41,5 +42,5 @@ class ClassInclusionProcessor(
     eventRequest
   }
 
-  override val filter: JDIRequestFilter = classInclusionFilter
+  override val argument: JDIRequestArgument = classInclusionFilter
 }

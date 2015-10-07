@@ -14,7 +14,7 @@ class SourceNameFilterSpec extends FunSpec with Matchers
   describe("SourceNameFilter") {
     describe("#toProcessor") {
       it("should return a processor containing the source name filter") {
-        sourceNameFilter.toProcessor.filter should be (sourceNameFilter)
+        sourceNameFilter.toProcessor.argument should be (sourceNameFilter)
       }
     }
   }

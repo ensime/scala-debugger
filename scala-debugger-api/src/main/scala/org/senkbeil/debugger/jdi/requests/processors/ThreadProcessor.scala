@@ -2,7 +2,8 @@ package org.senkbeil.debugger.jdi.requests.processors
 
 import com.sun.jdi.ThreadReference
 import com.sun.jdi.request._
-import org.senkbeil.debugger.jdi.requests.filters.{ThreadFilter, JDIRequestFilter}
+import org.senkbeil.debugger.jdi.requests.JDIRequestArgument
+import org.senkbeil.debugger.jdi.requests.filters.ThreadFilter
 
 /**
  * Represents a processor for the thread filter.
@@ -42,5 +43,5 @@ class ThreadProcessor(
     eventRequest
   }
 
-  override val filter: JDIRequestFilter = threadFilter
+  override val argument: JDIRequestArgument = threadFilter
 }

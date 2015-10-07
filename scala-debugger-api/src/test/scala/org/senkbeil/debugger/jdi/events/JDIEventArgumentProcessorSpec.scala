@@ -3,112 +3,111 @@ package org.senkbeil.debugger.jdi.events
 import com.sun.jdi.event.Event
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
-import org.senkbeil.debugger.jdi.events.filters.JDIEventFilter
 import org.senkbeil.debugger.jdi.events.processors.JDIEventProcessor
 
-class JDIEventFilterProcessorSpec extends FunSpec with Matchers
+class JDIEventArgumentProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
-  describe("JDIEventFilterProcessor") {
+  describe("JDIEventArgumentProcessor") {
     describe("#process") {
       it("should process all filters if the force flag is set to true") {
         val mockEvent = mock[Event]
 
         // Should be invoked once, denying the event
-        val denyingFilterAndProcessor = newMockFilterAndProcessor(
+        val denyingArgumentAndProcessor = newMockArgumentAndProcessor(
           processReturnValue = false, numberOfRuns = 1
         )
 
         // Should be invoked once, even though the filter before it denied
         // the event
-        val acceptingFilterAndProcessor = newMockFilterAndProcessor(
+        val acceptingArgumentAndProcessor = newMockArgumentAndProcessor(
           processReturnValue = true, numberOfRuns = 1
         )
 
-        val jdiEventFilterProcessor = new JDIEventFilterProcessor(
-          denyingFilterAndProcessor._1,
-          acceptingFilterAndProcessor._1
+        val jdiEventArgumentProcessor = new JDIEventArgumentProcessor(
+          denyingArgumentAndProcessor._1,
+          acceptingArgumentAndProcessor._1
         )
 
-        jdiEventFilterProcessor.process(mockEvent, forceAllFilters = true)
+        jdiEventArgumentProcessor.process(mockEvent, forceAllArguments = true)
       }
 
       it("should process the next filter if the previous filter accepted the event") {
         val mockEvent = mock[Event]
 
         // Should be invoked once, accepting the event
-        val acceptingFilterAndProcessor = newMockFilterAndProcessor(
+        val acceptingArgumentAndProcessor = newMockArgumentAndProcessor(
           processReturnValue = true, numberOfRuns = 1
         )
 
         // Should be invoked once, denying the event
-        val denyingFilterAndProcessor = newMockFilterAndProcessor(
+        val denyingArgumentAndProcessor = newMockArgumentAndProcessor(
           processReturnValue = false, numberOfRuns = 1
         )
 
-        val jdiEventFilterProcessor = new JDIEventFilterProcessor(
-          acceptingFilterAndProcessor._1,
-          denyingFilterAndProcessor._1
+        val jdiEventArgumentProcessor = new JDIEventArgumentProcessor(
+          acceptingArgumentAndProcessor._1,
+          denyingArgumentAndProcessor._1
         )
 
-        jdiEventFilterProcessor.process(mockEvent)
+        jdiEventArgumentProcessor.process(mockEvent)
       }
 
       it("should not process the next filter if the previous filter denied the event") {
         val mockEvent = mock[Event]
 
         // Should be invoked once, denying the event
-        val denyingFilterAndProcessor = newMockFilterAndProcessor(
+        val denyingArgumentAndProcessor = newMockArgumentAndProcessor(
           processReturnValue = false, numberOfRuns = 1
         )
 
         // Should not be invoked since the first filter denied the event
-        val acceptingFilterAndProcessor = newMockFilterAndProcessor(
+        val acceptingArgumentAndProcessor = newMockArgumentAndProcessor(
           processReturnValue = true, numberOfRuns = 0
         )
 
-        val jdiEventFilterProcessor = new JDIEventFilterProcessor(
-          denyingFilterAndProcessor._1,
-          acceptingFilterAndProcessor._1
+        val jdiEventArgumentProcessor = new JDIEventArgumentProcessor(
+          denyingArgumentAndProcessor._1,
+          acceptingArgumentAndProcessor._1
         )
 
-        jdiEventFilterProcessor.process(mockEvent)
+        jdiEventArgumentProcessor.process(mockEvent)
       }
 
       it("should return false if any filter denied the event") {
         val mockEvent = mock[Event]
 
         // Should be invoked once, denying the event
-        val denyingFilterAndProcessor = newMockFilterAndProcessor(
+        val denyingArgumentAndProcessor = newMockArgumentAndProcessor(
           processReturnValue = false, numberOfRuns = 1
         )
 
         // Should not be invoked since the first filter denied the event
-        val acceptingFilterAndProcessor = newMockFilterAndProcessor(
+        val acceptingArgumentAndProcessor = newMockArgumentAndProcessor(
           processReturnValue = true, numberOfRuns = 0
         )
 
-        val jdiEventFilterProcessor = new JDIEventFilterProcessor(
-          denyingFilterAndProcessor._1,
-          acceptingFilterAndProcessor._1
+        val jdiEventArgumentProcessor = new JDIEventArgumentProcessor(
+          denyingArgumentAndProcessor._1,
+          acceptingArgumentAndProcessor._1
         )
 
-        jdiEventFilterProcessor.process(mockEvent) should be (false)
+        jdiEventArgumentProcessor.process(mockEvent) should be (false)
       }
 
       it("should return true if all filters accepted the event") {
         val mockEvent = mock[Event]
 
-        val acceptingFilterAndProcessor = newMockFilterAndProcessor(
+        val acceptingArgumentAndProcessor = newMockArgumentAndProcessor(
           processReturnValue = true, numberOfRuns = 2
         )
 
-        val jdiEventFilterProcessor = new JDIEventFilterProcessor(
-          acceptingFilterAndProcessor._1,
-          acceptingFilterAndProcessor._1
+        val jdiEventArgumentProcessor = new JDIEventArgumentProcessor(
+          acceptingArgumentAndProcessor._1,
+          acceptingArgumentAndProcessor._1
         )
 
-        jdiEventFilterProcessor.process(mockEvent) should be (true)
+        jdiEventArgumentProcessor.process(mockEvent) should be (true)
       }
     }
   }
@@ -124,11 +123,11 @@ class JDIEventFilterProcessorSpec extends FunSpec with Matchers
    *
    * @return The tuple containing the filter and processor mocks
    */
-  private def newMockFilterAndProcessor(
+  private def newMockArgumentAndProcessor(
     processReturnValue: Boolean,
     numberOfRuns: Int
-  ): (JDIEventFilter, JDIEventProcessor) = {
-    val filterAndProcessor = newMockFilterAndProcessor()
+  ): (JDIEventArgument, JDIEventProcessor) = {
+    val filterAndProcessor = newMockArgumentAndProcessor()
 
     val mockProcessor = filterAndProcessor._2
     (mockProcessor.process _).expects(*).returning(processReturnValue)
@@ -143,14 +142,14 @@ class JDIEventFilterProcessorSpec extends FunSpec with Matchers
    *
    * @return The tuple containing the filter and processor mocks
    */
-  private def newMockFilterAndProcessor(): (JDIEventFilter, JDIEventProcessor) = {
-    val mockFilter = mock[JDIEventFilter]
+  private def newMockArgumentAndProcessor(): (JDIEventArgument, JDIEventProcessor) = {
+    val mockArgument = mock[JDIEventArgument]
     val mockProcessor = mock[JDIEventProcessor]
 
     // Allow any number of times for arbitrary usage of function
-    (mockFilter.toProcessor _).expects()
+    (mockArgument.toProcessor _).expects()
       .returning(mockProcessor).anyNumberOfTimes()
 
-    (mockFilter, mockProcessor)
+    (mockArgument, mockProcessor)
   }
 }

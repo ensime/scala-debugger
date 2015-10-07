@@ -6,33 +6,34 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.requests.filters._
 import org.senkbeil.debugger.jdi.requests.processors.JDIRequestProcessor
+import org.senkbeil.debugger.jdi.requests.properties.{EnabledProperty, SuspendPolicyProperty, EnabledPropertySpec, CustomProperty}
 
-class JDIRequestFilterProcessorSpec extends FunSpec with Matchers
+class JDIRequestArgumentProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   // Create three mock filters to provide to the main filter processor
-  private val mockFiltersAndProcessors = Seq(
-    newMockFilterAndProcessor(),
-    newMockFilterAndProcessor(),
-    newMockFilterAndProcessor()
+  private val mockArgumentsAndProcessors = Seq(
+    newMockArgumentAndProcessor(),
+    newMockArgumentAndProcessor(),
+    newMockArgumentAndProcessor()
   )
 
-  private val jdiRequestFilterProcessor =
-    new JDIRequestFilterProcessor(mockFiltersAndProcessors .map(_._1): _*)
+  private val jdiRequestArgumentProcessor =
+    new JDIRequestArgumentProcessor(mockArgumentsAndProcessors .map(_._1): _*)
 
-  describe("JDIRequestFilterProcessor") {
+  describe("JDIRequestArgumentProcessor") {
     describe("#process") {
       it("should execute every provided filter-to-processor on the request") {
         val mockEventRequest = mock[EventRequest]
 
         // Expect each processor to have its process method invoked once
-        val mockProcessors = mockFiltersAndProcessors.map(_._2)
+        val mockProcessors = mockArgumentsAndProcessors.map(_._2)
         mockProcessors.foreach(mockProcessor =>
           (mockProcessor.process _).expects(mockEventRequest)
             .returning(mockEventRequest).once()
         )
 
-        jdiRequestFilterProcessor.process(mockEventRequest)
+        jdiRequestArgumentProcessor.process(mockEventRequest)
       }
 
       it("should return the updated request instance") {
@@ -40,17 +41,20 @@ class JDIRequestFilterProcessorSpec extends FunSpec with Matchers
         // on the request itself
         val stubEventRequest = stub[EventRequest]
 
-        val jdiRequestFilterProcessor = new JDIRequestFilterProcessor(
+        val jdiRequestArgumentProcessor = new JDIRequestArgumentProcessor(
           ClassExclusionFilter(classPattern = ""),
           ClassInclusionFilter(classPattern = ""),
           ClassReferenceFilter(referenceType = mock[ReferenceType]),
           CountFilter(count = 3),
           InstanceFilter(objectReference = mock[ObjectReference]),
           SourceNameFilter(sourceNamePattern = ""),
-          ThreadFilter(threadReference = mock[ThreadReference])
+          ThreadFilter(threadReference = mock[ThreadReference]),
+          CustomProperty(key = "key", value = "value"),
+          EnabledProperty(value = true),
+          SuspendPolicyProperty.AllThreads
         )
 
-        val result = jdiRequestFilterProcessor.process(stubEventRequest)
+        val result = jdiRequestArgumentProcessor.process(stubEventRequest)
 
         result should be (stubEventRequest)
       }
@@ -63,14 +67,14 @@ class JDIRequestFilterProcessorSpec extends FunSpec with Matchers
    *
    * @return The tuple containing the filter and processor mocks
    */
-  private def newMockFilterAndProcessor(): (JDIRequestFilter, JDIRequestProcessor) = {
-    val mockFilter = mock[JDIRequestFilter]
+  private def newMockArgumentAndProcessor(): (JDIRequestArgument, JDIRequestProcessor) = {
+    val mockArgument = mock[JDIRequestArgument]
     val mockProcessor = mock[JDIRequestProcessor]
 
     // Allow any number of times for arbitrary usage of function
-    (mockFilter.toProcessor _).expects()
+    (mockArgument.toProcessor _).expects()
       .returning(mockProcessor).anyNumberOfTimes()
 
-    (mockFilter, mockProcessor)
+    (mockArgument, mockProcessor)
   }
 }

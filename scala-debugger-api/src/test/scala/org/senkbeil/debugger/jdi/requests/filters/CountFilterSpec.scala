@@ -12,7 +12,7 @@ class CountFilterSpec extends FunSpec with Matchers
   describe("CountFilter") {
     describe("#toProcessor") {
       it("should return a processor containing the count filter") {
-        countFilter.toProcessor.filter should be (countFilter)
+        countFilter.toProcessor.argument should be (countFilter)
       }
     }
   }

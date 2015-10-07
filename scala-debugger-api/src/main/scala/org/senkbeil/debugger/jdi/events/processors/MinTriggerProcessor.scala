@@ -3,7 +3,8 @@ package org.senkbeil.debugger.jdi.events.processors
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.sun.jdi.event.Event
-import org.senkbeil.debugger.jdi.events.filters.{MinTriggerFilter, JDIEventFilter}
+import org.senkbeil.debugger.jdi.events.JDIEventArgument
+import org.senkbeil.debugger.jdi.events.filters.MinTriggerFilter
 
 /**
  * Represents a processor for the min trigger filter.
@@ -25,8 +26,8 @@ class MinTriggerProcessor(
    * @return True if the event passes through the filter, otherwise false
    */
   override def process(event: Event): Boolean = {
-    if (internalCount.get() < minCount)
-      internalCount.incrementAndGet() >= minCount
+    if (internalCount.get() <= minCount)
+      internalCount.incrementAndGet() > minCount
     else
       true
   }
@@ -36,5 +37,5 @@ class MinTriggerProcessor(
    */
   override def reset(): Unit = internalCount.set(0)
 
-  override val filter: JDIEventFilter = minTriggerFilter
+  override val argument: JDIEventArgument = minTriggerFilter
 }

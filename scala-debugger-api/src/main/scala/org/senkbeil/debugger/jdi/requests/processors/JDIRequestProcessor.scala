@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.processors
 
 import com.sun.jdi.request.EventRequest
-import org.senkbeil.debugger.jdi.requests.filters.JDIRequestFilter
+import org.senkbeil.debugger.jdi.requests.JDIRequestArgument
 
 /**
   * Represents a processor for a JDI Request.
@@ -21,5 +21,5 @@ trait JDIRequestProcessor {
    *
    * @return The specific filter instance
    */
-  val filter: JDIRequestFilter
+  val argument: JDIRequestArgument
 }

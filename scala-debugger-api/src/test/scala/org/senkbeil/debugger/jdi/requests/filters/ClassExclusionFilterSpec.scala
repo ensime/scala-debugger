@@ -14,7 +14,7 @@ class ClassExclusionFilterSpec extends FunSpec with Matchers
   describe("ClassExclusionFilter") {
     describe("#toProcessor") {
       it("should return a processor containing the class exclusion filter") {
-        classExclusionFilter.toProcessor.filter should be (classExclusionFilter)
+        classExclusionFilter.toProcessor.argument should be (classExclusionFilter)
       }
     }
   }

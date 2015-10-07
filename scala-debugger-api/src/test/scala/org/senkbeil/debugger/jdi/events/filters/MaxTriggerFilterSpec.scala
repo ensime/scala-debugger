@@ -12,7 +12,7 @@ class MaxTriggerFilterSpec extends FunSpec with Matchers
   describe("MaxTriggerFilter") {
     describe("#toProcessor") {
       it("should return a processor containing the max trigger filter") {
-        maxTriggerFilter.toProcessor.filter should be (maxTriggerFilter)
+        maxTriggerFilter.toProcessor.argument should be (maxTriggerFilter)
       }
     }
   }

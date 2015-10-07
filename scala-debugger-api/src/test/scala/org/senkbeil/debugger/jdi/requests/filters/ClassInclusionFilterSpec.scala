@@ -14,7 +14,7 @@ class ClassInclusionFilterSpec extends FunSpec with Matchers
   describe("ClassInclusionFilter") {
     describe("#toProcessor") {
       it("should return a processor containing the class inclusion filter") {
-        classInclusionFilter.toProcessor.filter should be (classInclusionFilter)
+        classInclusionFilter.toProcessor.argument should be (classInclusionFilter)
       }
     }
   }

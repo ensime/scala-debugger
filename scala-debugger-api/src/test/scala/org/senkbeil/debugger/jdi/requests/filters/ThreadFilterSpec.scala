@@ -13,7 +13,7 @@ class ThreadFilterSpec extends FunSpec with Matchers
   describe("ThreadFilter") {
     describe("#toProcessor") {
       it("should return a processor containing the thread filter") {
-        threadFilter.toProcessor.filter should be (threadFilter)
+        threadFilter.toProcessor.argument should be (threadFilter)
       }
     }
   }
