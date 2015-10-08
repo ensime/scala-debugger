@@ -308,12 +308,11 @@ class BreakpointManagerSpec extends FunSpec with Matchers
         // Set a breakpoint on a line that is returned by linesAndLocations
         breakpointManager.setLineBreakpoint("file", 1)
 
-        // Should remove X breakpoint requests
-        (mockEventRequestManager.deleteEventRequest _).expects(where {
-          (eventRequest: EventRequest) =>
-            eventRequest.isInstanceOf[BreakpointRequest]
-        }).returning(stub[BreakpointRequest])
-          .repeated(totalBreakpointRequests).times()
+        // Should remove X breakpoint requests through one call
+        (mockEventRequestManager.deleteEventRequests _).expects(where {
+          l: java.util.List[_ <: EventRequest] =>
+            l.size == totalBreakpointRequests
+        }).once()
 
         val actual = breakpointManager.removeLineBreakpoint("file", 1)
 
@@ -340,12 +339,11 @@ class BreakpointManagerSpec extends FunSpec with Matchers
         // Set a breakpoint on a line that is returned by linesAndLocations
         breakpointManager.setLineBreakpoint("file", 1)
 
-        // Should remove X breakpoint requests
-        (mockEventRequestManager.deleteEventRequest _).expects(where {
-          (eventRequest: EventRequest) =>
-            eventRequest.isInstanceOf[BreakpointRequest]
-        }).returning(stub[BreakpointRequest])
-          .repeated(totalBreakpointRequests).times()
+        // Should remove X breakpoint requests through one call
+        (mockEventRequestManager.deleteEventRequests _).expects(where {
+          l: java.util.List[_ <: EventRequest] =>
+            l.size == totalBreakpointRequests
+        }).once()
 
         breakpointManager.removeLineBreakpoint("file", 1)
       }

@@ -4,12 +4,14 @@ import java.util.concurrent.ConcurrentHashMap
 
 import org.senkbeil.debugger.classes.ClassManager
 import org.senkbeil.debugger.jdi.JDIHelperMethods
+import org.senkbeil.debugger.jdi.requests.properties.{EnabledProperty, SuspendPolicyProperty}
 import org.senkbeil.utils.LogLike
-import com.sun.jdi.VirtualMachine
+import com.sun.jdi.{Location, VirtualMachine}
 import com.sun.jdi.request.EventRequest
 
 import scala.collection.mutable
 import scala.collection.JavaConverters._
+import scala.util.{Failure, Success}
 
 /**
  * Represents the manager for breakpoint requests.
@@ -23,6 +25,7 @@ class BreakpointManager(
   protected val _virtualMachine: VirtualMachine,
   private val _classManager: ClassManager
 ) extends JDIHelperMethods with LogLike {
+  import org.senkbeil.debugger.requests.Implicits._
   private val eventRequestManager = _virtualMachine.eventRequestManager()
 
   type BreakpointBundleKey = (String, Int) // Class Name, Line Number
@@ -139,23 +142,21 @@ class BreakpointManager(
       // Build our bundle of breakpoints
       // TODO: Need to undo this if creating a request failed
       val breakpointBundle = new BreakpointBundle(
-        locations.map(eventRequestManager.createBreakpointRequest)
+        locations.map(eventRequestManager.createBreakpointRequest(
+          _: Location,
+          SuspendPolicyProperty(policy = suspendPolicy),
+          EnabledProperty(value = enabled)
+        ))
       )
-
-      // Set relevant information over all breakpoints
-      breakpointBundle.setSuspendPolicy(suspendPolicy)
-      breakpointBundle.setEnabled(enabled)
 
       // Add the bundle to our list of line breakpoints
       lineBreakpoints += key -> breakpointBundle
     }
 
-    // Log the error if one occurred
-    if (result.isFailure) logger.throwable(result.failed.get)
-
-    // Log if successful
-    if (result.isSuccess)
-      logger.trace(s"Added breakpoint $fileName:$lineNumber")
+    result match {
+      case Success(_) => logger.trace(s"Added breakpoint $fileName:$lineNumber")
+      case Failure(ex) => logger.throwable(ex)
+    }
 
     result.isSuccess
   }
@@ -201,17 +202,15 @@ class BreakpointManager(
 
       val breakpointBundleToRemove = lineBreakpoints(key)
 
-      lineBreakpoints -= key
-
-      breakpointBundleToRemove.foreach(eventRequestManager.deleteEventRequest)
+      eventRequestManager.deleteEventRequests(breakpointBundleToRemove.asJava)
     }
 
-    // Log the error if one occurred
-    if (result.isFailure) logger.throwable(result.failed.get)
-
-    // Log if successful
-    if (result.isSuccess)
-      logger.trace(s"Removed breakpoint $fileName:$lineNumber")
+    result match {
+      case Success(_) =>
+        logger.trace(s"Removed breakpoint $fileName:$lineNumber")
+      case Failure(ex) =>
+        logger.throwable(ex)
+    }
 
     result.isSuccess
   }
