@@ -1,6 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.filters
 
-import org.senkbeil.debugger.jdi.requests.processors.{CountProcessor, JDIRequestProcessor}
+import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
+import org.senkbeil.debugger.jdi.requests.processors.CountProcessor
 
 /**
  * Represents a filter used to restrict events until the specific event has

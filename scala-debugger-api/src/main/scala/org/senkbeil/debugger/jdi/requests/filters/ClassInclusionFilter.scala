@@ -1,6 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.filters
 
-import org.senkbeil.debugger.jdi.requests.processors.{ClassInclusionProcessor, JDIRequestProcessor}
+import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
+import org.senkbeil.debugger.jdi.requests.processors.ClassInclusionProcessor
 
 /**
  * Represents a filter used to limit requests to only classes specified by

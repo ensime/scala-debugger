@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.processors
 
 import com.sun.jdi.request.EventRequest
-import org.senkbeil.debugger.jdi.requests.JDIRequestArgument
+import org.senkbeil.debugger.jdi.requests.{JDIRequestProcessor, JDIRequestArgument}
 import org.senkbeil.debugger.jdi.requests.filters.CountFilter
 
 /**

@@ -1,7 +1,8 @@
 package org.senkbeil.debugger.jdi.requests.filters
 
 import com.sun.jdi.ThreadReference
-import org.senkbeil.debugger.jdi.requests.processors.{ThreadProcessor, JDIRequestProcessor}
+import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
+import org.senkbeil.debugger.jdi.requests.processors.ThreadProcessor
 
 /**
  * Represents a filter used to limit requests to a specific thread.

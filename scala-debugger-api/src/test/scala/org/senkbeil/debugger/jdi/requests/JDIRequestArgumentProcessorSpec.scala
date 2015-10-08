@@ -5,8 +5,7 @@ import com.sun.jdi.request.EventRequest
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.requests.filters._
-import org.senkbeil.debugger.jdi.requests.processors.JDIRequestProcessor
-import org.senkbeil.debugger.jdi.requests.properties.{EnabledProperty, SuspendPolicyProperty, EnabledPropertySpec, CustomProperty}
+import org.senkbeil.debugger.jdi.requests.properties.{EnabledProperty, SuspendPolicyProperty, CustomProperty}
 
 class JDIRequestArgumentProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory

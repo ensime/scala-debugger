@@ -1,7 +1,5 @@
 package org.senkbeil.debugger.jdi.requests
 
-import org.senkbeil.debugger.jdi.requests.processors.JDIRequestProcessor
-
 /**
  * Represents an argument for a JDI Request.
  */

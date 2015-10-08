@@ -1,7 +1,8 @@
 package org.senkbeil.debugger.jdi.requests.filters
 
 import com.sun.jdi.ReferenceType
-import org.senkbeil.debugger.jdi.requests.processors.{ClassReferenceProcessor, JDIRequestProcessor}
+import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
+import org.senkbeil.debugger.jdi.requests.processors.ClassReferenceProcessor
 
 /**
  * Represents a filter used to limit requests to a specific class reference.

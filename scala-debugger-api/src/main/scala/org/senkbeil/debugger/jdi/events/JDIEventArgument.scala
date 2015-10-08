@@ -1,7 +1,5 @@
 package org.senkbeil.debugger.jdi.events
 
-import org.senkbeil.debugger.jdi.events.processors.JDIEventProcessor
-
 /**
  * Represents an argument for a JDI Event.
  */

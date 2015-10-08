@@ -1,7 +1,6 @@
-package org.senkbeil.debugger.jdi.requests.processors
+package org.senkbeil.debugger.jdi.requests
 
 import com.sun.jdi.request.EventRequest
-import org.senkbeil.debugger.jdi.requests.JDIRequestArgument
 
 /**
   * Represents a processor for a JDI Request.
