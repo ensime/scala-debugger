@@ -6,6 +6,9 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{OneInstancePerTest, Matchers, FunSpec}
 
 import EventType._
+import org.senkbeil.debugger.jdi.events.JDIEventArgument
+import org.senkbeil.debugger.jdi.events.filters.JDIEventFilter
+import org.senkbeil.debugger.jdi.events.processors.JDIEventProcessor
 
 class EventManagerSpec extends FunSpec with Matchers with MockFactory
   with OneInstancePerTest with org.scalamock.matchers.Matchers
@@ -29,6 +32,12 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
   ) {
     /** Expose the protected task for testing purposes. */
     override def eventHandlerTask(): Unit = super.eventHandlerTask()
+
+    /** Expose the protected task for testing purposes. */
+    override  def newWrapperEventHandler(
+      eventHandler: EventHandler,
+      eventArguments: Seq[JDIEventArgument]
+    ): EventHandler = super.newWrapperEventHandler(eventHandler, eventArguments)
 
     /** Set to a mock to use for verification. */
     override protected def newEventSetProcessor(
@@ -211,16 +220,15 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
       it("should return Some(EventHandler) if the handler is found") {
         // Using a stub to avoid hacks for EventType.toString()
         val stubEventType = stub[EventType]
-
         val mockEventHandler = mock[EventManager#EventHandler]
-        val expected = Some(mockEventHandler)
 
         val eventHandlerId =
           eventManager.addEventHandler(stubEventType, mockEventHandler)
 
-        val actual = eventManager.getEventHandler(eventHandlerId)
-
-        actual should be (expected)
+        // NOTE: The handler returned is the wrapped one, so we cannot compare
+        //       it against the original handler without messing with the
+        //       wrapping function.
+        eventManager.getEventHandler(eventHandlerId) should not be (None)
       }
     }
 
@@ -253,14 +261,13 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
         val stubEventType = stub[EventType]
         val mockEventHandler = mock[EventManager#EventHandler]
 
-        val expected = Some(mockEventHandler)
-
         val eventHandlerId =
           eventManager.addEventHandler(stubEventType, mockEventHandler)
 
-        val actual = eventManager.removeEventHandler(eventHandlerId)
-
-        actual should be (expected)
+        // NOTE: The handler returned is the wrapped one, so we cannot compare
+        //       it against the original handler without messing with the
+        //       wrapping function.
+        eventManager.removeEventHandler(eventHandlerId) should not be (None)
       }
     }
   }
@@ -281,6 +288,59 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
       }
 
       eventManager.eventHandlerTask()
+    }
+  }
+
+  describe("#newWrapperEventHandler") {
+    it("should generate a wrapper that ignores the handler and returns true if the event is denied by a filter") {
+      val expected = true
+
+      val mockEventHandler = mock[EventManager#EventHandler]
+      val mockJdiEventProcessor = mock[JDIEventProcessor]
+      val mockJdiEventFilter = mock[JDIEventFilter]
+
+      // Filter -> processor, process() == false, never invoke handler
+      inSequence {
+        (mockJdiEventFilter.toProcessor _).expects()
+          .returning(mockJdiEventProcessor).once()
+        (mockJdiEventProcessor.process _).expects(*).returning(false).once()
+        (mockEventHandler.apply _).expects(*).never()
+      }
+
+      val wrapperEventHandler = eventManager.newWrapperEventHandler(
+        mockEventHandler,
+        Seq(mockJdiEventFilter)
+      )
+
+      val actual = wrapperEventHandler(mock[Event])
+
+      actual should be (expected)
+    }
+
+    it("should generate a wrapper that invokes the handler and returns its result if the event is accepted by all filters") {
+      val expected = false
+
+      val mockEventHandler = mock[EventManager#EventHandler]
+      val mockJdiEventProcessor = mock[JDIEventProcessor]
+      val mockJdiEventFilter = mock[JDIEventFilter]
+
+      // Filter -> processor, process() == true,
+      // invoke handler and return result
+      inSequence {
+        (mockJdiEventFilter.toProcessor _).expects()
+          .returning(mockJdiEventProcessor).once()
+        (mockJdiEventProcessor.process _).expects(*).returning(true).once()
+        (mockEventHandler.apply _).expects(*).returning(expected).once()
+      }
+
+      val wrapperEventHandler = eventManager.newWrapperEventHandler(
+        mockEventHandler,
+        Seq(mockJdiEventFilter)
+      )
+
+      val actual = wrapperEventHandler(mock[Event])
+
+      actual should be (expected)
     }
   }
 }

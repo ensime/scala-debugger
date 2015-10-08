@@ -1,4 +1,6 @@
-package org.senkbeil.debugger.filters.jdi
+package org.senkbeil.debugger.jdi.requests.filters
+
+import org.senkbeil.debugger.jdi.requests.processors.{CountProcessor, JDIRequestProcessor}
 
 /**
  * Represents a filter used to restrict events until the specific event has
@@ -11,4 +13,12 @@ package org.senkbeil.debugger.filters.jdi
  *
  * @param count The event will not be triggered the first "count - 1" times
  */
-case class CountFilter(count: Int)
+case class CountFilter(count: Int) extends JDIRequestFilter {
+  /**
+   * Creates a new JDI request processor based on this filter.
+   *
+   * @return The new JDI request processor instance
+   */
+  override def toProcessor: JDIRequestProcessor =
+    new CountProcessor(this)
+}
