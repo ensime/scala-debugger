@@ -5,7 +5,7 @@ import org.senkbeil.debugger.classes.ClassManager
 import org.senkbeil.debugger.events.{EventManager, LoopingTaskRunner}
 import org.senkbeil.debugger.jdi.JDIHelperMethods
 import org.senkbeil.debugger.steps.StepManager
-import org.senkbeil.debugger.wrappers._
+import org.senkbeil.debugger.wrappers.Implicits._
 import org.senkbeil.utils.LogLike
 import com.sun.jdi._
 import com.sun.jdi.event.ClassPrepareEvent

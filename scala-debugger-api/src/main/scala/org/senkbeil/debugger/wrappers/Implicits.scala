@@ -1,4 +1,4 @@
-package org.senkbeil.debugger
+package org.senkbeil.debugger.wrappers
 
 import scala.language.implicitConversions
 
@@ -7,7 +7,7 @@ import com.sun.jdi._
 /**
  * Contains helper implicits to convert to wrapper classes.
  */
-package object wrappers {
+object Implicits {
   implicit def valueToWrapper(value: Value): ValueWrapper =
     new ValueWrapper(value)
 

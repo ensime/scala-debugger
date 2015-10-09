@@ -33,7 +33,7 @@ class StackFrameWrapperIntegrationSpec extends FunSpec with Matchers
         s.eventManager.addResumingEventHandler(BreakpointEventType, e => {
           val breakpointEvent = e.asInstanceOf[BreakpointEvent]
 
-          import org.senkbeil.debugger.wrappers._
+          import org.senkbeil.debugger.wrappers.Implicits._
           val threadReference = breakpointEvent.thread()
           val currentFrame = threadReference.frame(0)
 
@@ -75,7 +75,7 @@ class StackFrameWrapperIntegrationSpec extends FunSpec with Matchers
         s.eventManager.addResumingEventHandler(BreakpointEventType, e => {
           val breakpointEvent = e.asInstanceOf[BreakpointEvent]
 
-          import org.senkbeil.debugger.wrappers._
+          import org.senkbeil.debugger.wrappers.Implicits._
           val threadReference = breakpointEvent.thread()
           val currentFrame = threadReference.frame(0)
 
