@@ -1,15 +1,15 @@
 package org.senkbeil.debugger
 
-import java.io.File
-import java.net.URLClassLoader
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.{FunSpec, Matchers}
+import org.senkbeil.utils.LogLike
+import test.TestUtilities
 
 class LaunchingDebuggerIntegrationSpec  extends FunSpec with Matchers
-  with Eventually
+  with Eventually with TestUtilities with LogLike
 {
   implicit override val patienceConfig = PatienceConfig(
     timeout = scaled(Span(5, Seconds)),
@@ -17,16 +17,11 @@ class LaunchingDebuggerIntegrationSpec  extends FunSpec with Matchers
   )
 
   describe("LaunchingDebugger") {
-    it("should be able to listen for multiple connecting JVM processes") {
+    it("should be able to start a JVM and connect to it") {
       val launchedJvmConnected = new AtomicBoolean(false)
 
       val className = "org.senkbeil.test.misc.LaunchingMain"
-      val classpath = ClassLoader.getSystemClassLoader match {
-        case u: URLClassLoader =>
-          u.getURLs.map(_.getPath).map(new File(_))
-            .mkString(System.getProperty("path.separator"))
-        case _ => System.getProperty("java.class.path")
-      }
+      val classpath = jvmClasspath
       val jvmOptions = Seq("-classpath", classpath)
       val launchingDebugger = LaunchingDebugger(
         className = className,
