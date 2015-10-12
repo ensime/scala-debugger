@@ -7,7 +7,7 @@ import org.scalatest.{OneInstancePerTest, Matchers, FunSpec}
 
 import EventType._
 import org.senkbeil.debugger.jdi.events.{JDIEventProcessor, JDIEventArgument}
-import org.senkbeil.debugger.jdi.events.filters.JDIEventFilter
+import org.senkbeil.debugger.jdi.events.filters.{JDIEventFilterProcessor, JDIEventFilter}
 
 class EventManagerSpec extends FunSpec with Matchers with MockFactory
   with OneInstancePerTest with org.scalamock.matchers.Matchers
@@ -295,14 +295,15 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
       val expected = true
 
       val mockEventHandler = mock[EventManager#EventHandler]
-      val mockJdiEventProcessor = mock[JDIEventProcessor]
+      val mockJdiEventFilterProcessor = mock[JDIEventFilterProcessor]
       val mockJdiEventFilter = mock[JDIEventFilter]
 
       // Filter -> processor, process() == false, never invoke handler
       inSequence {
         (mockJdiEventFilter.toProcessor _).expects()
-          .returning(mockJdiEventProcessor).once()
-        (mockJdiEventProcessor.process _).expects(*).returning(false).once()
+          .returning(mockJdiEventFilterProcessor).once()
+        (mockJdiEventFilterProcessor.process _).expects(*)
+          .returning(false).once()
         (mockEventHandler.apply _).expects(*).never()
       }
 
@@ -320,15 +321,16 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
       val expected = false
 
       val mockEventHandler = mock[EventManager#EventHandler]
-      val mockJdiEventProcessor = mock[JDIEventProcessor]
+      val mockJdiEventFilterProcessor = mock[JDIEventFilterProcessor]
       val mockJdiEventFilter = mock[JDIEventFilter]
 
       // Filter -> processor, process() == true,
       // invoke handler and return result
       inSequence {
         (mockJdiEventFilter.toProcessor _).expects()
-          .returning(mockJdiEventProcessor).once()
-        (mockJdiEventProcessor.process _).expects(*).returning(true).once()
+          .returning(mockJdiEventFilterProcessor).once()
+        (mockJdiEventFilterProcessor.process _).expects(*)
+          .returning(true).once()
         (mockEventHandler.apply _).expects(*).returning(expected).once()
       }
 

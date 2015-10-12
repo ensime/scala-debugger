@@ -16,7 +16,7 @@ import org.senkbeil.utils.LogLike
  */
 class EventSetProcessor(
   private val eventSet: EventSet,
-  private val eventFunctionRetrieval: EventType => Seq[Event => Boolean],
+  private val eventFunctionRetrieval: EventType => Seq[EventManager#EventHandler],
   private val onExceptionResume: Boolean
 ) extends LogLike {
   /** Represents the iterator over the provided set of events. */

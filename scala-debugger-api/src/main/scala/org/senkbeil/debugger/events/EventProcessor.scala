@@ -15,7 +15,7 @@ import scala.util.{Failure, Success, Try}
  */
 class EventProcessor(
   private val event: Event,
-  private val eventFunctions: Seq[Event => Boolean],
+  private val eventFunctions: Seq[EventManager#EventHandler],
   private val onExceptionResume: Boolean
 ) {
   /**

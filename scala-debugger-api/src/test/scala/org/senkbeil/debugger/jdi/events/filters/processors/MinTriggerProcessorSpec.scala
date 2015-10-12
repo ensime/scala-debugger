@@ -1,4 +1,4 @@
-package org.senkbeil.debugger.jdi.events.processors
+package org.senkbeil.debugger.jdi.events.filters.processors
 
 import com.sun.jdi.event.Event
 import org.scalamock.scalatest.MockFactory

@@ -2,7 +2,6 @@ package org.senkbeil.debugger.events
 
 import org.senkbeil.debugger.jdi.JDIHelperMethods
 import org.senkbeil.debugger.jdi.events.{JDIEventArgument, JDIEventArgumentProcessor}
-import org.senkbeil.debugger.jdi.events.filters.JDIEventFilter
 import org.senkbeil.utils.LogLike
 import com.sun.jdi.VirtualMachine
 import com.sun.jdi.event.{EventSet, Event}
@@ -35,7 +34,7 @@ class EventManager(
    * Represents an event callback, receiving the event and returning whether or
    * not to resume.
    */
-  type EventHandler = (Event) => Boolean
+  type EventHandler = Event => Boolean
 
   /** Represents the event id associated with the event handler. */
   type EventHandlerId = String
@@ -183,13 +182,14 @@ class EventManager(
     eventHandler: EventHandler,
     eventArguments: Seq[JDIEventArgument]
   ): EventHandler = {
-    val jdiEventFilterProcessor =
+    val jdiEventArgumentProcessor =
       new JDIEventArgumentProcessor(eventArguments: _*)
 
     // Create a wrapper function that invokes the event handler only if the
     // filter processor yields a positive result, otherwise skip this handler
     (event: Event) => {
-      if (jdiEventFilterProcessor.process(event)) eventHandler(event)
+      val passesFilters = jdiEventArgumentProcessor.processFilters(event)
+      if (passesFilters) eventHandler(event)
       else true
     }
   }

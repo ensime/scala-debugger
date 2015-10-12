@@ -11,15 +11,9 @@ trait JDIEventProcessor {
    *
    * @param event The event to process
    *
-   * @return True if the process was successful (the event passed),
-   *         otherwise false
+   * @return The result of processing the event
    */
-  def process(event: Event): Boolean
-
-  /**
-   * Resets the internal state of the processor.
-   */
-  def reset(): Unit
+  def process(event: Event): Any
 
   /**
    * Represents the argument contained by this processor.

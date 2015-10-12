@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.events.filters
 
 import org.senkbeil.debugger.jdi.events.JDIEventProcessor
-import org.senkbeil.debugger.jdi.events.processors.MinTriggerProcessor
+import org.senkbeil.debugger.jdi.events.filters.processors.MinTriggerProcessor
 
 /**
  * Represents a local filter that will result in ignoring any incoming event
