@@ -1,4 +1,4 @@
-package org.senkbeil.debugger.jdi.requests.processors
+package org.senkbeil.debugger.jdi.requests.properties.processors
 
 import com.sun.jdi.request._
 import org.scalamock.scalatest.MockFactory

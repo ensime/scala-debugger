@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.properties
 
 import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
-import org.senkbeil.debugger.jdi.requests.processors.EnabledProcessor
+import org.senkbeil.debugger.jdi.requests.properties.processors.EnabledProcessor
 
 /**
  * Represents an argument used set the enabled status of the request.

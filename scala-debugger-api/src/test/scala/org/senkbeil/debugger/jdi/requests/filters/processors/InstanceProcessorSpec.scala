@@ -1,4 +1,4 @@
-package org.senkbeil.debugger.jdi.requests.processors
+package org.senkbeil.debugger.jdi.requests.filters.processors
 
 import com.sun.jdi.ObjectReference
 import com.sun.jdi.request._

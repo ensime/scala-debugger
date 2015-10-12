@@ -1,9 +1,9 @@
-package org.senkbeil.debugger.jdi.requests.processors
+package org.senkbeil.debugger.jdi.requests.filters.processors
 
 import com.sun.jdi.ThreadReference
 import com.sun.jdi.request._
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{OneInstancePerTest, FunSpec, Matchers}
+import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.requests.filters.ThreadFilter
 
 class ThreadProcessorSpec extends FunSpec with Matchers

@@ -1,8 +1,8 @@
-package org.senkbeil.debugger.jdi.requests.processors
+package org.senkbeil.debugger.jdi.requests.properties.processors
 
 import com.sun.jdi.request._
-import org.senkbeil.debugger.jdi.requests.{JDIRequestProcessor, JDIRequestArgument}
-import org.senkbeil.debugger.jdi.requests.properties.{SuspendPolicyProperty, EnabledProperty}
+import org.senkbeil.debugger.jdi.requests.properties.SuspendPolicyProperty
+import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcessor}
 
 /**
  * Represents a processor for the suspend policy of a request.

@@ -1,8 +1,8 @@
-package org.senkbeil.debugger.jdi.requests.processors
+package org.senkbeil.debugger.jdi.requests.filters.processors
 
 import com.sun.jdi.request._
-import org.senkbeil.debugger.jdi.requests.{JDIRequestProcessor, JDIRequestArgument}
 import org.senkbeil.debugger.jdi.requests.filters.ClassInclusionFilter
+import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcessor}
 
 /**
  * Represents a processor for the class exclusion filter.

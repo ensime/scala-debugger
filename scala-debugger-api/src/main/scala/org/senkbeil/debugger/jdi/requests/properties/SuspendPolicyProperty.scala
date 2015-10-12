@@ -2,7 +2,7 @@ package org.senkbeil.debugger.jdi.requests.properties
 
 import com.sun.jdi.request.EventRequest
 import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
-import org.senkbeil.debugger.jdi.requests.processors.SuspendPolicyProcessor
+import org.senkbeil.debugger.jdi.requests.properties.processors.SuspendPolicyProcessor
 
 /**
  * Represents an argument used set the suspend policy of the request.

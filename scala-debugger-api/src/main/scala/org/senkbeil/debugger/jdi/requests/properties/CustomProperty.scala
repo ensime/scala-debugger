@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.properties
 
 import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
-import org.senkbeil.debugger.jdi.requests.processors.CustomPropertyProcessor
+import org.senkbeil.debugger.jdi.requests.properties.processors.CustomPropertyProcessor
 
 /**
  * Represents an argument used set a custom property on the request.
