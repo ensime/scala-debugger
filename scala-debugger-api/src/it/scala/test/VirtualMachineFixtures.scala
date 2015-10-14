@@ -1,10 +1,10 @@
 package test
 
-import org.senkbeil.debugger.LaunchingDebugger
-import org.senkbeil.debugger.events.LoopingTaskRunner
-import org.senkbeil.debugger.events.EventType._
-import org.senkbeil.debugger.virtualmachines.ScalaVirtualMachine
-import org.senkbeil.debugger.utils.LogLike
+import org.senkbeil.debugger.api.LaunchingDebugger
+import org.senkbeil.debugger.api.events.{LoopingTaskRunner, EventType}
+import org.senkbeil.debugger.api.utils.LogLike
+import org.senkbeil.debugger.api.virtualmachines.ScalaVirtualMachine
+import EventType._
 import com.sun.jdi.VirtualMachine
 
 import scala.concurrent.Future

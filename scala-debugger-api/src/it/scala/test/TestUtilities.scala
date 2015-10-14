@@ -3,7 +3,7 @@ package test
 import java.io.File
 import java.net.URLClassLoader
 
-import org.senkbeil.debugger.utils.LogLike
+import org.senkbeil.debugger.api.utils.LogLike
 
 /**
  * Contains helper methods for testing.
