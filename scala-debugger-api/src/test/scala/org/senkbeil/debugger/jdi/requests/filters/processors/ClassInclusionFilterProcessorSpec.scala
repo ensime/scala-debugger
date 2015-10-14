@@ -5,7 +5,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.requests.filters.ClassInclusionFilter
 
-class ClassInclusionProcessorSpec extends FunSpec with Matchers
+class ClassInclusionFilterProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   private val testPattern = "some pattern"
@@ -13,9 +13,9 @@ class ClassInclusionProcessorSpec extends FunSpec with Matchers
     classPattern = testPattern
   )
   private val classInclusionProcessor =
-    new ClassInclusionProcessor(classInclusionFilter)
+    new ClassInclusionFilterProcessor(classInclusionFilter)
 
-  describe("ClassInclusionProcessor") {
+  describe("ClassInclusionFilterProcessor") {
     describe("#process") {
       it("should add the class inclusion pattern for access watchpoint requests") {
         val mockAccessWatchpointRequest = mock[AccessWatchpointRequest]

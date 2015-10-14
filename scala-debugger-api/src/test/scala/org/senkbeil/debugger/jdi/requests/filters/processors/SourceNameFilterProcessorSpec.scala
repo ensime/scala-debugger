@@ -5,16 +5,17 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.requests.filters.SourceNameFilter
 
-class SourceNameProcessorSpec extends FunSpec with Matchers
+class SourceNameFilterProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   private val testSourceNamePattern = "some pattern"
   private val sourceNameFilter = SourceNameFilter(
     sourceNamePattern = testSourceNamePattern
   )
-  private val sourceNameProcessor = new SourceNameProcessor(sourceNameFilter)
+  private val sourceNameProcessor =
+    new SourceNameFilterProcessor(sourceNameFilter)
 
-  describe("SourceNameProcessor") {
+  describe("SourceNameFilterProcessor") {
     describe("#process") {
       it("should add the source name for class prepare requests") {
         val mockClassPrepareRequest = mock[ClassPrepareRequest]

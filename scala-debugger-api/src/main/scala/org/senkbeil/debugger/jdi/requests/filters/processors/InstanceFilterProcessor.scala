@@ -10,7 +10,7 @@ import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcess
  *
  * @param instanceFilter The instance filter to use when processing
  */
-class InstanceProcessor(
+class InstanceFilterProcessor(
   val instanceFilter: InstanceFilter
 ) extends JDIRequestProcessor {
   private val objectReference = instanceFilter.objectReference

@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.events.filters
 
 import org.senkbeil.debugger.jdi.events.JDIEventProcessor
-import org.senkbeil.debugger.jdi.events.filters.processors.{CustomPropertyFilterProcessor, MaxTriggerProcessor}
+import org.senkbeil.debugger.jdi.events.filters.processors.{CustomPropertyFilterProcessor, MaxTriggerFilterProcessor}
 
 /**
  * Represents a local filter that will result in ignoring any incoming event if

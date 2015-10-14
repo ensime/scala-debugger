@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.properties
 
 import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
-import org.senkbeil.debugger.jdi.requests.properties.processors.EnabledProcessor
+import org.senkbeil.debugger.jdi.requests.properties.processors.EnabledPropertyProcessor
 
 /**
  * Represents an argument used set the enabled status of the request.
@@ -14,5 +14,5 @@ case class EnabledProperty(value: Boolean) extends JDIRequestProperty {
    *
    * @return The new JDI request processor instance
    */
-  override def toProcessor: JDIRequestProcessor = new EnabledProcessor(this)
+  override def toProcessor: JDIRequestProcessor = new EnabledPropertyProcessor(this)
 }

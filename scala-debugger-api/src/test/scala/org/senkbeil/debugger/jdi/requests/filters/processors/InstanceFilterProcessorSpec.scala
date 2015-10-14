@@ -6,16 +6,16 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.requests.filters.InstanceFilter
 
-class InstanceProcessorSpec extends FunSpec with Matchers
+class InstanceFilterProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   private val mockObjectReference = mock[ObjectReference]
   private val instanceFilter = InstanceFilter(
     objectReference = mockObjectReference
   )
-  private val instanceProcessor = new InstanceProcessor(instanceFilter)
+  private val instanceProcessor = new InstanceFilterProcessor(instanceFilter)
 
-  describe("InstanceProcessor") {
+  describe("InstanceFilterProcessor") {
     describe("#process") {
       it("should add the instance for access watchpoint requests") {
         val mockAccessWatchpointRequest = mock[AccessWatchpointRequest]

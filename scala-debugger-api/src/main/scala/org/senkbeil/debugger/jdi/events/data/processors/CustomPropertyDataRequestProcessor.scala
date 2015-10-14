@@ -10,7 +10,7 @@ import org.senkbeil.debugger.jdi.events.data.results.CustomPropertyDataResult
  *
  * @param customPropertyDataRequest The data request to use when processing
  */
-class CustomPropertyDataProcessor(
+class CustomPropertyDataRequestProcessor(
   val customPropertyDataRequest: CustomPropertyDataRequest
 ) extends JDIEventDataProcessor {
   private val key = customPropertyDataRequest.key

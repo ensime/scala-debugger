@@ -9,7 +9,7 @@ import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcess
  *
  * @param countFilter The count filter to use when processing
  */
-class CountProcessor(
+class CountFilterProcessor(
   val countFilter: CountFilter
 ) extends JDIRequestProcessor {
   private val count = countFilter.count

@@ -9,7 +9,7 @@ import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcess
  *
  * @param enabledProperty The enabled property to use when processing
  */
-class EnabledProcessor(
+class EnabledPropertyProcessor(
   val enabledProperty: EnabledProperty
 ) extends JDIRequestProcessor {
   private val value = enabledProperty.value

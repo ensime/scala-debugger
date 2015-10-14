@@ -6,7 +6,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.requests.filters.ClassReferenceFilter
 
-class ClassReferenceProcessorSpec extends FunSpec with Matchers
+class ClassReferenceFilterProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   private val mockReferenceType = mock[ReferenceType]
@@ -14,9 +14,9 @@ class ClassReferenceProcessorSpec extends FunSpec with Matchers
     referenceType = mockReferenceType
   )
   private val classReferenceProcessor =
-    new ClassReferenceProcessor(classReferenceFilter)
+    new ClassReferenceFilterProcessor(classReferenceFilter)
 
-  describe("ClassReferenceProcessor") {
+  describe("ClassReferenceFilterProcessor") {
     describe("#process") {
       it("should add the class reference for access watchpoint requests") {
         val mockAccessWatchpointRequest = mock[AccessWatchpointRequest]

@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.filters
 
 import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
-import org.senkbeil.debugger.jdi.requests.filters.processors.ClassInclusionProcessor
+import org.senkbeil.debugger.jdi.requests.filters.processors.ClassInclusionFilterProcessor
 
 /**
  * Represents a filter used to limit requests to only classes specified by
@@ -25,5 +25,5 @@ case class ClassInclusionFilter(classPattern: String) extends JDIRequestFilter {
    * @return The new JDI request processor instance
    */
   override def toProcessor: JDIRequestProcessor =
-    new ClassInclusionProcessor(this)
+    new ClassInclusionFilterProcessor(this)
 }

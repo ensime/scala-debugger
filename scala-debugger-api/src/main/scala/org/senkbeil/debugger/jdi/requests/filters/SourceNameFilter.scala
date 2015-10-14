@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.filters
 
 import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
-import org.senkbeil.debugger.jdi.requests.filters.processors.SourceNameProcessor
+import org.senkbeil.debugger.jdi.requests.filters.processors.SourceNameFilterProcessor
 
 /**
  * Represents a filter used to limit requests to reference types with whom a
@@ -23,5 +23,5 @@ case class SourceNameFilter(
    * @return The new JDI request processor instance
    */
   override def toProcessor: JDIRequestProcessor =
-    new SourceNameProcessor(this)
+    new SourceNameFilterProcessor(this)
 }

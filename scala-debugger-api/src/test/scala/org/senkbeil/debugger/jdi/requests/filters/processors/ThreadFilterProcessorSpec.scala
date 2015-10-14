@@ -6,16 +6,16 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.requests.filters.ThreadFilter
 
-class ThreadProcessorSpec extends FunSpec with Matchers
+class ThreadFilterProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   private val mockThreadReference = mock[ThreadReference]
   private val threadFilter = ThreadFilter(
     threadReference = mockThreadReference
   )
-  private val threadProcessor = new ThreadProcessor(threadFilter)
+  private val threadProcessor = new ThreadFilterProcessor(threadFilter)
 
-  describe("ThreadProcessor") {
+  describe("ThreadFilterProcessor") {
     describe("#process") {
       it("should add the thread for access watchpoint requests") {
         val mockAccessWatchpointRequest = mock[AccessWatchpointRequest]

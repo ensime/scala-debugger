@@ -10,7 +10,7 @@ import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcess
  *
  * @param threadFilter The thread filter to use when processing
  */
-class ThreadProcessor(
+class ThreadFilterProcessor(
   val threadFilter: ThreadFilter
 ) extends JDIRequestProcessor {
   private val threadReference = threadFilter.threadReference

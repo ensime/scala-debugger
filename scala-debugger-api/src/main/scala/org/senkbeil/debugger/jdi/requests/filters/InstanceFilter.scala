@@ -2,7 +2,7 @@ package org.senkbeil.debugger.jdi.requests.filters
 
 import com.sun.jdi.ObjectReference
 import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
-import org.senkbeil.debugger.jdi.requests.filters.processors.InstanceProcessor
+import org.senkbeil.debugger.jdi.requests.filters.processors.InstanceFilterProcessor
 
 /**
  * Represents a filter used to limit requests to a specific instance of a class.
@@ -24,5 +24,5 @@ case class InstanceFilter(
    * @return The new JDI request processor instance
    */
   override def toProcessor: JDIRequestProcessor =
-    new InstanceProcessor(this)
+    new InstanceFilterProcessor(this)
 }

@@ -5,17 +5,17 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.sun.jdi.event.Event
 import org.senkbeil.debugger.jdi.events.data.JDIEventDataResult
 import org.senkbeil.debugger.jdi.events.{JDIEventProcessor, JDIEventArgument}
-import org.senkbeil.debugger.jdi.events.filters.{JDIEventFilterProcessor, MinTriggerFilter}
+import org.senkbeil.debugger.jdi.events.filters.{JDIEventFilterProcessor, MaxTriggerFilter}
 
 /**
- * Represents a processor for the min trigger filter.
+ * Represents a processor for the max trigger filter.
  *
- * @param minTriggerFilter The min trigger filter to use when processing
+ * @param maxTriggerFilter The max trigger filter to use when processing
  */
-class MinTriggerProcessor(
-  val minTriggerFilter: MinTriggerFilter
+class MaxTriggerFilterProcessor(
+  val maxTriggerFilter: MaxTriggerFilter
 ) extends JDIEventFilterProcessor {
-  private val minCount = minTriggerFilter.count
+  private val maxCount = maxTriggerFilter.count
   private val internalCount = new AtomicInteger(0)
 
   /**
@@ -28,10 +28,8 @@ class MinTriggerProcessor(
    *         data is included
    */
   override def process(event: Event): Boolean = {
-    if (internalCount.get() <= minCount)
-      internalCount.incrementAndGet() > minCount
-    else
-      true
+    if (internalCount.get() > maxCount) false
+    else internalCount.incrementAndGet() <= maxCount
   }
 
   /**
@@ -39,5 +37,5 @@ class MinTriggerProcessor(
    */
   override def reset(): Unit = internalCount.set(0)
 
-  override val argument: JDIEventArgument = minTriggerFilter
+  override val argument: JDIEventArgument = maxTriggerFilter
 }

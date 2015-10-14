@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.requests.filters
 
 import org.senkbeil.debugger.jdi.requests.JDIRequestProcessor
-import org.senkbeil.debugger.jdi.requests.filters.processors.CountProcessor
+import org.senkbeil.debugger.jdi.requests.filters.processors.CountFilterProcessor
 
 /**
  * Represents a filter used to restrict events until the specific event has
@@ -21,5 +21,5 @@ case class CountFilter(count: Int) extends JDIRequestFilter {
    * @return The new JDI request processor instance
    */
   override def toProcessor: JDIRequestProcessor =
-    new CountProcessor(this)
+    new CountFilterProcessor(this)
 }

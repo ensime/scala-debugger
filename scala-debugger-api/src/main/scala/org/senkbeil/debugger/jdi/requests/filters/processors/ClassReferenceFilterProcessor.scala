@@ -10,7 +10,7 @@ import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcess
  *
  * @param classReferenceFilter The class reference filter to use when processing
  */
-class ClassReferenceProcessor(
+class ClassReferenceFilterProcessor(
   val classReferenceFilter: ClassReferenceFilter
 ) extends JDIRequestProcessor {
   private val referenceType = classReferenceFilter.referenceType

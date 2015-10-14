@@ -5,14 +5,15 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.events.filters.MinTriggerFilter
 
-class MinTriggerProcessorSpec extends FunSpec with Matchers
+class MinTriggerFilterProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   private val testCount = 3
   private val minTriggerFilter = MinTriggerFilter(count = testCount)
-  private val minTriggerProcessor = new MinTriggerProcessor(minTriggerFilter)
+  private val minTriggerProcessor =
+    new MinTriggerFilterProcessor(minTriggerFilter)
 
-  describe("MinTriggerProcessor") {
+  describe("MinTriggerFilterProcessor") {
     describe("#process") {
       it ("should return false if the total already processed has not reached the min count") {
         // Verify that the processor is false for the first N processes

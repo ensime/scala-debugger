@@ -7,7 +7,7 @@ import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.events.data.requests.CustomPropertyDataRequest
 import org.senkbeil.debugger.jdi.events.data.results.CustomPropertyDataResult
 
-class CustomPropertyDataProcessorSpec extends FunSpec with Matchers
+class CustomPropertyDataRequestProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   private val testKey = "some key"
@@ -15,9 +15,9 @@ class CustomPropertyDataProcessorSpec extends FunSpec with Matchers
   private val customPropertyDataRequest =
     CustomPropertyDataRequest(key = testKey)
   private val customPropertyDataProcessor =
-    new CustomPropertyDataProcessor(customPropertyDataRequest)
+    new CustomPropertyDataRequestProcessor(customPropertyDataRequest)
 
-  describe("CustomPropertyDataProcessor") {
+  describe("CustomPropertyDataRequestProcessor") {
     describe("#process") {
       it ("should return a result object if the property is found") {
         val expected = CustomPropertyDataResult(

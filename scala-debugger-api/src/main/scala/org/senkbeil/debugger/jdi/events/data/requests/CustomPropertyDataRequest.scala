@@ -2,7 +2,7 @@ package org.senkbeil.debugger.jdi.events.data.requests
 
 import org.senkbeil.debugger.jdi.events.JDIEventProcessor
 import org.senkbeil.debugger.jdi.events.data.JDIEventDataRequest
-import org.senkbeil.debugger.jdi.events.data.processors.CustomPropertyDataProcessor
+import org.senkbeil.debugger.jdi.events.data.processors.CustomPropertyDataRequestProcessor
 
 /**
  * Represents a local data request that will retrieve a custom property from
@@ -17,5 +17,5 @@ case class CustomPropertyDataRequest(key: AnyRef) extends JDIEventDataRequest {
    * @return The new JDI event processor instance
    */
   override def toProcessor: JDIEventProcessor =
-    new CustomPropertyDataProcessor(this)
+    new CustomPropertyDataRequestProcessor(this)
 }

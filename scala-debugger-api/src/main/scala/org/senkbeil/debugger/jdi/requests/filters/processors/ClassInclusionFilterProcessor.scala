@@ -9,7 +9,7 @@ import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcess
  *
  * @param classInclusionFilter The class exclusion filter to use when processing
  */
-class ClassInclusionProcessor(
+class ClassInclusionFilterProcessor(
   val classInclusionFilter: ClassInclusionFilter
 ) extends JDIRequestProcessor {
   private val classPattern = classInclusionFilter.classPattern

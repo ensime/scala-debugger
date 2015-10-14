@@ -9,7 +9,7 @@ import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcess
  *
  * @param sourceNameFilter The source name filter to use when processing
  */
-class SourceNameProcessor(
+class SourceNameFilterProcessor(
   val sourceNameFilter: SourceNameFilter
 ) extends JDIRequestProcessor {
   private val sourceNamePattern = sourceNameFilter.sourceNamePattern

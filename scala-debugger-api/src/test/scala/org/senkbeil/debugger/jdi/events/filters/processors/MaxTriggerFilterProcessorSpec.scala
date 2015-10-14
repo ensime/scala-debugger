@@ -5,14 +5,15 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.jdi.events.filters.MaxTriggerFilter
 
-class MaxTriggerProcessorSpec extends FunSpec with Matchers
+class MaxTriggerFilterProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   private val testCount = 3
   private val maxTriggerFilter = MaxTriggerFilter(count = testCount)
-  private val maxTriggerProcessor = new MaxTriggerProcessor(maxTriggerFilter)
+  private val maxTriggerProcessor =
+    new MaxTriggerFilterProcessor(maxTriggerFilter)
 
-  describe("MaxTriggerProcessor") {
+  describe("MaxTriggerFilterProcessor") {
     describe("#process") {
       it ("should return true if the total processed has not exceeded the max count") {
         // Verify that the processor is true for the first N processes

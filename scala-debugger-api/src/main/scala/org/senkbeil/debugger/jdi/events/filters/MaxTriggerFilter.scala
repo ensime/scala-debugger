@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.jdi.events.filters
 
 import org.senkbeil.debugger.jdi.events.JDIEventProcessor
-import org.senkbeil.debugger.jdi.events.filters.processors.MaxTriggerProcessor
+import org.senkbeil.debugger.jdi.events.filters.processors.MaxTriggerFilterProcessor
 
 /**
  * Represents a local filter that will result in ignoring any incoming event
@@ -19,5 +19,5 @@ case class MaxTriggerFilter(count: Int) extends JDIEventFilter {
    *
    * @return The new JDI event processor instance
    */
-  override def toProcessor: JDIEventProcessor = new MaxTriggerProcessor(this)
+  override def toProcessor: JDIEventProcessor = new MaxTriggerFilterProcessor(this)
 }

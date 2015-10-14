@@ -9,7 +9,7 @@ import org.senkbeil.debugger.jdi.requests.{JDIRequestArgument, JDIRequestProcess
  *
  * @param suspendPolicy The suspend policy property to use when processing
  */
-class SuspendPolicyProcessor(
+class SuspendPolicyPropertyProcessor(
   val suspendPolicy: SuspendPolicyProperty
 ) extends JDIRequestProcessor {
   private val policy = suspendPolicy.policy
