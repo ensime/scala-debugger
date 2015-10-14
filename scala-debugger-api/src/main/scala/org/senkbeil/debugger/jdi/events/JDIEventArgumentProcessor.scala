@@ -39,20 +39,19 @@ class JDIEventArgumentProcessor(private val arguments: JDIEventArgument*) {
    *                        regardless of whether an earlier argument denies
    *                        the event
    *
-   * @return (process result, optional data) in the form: true if the event
-   *         passes all of the arguments, otherwise false
+   * @return (process result, optional request data, optional other data) in
+   *         the form: true if the event passes all of the arguments,
+   *         otherwise false
    */
   def processAll(
     event: Event,
     forceAllArguments: Boolean = false
-  ): (Boolean, Seq[JDIEventDataResult]) = {
+  ): (Boolean, Seq[JDIEventDataResult], Seq[Any]) = {
     val filterResult = processFilters(event, forceAllArguments)
     val dataResult = if (filterResult) processData(event) else Nil
+    val otherResult = if (filterResult) processOther(event) else Nil
 
-    // TODO: Allow arbitrary processors
-    //val otherResult = if (filterResult) processOther(event) else Nil
-
-    (filterResult, dataResult)
+    (filterResult, dataResult, otherResult)
   }
 
   /**

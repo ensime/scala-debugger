@@ -4,6 +4,7 @@ import com.sun.jdi.event.{EventIterator, EventSet, Event}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
 import org.senkbeil.debugger.events.EventType.EventType
+import org.senkbeil.debugger.jdi.events.data.JDIEventDataResult
 
 class EventSetProcessorSpec extends FunSpec with Matchers with MockFactory
   with OneInstancePerTest
@@ -17,10 +18,10 @@ class EventSetProcessorSpec extends FunSpec with Matchers with MockFactory
   private val mockEventSet = mock[EventSet]
   (mockEventSet.iterator _).expects().returning(mockEventIterator).once()
   private val mockEventFunctionRetrieval =
-    mockFunction[EventType, Seq[Event => Boolean]]
+    mockFunction[EventType, Seq[(Event, Seq[JDIEventDataResult]) => Boolean]]
   private val mockEventFunctions = Seq(
-    mockFunction[Event, Boolean],
-    mockFunction[Event, Boolean]
+    mockFunction[Event, Seq[JDIEventDataResult], Boolean],
+    mockFunction[Event, Seq[JDIEventDataResult], Boolean]
   )
 
   // Workaround - see https://github.com/paulbutcher/ScalaMock/issues/33
@@ -29,7 +30,7 @@ class EventSetProcessorSpec extends FunSpec with Matchers with MockFactory
   private val mockEventProcessor = mock[TestEventProcessor]
 
   private val mockNewEventProcessor =
-    mockFunction[Event, Seq[Event => Boolean], EventProcessor]
+    mockFunction[Event, Seq[EventManager#EventHandler], EventProcessor]
   private val mockTransformEventToEventType =
     mockFunction[Event, Option[EventType]]
 
@@ -43,7 +44,7 @@ class EventSetProcessorSpec extends FunSpec with Matchers with MockFactory
     ) {
       override protected def newEventProcessor(
         event: Event,
-        eventFunctions: Seq[(Event) => Boolean]
+        eventFunctions: Seq[EventManager#EventHandler]
       ): EventProcessor = mockNewEventProcessor(event, eventFunctions)
 
       override protected def transformEventToEventType(

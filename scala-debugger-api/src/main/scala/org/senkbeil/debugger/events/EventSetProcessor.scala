@@ -2,6 +2,7 @@ package org.senkbeil.debugger.events
 
 import com.sun.jdi.event.{Event, EventSet}
 import org.senkbeil.debugger.events.EventType.EventType
+import org.senkbeil.debugger.jdi.events.data.JDIEventDataResult
 import org.senkbeil.utils.LogLike
 
 /**
@@ -89,7 +90,7 @@ class EventSetProcessor(
    */
   protected def newEventProcessor(
     event: Event,
-    eventFunctions: Seq[Event => Boolean]
+    eventFunctions: Seq[EventManager#EventHandler]
   ): EventProcessor = new EventProcessor(
     event             = event,
     eventFunctions    = eventFunctions,

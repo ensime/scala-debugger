@@ -1,6 +1,7 @@
 package org.senkbeil.debugger.events
 
 import com.sun.jdi.event.Event
+import org.senkbeil.debugger.jdi.events.data.JDIEventDataResult
 
 import scala.util.{Failure, Success, Try}
 
@@ -28,8 +29,10 @@ class EventProcessor(
   def process(): Boolean = {
     // If contains events, process each and get collective result
     if (eventFunctions != null && eventFunctions.nonEmpty) {
+      // NOTE: The function being invoked SHOULD be the wrapped function that
+      //       runs the filter and retrieves data that replaces the Nil below
       eventFunctions
-        .map(func => Try(func(event)))
+        .map(func => Try(func(event, Nil)))
         .map(resumeOnResult)
         .reduce(_ && _)
     } else true // No event to process, so just allow the flag to pass on

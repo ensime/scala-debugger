@@ -4,6 +4,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 import org.senkbeil.debugger.classes.ClassManager
 import org.senkbeil.debugger.jdi.JDIHelperMethods
+import org.senkbeil.debugger.jdi.events.JDIEventArgument
+import org.senkbeil.debugger.jdi.requests.JDIRequestArgument
 import org.senkbeil.debugger.jdi.requests.properties.{EnabledProperty, SuspendPolicyProperty}
 import org.senkbeil.utils.LogLike
 import com.sun.jdi.{Location, VirtualMachine}
@@ -32,7 +34,11 @@ class BreakpointManager(
   private var lineBreakpoints = Map[BreakpointBundleKey, BreakpointBundle]()
 
   private case class BreakpointInfo(
-    fileName: String, lineNumber: Int, enabled: Boolean, suspendPolicy: Int
+    fileName: String,
+    lineNumber: Int,
+    enabled: Boolean,
+    suspendPolicy: Int,
+    extraArguments: Seq[JDIRequestArgument]
   )
   private val pendingLineBreakpoints: mutable.Map[String, Seq[BreakpointInfo]] =
     new ConcurrentHashMap[String, Seq[BreakpointInfo]]().asScala
@@ -59,7 +65,8 @@ class BreakpointManager(
       lineNumber        = breakpointInfo.lineNumber,
       enabled           = breakpointInfo.enabled,
       suspendPolicy     = breakpointInfo.suspendPolicy,
-      setPendingIfFail  = true
+      setPendingIfFail  = true,
+      extraArguments    = breakpointInfo.extraArguments
     )
 
     // Process all breakpoints
@@ -79,6 +86,8 @@ class BreakpointManager(
    *                      breakpoint is hit (default is all threads)
    * @param setPendingIfFail If true, will add the attempted breakpoint to a
    *                         collection of pending breakpoints
+   * @param extraArguments The additional arguments to provide to the breakpoint
+   *                       request
    *
    * @return True if successfully added breakpoints, otherwise false
    */
@@ -87,16 +96,26 @@ class BreakpointManager(
     lineNumber: Int,
     enabled: Boolean = true,
     suspendPolicy: Int = EventRequest.SUSPEND_ALL,
-    setPendingIfFail: Boolean = true
+    setPendingIfFail: Boolean = true,
+    extraArguments: Seq[JDIRequestArgument] = Nil
   ): Boolean = {
-    val result = setLineBreakpoint(fileName, lineNumber, enabled, suspendPolicy)
+    val arguments = Seq(
+      SuspendPolicyProperty(policy = suspendPolicy),
+      EnabledProperty(value = enabled)
+    ) ++ extraArguments
+    val result = setLineBreakpoint(fileName, lineNumber, arguments)
 
     // Add the attempt to our list for processing later
     if (!result && setPendingIfFail) pendingLineBreakpoints.synchronized {
       val oldPendingBreakpoints =
         pendingLineBreakpoints.getOrElse(fileName, Nil)
-      val newPendingBreakpoint =
-        BreakpointInfo(fileName, lineNumber, enabled, suspendPolicy)
+      val newPendingBreakpoint = BreakpointInfo(
+        fileName        = fileName,
+        lineNumber      = lineNumber,
+        enabled         = enabled,
+        suspendPolicy   = suspendPolicy,
+        extraArguments  = extraArguments
+      )
 
       pendingLineBreakpoints.put(
         fileName, oldPendingBreakpoints :+ newPendingBreakpoint)
@@ -110,17 +129,14 @@ class BreakpointManager(
    *
    * @param fileName The name of the file to set a breakpoint
    * @param lineNumber The number of the line to break
-   * @param enabled If true, enables the breakpoint (default is true)
-   * @param suspendPolicy Indicates the policy for suspending when the
-   *                      breakpoint is hit (default is all threads)
+   * @param arguments All arguments for the request
    *
    * @return True if successfully added breakpoints, otherwise false
    */
   private def setLineBreakpoint(
     fileName: String,
     lineNumber: Int,
-    enabled: Boolean,
-    suspendPolicy: Int
+    arguments: Seq[JDIRequestArgument]
   ): Boolean = {
     // Retrieve the available locations for the specified line
     val locations = _classManager
@@ -143,9 +159,7 @@ class BreakpointManager(
       // TODO: Need to undo this if creating a request failed
       val breakpointBundle = new BreakpointBundle(
         locations.map(eventRequestManager.createBreakpointRequest(
-          _: Location,
-          SuspendPolicyProperty(policy = suspendPolicy),
-          EnabledProperty(value = enabled)
+          _: Location, arguments: _*
         ))
       )
 

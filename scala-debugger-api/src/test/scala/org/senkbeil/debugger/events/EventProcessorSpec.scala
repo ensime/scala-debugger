@@ -3,14 +3,15 @@ package org.senkbeil.debugger.events
 import com.sun.jdi.event.Event
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
+import org.senkbeil.debugger.jdi.events.data.JDIEventDataResult
 
 class EventProcessorSpec extends FunSpec with Matchers with MockFactory
   with OneInstancePerTest
 {
   private val mockEvent = mock[Event]
   private val mockEventFunctions = Seq(
-    mockFunction[Event, Boolean],
-    mockFunction[Event, Boolean]
+    mockFunction[Event, Seq[JDIEventDataResult], Boolean],
+    mockFunction[Event, Seq[JDIEventDataResult], Boolean]
   )
 
   // Takes a single boolean used to set the onExceptionResume flag
@@ -30,7 +31,7 @@ class EventProcessorSpec extends FunSpec with Matchers with MockFactory
 
           // All functions are successful and return true
           mockEventFunctions.foreach(
-            _.expects(mockEvent).returning(true).once()
+            _.expects(mockEvent, Nil).returning(true).once()
           )
 
           val actual = eventProcessor.process()
@@ -43,12 +44,12 @@ class EventProcessorSpec extends FunSpec with Matchers with MockFactory
           val eventProcessor = newEventProcessor(onExceptionResume = true)
 
           // First function fails
-          mockEventFunctions.head.expects(mockEvent)
+          mockEventFunctions.head.expects(mockEvent, Nil)
             .throwing(new Throwable).once()
 
           // All other functions are successful and return true
           mockEventFunctions.tail.foreach(
-            _.expects(mockEvent).returning(true).once()
+            _.expects(mockEvent, Nil).returning(true).once()
           )
 
           val actual = eventProcessor.process()
@@ -61,11 +62,11 @@ class EventProcessorSpec extends FunSpec with Matchers with MockFactory
           val eventProcessor = newEventProcessor(onExceptionResume = true)
 
           // First function is successful and returns false
-          mockEventFunctions.head.expects(mockEvent).returning(true).once()
+          mockEventFunctions.head.expects(mockEvent, Nil).returning(true).once()
 
           // All functions are successful and return false
           mockEventFunctions.tail.foreach(
-            _.expects(mockEvent).returning(false).once()
+            _.expects(mockEvent, Nil).returning(false).once()
           )
 
           val actual = eventProcessor.process()
@@ -81,7 +82,7 @@ class EventProcessorSpec extends FunSpec with Matchers with MockFactory
 
           // All functions are successful and return true
           mockEventFunctions.foreach(
-            _.expects(mockEvent).returning(true).once()
+            _.expects(mockEvent, Nil).returning(true).once()
           )
 
           val actual = eventProcessor.process()
@@ -94,12 +95,12 @@ class EventProcessorSpec extends FunSpec with Matchers with MockFactory
           val eventProcessor = newEventProcessor(onExceptionResume = false)
 
           // First function fails
-          mockEventFunctions.head.expects(mockEvent)
+          mockEventFunctions.head.expects(mockEvent, Nil)
             .throwing(new Throwable).once()
 
           // All other functions are successful and return true
           mockEventFunctions.tail.foreach(
-            _.expects(mockEvent).returning(true).once()
+            _.expects(mockEvent, Nil).returning(true).once()
           )
 
           val actual = eventProcessor.process()
@@ -112,11 +113,11 @@ class EventProcessorSpec extends FunSpec with Matchers with MockFactory
           val eventProcessor = newEventProcessor(onExceptionResume = false)
 
           // First function is successful and returns false
-          mockEventFunctions.head.expects(mockEvent).returning(true).once()
+          mockEventFunctions.head.expects(mockEvent, Nil).returning(true).once()
 
           // All other functions are successful and return true
           mockEventFunctions.tail.foreach(
-            _.expects(mockEvent).returning(false).once()
+            _.expects(mockEvent, Nil).returning(false).once()
           )
 
           val actual = eventProcessor.process()

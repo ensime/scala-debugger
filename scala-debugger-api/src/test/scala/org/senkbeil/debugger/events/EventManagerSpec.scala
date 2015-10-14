@@ -6,6 +6,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{OneInstancePerTest, Matchers, FunSpec}
 
 import EventType._
+import org.senkbeil.debugger.jdi.events.data.{JDIEventDataResult, JDIEventDataRequest, JDIEventDataProcessor}
 import org.senkbeil.debugger.jdi.events.{JDIEventProcessor, JDIEventArgument}
 import org.senkbeil.debugger.jdi.events.filters.{JDIEventFilterProcessor, JDIEventFilter}
 
@@ -136,7 +137,7 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
         val createdHandler = eventManager.getEventHandler(eventHandlerId).get
 
         // Verify that the handler returns true when invoked
-        createdHandler(mock[Event]) should be (true)
+        createdHandler(mock[Event], Nil) should be (true)
       }
     }
 
@@ -304,7 +305,7 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
           .returning(mockJdiEventFilterProcessor).once()
         (mockJdiEventFilterProcessor.process _).expects(*)
           .returning(false).once()
-        (mockEventHandler.apply _).expects(*).never()
+        (mockEventHandler.apply _).expects(*, *).never()
       }
 
       val wrapperEventHandler = eventManager.newWrapperEventHandler(
@@ -312,7 +313,7 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
         Seq(mockJdiEventFilter)
       )
 
-      val actual = wrapperEventHandler(mock[Event])
+      val actual = wrapperEventHandler(mock[Event], Nil)
 
       actual should be (expected)
     }
@@ -331,7 +332,7 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
           .returning(mockJdiEventFilterProcessor).once()
         (mockJdiEventFilterProcessor.process _).expects(*)
           .returning(true).once()
-        (mockEventHandler.apply _).expects(*).returning(expected).once()
+        (mockEventHandler.apply _).expects(*, *).returning(expected).once()
       }
 
       val wrapperEventHandler = eventManager.newWrapperEventHandler(
@@ -339,9 +340,34 @@ class EventManagerSpec extends FunSpec with Matchers with MockFactory
         Seq(mockJdiEventFilter)
       )
 
-      val actual = wrapperEventHandler(mock[Event])
+      val actual = wrapperEventHandler(mock[Event], Nil)
 
       actual should be (expected)
+    }
+
+    it("should pass any data from the invoked processor to the event handler") {
+      val expected = mock[JDIEventDataResult]
+
+      val mockEventHandler = mock[EventManager#EventHandler]
+      val mockJdiEventDataRequest = mock[JDIEventDataRequest]
+      val mockJdiEventDataProcessor = mock[JDIEventDataProcessor]
+
+      // Request -> processor, request.process() == data,
+      // invoke handler and return result
+      inSequence {
+        (mockJdiEventDataRequest.toProcessor _).expects()
+          .returning(mockJdiEventDataProcessor).once()
+        (mockJdiEventDataProcessor.process _).expects(*)
+          .returning(Seq(expected)).once()
+        (mockEventHandler.apply _).expects(*, Seq(expected)).once()
+      }
+
+      val wrapperEventHandler = eventManager.newWrapperEventHandler(
+        mockEventHandler,
+        Seq(mockJdiEventDataRequest)
+      )
+
+      wrapperEventHandler(mock[Event], Nil)
     }
   }
 }

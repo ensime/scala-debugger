@@ -1,6 +1,7 @@
 package org.senkbeil.debugger.events
 
 import org.senkbeil.debugger.jdi.JDIHelperMethods
+import org.senkbeil.debugger.jdi.events.data.JDIEventDataResult
 import org.senkbeil.debugger.jdi.events.{JDIEventArgument, JDIEventArgumentProcessor}
 import org.senkbeil.utils.LogLike
 import com.sun.jdi.VirtualMachine
@@ -34,7 +35,7 @@ class EventManager(
    * Represents an event callback, receiving the event and returning whether or
    * not to resume.
    */
-  type EventHandler = Event => Boolean
+  type EventHandler = (Event, Seq[JDIEventDataResult]) => Boolean
 
   /** Represents the event id associated with the event handler. */
   type EventHandlerId = String
@@ -115,29 +116,55 @@ class EventManager(
    * towards resuming the event set after completion.
    *
    * @param eventType The type of the event to add a function
-   * @param eventHandler The function to add
+   * @param eventHandler The function to add, taking the occurring event and
+   *                     a collection of retrieved data from the event
    * @param eventArguments The arguments used when determining whether or not to
-   *                     invoke the event handler
+   *                       invoke the event handler
    */
   def addResumingEventHandler(
     eventType: EventType,
-    eventHandler: Event => Unit,
+    eventHandler: (Event, Seq[JDIEventDataResult]) => Unit,
     eventArguments: JDIEventArgument*
   ): EventHandlerId = {
     // Convert the function to an "always true" event function
-    val fullEventFunction = ((_: Unit) => true).compose(eventHandler)
+    val fullEventFunction = (event: Event, data: Seq[JDIEventDataResult]) => {
+      eventHandler(event, data)
+      true
+    }
 
     addEventHandler(eventType, fullEventFunction, eventArguments: _*)
   }
+
+  /**
+   * Adds the event function to this manager. This event automatically counts
+   * towards resuming the event set after completion.
+   *
+   * @param eventType The type of the event to add a function
+   * @param eventHandler The function to add, taking the occurring event
+   * @param eventArguments The arguments used when determining whether or not to
+   *                       invoke the event handler
+   */
+  def addResumingEventHandler(
+    eventType: EventType,
+    eventHandler: (Event) => Unit,
+    eventArguments: JDIEventArgument*
+  ): EventHandlerId = addResumingEventHandler(
+    eventType = eventType,
+    eventHandler = (event: Event, _: Seq[JDIEventDataResult]) => {
+      eventHandler(event)
+    },
+    eventArguments: _*
+  )
 
   /**
    * Adds the event function to this manager. The return value of the handler
    * function contributes towards whether or not to resume the event set.
    *
    * @param eventType The type of the event to add a function
-   * @param eventHandler The function to add
+   * @param eventHandler The function to add, taking the occurring event and
+   *                     a collection of retrieved data from the event
    * @param eventArguments The arguments used when determining whether or not to
-   *                     invoke the event handler
+   *                       invoke the event handler
    */
   def addEventHandler(
     eventType: EventType,
@@ -168,13 +195,35 @@ class EventManager(
   }
 
   /**
+   * Adds the event function to this manager. The return value of the handler
+   * function contributes towards whether or not to resume the event set.
+   *
+   * @param eventType The type of the event to add a function
+   * @param eventHandler The function to add, taking the occurring event
+   * @param eventArguments The arguments used when determining whether or not to
+   *                       invoke the event handler
+   */
+  def addEventHandler(
+    eventType: EventType,
+    eventHandler: (Event) => Boolean,
+    eventArguments: JDIEventArgument*
+  ): EventHandlerId = addEventHandler(
+    eventType = eventType,
+    eventHandler = (event: Event, _: Seq[JDIEventDataResult]) => {
+      eventHandler(event)
+    },
+    eventArguments: _*
+  )
+
+  /**
    * Generates a wrapper function around the event handler, using an argument
    * processor to evaluate the provided arguments to determine whether or not
-   * to invoke the event handler.
+   * to invoke the event handler as well as retrieve any requested data.
    *
    * @param eventHandler The event handler to wrap
    * @param eventArguments The arguments to use when determining if the event
-   *                        handler should be invoked
+   *                       handler should be invoked and what data to be
+   *                       retrieved
    *
    * @return The wrapper around the event handler
    */
@@ -187,9 +236,9 @@ class EventManager(
 
     // Create a wrapper function that invokes the event handler only if the
     // filter processor yields a positive result, otherwise skip this handler
-    (event: Event) => {
-      val passesFilters = jdiEventArgumentProcessor.processFilters(event)
-      if (passesFilters) eventHandler(event)
+    (event: Event, data: Seq[JDIEventDataResult]) => {
+      val (passesFilters, data, _) = jdiEventArgumentProcessor.processAll(event)
+      if (passesFilters) eventHandler(event, data)
       else true
     }
   }

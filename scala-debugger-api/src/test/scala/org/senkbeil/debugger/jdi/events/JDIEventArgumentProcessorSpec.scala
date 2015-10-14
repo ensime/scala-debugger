@@ -3,15 +3,191 @@ package org.senkbeil.debugger.jdi.events
 import com.sun.jdi.event.Event
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, OneInstancePerTest}
-import org.senkbeil.debugger.jdi.events.data.{JDIEventDataProcessor, JDIEventDataRequest}
+import org.senkbeil.debugger.jdi.events.data.{JDIEventDataResult, JDIEventDataProcessor, JDIEventDataRequest}
 import org.senkbeil.debugger.jdi.events.filters.{JDIEventFilterProcessor, JDIEventFilter}
-
-import scala.reflect.ClassTag
 
 class JDIEventArgumentProcessorSpec extends FunSpec with Matchers
   with OneInstancePerTest with MockFactory
 {
   describe("JDIEventArgumentProcessor") {
+    describe("#processAll") {
+      it("should process all filters and, if true, data and other arguments") {
+        val expected = (true, Seq(mock[JDIEventDataResult]), Seq(new Object))
+        val mockEvent = mock[Event]
+
+        // Yields true for filters, so data/other should be processed
+        val filterArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventFilter],
+          mockProcessor = mock[JDIEventFilterProcessor],
+          processReturnValue = expected._1,
+          numberOfRuns = 1
+        )
+
+        val dataArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventDataRequest],
+          mockProcessor = mock[JDIEventDataProcessor],
+          processReturnValue = expected._2,
+          numberOfRuns = 1
+        )
+
+        val otherArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventArgument],
+          mockProcessor = mock[JDIEventProcessor],
+          processReturnValue = expected._3.head,
+          numberOfRuns = 1
+        )
+
+        val jdiEventArgumentProcessor = new JDIEventArgumentProcessor(
+          dataArgumentAndProcessor._1,
+          otherArgumentAndProcessor._1,
+          filterArgumentAndProcessor._1
+        )
+
+        val actual = jdiEventArgumentProcessor.processAll(mockEvent)
+
+        actual._1 should be (expected._1)
+        actual._2 should contain theSameElementsInOrderAs (expected._2)
+        actual._3 should contain theSameElementsInOrderAs (expected._3)
+      }
+
+      it("should process all filters and nothing else if filters yields false") {
+        val expected = (false, Nil, Nil)
+        val mockEvent = mock[Event]
+
+        // Yields true for filters, so data/other should be processed
+        val filterArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventFilter],
+          mockProcessor = mock[JDIEventFilterProcessor],
+          processReturnValue = expected._1,
+          numberOfRuns = 1
+        )
+
+        // Should not be evaluated
+        val dataArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventDataRequest],
+          mockProcessor = mock[JDIEventDataProcessor],
+          processReturnValue = expected._2,
+          numberOfRuns = 0
+        )
+
+        // Should not be evaluated
+        val otherArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventArgument],
+          mockProcessor = mock[JDIEventProcessor],
+          processReturnValue = expected._3,
+          numberOfRuns = 0
+        )
+
+        val jdiEventArgumentProcessor = new JDIEventArgumentProcessor(
+          dataArgumentAndProcessor._1,
+          otherArgumentAndProcessor._1,
+          filterArgumentAndProcessor._1
+        )
+
+        val actual = jdiEventArgumentProcessor.processAll(mockEvent)
+
+        actual._1 should be (expected._1)
+        actual._2 should contain theSameElementsInOrderAs (expected._2)
+        actual._3 should contain theSameElementsInOrderAs (expected._3)
+      }
+    }
+
+    describe("#processData") {
+      it("should process all data requests in order") {
+        val expected = Seq(mock[JDIEventDataResult], mock[JDIEventDataResult])
+        val mockEvent = mock[Event]
+
+        // Should not be evaluated
+        val otherArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventArgument],
+          mockProcessor = mock[JDIEventProcessor],
+          processReturnValue = null,
+          numberOfRuns = 0
+        )
+
+        val data1ArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventDataRequest],
+          mockProcessor = mock[JDIEventDataProcessor],
+          processReturnValue = Seq(expected.head),
+          numberOfRuns = 1
+        )
+
+        val data2ArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventDataRequest],
+          mockProcessor = mock[JDIEventDataProcessor],
+          processReturnValue = Seq(expected.last),
+          numberOfRuns = 1
+        )
+
+        // Should not be evaluated
+        val filterArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventFilter],
+          mockProcessor = mock[JDIEventFilterProcessor],
+          processReturnValue = false,
+          numberOfRuns = 0
+        )
+
+        val jdiEventArgumentProcessor = new JDIEventArgumentProcessor(
+          data1ArgumentAndProcessor._1,
+          otherArgumentAndProcessor._1,
+          data2ArgumentAndProcessor._1,
+          filterArgumentAndProcessor._1
+        )
+
+        val actual = jdiEventArgumentProcessor.processData(mockEvent)
+
+        actual should contain theSameElementsInOrderAs (expected)
+      }
+    }
+
+    describe("#processOther") {
+      it("should process all other arguments in order") {
+        val expected = Seq(new Object, new Object)
+        val mockEvent = mock[Event]
+
+        val other1ArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventArgument],
+          mockProcessor = mock[JDIEventProcessor],
+          processReturnValue = expected.head,
+          numberOfRuns = 1
+        )
+
+        val other2ArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventArgument],
+          mockProcessor = mock[JDIEventProcessor],
+          processReturnValue = expected.last,
+          numberOfRuns = 1
+        )
+
+        // Should not be evaluated
+        val dataArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventDataRequest],
+          mockProcessor = mock[JDIEventDataProcessor],
+          processReturnValue = mock[JDIEventDataResult],
+          numberOfRuns = 0
+        )
+
+        // Should not be evaluated
+        val filterArgumentAndProcessor = setExpectations(
+          mockArgument = mock[JDIEventFilter],
+          mockProcessor = mock[JDIEventFilterProcessor],
+          processReturnValue = false,
+          numberOfRuns = 0
+        )
+
+        val jdiEventArgumentProcessor = new JDIEventArgumentProcessor(
+          dataArgumentAndProcessor._1,
+          other1ArgumentAndProcessor._1,
+          filterArgumentAndProcessor._1,
+          other2ArgumentAndProcessor._1
+        )
+
+        val actual = jdiEventArgumentProcessor.processOther(mockEvent)
+
+        actual should contain theSameElementsInOrderAs (expected)
+      }
+    }
+
     describe("#processFilters") {
       it("should process all filters if the force flag is set to true") {
         val mockEvent = mock[Event]
