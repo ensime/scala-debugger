@@ -2,7 +2,7 @@ package org.senkbeil.debugger
 
 import java.util.concurrent.{Executors, ExecutorService}
 
-import org.senkbeil.utils.LogLike
+import org.senkbeil.debugger.utils.LogLike
 import com.sun.jdi.connect.{Connector, ListeningConnector}
 
 import collection.JavaConverters._

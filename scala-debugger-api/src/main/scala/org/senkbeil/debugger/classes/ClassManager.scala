@@ -1,7 +1,7 @@
 package org.senkbeil.debugger.classes
 
 import org.senkbeil.debugger.jdi.JDIHelperMethods
-import org.senkbeil.utils.LogLike
+import org.senkbeil.debugger.utils.LogLike
 import com.sun.jdi.{Location, ReferenceType, VirtualMachine}
 
 import scala.collection.JavaConverters._

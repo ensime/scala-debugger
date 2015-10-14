@@ -4,7 +4,7 @@ import org.senkbeil.debugger.LaunchingDebugger
 import org.senkbeil.debugger.events.LoopingTaskRunner
 import org.senkbeil.debugger.events.EventType._
 import org.senkbeil.debugger.virtualmachines.ScalaVirtualMachine
-import org.senkbeil.utils.LogLike
+import org.senkbeil.debugger.utils.LogLike
 import com.sun.jdi.VirtualMachine
 
 import scala.concurrent.Future

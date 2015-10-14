@@ -7,7 +7,7 @@ import org.senkbeil.debugger.jdi.JDIHelperMethods
 import org.senkbeil.debugger.jdi.events.JDIEventArgument
 import org.senkbeil.debugger.jdi.requests.JDIRequestArgument
 import org.senkbeil.debugger.jdi.requests.properties.{EnabledProperty, SuspendPolicyProperty}
-import org.senkbeil.utils.LogLike
+import org.senkbeil.debugger.utils.LogLike
 import com.sun.jdi.{Location, VirtualMachine}
 import com.sun.jdi.request.EventRequest
 

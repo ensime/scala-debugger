@@ -1,6 +1,6 @@
 package org.senkbeil.debugger
 
-import org.senkbeil.utils.LogLike
+import org.senkbeil.debugger.utils.LogLike
 import com.sun.jdi._
 import com.sun.jdi.connect.AttachingConnector
 

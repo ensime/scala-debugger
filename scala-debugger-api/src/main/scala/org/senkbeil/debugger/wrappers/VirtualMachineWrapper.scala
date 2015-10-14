@@ -2,7 +2,7 @@ package org.senkbeil.debugger.wrappers
 
 import java.util.concurrent.ConcurrentHashMap
 
-import org.senkbeil.utils.LogLike
+import org.senkbeil.debugger.utils.LogLike
 import com.sun.jdi.request.EventRequest
 import com.sun.jdi.VirtualMachine
 

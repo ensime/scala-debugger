@@ -1,4 +1,4 @@
-package org.senkbeil.utils
+package org.senkbeil.debugger.utils
 
 import org.slf4j.{ Logger, LoggerFactory }
 

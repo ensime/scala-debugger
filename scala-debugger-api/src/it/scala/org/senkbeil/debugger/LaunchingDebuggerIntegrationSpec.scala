@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.{FunSpec, Matchers}
-import org.senkbeil.utils.LogLike
+import org.senkbeil.debugger.utils.LogLike
 import test.TestUtilities
 
 class LaunchingDebuggerIntegrationSpec  extends FunSpec with Matchers

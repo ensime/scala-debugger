@@ -3,7 +3,7 @@ package org.senkbeil.debugger.events
 import com.sun.jdi.event.{Event, EventSet}
 import org.senkbeil.debugger.events.EventType.EventType
 import org.senkbeil.debugger.jdi.events.data.JDIEventDataResult
-import org.senkbeil.utils.LogLike
+import org.senkbeil.debugger.utils.LogLike
 
 /**
  * Represents a processor for an event set, evaluating any associated

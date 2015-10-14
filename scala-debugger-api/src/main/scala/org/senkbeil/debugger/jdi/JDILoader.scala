@@ -3,7 +3,7 @@ package org.senkbeil.debugger.jdi
 import java.io.File
 import java.net.{URL, URLClassLoader}
 
-import org.senkbeil.utils.LogLike
+import org.senkbeil.debugger.utils.LogLike
 
 import scala.util.Try
 
