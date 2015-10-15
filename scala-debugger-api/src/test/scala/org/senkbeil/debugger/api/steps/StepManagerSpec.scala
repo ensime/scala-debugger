@@ -66,7 +66,7 @@ class StepManagerSpec extends FunSpec with Matchers
         (mockStepRequest.setSuspendPolicy _)
           .expects(EventRequest.SUSPEND_EVENT_THREAD).once()
         (mockStepRequest.addCountFilter _).expects(*).once()
-        (mockStepRequest.enable _).expects().once()
+        (mockStepRequest.setEnabled _).expects(true).once()
 
         stepManager.stepOver(stub[ThreadReference])
       }
@@ -80,7 +80,7 @@ class StepManagerSpec extends FunSpec with Matchers
 
         (mockStepRequest.setSuspendPolicy _).expects(*).once()
         (mockStepRequest.addCountFilter _).expects(1).once()
-        (mockStepRequest.enable _).expects().once()
+        (mockStepRequest.setEnabled _).expects(true).once()
 
         stepManager.stepOver(stub[ThreadReference])
       }
@@ -94,7 +94,7 @@ class StepManagerSpec extends FunSpec with Matchers
 
         (mockStepRequest.setSuspendPolicy _).expects(*).once()
         (mockStepRequest.addCountFilter _).expects(*).once()
-        (mockStepRequest.enable _).expects().once()
+        (mockStepRequest.setEnabled _).expects(true).once()
 
         stepManager.stepOver(stub[ThreadReference])
       }
@@ -137,7 +137,7 @@ class StepManagerSpec extends FunSpec with Matchers
         (mockStepRequest.setSuspendPolicy _)
           .expects(EventRequest.SUSPEND_EVENT_THREAD).once()
         (mockStepRequest.addCountFilter _).expects(*).once()
-        (mockStepRequest.enable _).expects().once()
+        (mockStepRequest.setEnabled _).expects(true).once()
 
         stepManager.stepInto(stub[ThreadReference])
       }
@@ -151,7 +151,7 @@ class StepManagerSpec extends FunSpec with Matchers
 
         (mockStepRequest.setSuspendPolicy _).expects(*).once()
         (mockStepRequest.addCountFilter _).expects(1).once()
-        (mockStepRequest.enable _).expects().once()
+        (mockStepRequest.setEnabled _).expects(true).once()
 
         stepManager.stepInto(stub[ThreadReference])
       }
@@ -165,7 +165,7 @@ class StepManagerSpec extends FunSpec with Matchers
 
         (mockStepRequest.setSuspendPolicy _).expects(*).once()
         (mockStepRequest.addCountFilter _).expects(*).once()
-        (mockStepRequest.enable _).expects().once()
+        (mockStepRequest.setEnabled _).expects(true).once()
 
         stepManager.stepInto(stub[ThreadReference])
       }
@@ -208,7 +208,7 @@ class StepManagerSpec extends FunSpec with Matchers
         (mockStepRequest.setSuspendPolicy _)
           .expects(EventRequest.SUSPEND_EVENT_THREAD).once()
         (mockStepRequest.addCountFilter _).expects(*).once()
-        (mockStepRequest.enable _).expects().once()
+        (mockStepRequest.setEnabled _).expects(true).once()
 
         stepManager.stepOut(stub[ThreadReference])
       }
@@ -222,7 +222,7 @@ class StepManagerSpec extends FunSpec with Matchers
 
         (mockStepRequest.setSuspendPolicy _).expects(*).once()
         (mockStepRequest.addCountFilter _).expects(1).once()
-        (mockStepRequest.enable _).expects().once()
+        (mockStepRequest.setEnabled _).expects(true).once()
 
         stepManager.stepOut(stub[ThreadReference])
       }
@@ -236,7 +236,7 @@ class StepManagerSpec extends FunSpec with Matchers
 
         (mockStepRequest.setSuspendPolicy _).expects(*).once()
         (mockStepRequest.addCountFilter _).expects(*).once()
-        (mockStepRequest.enable _).expects().once()
+        (mockStepRequest.setEnabled _).expects(true).once()
 
         stepManager.stepOut(stub[ThreadReference])
       }
