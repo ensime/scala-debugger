@@ -19,7 +19,7 @@ class MaxTriggerFilterIntegrationSpec extends FunSpec with Matchers
 
   describe("MaxTriggerFilter") {
     it("should ignore all events for a handler after the first N using MaxTriggerFilter(N)") {
-      val testClass = "org.senkbeil.test.filters.MaxTriggerFilter"
+      val testClass = "org.senkbeil.debugger.test.filters.MaxTriggerFilter"
       val testFile = scalaClassStringToFileString(testClass)
 
       // The filter to apply (should ignore breakpoints after first three)

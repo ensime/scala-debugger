@@ -20,7 +20,7 @@ class CustomPropertyFilterIntegrationSpec extends FunSpec with Matchers
 
   describe("CustomPropertyFilter") {
     it("should ignore all events whose custom property does not match the filter") {
-      val testClass = "org.senkbeil.test.filters.CustomPropertyFilter"
+      val testClass = "org.senkbeil.debugger.test.filters.CustomPropertyFilter"
       val testFile = scalaClassStringToFileString(testClass)
 
       // The filter to apply (should ignore any breakpoint event without

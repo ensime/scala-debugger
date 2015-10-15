@@ -1,4 +1,4 @@
-package org.senkbeil.test.misc
+package org.senkbeil.debugger.test.misc
 
 /**
  * Used by the launching debugger to verify that it connects to the JVM.

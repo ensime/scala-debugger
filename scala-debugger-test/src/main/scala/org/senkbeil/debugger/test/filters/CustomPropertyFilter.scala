@@ -1,11 +1,11 @@
-package org.senkbeil.test.filters
+package org.senkbeil.debugger.test.filters
 
 /**
- * Used to verify the MaxTriggerFilter.
+ * Used to verify the CustomPropertyFilter.
  *
  * Breakpointable lines are 9, 10, 11, 12, 13, 15.
  */
-object MaxTriggerFilter extends App {
+object CustomPropertyFilter extends App {
   val a = 0
   val b = 1
   val c = 2

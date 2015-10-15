@@ -1,4 +1,4 @@
-package org.senkbeil.test.breakpoints
+package org.senkbeil.debugger.test.breakpoints
 
 /**
  * Provides test of hitting a breakpoint in an object inheriting from

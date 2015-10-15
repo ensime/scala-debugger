@@ -19,7 +19,7 @@ class MinTriggerFilterIntegrationSpec extends FunSpec with Matchers
 
   describe("MinTriggerFilter") {
     it("should ignore the first N events for a handler using MinTriggerFilter(N)") {
-      val testClass = "org.senkbeil.test.filters.MinTriggerFilter"
+      val testClass = "org.senkbeil.debugger.test.filters.MinTriggerFilter"
       val testFile = scalaClassStringToFileString(testClass)
 
       // The filter to apply (should ignore the first three breakpoints)

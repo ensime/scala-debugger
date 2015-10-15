@@ -22,7 +22,7 @@ class StackFrameWrapperIntegrationSpec extends FunSpec with Matchers
 
   describe("StackFrameWrapper") {
     it("should be able to analyze this object variables") {
-      val testClass = "org.senkbeil.test.misc.Variables"
+      val testClass = "org.senkbeil.debugger.test.misc.Variables"
       val testFile = scalaClassStringToFileString(testClass)
       val lastLine = 30
 
@@ -64,7 +64,7 @@ class StackFrameWrapperIntegrationSpec extends FunSpec with Matchers
     }
 
     it("should be able to analyze local variables") {
-      val testClass = "org.senkbeil.test.misc.Variables"
+      val testClass = "org.senkbeil.debugger.test.misc.Variables"
       val testFile = scalaClassStringToFileString(testClass)
       val lastLine = 30
 
@@ -114,7 +114,7 @@ class StackFrameWrapperIntegrationSpec extends FunSpec with Matchers
 
           // Scala-based list of objects
           val kString = vMap("k").asInstanceOf[String]
-          kString should include ("org.senkbeil.test.misc.Variables$One")
+          kString should include ("org.senkbeil.debugger.test.misc.Variables$One")
           kString should include ("java.lang.Integer")
           kString should include ("java.lang.Boolean")
         })

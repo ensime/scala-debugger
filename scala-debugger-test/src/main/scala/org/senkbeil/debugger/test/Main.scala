@@ -1,4 +1,4 @@
-package org.senkbeil.test
+package org.senkbeil.debugger.test
 
 import scala.language.reflectiveCalls
 

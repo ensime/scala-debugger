@@ -1,6 +1,6 @@
-package org.senkbeil.test.misc
+package org.senkbeil.debugger.test.misc
 
-import org.senkbeil.test.helpers.Stubs._
+import org.senkbeil.debugger.test.helpers.Stubs._
 
 /**
  * Provides test of examining variable values.

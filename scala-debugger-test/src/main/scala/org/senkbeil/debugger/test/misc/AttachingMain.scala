@@ -1,4 +1,4 @@
-package org.senkbeil.test.misc
+package org.senkbeil.debugger.test.misc
 
 /**
  * Used by the attaching debugger to continue running to avoid unexpected

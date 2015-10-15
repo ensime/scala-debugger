@@ -21,7 +21,7 @@ class BreakpointManagerIntegrationSpec extends FunSpec with Matchers
 
   describe("BreakpointManager") {
     it("should be able to set breakpoints within while loops") {
-      val testClass = "org.senkbeil.test.breakpoints.WhileLoop"
+      val testClass = "org.senkbeil.debugger.test.breakpoints.WhileLoop"
       val testFile = scalaClassStringToFileString(testClass)
 
       val firstBreakpointLine = 13
@@ -58,7 +58,7 @@ class BreakpointManagerIntegrationSpec extends FunSpec with Matchers
     }
 
     it("should be able to set breakpoints within for comprehensions") {
-      val testClass = "org.senkbeil.test.breakpoints.ForComprehension"
+      val testClass = "org.senkbeil.debugger.test.breakpoints.ForComprehension"
       val testFile = scalaClassStringToFileString(testClass)
 
       val firstBreakpointLine = 14
@@ -95,7 +95,7 @@ class BreakpointManagerIntegrationSpec extends FunSpec with Matchers
     }
 
     it("should be able to set breakpoints in a DelayInit object") {
-      val testClass = "org.senkbeil.test.breakpoints.DelayedInit"
+      val testClass = "org.senkbeil.debugger.test.breakpoints.DelayedInit"
       val testFile = scalaClassStringToFileString(testClass)
 
       val firstBreakpointLine = 10

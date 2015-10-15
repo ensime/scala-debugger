@@ -16,7 +16,7 @@ class ScalaVirtualMachineIntegrationSpec extends FunSpec with Matchers
 
   describe("ScalaVirtualMachine") {
     it("should return the class name of a Scala main method entrypoint") {
-      val testClass = "org.senkbeil.test.misc.MainUsingMethod"
+      val testClass = "org.senkbeil.debugger.test.misc.MainUsingMethod"
 
       withVirtualMachine(testClass, suspend = false) { (_, scalaVirtualMachine) =>
         val expected = testClass
@@ -31,7 +31,7 @@ class ScalaVirtualMachineIntegrationSpec extends FunSpec with Matchers
     }
 
     it("should return the class name of a Scala App entrypoint") {
-      val testClass = "org.senkbeil.test.misc.MainUsingApp"
+      val testClass = "org.senkbeil.debugger.test.misc.MainUsingApp"
 
       withVirtualMachine(testClass, suspend = false) { (_, scalaVirtualMachine) =>
         val expected = testClass
@@ -46,7 +46,7 @@ class ScalaVirtualMachineIntegrationSpec extends FunSpec with Matchers
     }
 
     it("should return the arguments provided to the virtual machine") {
-      val testClass = "org.senkbeil.test.misc.MainUsingApp"
+      val testClass = "org.senkbeil.debugger.test.misc.MainUsingApp"
       val testArguments = Seq("a", "b", "c")
 
       withVirtualMachine(testClass, testArguments, suspend = false) { (_, scalaVirtualMachine) =>

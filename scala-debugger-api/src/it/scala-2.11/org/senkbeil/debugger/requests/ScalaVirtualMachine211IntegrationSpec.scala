@@ -17,7 +17,7 @@ class ScalaVirtualMachine211IntegrationSpec extends FunSpec with Matchers
 
   describe("ScalaVirtualMachine for 2.11") {
     it("should return the breakpointable line numbers for the file") {
-      val testClass = "org.senkbeil.test.misc.AvailableLines"
+      val testClass = "org.senkbeil.debugger.test.misc.AvailableLines"
 
       withVirtualMachine(testClass, suspend = false) { (_, scalaVirtualMachine) =>
         // NOTE: In Scala 2.11, there is no breakpoint available on the object

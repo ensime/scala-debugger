@@ -1,4 +1,4 @@
-package org.senkbeil.test.misc
+package org.senkbeil.debugger.test.misc
 
 /**
  * Provides an example of a main entrypoint using Scala's App instead of a

@@ -23,7 +23,8 @@ class CustomPropertyDataRequestIntegrationSpec extends FunSpec with Matchers
 
   describe("CustomPropertyDataRequest") {
     it("should retrieve the custom property if available") {
-      val testClass = "org.senkbeil.test.data.CustomPropertyDataRequest"
+      val testClass =
+        "org.senkbeil.debugger.test.data.CustomPropertyDataRequest"
       val testFile = scalaClassStringToFileString(testClass)
 
       // The request for data based on a custom property

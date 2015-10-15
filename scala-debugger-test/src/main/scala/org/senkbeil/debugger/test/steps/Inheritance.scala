@@ -1,6 +1,6 @@
-package org.senkbeil.test.steps
+package org.senkbeil.debugger.test.steps
 
-import org.senkbeil.test.helpers.Stubs._
+import org.senkbeil.debugger.test.helpers.Stubs._
 
 /**
  * Provides test of performing basic step in/out/over in Scala situations

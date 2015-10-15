@@ -1,4 +1,4 @@
-package org.senkbeil.test.misc
+package org.senkbeil.debugger.test.misc
 
 /**
  * Provides test of various situations where lines might be breakpointable.

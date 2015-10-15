@@ -20,7 +20,7 @@ class LaunchingDebuggerIntegrationSpec  extends FunSpec with Matchers
     it("should be able to start a JVM and connect to it") {
       val launchedJvmConnected = new AtomicBoolean(false)
 
-      val className = "org.senkbeil.test.misc.LaunchingMain"
+      val className = "org.senkbeil.debugger.test.misc.LaunchingMain"
       val classpath = jvmClasspath
       val jvmOptions = Seq("-classpath", classpath)
       val launchingDebugger = LaunchingDebugger(
