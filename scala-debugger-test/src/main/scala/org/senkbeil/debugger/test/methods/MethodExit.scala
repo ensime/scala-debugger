@@ -3,7 +3,7 @@ package org.senkbeil.debugger.test.methods
 /**
  * Used to verify the MethodEntry manager.
  */
-object MethodEntry extends App {
+object MethodExit extends App {
   def objectMethod() = {
     def innerMethod() = {
       val x = 1
@@ -15,13 +15,13 @@ object MethodEntry extends App {
   }
 
   val a = objectMethod()
-  val b = new MethodEntryTestClass().someOtherMethod()
-  val c = new MethodEntryTestClass().testMethod()
+  val b = new MethodExitTestClass().someOtherMethod()
+  val c = new MethodExitTestClass().testMethod()
 
   while (true) { Thread.sleep(1000) }
 }
 
-class MethodEntryTestClass {
+class MethodExitTestClass {
   def testMethod() = {
     val x = 1
     val y = 2
