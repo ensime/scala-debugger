@@ -18,6 +18,10 @@ object MethodEntry extends App {
 }
 
 class TestClass {
-  def testMethod() = {}
+  def testMethod() = {
+    val x = 1
+    val y = 2
+    x + y
+  }
   def someOtherMethod() = {}
 }

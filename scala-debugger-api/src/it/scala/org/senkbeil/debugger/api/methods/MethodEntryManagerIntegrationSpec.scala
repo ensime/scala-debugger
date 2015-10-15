@@ -2,7 +2,7 @@ package org.senkbeil.debugger.api.methods
 
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
 
-import com.sun.jdi.event.MethodEntryEvent
+import com.sun.jdi.event.{BreakpointEvent, MethodEntryEvent}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -31,6 +31,7 @@ class MethodEntryManagerIntegrationSpec extends FunSpec with Matchers
 
       val reachedUnexpectedMethod = new AtomicBoolean(false)
       val reachedExpectedMethod = new AtomicBoolean(false)
+      val reachedMethodBeforeFirstLine = new AtomicBoolean(false)
 
       withVirtualMachine(testClass, suspend = false) { (v, s) =>
         // Set up the method entry event
@@ -38,6 +39,23 @@ class MethodEntryManagerIntegrationSpec extends FunSpec with Matchers
           expectedClassName,
           expectedMethodName
         )
+
+        // First line in test method
+        s.breakpointManager.setLineBreakpoint(testFile, 22)
+
+        // Listen for breakpoint on first line of method, checking if this
+        // breakpoint is hit before or after the method entry event
+        s.eventManager.addResumingEventHandler(BreakpointEventType, e => {
+          val breakpointEvent = e.asInstanceOf[BreakpointEvent]
+          val location = breakpointEvent.location()
+          val fileName = location.sourcePath()
+          val lineNumber = location.lineNumber()
+
+          logger.debug(s"Reached breakpoint: $fileName:$lineNumber")
+
+          val methodEntryHit = reachedExpectedMethod.get()
+          reachedMethodBeforeFirstLine.set(methodEntryHit)
+        })
 
         // Listen for method entry events for the specific method
         s.eventManager.addResumingEventHandler(MethodEntryEventType, e => {
@@ -58,6 +76,7 @@ class MethodEntryManagerIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           reachedUnexpectedMethod.get() should be (false)
           reachedExpectedMethod.get() should be (true)
+          reachedMethodBeforeFirstLine.get() should be (true)
         })
       }
     }
