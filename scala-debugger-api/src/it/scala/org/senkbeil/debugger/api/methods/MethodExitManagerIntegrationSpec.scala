@@ -1,17 +1,16 @@
 package org.senkbeil.debugger.api.methods
 
-import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
+import java.util.concurrent.atomic.AtomicBoolean
 
-import com.sun.jdi.event.{BreakpointEvent, MethodEntryEvent}
+import com.sun.jdi.event.{BreakpointEvent, MethodExitEvent}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.senkbeil.debugger.api.events.EventType
 import org.senkbeil.debugger.api.events.EventType._
 import org.senkbeil.debugger.api.jdi.events.filters.MethodNameFilter
 import test.{TestUtilities, VirtualMachineFixtures}
 
-class MethodEntryManagerIntegrationSpec extends FunSpec with Matchers
+class MethodExitManagerIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
   with TestUtilities with Eventually
 {
@@ -20,32 +19,32 @@ class MethodEntryManagerIntegrationSpec extends FunSpec with Matchers
     interval = scaled(Span(5, Milliseconds))
   )
 
-  describe("MethodEntryManager") {
-    it("should be able to detect entering a specific method in a class") {
-      val testClass = "org.senkbeil.debugger.test.methods.MethodEntry"
+  describe("MethodExitManager") {
+    it("should be able to detect exiting a specific method in a class") {
+      val testClass = "org.senkbeil.debugger.test.methods.MethodExit"
       val testFile = scalaClassStringToFileString(testClass)
 
       val expectedClassName =
-        "org.senkbeil.debugger.test.methods.MethodEntryTestClass"
+        "org.senkbeil.debugger.test.methods.MethodExitTestClass"
       val expectedMethodName = "testMethod"
       val methodNameFilter = MethodNameFilter(name = expectedMethodName)
 
-      val reachedUnexpectedMethod = new AtomicBoolean(false)
-      val reachedExpectedMethod = new AtomicBoolean(false)
-      val reachedMethodBeforeFirstLine = new AtomicBoolean(false)
+      val leftUnexpectedMethod = new AtomicBoolean(false)
+      val leftExpectedMethod = new AtomicBoolean(false)
+      val leftMethodAfterLastLine = new AtomicBoolean(false)
 
       withVirtualMachine(testClass, suspend = false) { (v, s) =>
-        // Set up the method entry event
-        s.methodEntryManager.setMethodEntry(
+        // Set up the method exit event
+        s.methodExitManager.setMethodExit(
           expectedClassName,
           expectedMethodName
         )
 
-        // First line in test method
-        s.breakpointManager.setLineBreakpoint(testFile, 26)
+        // Last line in test method
+        s.breakpointManager.setLineBreakpoint(testFile, 28)
 
         // Listen for breakpoint on first line of method, checking if this
-        // breakpoint is hit before or after the method entry event
+        // breakpoint is hit before or after the method exit event
         s.eventManager.addResumingEventHandler(BreakpointEventType, e => {
           val breakpointEvent = e.asInstanceOf[BreakpointEvent]
           val location = breakpointEvent.location()
@@ -54,30 +53,30 @@ class MethodEntryManagerIntegrationSpec extends FunSpec with Matchers
 
           logger.debug(s"Reached breakpoint: $fileName:$lineNumber")
 
-          val methodEntryHit = reachedExpectedMethod.get()
-          reachedMethodBeforeFirstLine.set(methodEntryHit)
+          val methodExitHit = leftExpectedMethod.get()
+          leftMethodAfterLastLine.set(!methodExitHit)
         })
 
-        // Listen for method entry events for the specific method
-        s.eventManager.addResumingEventHandler(MethodEntryEventType, e => {
-          val methodEntryEvent = e.asInstanceOf[MethodEntryEvent]
-          val method = methodEntryEvent.method()
+        // Listen for method exit events for the specific method
+        s.eventManager.addResumingEventHandler(MethodExitEventType, e => {
+          val methodExitEvent = e.asInstanceOf[MethodExitEvent]
+          val method = methodExitEvent.method()
           val className = method.declaringType().name()
           val methodName = method.name()
 
-          logger.debug(s"Reached method: $className/$methodName")
+          logger.debug(s"Left method: $className/$methodName")
 
           if (className == expectedClassName && methodName == expectedMethodName) {
-            reachedExpectedMethod.set(true)
+            leftExpectedMethod.set(true)
           } else {
-            reachedUnexpectedMethod.set(true)
+            leftUnexpectedMethod.set(true)
           }
         }, methodNameFilter)
 
         logTimeTaken(eventually {
-          reachedUnexpectedMethod.get() should be (false)
-          reachedExpectedMethod.get() should be (true)
-          reachedMethodBeforeFirstLine.get() should be (true)
+          leftUnexpectedMethod.get() should be (false)
+          leftExpectedMethod.get() should be (true)
+          leftMethodAfterLastLine.get() should be (true)
         })
       }
     }
