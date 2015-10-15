@@ -16,13 +16,11 @@ class CustomPropertyFilterProcessor(
   private val value = customPropertyFilter.value
 
   /**
-   * Processes the provided event with the filter logic. Increments an internal
-   * counter to compare against the desired count.
+   * Processes the provided event with the filter logic.
    *
-   * @param event Unused
+   * @param event The event to process
    *
-   * @return True if the event passes through the filter, otherwise false; no
-   *         data is included
+   * @return True if the event passes through the filter, otherwise false
    */
   override def process(event: Event): Boolean = {
     event.request().getProperty(key) == value

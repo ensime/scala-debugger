@@ -23,8 +23,7 @@ class MinTriggerFilterProcessor(
    *
    * @param event Unused
    *
-   * @return True if the event passes through the filter, otherwise false; no
-   *         data is included
+   * @return True if the event passes through the filter, otherwise false
    */
   override def process(event: Event): Boolean = {
     if (internalCount.get() <= minCount)
