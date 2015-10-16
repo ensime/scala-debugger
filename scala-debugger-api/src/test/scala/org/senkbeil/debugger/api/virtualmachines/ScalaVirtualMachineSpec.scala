@@ -83,10 +83,10 @@ class ScalaVirtualMachineSpec extends FunSpec with Matchers
         val expected = new Throwable
 
         inSequence {
-          (mockVirtualMachine.suspend _).expects().once()
+          (mockMainThreadReference.suspend _).expects().once()
           (mockMainThreadReference.frames: Function0[java.util.List[StackFrame]])
             .expects().throwing(expected)
-          (mockVirtualMachine.resume _).expects().once()
+          (mockMainThreadReference.resume _).expects().once()
         }
 
         val actual = the [Throwable] thrownBy scalaVirtualMachine.mainClassName
@@ -115,10 +115,10 @@ class ScalaVirtualMachineSpec extends FunSpec with Matchers
         }
 
         // Set the main thread to return a stack frame with the main method
-        (mockVirtualMachine.suspend _).expects().once()
+        (mockMainThreadReference.suspend _).expects().once()
         (mockMainThreadReference.frames: Function0[java.util.List[StackFrame]])
           .expects().returning(Seq(mockStackFrame).asJava)
-        (mockVirtualMachine.resume _).expects().once()
+        (mockMainThreadReference.resume _).expects().once()
 
         // Should fail to find a location with a main method
         intercept[AssertionError] {
@@ -155,10 +155,10 @@ class ScalaVirtualMachineSpec extends FunSpec with Matchers
         }
 
         // Set the main thread to return a stack frame with the main method
-        (mockVirtualMachine.suspend _).expects().once()
+        (mockMainThreadReference.suspend _).expects().once()
         (mockMainThreadReference.frames: Function0[java.util.List[StackFrame]])
           .expects().returning(Seq(mockStackFrame).asJava)
-        (mockVirtualMachine.resume _).expects().once()
+        (mockMainThreadReference.resume _).expects().once()
 
         val actual = scalaVirtualMachine.mainClassName
 
@@ -201,10 +201,10 @@ class ScalaVirtualMachineSpec extends FunSpec with Matchers
         )
 
         // Set the main thread to return a stack frame with the main method
-        (mockVirtualMachine.suspend _).expects().once()
+        (mockMainThreadReference.suspend _).expects().once()
         (mockMainThreadReference.frames: Function0[java.util.List[StackFrame]])
           .expects().returning(mockStackFrames.asJava)
-        (mockVirtualMachine.resume _).expects().once()
+        (mockMainThreadReference.resume _).expects().once()
 
         val actual = scalaVirtualMachine.mainClassName
 
@@ -234,12 +234,10 @@ class ScalaVirtualMachineSpec extends FunSpec with Matchers
         val expected = new Throwable
 
         inSequence {
-          (mockVirtualMachine.suspend _).expects().once()
           (mockMainThreadReference.suspend _).expects().once()
           (mockMainThreadReference.frames: Function0[java.util.List[StackFrame]])
             .expects().throwing(expected)
           (mockMainThreadReference.resume _).expects().once()
-          (mockVirtualMachine.resume _).expects().once()
         }
 
         val actual = the [Throwable] thrownBy
@@ -270,12 +268,10 @@ class ScalaVirtualMachineSpec extends FunSpec with Matchers
 
         // Set the main thread to return a stack frame with the main method
         inSequence {
-          (mockVirtualMachine.suspend _).expects().once()
           (mockMainThreadReference.suspend _).expects().once()
           (mockMainThreadReference.frames: Function0[java.util.List[StackFrame]])
             .expects().returning(Seq(mockStackFrame).asJava)
           (mockMainThreadReference.resume _).expects().once()
-          (mockVirtualMachine.resume _).expects().once()
         }
 
         // Should fail to find a location with a main method
@@ -328,12 +324,10 @@ class ScalaVirtualMachineSpec extends FunSpec with Matchers
 
         // Set the main thread to return a stack frame with the main method
         inSequence {
-          (mockVirtualMachine.suspend _).expects().once()
           (mockMainThreadReference.suspend _).expects().once()
           (mockMainThreadReference.frames: Function0[java.util.List[StackFrame]])
             .expects().returning(Seq(mockStackFrame).asJava)
           (mockMainThreadReference.resume _).expects().once()
-          (mockVirtualMachine.resume _).expects().once()
         }
 
         val actual = scalaVirtualMachine.commandLineArguments

@@ -117,9 +117,7 @@ class ScalaVirtualMachine(
   lazy val mainClassName: String = {
     val mainThread = findMainThread().get
 
-    // TODO: Investigate if necessary to suspend entire virtual machine or
-    //       just the main thread or not at all
-    val tryClassName = suspendVirtualMachineAndExecute {
+    val tryClassName = suspendThreadAndExecute(mainThread) {
       val mainMethodFrames = mainThread.frames().asScala
         .map(_.location()).filter(_.method().name() == "main").toSeq
 
@@ -179,21 +177,17 @@ class ScalaVirtualMachine(
     // Get the main thread of execution
     val mainThread = findMainThread().get
 
-    // TODO: Investigate if necessary to suspend entire virtual machine or
-    //       just the main thread or not at all
     // Retrieve command line arguments for connected JVM
-    val tryArguments = suspendVirtualMachineAndExecute {
-      suspendThreadAndExecute(mainThread) {
-        val arguments = mainThread.frames().asScala
-          .find(_.location().method().name() == "main")
-          .map(_.getArgumentValues.asScala.toSeq)
-          .map(processArguments)
+    val tryArguments = suspendThreadAndExecute(mainThread) {
+      val arguments = mainThread.frames().asScala
+        .find(_.location().method().name() == "main")
+        .map(_.getArgumentValues.asScala.toSeq)
+        .map(processArguments)
 
-        assert(arguments.nonEmpty, "Error locating main method!")
+      assert(arguments.nonEmpty, "Error locating main method!")
 
-        arguments.get
-      }
-    }.flatten
+      arguments.get
+    }
 
     // Throw our exception if we get one
     tryArguments.failed.foreach(ex => throw ex)
