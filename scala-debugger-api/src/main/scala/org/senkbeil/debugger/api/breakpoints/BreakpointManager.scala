@@ -13,7 +13,7 @@ import com.sun.jdi.request.EventRequest
 
 import scala.collection.mutable
 import scala.collection.JavaConverters._
-import scala.util.{Failure, Success}
+import scala.util.{Try, Failure, Success}
 
 /**
  * Represents the manager for breakpoint requests.
@@ -150,7 +150,7 @@ class BreakpointManager(
     // TODO: Investigate what level of suspension we need (the entire VM?) and
     //       what code within this block actually needs the suspension
     // Create and enable breakpoints for all underlying locations
-    val result = suspendVirtualMachineAndExecute {
+    val result = Try {
       // Our key is using the class name and line number relevant to the
       // line breakpoint
       val key: BreakpointBundleKey = (fileName, lineNumber)
@@ -211,7 +211,7 @@ class BreakpointManager(
    */
   def removeLineBreakpoint(fileName: String, lineNumber: Int): Boolean = {
     // Remove breakpoints for all underlying locations
-    val result = suspendVirtualMachineAndExecute {
+    val result = Try {
       val key: BreakpointBundleKey = (fileName, lineNumber)
 
       val breakpointBundleToRemove = lineBreakpoints(key)
