@@ -9,7 +9,6 @@ import org.senkbeil.debugger.api.jdi.requests.properties.{EnabledProperty, Suspe
 import org.senkbeil.debugger.api.requests.Implicits
 import org.senkbeil.debugger.api.utils.LogLike
 import com.sun.jdi.{Location, VirtualMachine}
-import com.sun.jdi.request.EventRequest
 
 import scala.collection.mutable
 import scala.collection.JavaConverters._
@@ -36,8 +35,6 @@ class BreakpointManager(
   private case class BreakpointInfo(
     fileName: String,
     lineNumber: Int,
-    enabled: Boolean,
-    suspendPolicy: Int,
     extraArguments: Seq[JDIRequestArgument]
   )
   private val pendingLineBreakpoints: mutable.Map[String, Seq[BreakpointInfo]] =
@@ -63,10 +60,8 @@ class BreakpointManager(
     def tryBreakpoint(breakpointInfo: BreakpointInfo) = setLineBreakpoint(
       fileName          = breakpointInfo.fileName,
       lineNumber        = breakpointInfo.lineNumber,
-      enabled           = breakpointInfo.enabled,
-      suspendPolicy     = breakpointInfo.suspendPolicy,
       setPendingIfFail  = true,
-      extraArguments    = breakpointInfo.extraArguments
+      breakpointInfo.extraArguments: _*
     )
 
     // Process all breakpoints
@@ -78,14 +73,10 @@ class BreakpointManager(
 
   /**
    * Creates and enables a breakpoint on the specified line of the class.
+   * Will retry the breakpoint if it fails to be added immediately.
    *
    * @param fileName The name of the file to set a breakpoint
    * @param lineNumber The number of the line to break
-   * @param enabled If true, enables the breakpoint (default is true)
-   * @param suspendPolicy Indicates the policy for suspending when the
-   *                      breakpoint is hit (default is all threads)
-   * @param setPendingIfFail If true, will add the attempted breakpoint to a
-   *                         collection of pending breakpoints
    * @param extraArguments The additional arguments to provide to the breakpoint
    *                       request
    *
@@ -94,16 +85,38 @@ class BreakpointManager(
   def setLineBreakpoint(
     fileName: String,
     lineNumber: Int,
-    enabled: Boolean = true,
-    suspendPolicy: Int = EventRequest.SUSPEND_ALL,
-    setPendingIfFail: Boolean = true,
-    extraArguments: Seq[JDIRequestArgument] = Nil
+    extraArguments: JDIRequestArgument*
+  ): Boolean = setLineBreakpoint(
+    fileName = fileName,
+    lineNumber = lineNumber,
+    setPendingIfFail = true,
+    extraArguments: _*
+  )
+
+  /**
+   * Creates and enables a breakpoint on the specified line of the class.
+   *
+   * @param fileName The name of the file to set a breakpoint
+   * @param lineNumber The number of the line to break
+   * @param setPendingIfFail If true, will add the attempted breakpoint to a
+   *                         collection of pending breakpoints if it is not
+   *                         able to be added immediately
+   * @param extraArguments The additional arguments to provide to the breakpoint
+   *                       request
+   *
+   * @return True if successfully added breakpoints, otherwise false
+   */
+  def setLineBreakpoint(
+    fileName: String,
+    lineNumber: Int,
+    setPendingIfFail: Boolean,
+    extraArguments: JDIRequestArgument*
   ): Boolean = {
     val arguments = Seq(
-      SuspendPolicyProperty(policy = suspendPolicy),
-      EnabledProperty(value = enabled)
+      SuspendPolicyProperty.EventThread,
+      EnabledProperty(value = true)
     ) ++ extraArguments
-    val result = setLineBreakpoint(fileName, lineNumber, arguments)
+    val result = setLineBreakpointImpl(fileName, lineNumber, arguments)
 
     // Add the attempt to our list for processing later
     if (!result && setPendingIfFail) pendingLineBreakpoints.synchronized {
@@ -112,8 +125,6 @@ class BreakpointManager(
       val newPendingBreakpoint = BreakpointInfo(
         fileName        = fileName,
         lineNumber      = lineNumber,
-        enabled         = enabled,
-        suspendPolicy   = suspendPolicy,
         extraArguments  = extraArguments
       )
 
@@ -133,7 +144,7 @@ class BreakpointManager(
    *
    * @return True if successfully added breakpoints, otherwise false
    */
-  private def setLineBreakpoint(
+  private def setLineBreakpointImpl(
     fileName: String,
     lineNumber: Int,
     arguments: Seq[JDIRequestArgument]
