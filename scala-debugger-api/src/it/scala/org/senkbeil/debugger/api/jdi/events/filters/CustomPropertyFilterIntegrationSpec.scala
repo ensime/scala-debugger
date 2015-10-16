@@ -50,7 +50,7 @@ class CustomPropertyFilterIntegrationSpec extends FunSpec with Matchers
         s.breakpointManager.setLineBreakpoint(
           fileName = testFile,
           lineNumber = propertyBreakpoint,
-          extraArguments = Seq(property)
+          property
         )
 
         // Queue up a generic breakpoint event handler that filters events
