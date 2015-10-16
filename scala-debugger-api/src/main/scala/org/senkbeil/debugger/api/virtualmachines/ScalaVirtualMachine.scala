@@ -3,6 +3,7 @@ package org.senkbeil.debugger.api.virtualmachines
 import org.senkbeil.debugger.api.breakpoints.BreakpointManager
 import org.senkbeil.debugger.api.classes.ClassManager
 import org.senkbeil.debugger.api.events.{EventManager, EventType, LoopingTaskRunner}
+import org.senkbeil.debugger.api.exceptions.ExceptionManager
 import org.senkbeil.debugger.api.jdi.JDIHelperMethods
 import org.senkbeil.debugger.api.methods.{MethodExitManager, MethodEntryManager}
 import org.senkbeil.debugger.api.steps.StepManager
@@ -41,7 +42,6 @@ class ScalaVirtualMachine(
     _virtualMachine.enableClassPrepareEvents()
     _virtualMachine.enableThreadStartEvents()
     _virtualMachine.enableThreadDeathEvents()
-    _virtualMachine.enableExceptionEvents()
   }
   initializeEvents()
 
@@ -52,6 +52,7 @@ class ScalaVirtualMachine(
   lazy val stepManager = new StepManager(_virtualMachine)
   lazy val methodEntryManager = new MethodEntryManager(_virtualMachine)
   lazy val methodExitManager = new MethodExitManager(_virtualMachine)
+  lazy val exceptionManager = new ExceptionManager(_virtualMachine)
   lazy val breakpointManager =
     new BreakpointManager(_virtualMachine, classManager)
   lazy val eventManager = {
