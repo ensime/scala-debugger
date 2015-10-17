@@ -2,6 +2,7 @@ package org.senkbeil.debugger.api.breakpoints
 
 import java.util.concurrent.ConcurrentHashMap
 
+import com.sun.jdi.request.BreakpointRequest
 import org.senkbeil.debugger.api.classes.ClassManager
 import org.senkbeil.debugger.api.jdi.JDIHelperMethods
 import org.senkbeil.debugger.api.jdi.requests.JDIRequestArgument
@@ -29,8 +30,8 @@ class BreakpointManager(
   import Implicits._
   private val eventRequestManager = _virtualMachine.eventRequestManager()
 
-  type BreakpointBundleKey = (String, Int) // Class Name, Line Number
-  private var lineBreakpoints = Map[BreakpointBundleKey, BreakpointBundle]()
+  type BreakpointKey = (String, Int) // Class Name, Line Number
+  private var lineBreakpoints = Map[BreakpointKey, Seq[BreakpointRequest]]()
 
   private case class BreakpointInfo(
     fileName: String,
@@ -46,7 +47,7 @@ class BreakpointManager(
    * @return The collection of breakpoints in the form of
    *         (class name, line number)
    */
-  def breakpointList: Seq[BreakpointBundleKey] = lineBreakpoints.keys.toSeq
+  def breakpointList: Seq[BreakpointKey] = lineBreakpoints.keys.toSeq
 
   /**
    * Processes pending breakpoint requests for the specified file name.
@@ -158,24 +159,20 @@ class BreakpointManager(
     // Exit early if no locations are available
     if (locations.isEmpty) return false
 
-    // TODO: Investigate what level of suspension we need (the entire VM?) and
-    //       what code within this block actually needs the suspension
     // Create and enable breakpoints for all underlying locations
     val result = Try {
       // Our key is using the class name and line number relevant to the
       // line breakpoint
-      val key: BreakpointBundleKey = (fileName, lineNumber)
+      val key: BreakpointKey = (fileName, lineNumber)
 
-      // Build our bundle of breakpoints
+      // Build our collection of breakpoints representing the overall breakpoint
       // TODO: Need to undo this if creating a request failed
-      val breakpointBundle = new BreakpointBundle(
-        locations.map(eventRequestManager.createBreakpointRequest(
-          _: Location, arguments: _*
-        ))
+      val innerBreakpoints = locations.map(
+        eventRequestManager.createBreakpointRequest(_: Location, arguments: _*)
       )
 
-      // Add the bundle to our list of line breakpoints
-      lineBreakpoints += key -> breakpointBundle
+      // Add the inner breakpoints to our list of line breakpoints
+      lineBreakpoints += key -> innerBreakpoints
     }
 
     result match {
@@ -198,19 +195,19 @@ class BreakpointManager(
     lineBreakpoints.contains((fileName, lineNumber))
 
   /**
-   * Returns the bundle of breakpoints representing the breakpoint for the
+   * Returns the collection of breakpoints representing the breakpoint for the
    * specified line.
    *
    * @param fileName The name of the file whose line to reference
    * @param lineNumber The number of the line to check for breakpoints
    *
-   * @return Some bundle of breakpoints for the specified line, or None if
+   * @return Some collection of breakpoints for the specified line, or None if
    *         the specified line has no breakpoints
    */
   def getLineBreakpoint(
     fileName: String,
     lineNumber: Int
-  ): Option[BreakpointBundle] = lineBreakpoints.get((fileName, lineNumber))
+  ): Option[Seq[BreakpointRequest]] = lineBreakpoints.get((fileName, lineNumber))
 
   /**
    * Removes the breakpoint on the specified line of the file.
@@ -223,11 +220,11 @@ class BreakpointManager(
   def removeLineBreakpoint(fileName: String, lineNumber: Int): Boolean = {
     // Remove breakpoints for all underlying locations
     val result = Try {
-      val key: BreakpointBundleKey = (fileName, lineNumber)
+      val key: BreakpointKey = (fileName, lineNumber)
 
-      val breakpointBundleToRemove = lineBreakpoints(key)
+      val requestsToRemove = lineBreakpoints(key)
 
-      eventRequestManager.deleteEventRequests(breakpointBundleToRemove.asJava)
+      eventRequestManager.deleteEventRequests(requestsToRemove.asJava)
     }
 
     result match {
