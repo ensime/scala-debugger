@@ -257,9 +257,9 @@ class BreakpointManagerSpec extends FunSpec with Matchers
     }
 
     describe("#getLineBreakpoint") {
-      it("should return Some(breakpoint bundle representing the line)") {
+      it("should return Some(collection of breakpoints representing the line)") {
         val stubBreakpointRequest = stub[BreakpointRequest]
-        val expected = new BreakpointBundle(Seq(stubBreakpointRequest))
+        val expected = Seq(stubBreakpointRequest)
 
         // Mark the retrieval of lines and locations to a map with
         // a line number that will be the one picked
