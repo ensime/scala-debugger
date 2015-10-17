@@ -102,7 +102,7 @@ class StepManagerIntegrationSpec extends FunSpec with Matchers
             startingLine = startingLine,
             expectedReachableLines = expectedReachableLines,
             failIfNotExact = true,
-            maxDuration = (7, Seconds)
+            maxDuration = (10, Seconds)
           )
         }
       }
