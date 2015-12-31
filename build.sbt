@@ -45,19 +45,7 @@ lazy val scalaDebuggerRepl = project
   .configs(IntegrationTest)
   .settings(Common.settings: _*)
   .settings(Repl.settings: _*)
-  .settings(Seq(
-    name := "scala-debugger-repl",
-    libraryDependencies ++= {
-      // If Scala 2.11 or greater, include scala parser combinators that were
-      // removed after Scala 2.10
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(
-          "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
-        )
-        case _ => Nil
-      }
-    }
-  ))
+  .settings(name := "scala-debugger-repl")
   .dependsOn(scalaDebuggerApi % "compile->compile;test->compile;it->compile")
 
 //
