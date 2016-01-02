@@ -44,6 +44,7 @@ lazy val scalaDebuggerRepl = project
   .in(file("scala-debugger-repl"))
   .configs(IntegrationTest)
   .settings(Common.settings: _*)
+  .settings(Defaults.itSettings: _*)
   .settings(Repl.settings: _*)
   .settings(name := "scala-debugger-repl")
   .dependsOn(scalaDebuggerApi % "compile->compile;test->compile;it->compile")
