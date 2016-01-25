@@ -5,10 +5,7 @@ import com.sun.jdi.event.{Event, EventQueue, EventSet}
 import org.scaladebugger.api.lowlevel.events.EventType._
 import org.scaladebugger.api.lowlevel.events.data.{JDIEventDataProcessor, JDIEventDataRequest, JDIEventDataResult}
 import org.scaladebugger.api.lowlevel.events.filters.{JDIEventFilter, JDIEventFilterProcessor}
-<<<<<<< d4778ae6dc5e1f79d3c6b9bafb17d991e6d234bd
 import org.scaladebugger.api.lowlevel.events.misc.YesResume
-=======
->>>>>>> Added low-level retrieval of all event handler info, added profile request info retrieval methods
 import org.scaladebugger.api.utils.LoopingTaskRunner
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
