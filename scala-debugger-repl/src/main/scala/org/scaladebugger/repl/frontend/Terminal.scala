@@ -1,4 +1,5 @@
 package org.scaladebugger.repl.frontend
+import acyclic.file
 
 /**
  * Represents the interface for a terminal that can read and write.

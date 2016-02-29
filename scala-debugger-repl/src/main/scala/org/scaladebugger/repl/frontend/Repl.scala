@@ -1,4 +1,5 @@
 package org.scaladebugger.repl.frontend
+import acyclic.file
 
 import org.parboiled2.ParseError
 import org.scaladebugger.language.interpreters.Interpreter

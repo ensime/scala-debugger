@@ -1,4 +1,5 @@
 package org.scaladebugger.language.interpreters
+import acyclic.file
 
 import org.scaladebugger.language.models.Context
 

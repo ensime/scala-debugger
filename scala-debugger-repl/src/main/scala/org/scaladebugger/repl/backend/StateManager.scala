@@ -1,4 +1,5 @@
 package org.scaladebugger.repl.backend
+import acyclic.file
 
 import java.net.URI
 

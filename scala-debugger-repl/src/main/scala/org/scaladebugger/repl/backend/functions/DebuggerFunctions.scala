@@ -1,4 +1,5 @@
 package org.scaladebugger.repl.backend.functions
+import acyclic.file
 
 import org.scaladebugger.api.debuggers.{ListeningDebugger, LaunchingDebugger, AttachingDebugger}
 import org.scaladebugger.api.utils.JDITools
