@@ -1,4 +1,5 @@
 package org.scaladebugger.language.models
+import acyclic.file
 
 import scala.annotation.tailrec
 

@@ -1,4 +1,5 @@
 package org.scaladebugger.repl.backend.functions
+import acyclic.file
 
 import java.io.File
 import java.nio.file.Paths

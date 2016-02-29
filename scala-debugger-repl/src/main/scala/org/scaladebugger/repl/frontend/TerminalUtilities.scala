@@ -1,4 +1,5 @@
 package org.scaladebugger.repl.frontend
+import acyclic.file
 
 import org.scaladebugger.language.models.{Context, Identifier}
 

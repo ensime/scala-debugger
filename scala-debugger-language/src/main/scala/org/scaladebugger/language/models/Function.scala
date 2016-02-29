@@ -1,4 +1,5 @@
 package org.scaladebugger.language.models
+import acyclic.file
 
 sealed trait Function extends BaseValue {
   val parameters: Seq[Identifier]
