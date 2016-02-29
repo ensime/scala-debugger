@@ -1,4 +1,5 @@
 package org.scaladebugger.repl.backend.functions
+import acyclic.file
 
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.lowlevel.requests.filters.ClassInclusionFilter

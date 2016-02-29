@@ -1,4 +1,5 @@
 package org.scaladebugger.language.models
+import acyclic.file
 
 /**
  * Represents the context about the program state at a point in time.

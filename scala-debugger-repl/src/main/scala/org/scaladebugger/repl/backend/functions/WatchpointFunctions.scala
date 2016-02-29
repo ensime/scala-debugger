@@ -1,4 +1,5 @@
 package org.scaladebugger.repl.backend.functions
+import acyclic.file
 
 import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
@@ -105,6 +106,7 @@ version                   -- print version information
 exit (or quit)            -- exit debugger
 
 <class id>: a full class name with package qualifiers
+import acyclic.file
 <class pattern>: a class name with a leading or trailing wildcard ('*')
 <thread id>: thread number as reported in the 'threads' command
 <expr>: a Java(TM) Programming Language expression.

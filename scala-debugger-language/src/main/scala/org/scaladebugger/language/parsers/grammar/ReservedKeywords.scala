@@ -1,4 +1,5 @@
 package org.scaladebugger.language.parsers.grammar
+import acyclic.file
 
 object ReservedKeywords {
   val CreateFunction = "func"

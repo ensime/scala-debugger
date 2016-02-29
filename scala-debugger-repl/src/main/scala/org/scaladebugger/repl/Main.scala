@@ -1,7 +1,9 @@
 package org.scaladebugger.repl
+import acyclic.file
 
 import java.io.File
 
+import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.language.interpreters.DebuggerInterpreter
 import org.scaladebugger.repl.backend.{StateManager, ArgumentParser}
 import org.scaladebugger.repl.backend.functions._
@@ -10,6 +12,9 @@ import org.scaladebugger.repl.frontend.Repl
 object Main {
   def main(args: Array[String]): Unit = {
     val results = ArgumentParser.parse(args)
+
+    // Attempt to load the JDI into our system
+    if (!JDITools.tryLoadJdi()) return
 
     if (results.help) {
       Console.out.println("No help available.")
