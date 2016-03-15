@@ -9,15 +9,6 @@ object Api {
     fork in Test := true,
     fork in IntegrationTest := true,
 
-    // Run tests in parallel
-    // NOTE: Needed to avoid ScalaTest serialization issues
-    parallelExecution in Test := true,
-    testForkedParallel in Test := true,
-
-    // Run integration tests in parallel
-    parallelExecution in IntegrationTest := true,
-    testForkedParallel in IntegrationTest := true,
-
     libraryDependencies ++= Seq(
       "org.slf4j" % "slf4j-api" % "1.7.5",
       "org.slf4j" % "slf4j-log4j12" % "1.7.5" % "test,it",

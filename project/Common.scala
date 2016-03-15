@@ -60,6 +60,16 @@ object Common {
       "-F", scalaTestSpanScaleFactor.value.toString
     ),
 
+    // Run tests in parallel
+    // NOTE: Needed to avoid ScalaTest serialization issues
+    parallelExecution in Test := true,
+    testForkedParallel in Test := true,
+
+    // Run integration tests in parallel
+    parallelExecution in IntegrationTest := true,
+    testForkedParallel in IntegrationTest := true,
+
+
     // Properly handle Scaladoc mappings
     autoAPIMappings := true,
 
