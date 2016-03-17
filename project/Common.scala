@@ -72,7 +72,7 @@ object Common {
     fork in Test := true, 
     fork in IntegrationTest := true, 
 
-    javaOptions += "-Xmx2G", 
+    javaOptions += "-Xmx1G", 
 
     // Properly handle Scaladoc mappings
     autoAPIMappings := true,
