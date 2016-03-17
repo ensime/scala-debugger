@@ -69,6 +69,9 @@ object Common {
     parallelExecution in IntegrationTest := true,
     testForkedParallel in IntegrationTest := true,
 
+    fork in Test := true
+    fork in IntegrationTest := true
+
     javaOptions += "-Xmx1G", 
 
     // Properly handle Scaladoc mappings
