@@ -9,13 +9,8 @@ import org.scaladebugger.api.lowlevel.exceptions.PendingExceptionSupport
 import org.scaladebugger.api.lowlevel.methods.{PendingMethodExitSupport, PendingMethodEntrySupport}
 import org.scaladebugger.api.lowlevel.utils.JDIHelperMethods
 import org.scaladebugger.api.lowlevel.watchpoints.{PendingModificationWatchpointSupport, PendingAccessWatchpointSupport}
-import org.scaladebugger.api.profiles.dotty.DottyDebugProfile
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.profiles.ProfileManager
-import org.scaladebugger.api.profiles.scala210.Scala210DebugProfile
-import org.scaladebugger.api.profiles.scala211.Scala211DebugProfile
-import org.scaladebugger.api.profiles.scala212.Scala212DebugProfile
-import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
 import org.scaladebugger.api.utils.{LoopingTaskRunner, Logging}
 import com.sun.jdi._
@@ -121,26 +116,6 @@ class StandardScalaVirtualMachine(
     this.register(
       PureDebugProfile.Name,
       new PureDebugProfile(_virtualMachine, lowlevel)
-    )
-
-    this.register(
-      Scala210DebugProfile.Name,
-      new Scala210DebugProfile(_virtualMachine, lowlevel)
-    )
-
-    this.register(
-      Scala211DebugProfile.Name,
-      new Scala211DebugProfile(_virtualMachine, lowlevel)
-    )
-
-    this.register(
-      Scala212DebugProfile.Name,
-      new Scala212DebugProfile(_virtualMachine, lowlevel)
-    )
-
-    this.register(
-      DottyDebugProfile.Name,
-      new DottyDebugProfile(_virtualMachine, lowlevel)
     )
   }
 
