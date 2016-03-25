@@ -44,6 +44,14 @@ object Common {
       "-no-link-warnings" // Suppress problems with Scaladoc @throws links
     ),
 
+    // Options provided to forked JVMs through sbt, based on our .jvmopts file
+    javaOptions ++= Seq(
+      "-Xms1024M", "-Xmx4096M", "-Xss2m", "-XX:MaxPermSize=1024M",
+      "-XX:ReservedCodeCacheSize=256M", "-XX:+TieredCompilation",
+      "-XX:+CMSPermGenSweepingEnabled", "-XX:+CMSClassUnloadingEnabled",
+      "-XX:+UseConcMarkSweepGC", "-XX:+HeapDumpOnOutOfMemoryError"
+    ),
+
     scalaTestSpanScaleFactor := {
       Try(System.getenv("SCALATEST_SPAN_SCALE_FACTOR").toDouble).getOrElse(1.0)
     },
