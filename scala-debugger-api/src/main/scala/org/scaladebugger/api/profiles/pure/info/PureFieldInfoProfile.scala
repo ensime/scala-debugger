@@ -46,7 +46,7 @@ class PureFieldInfoProfile(
     _container: Either[ObjectReference, ReferenceType],
     _field: Field
   )(
-    _virtualMachine: VirtualMachine = _field.virtualMachine()
+    _virtualMachine: VirtualMachine
   ) = this(scalaVirtualMachine, _container, _field, -1)(_virtualMachine)
 
   /**

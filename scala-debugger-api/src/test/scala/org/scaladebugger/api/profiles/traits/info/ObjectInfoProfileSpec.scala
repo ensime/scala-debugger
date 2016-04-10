@@ -197,6 +197,37 @@ class ObjectInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#tryIndexedFields") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[Seq[VariableInfoProfile]]
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def indexedFields: Seq[VariableInfoProfile] =
+            mockUnsafeMethod()
+        }
+
+        val r = Seq(mock[VariableInfoProfile])
+        mockUnsafeMethod.expects().returning(r).once()
+        objectInfoProfile.tryIndexedFields.get should be (r)
+      }
+    }
+
+    describe("#tryIndexedField") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[String, VariableInfoProfile]
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def indexedField(name: String): VariableInfoProfile =
+            mockUnsafeMethod(name)
+        }
+
+        val a1 = "someName"
+        val r = mock[VariableInfoProfile]
+        mockUnsafeMethod.expects(a1).returning(r).once()
+        objectInfoProfile.tryIndexedField(a1).get should be (r)
+      }
+    }
+
     describe("#tryField") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[String, VariableInfoProfile]

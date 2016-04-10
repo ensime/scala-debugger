@@ -179,7 +179,7 @@ class PureLocalVariableInfoProfileIntegrationSpec extends FunSpec with Matchers
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
           val variablesAndIndicies = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.localVariables.zipWithIndex
+            .thread(t.get).topFrame.indexedLocalVariables.zipWithIndex
 
           variablesAndIndicies should not be (empty)
           variablesAndIndicies.foreach { case (v, i) =>

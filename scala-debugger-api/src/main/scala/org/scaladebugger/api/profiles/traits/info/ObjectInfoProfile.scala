@@ -183,6 +183,41 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
   def fields: Seq[VariableInfoProfile]
 
   /**
+   * Returns all visible fields contained in this object with offset index.
+   *
+   * @return Success containing the profiles wrapping the visible fields in
+   *         this object, otherwise a failure
+   */
+  def tryIndexedFields: Try[Seq[VariableInfoProfile]] = Try(indexedFields)
+
+  /**
+   * Returns all visible fields contained in this object with offset index.
+   *
+   * @return The profiles wrapping the visible fields in this object
+   */
+  def indexedFields: Seq[VariableInfoProfile]
+
+  /**
+   * Returns the object's field with the specified name with offset index
+   * information.
+   *
+   * @param name The name of the field
+   * @return Success containing the profile wrapping the field, otherwise
+   *         a failure
+   */
+  def tryIndexedField(name: String): Try[VariableInfoProfile] =
+    Try(indexedField(name))
+
+  /**
+   * Returns the object's field with the specified name with offset index
+   * information.
+   *
+   * @param name The name of the field
+   * @return The profile wrapping the field
+   */
+  def indexedField(name: String): VariableInfoProfile
+
+  /**
    * Returns the object's field with the specified name.
    *
    * @param name The name of the field

@@ -54,6 +54,50 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
   def tryVisibleFields: Try[Seq[VariableInfoProfile]] = Try(visibleFields)
 
   /**
+   * Retrieves unhidden and unambiguous fields in this type. Fields hidden
+   * by other fields with the same name (in a more recently inherited class)
+   * are not included. Fields that are ambiguously multiply inherited are also
+   * not included. All other inherited fields are included. Offset index
+   * information is included.
+   *
+   * @return The collection of fields as variable info profiles
+   */
+  def indexedVisibleFields: Seq[VariableInfoProfile]
+
+  /**
+   * Retrieves unhidden and unambiguous fields in this type. Fields hidden
+   * by other fields with the same name (in a more recently inherited class)
+   * are not included. Fields that are ambiguously multiply inherited are also
+   * not included. All other inherited fields are included. Offset index
+   * informatin is included.
+   *
+   * @return Success containing the collection of fields as variable info
+   *         profiles, otherwise a failure
+   */
+  def tryIndexedVisibleFields: Try[Seq[VariableInfoProfile]] =
+    Try(indexedVisibleFields)
+
+  /**
+   * Retrieves the visible field with the matching name with offset index
+   * information.
+   *
+   * @param name The name of the field to retrieve
+   * @return The field as a variable info profile
+   */
+  def indexedField(name: String): VariableInfoProfile
+
+  /**
+   * Retrieves the visible field with the matching name with offset index
+   * information.
+   *
+   * @param name The name of the field to retrieve
+   * @return Success containing the field as a variable info profile, otherwise
+   *         a failure
+   */
+  def tryIndexedField(name: String): Try[VariableInfoProfile] =
+    Try(indexedField(name))
+
+  /**
    * Retrieves the visible field with the matching name.
    *
    * @param name The name of the field to retrieve

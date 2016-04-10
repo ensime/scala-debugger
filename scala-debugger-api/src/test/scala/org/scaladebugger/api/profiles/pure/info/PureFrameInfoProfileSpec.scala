@@ -283,8 +283,8 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
           .returning(mockLocalVariables.asJava).once()
 
         // Converted into profiles
-        mockLocalVariables.zip(expected).zipWithIndex.foreach { case ((lv, e), i) =>
-          mockNewLocalVariableProfile.expects(lv, i).returning(e).once()
+        mockLocalVariables.zip(expected).foreach { case (lv, e) =>
+          mockNewLocalVariableProfile.expects(lv, -1).returning(e).once()
         }
 
         val actual = pureFrameInfoProfile.localVariables
@@ -353,6 +353,186 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
         other.foreach(v => (v.isArgument _).expects().returning(false).once())
 
         val actual = pureFrameInfoProfile.argumentLocalVariables
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#indexedVariable") {
+      it("should return a local variable wrapped in a profile if it exists") {
+        val expected = mock[IndexedVariableInfoProfile]
+
+        val name = "someName"
+        val mockLocalVariable = mock[LocalVariable]
+        val testOffsetIndex = 0
+
+        // Match found in visible variables
+        import scala.collection.JavaConverters._
+        (mockStackFrame.visibleVariables _).expects()
+          .returning(Seq(mockLocalVariable).asJava).once()
+        (expected.name _).expects().returning(name).once()
+
+        mockNewLocalVariableProfile.expects(mockLocalVariable, testOffsetIndex)
+          .returning(expected).once()
+
+        val actual = pureFrameInfoProfile.indexedVariable(name)
+
+        actual should be (expected)
+      }
+
+      it("should return a field wrapped in a profile in no local variable exists") {
+        val expected = mock[VariableInfoProfile]
+
+        val name = "someName"
+
+        // No match found in visible variables, so return Nil
+        import scala.collection.JavaConverters._
+        (mockStackFrame.visibleVariables _).expects()
+          .returning(Seq[LocalVariable]().asJava).once()
+
+        // 'this' object profile is created and used
+        val mockObjectProfile = mock[ObjectInfoProfile]
+        (mockStackFrame.thisObject _).expects()
+          .returning(mock[ObjectReference]).once()
+        mockNewObjectProfile.expects(*).returning(mockObjectProfile).once()
+
+        // unsafeField used to find object profile field
+        (mockObjectProfile.indexedField _).expects(name)
+          .returning(expected).once()
+
+        val actual = pureFrameInfoProfile.indexedVariable(name)
+
+        actual should be (expected)
+      }
+
+      it("should throw a NoSuchElement exception if no local variable or field matches") {
+        val name = "someName"
+
+        // No match found in visible variables, so return Nil
+        import scala.collection.JavaConverters._
+        (mockStackFrame.visibleVariables _).expects()
+          .returning(Seq[LocalVariable]().asJava).once()
+
+        // 'this' object profile is created and used
+        val mockObjectProfile = mock[ObjectInfoProfile]
+        (mockStackFrame.thisObject _).expects()
+          .returning(mock[ObjectReference]).once()
+        mockNewObjectProfile.expects(*).returning(mockObjectProfile).once()
+
+        // unsafeField does not find a field and throws a NoSuchElement exception
+        (mockObjectProfile.indexedField _).expects(name)
+          .throwing(new NoSuchElementException).once()
+
+        intercept[NoSuchElementException] {
+          pureFrameInfoProfile.indexedVariable(name)
+        }
+      }
+    }
+
+    describe("#indexedFieldVariables") {
+      it("should return a collection of profiles wrapping 'this' object's fields") {
+        val expected = Seq(mock[VariableInfoProfile])
+
+        // 'this' object profile is created and used
+        val mockObjectProfile = mock[ObjectInfoProfile]
+        (mockStackFrame.thisObject _).expects()
+          .returning(mock[ObjectReference]).once()
+        mockNewObjectProfile.expects(*).returning(mockObjectProfile).once()
+
+        // Field variable profiles are accessed
+        (mockObjectProfile.indexedFields _).expects().returning(expected).once()
+
+        val actual = pureFrameInfoProfile.indexedFieldVariables
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#indexedAllVariables") {
+      it("should return a combination of local and field indexed variables") {
+        val _fieldVariables = Seq(mock[VariableInfoProfile])
+        val _localVariables = Seq(mock[IndexedVariableInfoProfile])
+        val expected = _localVariables ++ _fieldVariables
+
+        val pureFrameInfoProfile = new PureFrameInfoProfile(
+          mockScalaVirtualMachine,
+          mockStackFrame,
+          0
+        ) {
+          override def indexedFieldVariables: Seq[VariableInfoProfile] =
+            _fieldVariables
+          override def indexedLocalVariables: Seq[IndexedVariableInfoProfile] =
+            _localVariables
+        }
+
+        val actual = pureFrameInfoProfile.indexedAllVariables
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#indexedLocalVariables") {
+      it("should return all visible variables wrapped in profiles") {
+        val expected = Seq(mock[IndexedVariableInfoProfile])
+        val mockLocalVariables = Seq(mock[LocalVariable])
+
+        // Raw local variables accessed from stack frame
+        import scala.collection.JavaConverters._
+        (mockStackFrame.visibleVariables _).expects()
+          .returning(mockLocalVariables.asJava).once()
+
+        // Converted into profiles
+        mockLocalVariables.zip(expected).zipWithIndex.foreach { case ((lv, e), i) =>
+          mockNewLocalVariableProfile.expects(lv, i).returning(e).once()
+        }
+
+        val actual = pureFrameInfoProfile.indexedLocalVariables
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#indexedNonArgumentLocalVariables") {
+      it("should return only non-argument indexed visible variable profiles") {
+        val expected = Seq(mock[IndexedVariableInfoProfile])
+        val other = Seq(mock[IndexedVariableInfoProfile])
+
+        val pureFrameInfoProfile = new PureFrameInfoProfile(
+          mockScalaVirtualMachine,
+          mockStackFrame,
+          TestFrameIndex
+        ) {
+          override def indexedLocalVariables: Seq[IndexedVariableInfoProfile] =
+            expected ++ other
+        }
+
+        expected.foreach(v => (v.isArgument _).expects().returning(false).once())
+        other.foreach(v => (v.isArgument _).expects().returning(true).once())
+
+        val actual = pureFrameInfoProfile.indexedNonArgumentLocalVariables
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#indexedArgumentLocalVariables") {
+      it("should return only argument indexed visible variable profiles") {
+        val expected = Seq(mock[IndexedVariableInfoProfile])
+        val other = Seq(mock[IndexedVariableInfoProfile])
+
+        val pureFrameInfoProfile = new PureFrameInfoProfile(
+          mockScalaVirtualMachine,
+          mockStackFrame,
+          TestFrameIndex
+        ) {
+          override def indexedLocalVariables: Seq[IndexedVariableInfoProfile] =
+            expected ++ other
+        }
+
+        expected.foreach(v => (v.isArgument _).expects().returning(true).once())
+        other.foreach(v => (v.isArgument _).expects().returning(false).once())
+
+        val actual = pureFrameInfoProfile.indexedArgumentLocalVariables
 
         actual should be (expected)
       }

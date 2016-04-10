@@ -70,7 +70,6 @@ class PureFrameInfoProfile(
    * Retrieves the variable with the specified name from the frame.
    *
    * @note Provides no offset index information!
-   *
    * @param name The name of the variable to retrieve
    * @return Profile of the variable or throws an exception
    */
@@ -83,7 +82,6 @@ class PureFrameInfoProfile(
    * Retrieves all variables that represent field variables in this frame.
    *
    * @note Provides offset index information!
-   *
    * @return The collection of variables as their profile equivalents
    */
   override def fieldVariables: Seq[VariableInfoProfile] = {
@@ -94,7 +92,6 @@ class PureFrameInfoProfile(
    * Retrieves all variables in this frame.
    *
    * @note Provides offset index information!
-   *
    * @return The collection of variables as their profile equivalents
    */
   override def allVariables: Seq[VariableInfoProfile] =
@@ -104,20 +101,16 @@ class PureFrameInfoProfile(
    * Retrieves all variables that represent local variables in this frame.
    *
    * @note Provides offset index information!
-   *
    * @return The collection of variables as their profile equivalents
    */
   override def localVariables: Seq[IndexedVariableInfoProfile] = {
-    _stackFrame.visibleVariables().asScala.zipWithIndex.map { case (v, i) =>
-      newLocalVariableProfile(v, i)
-    }
+    _stackFrame.visibleVariables().asScala.map(newLocalVariableProfile)
   }
 
   /**
    * Retrieves all variables that do not represent arguments in this frame.
    *
    * @note Provides offset index information!
-   *
    * @return The collection of variables as their profile equivalents
    */
   override def nonArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = {
@@ -128,11 +121,73 @@ class PureFrameInfoProfile(
    * Retrieves all variables that represent arguments in this frame.
    *
    * @note Provides offset index information!
-   *
    * @return The collection of variables as their profile equivalents
    */
   override def argumentLocalVariables: Seq[IndexedVariableInfoProfile] = {
     localVariables.filter(_.isArgument)
+  }
+
+  /**
+   * Retrieves the variable with the specified name from the frame with offset
+   * index information.
+   *
+   * @param name The name of the variable to retrieve
+   * @return Profile of the variable or throws an exception
+   */
+  override def indexedVariable(name: String): VariableInfoProfile = {
+    indexedLocalVariables.reverse.find(_.name == name)
+      .getOrElse(_thisObjectProfile.indexedField(name))
+  }
+
+  /**
+   * Retrieves all variables that represent arguments in this frame with their
+   * offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  override def indexedArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = {
+    indexedLocalVariables.filter(_.isArgument)
+  }
+
+  /**
+   * Retrieves all variables that represent field variables in this frame with
+   * their offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  override def indexedFieldVariables: Seq[VariableInfoProfile] = {
+    _thisObjectProfile.indexedFields
+  }
+
+  /**
+   * Retrieves all variables in this frame with their offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  override def indexedAllVariables: Seq[VariableInfoProfile] = {
+    indexedLocalVariables ++ indexedFieldVariables
+  }
+
+  /**
+   * Retrieves all variables that do not represent arguments in this frame with
+   * their offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  override def indexedNonArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = {
+    indexedLocalVariables.filterNot(_.isArgument)
+  }
+
+  /**
+   * Retrieves all variables that represent local variables in this frame with
+   * their offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  override def indexedLocalVariables: Seq[IndexedVariableInfoProfile] = {
+    _stackFrame.visibleVariables().asScala.zipWithIndex.map { case (v, i) =>
+      newLocalVariableProfile(v, i)
+    }
   }
 
   protected def newLocalVariableProfile(

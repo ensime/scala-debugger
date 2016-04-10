@@ -152,7 +152,7 @@ trait ThreadInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
     // NOTE: Using for loop to reduce data retrieval (finding earlier is better)
     for (frameIndex <- 0 until this.totalFrames) {
       val frame = this.frame(frameIndex)
-      val variable = frame.tryVariable(name).toOption
+      val variable = frame.tryIndexedVariable(name).toOption
       if (variable.nonEmpty) return variable
     }
 
@@ -183,7 +183,7 @@ trait ThreadInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
     offsetIndex: Int
   ): Option[VariableInfoProfile] = {
     this.frame(frameIndex)
-      .localVariables
+      .indexedLocalVariables
       .find(_.offsetIndex == offsetIndex)
   }
 

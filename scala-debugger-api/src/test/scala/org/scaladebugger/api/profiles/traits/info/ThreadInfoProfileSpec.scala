@@ -30,7 +30,7 @@ class ThreadInfoProfileSpec extends FunSpec with Matchers
         val name = "someName"
 
         val mockFrame = mock[FrameInfoProfile]
-        (mockFrame.tryVariable _).expects(name)
+        (mockFrame.tryIndexedVariable _).expects(name)
           .returning(Success(expected.get)).once()
 
         val threadInfoProfile = new TestThreadInfoProfile {
@@ -67,7 +67,7 @@ class ThreadInfoProfileSpec extends FunSpec with Matchers
         val offsetIndex = 2
 
         val mockFrame = mock[FrameInfoProfile]
-        (mockFrame.localVariables _).expects()
+        (mockFrame.indexedLocalVariables _).expects()
           .returning(Nil).once()
 
         val threadInfoProfile = new TestThreadInfoProfile {
@@ -90,7 +90,7 @@ class ThreadInfoProfileSpec extends FunSpec with Matchers
         val offsetIndex = 2
 
         val mockFrame = mock[FrameInfoProfile]
-        (mockFrame.localVariables _).expects()
+        (mockFrame.indexedLocalVariables _).expects()
           .returning(Seq(expected.get)).once()
 
         (expected.get.offsetIndex _).expects().returning(offsetIndex).once()

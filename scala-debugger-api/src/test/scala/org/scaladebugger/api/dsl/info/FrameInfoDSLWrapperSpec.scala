@@ -253,6 +253,12 @@ class FrameInfoDSLWrapperSpec extends FunSpec with Matchers
   private val mockToJdiInstanceFunction = mockFunction[StackFrame]
 
   private class TestFrameInfoProfile extends FrameInfoProfile {
+    override def indexedVariable(name: String): VariableInfoProfile = ???
+    override def indexedArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = ???
+    override def indexedFieldVariables: Seq[VariableInfoProfile] = ???
+    override def indexedAllVariables: Seq[VariableInfoProfile] = ???
+    override def indexedNonArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = ???
+    override def indexedLocalVariables: Seq[IndexedVariableInfoProfile] = ???
     override def scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachineFunction()
     override def index: Int = mockIndexFunction()
     override def tryThisObject: Try[ObjectInfoProfile] = mockTryGetThisObjectFunction()

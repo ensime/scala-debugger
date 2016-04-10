@@ -173,7 +173,7 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
           val fieldsAndIndicies = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.fieldVariables.zipWithIndex
+            .thread(t.get).topFrame.indexedFieldVariables.zipWithIndex
 
           fieldsAndIndicies should not be (empty)
           fieldsAndIndicies.foreach { case (v, i) =>

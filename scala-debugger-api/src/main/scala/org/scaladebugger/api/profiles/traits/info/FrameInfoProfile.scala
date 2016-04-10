@@ -101,6 +101,26 @@ trait FrameInfoProfile extends CommonInfoProfile {
   def variable(name: String): VariableInfoProfile
 
   /**
+   * Retrieves the variable with the specified name from the frame with offset
+   * index information.
+   *
+   * @param name The name of the variable to retrieve
+   * @return Success containing profile of the variable if found, otherwise
+   *         a failure
+   */
+  def tryIndexedVariable(name: String): Try[VariableInfoProfile] =
+    Try(indexedVariable(name))
+
+  /**
+   * Retrieves the variable with the specified name from the frame with offset
+   * index information.
+   *
+   * @param name The name of the variable to retrieve
+   * @return Profile of the variable or throws an exception
+   */
+  def indexedVariable(name: String): VariableInfoProfile
+
+  /**
    * Retrieves all variables in this frame.
    *
    * @return Success containing the collection of variables as their profile
@@ -146,6 +166,55 @@ trait FrameInfoProfile extends CommonInfoProfile {
     Try(fieldVariables)
 
   /**
+   * Retrieves all variables in this frame with their offset index information.
+   *
+   * @return Success containing the collection of variables as their profile
+   *         equivalents, otherwise a failure
+   */
+  def tryIndexedAllVariables: Try[Seq[VariableInfoProfile]] =
+    Try(indexedAllVariables)
+
+  /**
+   * Retrieves all variables that represent arguments in this frame with
+   * their offset index information.
+   *
+   * @return Success containing the collection of variables as their profile
+   *         equivalents, otherwise a failure
+   */
+  def tryIndexedArgumentLocalVariables: Try[Seq[IndexedVariableInfoProfile]] =
+    Try(indexedArgumentLocalVariables)
+
+  /**
+   * Retrieves all variables that do not represent arguments in this frame with
+   * their offset index information.
+   *
+   * @return Success containing the collection of variables as their profile
+   *         equivalents, otherwise a failure
+   */
+  def tryIndexedNonArgumentLocalVariables: Try[Seq[IndexedVariableInfoProfile]] =
+    Try(indexedNonArgumentLocalVariables)
+
+  /**
+   * Retrieves all variables that represent local variables in this frame with
+   * their offset index information.
+   *
+   * @return Success containing the collection of variables as their profile
+   *         equivalents, otherwise a failure
+   */
+  def tryIndexedLocalVariables: Try[Seq[IndexedVariableInfoProfile]] =
+    Try(indexedLocalVariables)
+
+  /**
+   * Retrieves all variables that represent field variables in this frame with
+   * their offset index information.
+   *
+   * @return Success containing the collection of variables as their profile
+   *         equivalents, otherwise a failure
+   */
+  def tryIndexedFieldVariables: Try[Seq[VariableInfoProfile]] =
+    Try(indexedFieldVariables)
+
+  /**
    * Retrieves all variables in this frame.
    *
    * @return The collection of variables as their profile equivalents
@@ -179,6 +248,45 @@ trait FrameInfoProfile extends CommonInfoProfile {
    * @return The collection of variables as their profile equivalents
    */
   def fieldVariables: Seq[VariableInfoProfile]
+
+  /**
+   * Retrieves all variables in this frame with their offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  def indexedAllVariables: Seq[VariableInfoProfile]
+
+  /**
+   * Retrieves all variables that represent arguments in this frame with their
+   * offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  def indexedArgumentLocalVariables: Seq[IndexedVariableInfoProfile]
+
+  /**
+   * Retrieves all variables that do not represent arguments in this frame with
+   * their offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  def indexedNonArgumentLocalVariables: Seq[IndexedVariableInfoProfile]
+
+  /**
+   * Retrieves all variables that represent local variables in this frame with
+   * their offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  def indexedLocalVariables: Seq[IndexedVariableInfoProfile]
+
+  /**
+   * Retrieves all variables that represent field variables in this frame with
+   * their offset index information.
+   *
+   * @return The collection of variables as their profile equivalents
+   */
+  def indexedFieldVariables: Seq[VariableInfoProfile]
 
   /**
    * Returns a string presenting a better human-readable description of

@@ -90,8 +90,8 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
         (mockReferenceType.visibleFields _).expects()
           .returning(fields.asJava).once()
 
-        expected.zip(fields).zipWithIndex.foreach { case ((e, f), i) =>
-          mockNewFieldProfile.expects(f, i).returning(e).once()
+        expected.zip(fields).foreach { case (e, f) =>
+          mockNewFieldProfile.expects(f, -1).returning(e).once()
         }
 
         val actual = pureReferenceTypeInfoProfile.visibleFields
@@ -126,6 +126,59 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
         mockNewFieldProfile.expects(mockField, -1).returning(expected).once()
 
         val actual = pureReferenceTypeInfoProfile.field(name)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#indexedVisibleFields") {
+      it("should return a collection of profiles wrapping visible fields in the underlying reference type") {
+        val expected = Seq(mock[VariableInfoProfile])
+        val fields = Seq(mock[Field])
+
+        import scala.collection.JavaConverters._
+        (mockReferenceType.visibleFields _).expects()
+          .returning(fields.asJava).once()
+
+        expected.zip(fields).zipWithIndex.foreach { case ((e, f), i) =>
+          mockNewFieldProfile.expects(f, i).returning(e).once()
+        }
+
+        val actual = pureReferenceTypeInfoProfile.indexedVisibleFields
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#indexedField") {
+      it("should throw a NoSuchElement exception if no field with matching name is found") {
+        val name = "someName"
+
+        import scala.collection.JavaConverters._
+        (mockReferenceType.visibleFields _).expects()
+          .returning(Seq[Field]().asJava).once()
+
+        intercept[NoSuchElementException] {
+          pureReferenceTypeInfoProfile.indexedField(name)
+        }
+      }
+
+      it("should return a profile wrapping the associated field if found") {
+        val expected = mock[VariableInfoProfile]
+        val name = "someName"
+
+        // Lookup the field
+        val mockField = mock[Field]
+        (expected.name _).expects().returning(name).once()
+
+        import scala.collection.JavaConverters._
+        (mockReferenceType.visibleFields _).expects()
+          .returning(Seq(mockField).asJava).once()
+
+        // Create the new profile
+        mockNewFieldProfile.expects(mockField, 0).returning(expected).once()
+
+        val actual = pureReferenceTypeInfoProfile.indexedField(name)
 
         actual should be (expected)
       }
