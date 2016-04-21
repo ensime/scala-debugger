@@ -1,4 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
+
+import scala.util.Try
 //import acyclic.file
 
 /**
@@ -10,18 +12,52 @@ trait MiscInfoProfile {
    * Retrieves the list of available lines for a specific file.
    *
    * @param fileName The name of the file whose lines to retrieve
-   *
    * @return Some list of breakpointable lines if the file exists,
    *         otherwise None
    */
   def availableLinesForFile(fileName: String): Option[Seq[Int]]
 
   /**
+   * Creates the provided value on the remote JVM.
+   *
+   * @param value The value to create (mirror) on the remote JVM
+   * @return The information about the remote value
+   */
+  def createRemotely(value: AnyVal): ValueInfoProfile
+
+  /**
+   * Creates the provided value on the remote JVM.
+   *
+   * @param value The value to create (mirror) on the remote JVM
+   * @return Success containing the information about the remote value,
+   *         otherwise a failure
+   */
+  def tryCreateRemotely(value: AnyVal): Try[ValueInfoProfile] =
+    Try(createRemotely(value))
+
+  /**
+   * Creates the provided value on the remote JVM.
+   *
+   * @param value The value to create (mirror) on the remote JVM
+   * @return The information about the remote value
+   */
+  def createRemotely(value: String): ValueInfoProfile
+
+  /**
+   * Creates the provided value on the remote JVM.
+   *
+   * @param value The value to create (mirror) on the remote JVM
+   * @return Success containing the information about the remote value,
+   *         otherwise a failure
+   */
+  def tryCreateRemotely(value: String): Try[ValueInfoProfile] =
+    Try(createRemotely(value))
+
+  /**
    * Retrieves all source paths for the given source name.
    *
    * @example nameToPaths("file.scala") yields
    *          Seq("path/to/file.scala", "other/path/to/file.scala")
-   *
    * @param sourceName The source (file) name whose associated paths to find
    * @return The collection of source paths
    */

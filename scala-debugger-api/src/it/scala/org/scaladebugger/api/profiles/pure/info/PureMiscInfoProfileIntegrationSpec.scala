@@ -37,6 +37,52 @@ class PureMiscInfoProfileIntegrationSpec extends FunSpec with Matchers
       }
     }
 
+    it("should be able to create values on the remote JVM") {
+      val testClass = "org.scaladebugger.test.misc.MainUsingMethod"
+
+      withVirtualMachine(testClass) { (s) =>
+        eventually {
+          val p = s.withProfile(PureDebugProfile.Name)
+
+          val remoteBoolean = p.createRemotely(true)
+          remoteBoolean.toPrimitive.isBoolean should be (true)
+          remoteBoolean.toLocalValue == true should be (true)
+
+          val remoteByte = p.createRemotely(33.toByte)
+          remoteByte.toPrimitive.isByte should be (true)
+          remoteByte.toLocalValue == 33 should be (true)
+
+          val remoteChar = p.createRemotely(33.toChar)
+          remoteChar.toPrimitive.isChar should be (true)
+          remoteChar.toLocalValue == 33 should be (true)
+
+          val remoteInt = p.createRemotely(33.toInt)
+          remoteInt.toPrimitive.isInteger should be (true)
+          remoteInt.toLocalValue == 33 should be (true)
+
+          val remoteShort = p.createRemotely(33.toShort)
+          remoteShort.toPrimitive.isShort should be (true)
+          remoteShort.toLocalValue == 33 should be (true)
+
+          val remoteLong = p.createRemotely(33.toLong)
+          remoteLong.toPrimitive.isLong should be (true)
+          remoteLong.toLocalValue == 33 should be (true)
+
+          val remoteFloat = p.createRemotely(33.toFloat)
+          remoteFloat.toPrimitive.isFloat should be (true)
+          remoteFloat.toLocalValue == 33 should be (true)
+
+          val remoteDouble = p.createRemotely(33.toDouble)
+          remoteDouble.toPrimitive.isDouble should be (true)
+          remoteDouble.toLocalValue == 33 should be (true)
+
+          val remoteString = p.createRemotely("test")
+          remoteString.isString should be (true)
+          remoteString.toLocalValue  should be ("test")
+        }
+      }
+    }
+
     it("should return the class name of a Scala main method entrypoint") {
       val testClass = "org.scaladebugger.test.misc.MainUsingMethod"
 
