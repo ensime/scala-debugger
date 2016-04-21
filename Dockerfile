@@ -1,4 +1,4 @@
-FROM ensime/ensime:v2.x
+FROM ensime/ensime:v2.x-cache
 MAINTAINER Chip Senkbeil <chip.senkbeil@gmail.com>
 
 ENV GIT_REPO https://github.com/ensime/scala-debugger.git
