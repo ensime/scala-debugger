@@ -5,6 +5,7 @@ import org.scaladebugger.api.profiles.traits.info.{TypeInfoProfile, ValueInfoPro
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import test.InfoTestClasses.TestMiscInfoProfileTrait
 
 class PureFieldInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
@@ -104,7 +105,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#setValue") {
+    describe("#setValueFromInfo") {
       it("should throw an exception if no object reference or class type available") {
         val pureFieldInfoProfile = new PureFieldInfoProfile(
           mockScalaVirtualMachine,
@@ -112,22 +113,22 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
           mockField
         )(mockVirtualMachine)
 
-        // Mirror of value still happens first
-        val mockStringReference = mock[StringReference]
-        (mockVirtualMachine.mirrorOf(_: String)).expects(*)
-          .returning(mockStringReference).once()
+        // Retrieval of JDI value still happens first
+        val mockValueInfoProfile = mock[ValueInfoProfile]
+        (mockValueInfoProfile.toJdiInstance _).expects()
+          .returning(mock[Value]).once()
 
         intercept[Exception] {
-          pureFieldInfoProfile.setValue("some value")
+          pureFieldInfoProfile.setValueFromInfo(mockValueInfoProfile)
         }
       }
 
-      it("should set strings directly on the object") {
-        val expected = "some value"
+      it("should be able to set instance fields") {
+        val expected = mock[ValueInfoProfile]
 
-        // Mirror the local string remotely
         val mockStringReference = mock[StringReference]
-        (mockVirtualMachine.mirrorOf(_: String)).expects(expected)
+
+        (expected.toJdiInstance _).expects()
           .returning(mockStringReference).once()
 
         // Ensure setting the value on the object is verified
@@ -135,27 +136,11 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
           .expects(mockField, mockStringReference)
           .once()
 
-        pureFieldInfoProfile.setValue(expected) should be (expected)
+        pureFieldInfoProfile.setValueFromInfo(expected) should be (expected)
       }
 
-      it("should set primitive values directly on the object") {
-        val expected = 3.toByte
-
-        // Mirror the local byte remotely
-        val mockByteValue = mock[ByteValue]
-        (mockVirtualMachine.mirrorOf(_: Byte)).expects(expected)
-          .returning(mockByteValue).once()
-
-        // Ensure setting the value on the object is verified
-        (mockObjectReference.setValue _)
-          .expects(mockField, mockByteValue)
-          .once()
-
-        pureFieldInfoProfile.setValue(expected) should be (expected)
-      }
-
-      it("should set strings directly on static fields") {
-        val expected = "some value"
+      it("should be able to set static fields") {
+        val expected = mock[ValueInfoProfile]
 
         val mockClassType = mock[ClassType]
         val pureFieldInfoProfile = new PureFieldInfoProfile(
@@ -164,9 +149,9 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
           mockField
         )(mockVirtualMachine)
 
-        // Mirror the local string remotely
         val mockStringReference = mock[StringReference]
-        (mockVirtualMachine.mirrorOf(_: String)).expects(expected)
+
+        (expected.toJdiInstance _).expects()
           .returning(mockStringReference).once()
 
         // Ensure setting the value on the object is verified
@@ -174,30 +159,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
           .expects(mockField, mockStringReference)
           .once()
 
-        pureFieldInfoProfile.setValue(expected) should be (expected)
-      }
-
-      it("should set primitive values directly on static fields") {
-        val expected = 3.toByte
-
-        val mockClassType = mock[ClassType]
-        val pureFieldInfoProfile = new PureFieldInfoProfile(
-          mockScalaVirtualMachine,
-          Right(mockClassType),
-          mockField
-        )(mockVirtualMachine)
-
-        // Mirror the local byte remotely
-        val mockByteValue = mock[ByteValue]
-        (mockVirtualMachine.mirrorOf(_: Byte)).expects(expected)
-          .returning(mockByteValue).once()
-
-        // Ensure setting the value on the object is verified
-        (mockClassType.setValue _)
-          .expects(mockField, mockByteValue)
-          .once()
-
-        pureFieldInfoProfile.setValue(expected) should be (expected)
+        pureFieldInfoProfile.setValueFromInfo(expected) should be (expected)
       }
     }
 

@@ -5,6 +5,7 @@ import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, TypeInfoPro
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import test.InfoTestClasses.TestMiscInfoProfileTrait
 
 class PureLocalVariableInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
@@ -118,47 +119,27 @@ class PureLocalVariableInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#trySetValue") {
-      it("should set strings directly on the object") {
-        val expected = "some value"
 
-        // Mirror the local string remotely
-        val mockStringReference = mock[StringReference]
-        (mockVirtualMachine.mirrorOf(_: String)).expects(expected)
-          .returning(mockStringReference).once()
+    describe("#setValueFromInfo") {
+      it("should be able to set the value using the info") {
+        val expected = mock[ValueInfoProfile]
 
-        // Retrieve the underlying stack frame
+        // Retrieves JDI stack frame to set value
         val mockStackFrame = mock[StackFrame]
         (mockFrameInfoProfile.toJdiInstance _).expects()
           .returning(mockStackFrame).once()
 
-        // Ensure setting value on stack frame is verified
+        // Retrieves JDI value from info
+        val mockStringReference = mock[StringReference]
+        (expected.toJdiInstance _).expects()
+          .returning(mockStringReference).once()
+
+        // Ensure setting the value on the stack frame is verified
         (mockStackFrame.setValue _)
           .expects(mockLocalVariable, mockStringReference)
           .once()
 
-        pureLocalVariableInfoProfile.trySetValue(expected).get should be (expected)
-      }
-
-      it("should set primitive values directly on the object") {
-        val expected = 3.toByte
-
-        // Mirror the local string remotely
-        val mockByteValue = mock[ByteValue]
-        (mockVirtualMachine.mirrorOf(_: Byte)).expects(expected)
-          .returning(mockByteValue).once()
-
-        // Retrieve the underlying stack frame
-        val mockStackFrame = mock[StackFrame]
-        (mockFrameInfoProfile.toJdiInstance _).expects()
-          .returning(mockStackFrame).once()
-
-        // Ensure setting value on stack frame is verified
-        (mockStackFrame.setValue _)
-          .expects(mockLocalVariable, mockByteValue)
-          .once()
-
-        pureLocalVariableInfoProfile.trySetValue(expected).get should be (expected)
+        pureLocalVariableInfoProfile.setValueFromInfo(expected) should be (expected)
       }
     }
 

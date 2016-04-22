@@ -28,27 +28,6 @@ trait PureMiscInfoProfile extends MiscInfoProfile with JDIHelperMethods {
     classManager.linesAndLocationsForFile(fileName).map(_.keys.toSeq.sorted)
 
   /**
-   * Creates the provided value on the remote JVM.
-   *
-   * @param value The value to create (mirror) on the remote JVM
-   * @return The information about the remote value
-   */
-  override def createRemotely(value: AnyVal): ValueInfoProfile = {
-    import org.scaladebugger.api.lowlevel.wrappers.Implicits._
-    miscNewValueProfile(_virtualMachine.mirrorOf(value))
-  }
-
-  /**
-   * Creates the provided value on the remote JVM.
-   *
-   * @param value The value to create (mirror) on the remote JVM
-   * @return The information about the remote value
-   */
-  override def createRemotely(value: String): ValueInfoProfile = {
-    miscNewValueProfile(_virtualMachine.mirrorOf(value))
-  }
-
-  /**
    * Retrieves all source paths for the given source name.
    *
    * @example nameToPaths("file.scala") yields
@@ -84,7 +63,4 @@ trait PureMiscInfoProfile extends MiscInfoProfile with JDIHelperMethods {
     scalaVirtualMachine,
     referenceType
   )
-
-  protected def miscNewValueProfile(value: Value): ValueInfoProfile =
-    new PureValueInfoProfile(scalaVirtualMachine, value)
 }

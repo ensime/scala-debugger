@@ -14,14 +14,6 @@ trait SwappableMiscInfoProfile extends MiscInfoProfile {
     withCurrentProfile.availableLinesForFile(fileName)
   }
 
-  override def createRemotely(value: AnyVal): ValueInfoProfile = {
-    withCurrentProfile.createRemotely(value)
-  }
-
-  override def createRemotely(value: String): ValueInfoProfile = {
-    withCurrentProfile.createRemotely(value)
-  }
-
   override def sourceNameToPaths(sourceName: String): Seq[String] = {
     withCurrentProfile.sourceNameToPaths(sourceName)
   }

@@ -134,7 +134,7 @@ class PureLocalVariableInfoProfileIntegrationSpec extends FunSpec with Matchers
             .thread(t.get).topFrame
             .variable("g")
 
-          variable.setValue(888.0) should be (888.0)
+          variable.setValue(888.0).toLocalValue should be (888.0)
         })
       }
     }

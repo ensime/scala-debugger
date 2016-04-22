@@ -22,7 +22,7 @@ class PureThreadInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
   private val _threadReference: ThreadReference
 )(
-  private val _virtualMachine: VirtualMachine = _threadReference.virtualMachine(),
+  override protected val _virtualMachine: VirtualMachine = _threadReference.virtualMachine(),
   private val _referenceType: ReferenceType = _threadReference.referenceType()
 ) extends PureObjectInfoProfile(scalaVirtualMachine, _threadReference)(
   _virtualMachine = _virtualMachine,

@@ -154,7 +154,8 @@ class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
             .variable("i").toValue.toArray
 
           // Set element at position 1 to source element 2 (12)
-          array.setValues(1, Seq(10, 11, 12), 2, 1) should be (Seq(12))
+          val results = array.setValues(1, Seq(10, 11, 12), 2, 1).map(_.toLocalValue)
+          results should be (Seq(12))
         })
       }
     }
@@ -177,7 +178,8 @@ class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
             .thread(t.get).topFrame
             .variable("i").toValue.toArray
 
-          array.setValues(Seq(10, 11, 12)) should be (Seq(10, 11, 12))
+          val results = array.setValues(Seq(10, 11, 12)).map(_.toLocalValue)
+          results should be (Seq(10, 11, 12))
         })
       }
     }

@@ -2,7 +2,7 @@ package org.scaladebugger.api.profiles.pure.info
 //import acyclic.file
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{TypeInfoProfile, ValueInfoProfile, VariableInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.util.Try
@@ -24,9 +24,8 @@ class PureFieldInfoProfile(
   private val _container: Either[ObjectReference, ReferenceType],
   private val _field: Field
 )(
-  private val _virtualMachine: VirtualMachine = _field.virtualMachine()
-) extends VariableInfoProfile {
-
+  protected val _virtualMachine: VirtualMachine = _field.virtualMachine()
+) extends VariableInfoProfile with PureCreateInfoProfile {
   /**
    * Returns the JDI representation this profile instance wraps.
    *
@@ -77,28 +76,16 @@ class PureFieldInfoProfile(
   override def isLocal: Boolean = false
 
   /**
-   * Sets the primitive value of this variable.
+   * Sets the value of this variable using info about another remote value.
    *
-   * @param value The new value for the variable
-   * @return The new value
+   * @param valueInfo The remote value to set for the variable
+   * @return The info for the variable's new value
    */
-  override def setValue(value: AnyVal): AnyVal = {
-    import org.scaladebugger.api.lowlevel.wrappers.Implicits._
-    val mirrorValue = _virtualMachine.mirrorOf(value)
-    setFieldValue(mirrorValue)
-    value
-  }
-
-  /**
-   * Sets the string value of this variable.
-   *
-   * @param value The new value for the variable
-   * @return The new value
-   */
-  override def setValue(value: String): String = {
-    val mirrorValue = _virtualMachine.mirrorOf(value)
-    setFieldValue(mirrorValue)
-    value
+  override def setValueFromInfo(
+    valueInfo: ValueInfoProfile
+  ): ValueInfoProfile = {
+    setFieldValue(valueInfo.toJdiInstance)
+    valueInfo
   }
 
   private def setFieldValue(value: Value): Unit = _container match {

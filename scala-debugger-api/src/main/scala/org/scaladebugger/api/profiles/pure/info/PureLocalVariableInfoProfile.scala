@@ -5,8 +5,6 @@ import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
-import scala.util.Try
-
 /**
  * Represents a pure implementation of a local variable profile that adds no
  * custom logic on top of the standard JDI.
@@ -26,8 +24,8 @@ class PureLocalVariableInfoProfile(
   private val _localVariable: LocalVariable,
   val offsetIndex: Int
 )(
-  private val _virtualMachine: VirtualMachine = _localVariable.virtualMachine()
-) extends IndexedVariableInfoProfile {
+  protected val _virtualMachine: VirtualMachine = _localVariable.virtualMachine()
+) extends IndexedVariableInfoProfile with PureCreateInfoProfile {
   private lazy val stackFrame = frame.toJdiInstance
 
   /**
@@ -88,28 +86,16 @@ class PureLocalVariableInfoProfile(
   override def isLocal: Boolean = true
 
   /**
-   * Sets the primitive value of this variable.
+   * Sets the value of this variable using info about another remote value.
    *
-   * @param value The new value for the variable
-   * @return The new value
+   * @param valueInfo The remote value to set for the variable
+   * @return The info for the variable's new value
    */
-  override def setValue(value: AnyVal): AnyVal = {
-    import org.scaladebugger.api.lowlevel.wrappers.Implicits._
-    val mirrorValue = _virtualMachine.mirrorOf(value)
-    stackFrame.setValue(_localVariable, mirrorValue)
-    value
-  }
-
-  /**
-   * Sets the string value of this variable.
-   *
-   * @param value The new value for the variable
-   * @return The new value
-   */
-  override def setValue(value: String): String = {
-    val mirrorValue = _virtualMachine.mirrorOf(value)
-    stackFrame.setValue(_localVariable, mirrorValue)
-    value
+  override def setValueFromInfo(
+    valueInfo: ValueInfoProfile
+  ): ValueInfoProfile = {
+    stackFrame.setValue(_localVariable, valueInfo.toJdiInstance)
+    valueInfo
   }
 
   /**

@@ -6,7 +6,10 @@ package org.scaladebugger.api.profiles.traits.info
  * Represents the interface for variable-based interaction with indexed
  * location information.
  */
-trait IndexedVariableInfoProfile extends VariableInfoProfile with CommonInfoProfile {
+trait IndexedVariableInfoProfile
+  extends VariableInfoProfile with CreateInfoProfile with CommonInfoProfile
+{
+
   /**
    * Returns the frame containing this variable.
    *

@@ -2,7 +2,7 @@ package org.scaladebugger.api.profiles.pure.info
 //import acyclic.file
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{ArrayInfoProfile, ArrayTypeInfoProfile, TypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.util.Try
@@ -24,14 +24,14 @@ class PureArrayInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
   private val _arrayReference: ArrayReference
 )(
-  private val _virtualMachine: VirtualMachine = _arrayReference.virtualMachine(),
+  override protected val _virtualMachine: VirtualMachine = _arrayReference.virtualMachine(),
   private val _threadReference: ThreadReference = _arrayReference.owningThread(),
   private val _referenceType: ReferenceType = _arrayReference.referenceType()
 ) extends PureObjectInfoProfile(scalaVirtualMachine, _arrayReference)(
   _virtualMachine = _virtualMachine,
   _threadReference = _threadReference,
   _referenceType = _referenceType
-) with ArrayInfoProfile {
+) with ArrayInfoProfile with PureCreateInfoProfile {
   import scala.collection.JavaConverters._
   import org.scaladebugger.api.lowlevel.wrappers.Implicits._
 
@@ -57,13 +57,18 @@ class PureArrayInfoProfile(
   override def length: Int = _arrayReference.length()
 
   /**
-   * Retrieves the value in the array at the specified index.
+   * Sets the value of the array element at the specified location.
    *
-   * @param index The location in the array to retrieve a value
-   * @return The retrieved value
+   * @param index The location in the array whose value to overwrite
+   * @param value The new value to place in the array
+   * @return The updated remote value
    */
-  override def value(index: Int): ValueInfoProfile = {
-    newValueProfile(_arrayReference.getValue(index))
+  override def setValueFromInfo(
+    index: Int,
+    value: ValueInfoProfile
+  ): ValueInfoProfile = {
+    _arrayReference.setValue(index, value.toJdiInstance)
+    value
   }
 
   /**
@@ -73,17 +78,19 @@ class PureArrayInfoProfile(
    * @param values   The new values to use when overwriting elements in the array
    * @param srcIndex The location in the provided value array to begin using
    *                 values to overwrite this array
-   * @param length   The total number of elements to overwrite, or -1 to overwrite
-   *                 all elements in the array from the beginning of the index
-   * @return The updated values
+   * @param length   The total number of elements to overwrite, or -1 to
+   *                 overwrite all elements in the array from the
+   *                 beginning of the index
+   * @return The updated remote values
    */
-  override def setValues(
+  override def setValuesFromInfo(
     index: Int,
-    values: Seq[Any],
+    values: Seq[ValueInfoProfile],
     srcIndex: Int,
     length: Int
-  ): Seq[Any] = {
-    val v = values.map(_virtualMachine.mirrorOf(_: Any)).asJava
+  ): Seq[ValueInfoProfile] = {
+    import scala.collection.JavaConverters._
+    val v = values.map(_.toJdiInstance).asJava
     _arrayReference.setValues(index, v, srcIndex, length)
 
     val sliceIndex = if (length >= 0) srcIndex + length else values.length
@@ -94,11 +101,13 @@ class PureArrayInfoProfile(
    * Sets the values of the array elements to the provided values.
    *
    * @param values The new values to use when overwriting elements in the array
-   * @return The updated values
+   * @return The updated remote values
    */
-  override def setValues(values: Seq[Any]): Seq[Any] = {
-    val v = values.map(_virtualMachine.mirrorOf(_: Any)).asJava
-    _arrayReference.setValues(v)
+  override def setValuesFromInfo(
+    values: Seq[ValueInfoProfile]
+  ): Seq[ValueInfoProfile] = {
+    import scala.collection.JavaConverters._
+    _arrayReference.setValues(values.map(_.toJdiInstance).asJava)
     values
   }
 
@@ -128,15 +137,13 @@ class PureArrayInfoProfile(
   }
 
   /**
-   * Sets the value of the array element at the specified location.
+   * Retrieves the value in the array at the specified index.
    *
-   * @param index The location in the array whose value to overwrite
-   * @param value The new value to place in the array
-   * @return The updated value
+   * @param index The location in the array to retrieve a value
+   * @return The retrieved value
    */
-  override def setValue(index: Int, value: Any): Any = {
-    _arrayReference.setValue(index, _virtualMachine.mirrorOf(value))
-    value
+  override def value(index: Int): ValueInfoProfile = {
+    newValueProfile(_arrayReference.getValue(index))
   }
 
   override protected def newValueProfile(value: Value): ValueInfoProfile =

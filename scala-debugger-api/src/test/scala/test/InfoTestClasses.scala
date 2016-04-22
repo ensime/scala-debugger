@@ -17,6 +17,18 @@ object InfoTestClasses {
   val DefaultException = new NotOverriddenException
   private def throwException() = throw DefaultException
 
+  trait TestCreateInfoProfileTrait extends CreateInfoProfile {
+    override def createRemotely(value: AnyVal): ValueInfoProfile = throwException()
+    override def createRemotely(value: String): ValueInfoProfile = throwException()
+  }
+
+  trait TestMiscInfoProfileTrait extends MiscInfoProfile {
+    override def availableLinesForFile(fileName: String): Option[Seq[Int]] = throwException()
+    override def commandLineArguments: Seq[String] = throwException()
+    override def sourceNameToPaths(sourceName: String): Seq[String] = throwException()
+    override def mainClassName: String = throwException()
+  }
+
   class TestThreadInfoProfile extends TestObjectInfoProfile with ThreadInfoProfile {
     override def typeInfo: ReferenceTypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
@@ -55,14 +67,13 @@ object InfoTestClasses {
     override def toJdiInstance: Value = throwException()
   }
 
-  class TestVariableInfoProfile extends VariableInfoProfile {
+  class TestVariableInfoProfile extends VariableInfoProfile with TestCreateInfoProfileTrait {
     override def typeName: String = throwException()
     override def typeInfo: TypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def name: String = throwException()
     override def toValue: ValueInfoProfile = throwException()
-    override def setValue(value: AnyVal): AnyVal = throwException()
-    override def setValue(value: String): String = throwException()
+    override def setValueFromInfo(valueInfo: ValueInfoProfile): ValueInfoProfile = throwException()
     override def isArgument: Boolean = throwException()
     override def isLocal: Boolean = throwException()
     override def isField: Boolean = throwException()
@@ -115,16 +126,16 @@ object InfoTestClasses {
     override def toJdiInstance: StackFrame = throwException()
   }
 
-  class TestArrayInfoProfile extends TestObjectInfoProfile with ArrayInfoProfile {
+  class TestArrayInfoProfile extends TestObjectInfoProfile with ArrayInfoProfile with TestCreateInfoProfileTrait {
     override def typeInfo: ArrayTypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def length: Int = throwException()
     override def value(index: Int): ValueInfoProfile = throwException()
-    override def setValues(index: Int, values: Seq[Any], srcIndex: Int, length: Int): Seq[Any] = throwException()
-    override def setValues(values: Seq[Any]): Seq[Any] = throwException()
     override def values(index: Int, length: Int): Seq[ValueInfoProfile] = throwException()
     override def values: Seq[ValueInfoProfile] = throwException()
-    override def setValue(index: Int, value: Any): Any = throwException()
+    override def setValueFromInfo(index: Int, value: ValueInfoProfile): ValueInfoProfile = throwException()
+    override def setValuesFromInfo(index: Int, values: Seq[ValueInfoProfile], srcIndex: Int, length: Int): Seq[ValueInfoProfile] = throwException()
+    override def setValuesFromInfo(values: Seq[ValueInfoProfile]): Seq[ValueInfoProfile] = throwException()
     override def toJdiInstance: ArrayReference = throwException()
   }
 

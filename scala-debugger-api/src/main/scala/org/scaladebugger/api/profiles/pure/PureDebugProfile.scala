@@ -6,7 +6,7 @@ import org.scaladebugger.api.profiles.pure.breakpoints.PureBreakpointProfile
 import org.scaladebugger.api.profiles.pure.classes.{PureClassPrepareProfile, PureClassUnloadProfile}
 import org.scaladebugger.api.profiles.pure.events.PureEventProfile
 import org.scaladebugger.api.profiles.pure.exceptions.PureExceptionProfile
-import org.scaladebugger.api.profiles.pure.info.{PureGrabInfoProfile, PureMiscInfoProfile}
+import org.scaladebugger.api.profiles.pure.info.{PureCreateInfoProfile, PureGrabInfoProfile, PureMiscInfoProfile}
 import org.scaladebugger.api.profiles.pure.methods.{PureMethodEntryProfile, PureMethodExitProfile}
 import org.scaladebugger.api.profiles.pure.monitors.{PureMonitorContendedEnterProfile, PureMonitorContendedEnteredProfile, PureMonitorWaitProfile, PureMonitorWaitedProfile}
 import org.scaladebugger.api.profiles.pure.steps.PureStepProfile
@@ -44,6 +44,7 @@ class PureDebugProfile(
   with PureBreakpointProfile
   with PureClassPrepareProfile
   with PureClassUnloadProfile
+  with PureCreateInfoProfile
   with PureEventProfile
   with PureExceptionProfile
   with PureGrabInfoProfile

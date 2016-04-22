@@ -25,7 +25,7 @@ class PureClassLoaderInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
   private val _classLoaderReference: ClassLoaderReference
 )(
-  private val _virtualMachine: VirtualMachine = _classLoaderReference.virtualMachine(),
+  override protected val _virtualMachine: VirtualMachine = _classLoaderReference.virtualMachine(),
   private val _threadReference: ThreadReference = _classLoaderReference.owningThread(),
   private val _referenceType: ReferenceType = _classLoaderReference.referenceType()
 ) extends PureObjectInfoProfile(scalaVirtualMachine, _classLoaderReference)(

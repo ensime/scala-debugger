@@ -7,6 +7,7 @@ import org.scaladebugger.api.profiles.traits.info.{ArrayTypeInfoProfile, Referen
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import test.InfoTestClasses.{TestCreateInfoProfileTrait, TestMiscInfoProfileTrait}
 
 class PureArrayInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
@@ -154,46 +155,40 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#setValue") {
+    describe("#setValueFromInfo") {
       it("should set and return the provided value at the specified position") {
-        val expected = "some value"
+        val expected = mock[ValueInfoProfile]
         val index = 999
         val mockValue = mock[StringReference]
 
-        (mockVirtualMachine.mirrorOf(_: String)).expects(expected)
-          .returning(mockValue).once()
+        (expected.toJdiInstance _).expects().returning(mockValue).once()
         (mockArrayReference.setValue _).expects(index, mockValue).once()
 
-        val actual = pureArrayInfoProfile.setValue(index, expected)
+        val actual = pureArrayInfoProfile.setValueFromInfo(index, expected)
 
         actual should be (expected)
       }
     }
 
-    describe("#setValues(index, values, srcIndex, totalElements)") {
+    describe("#setValuesFromInfo(index, values, srcIndex, totalElements)") {
       it("should set and return the values starting from the src index to total elements") {
-        val expected: Seq[AnyVal] = true :: 0.5f :: Nil
+        val expected = Seq(mock[ValueInfoProfile], mock[ValueInfoProfile])
 
         val index = 999
-        val values = "some value" +: expected
+        val values = mock[ValueInfoProfile] +: expected
         val srcIndex = 1
         val totalElements = 2
 
-        val mockStringReference = mock[StringReference]
-        val mockBooleanValue = mock[BooleanValue]
-        val mockFloatValue = mock[FloatValue]
-        val mockValues = Seq(mockStringReference, mockBooleanValue, mockFloatValue)
-        (mockVirtualMachine.mirrorOf(_: String)).expects(values(0).asInstanceOf[String])
-          .returning(mockStringReference).once()
-        (mockVirtualMachine.mirrorOf(_: Boolean)).expects(expected(0).asInstanceOf[Boolean])
-          .returning(mockBooleanValue).once()
-        (mockVirtualMachine.mirrorOf(_: Float)).expects(expected(1).asInstanceOf[Float])
-          .returning(mockFloatValue).once()
+        val mockValues = values.map(_ => mock[PrimitiveValue])
 
         val mockSetValues = mockFunction[Int, java.util.List[_ <: Value], Int, Int, Unit]
         val testArrayReference = new TestArrayReference {
           override def setValues(i: Int, list: util.List[_ <: Value], i1: Int, i2: Int): Unit =
             mockSetValues(i, list, i1, i2)
+        }
+
+        values.zip(mockValues).foreach { case (e, v) =>
+          (e.toJdiInstance _).expects().returning(v).once()
         }
 
         import scala.collection.JavaConverters._
@@ -206,7 +201,7 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
           _referenceType = mockReferenceType
         )
 
-        val actual = pureArrayInfoProfile.setValues(
+        val actual = pureArrayInfoProfile.setValuesFromInfo(
           index,
           values,
           srcIndex,
@@ -217,24 +212,18 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#setValues(values)") {
+    describe("#setValuesFromInfo(values)") {
       it("should set and return the provided values") {
-        val expected = Seq("some value", 3, 0.5f)
+        val expected = Seq(mock[ValueInfoProfile], mock[ValueInfoProfile])
 
-        val mockStringReference = mock[StringReference]
-        val mockIntegerValue = mock[IntegerValue]
-        val mockFloatValue = mock[FloatValue]
-        val mockValues = Seq(mockStringReference, mockIntegerValue, mockFloatValue)
-        (mockVirtualMachine.mirrorOf(_: String)).expects(expected(0).asInstanceOf[String])
-          .returning(mockStringReference).once()
-        (mockVirtualMachine.mirrorOf(_: Int)).expects(expected(1).asInstanceOf[Int])
-          .returning(mockIntegerValue).once()
-        (mockVirtualMachine.mirrorOf(_: Float)).expects(expected(2).asInstanceOf[Float])
-          .returning(mockFloatValue).once()
-
+        val mockValues = expected.map(_ => mock[PrimitiveValue])
         val mockSetValues = mockFunction[java.util.List[_ <: Value], Unit]
         val testArrayReference = new TestArrayReference {
           override def setValues(list: util.List[_ <: Value]): Unit = mockSetValues(list)
+        }
+
+        expected.zip(mockValues).foreach { case (e, v) =>
+          (e.toJdiInstance _).expects().returning(v).once()
         }
 
         import scala.collection.JavaConverters._
@@ -247,7 +236,7 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
           _referenceType = mockReferenceType
         )
 
-        val actual = pureArrayInfoProfile.setValues(expected)
+        val actual = pureArrayInfoProfile.setValuesFromInfo(expected)
 
         actual should be (expected)
       }

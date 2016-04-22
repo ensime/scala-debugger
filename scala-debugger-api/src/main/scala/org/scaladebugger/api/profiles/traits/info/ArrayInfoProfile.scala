@@ -20,7 +20,11 @@ object ArrayInfoProfile {
 /**
  * Represents the interface for array-based interaction.
  */
-trait ArrayInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
+trait ArrayInfoProfile
+  extends ObjectInfoProfile with CreateInfoProfile with CommonInfoProfile
+{
+  import scala.reflect.runtime.universe.{TypeTag, typeOf}
+
   /**
    * Returns the JDI representation this profile instance wraps.
    *
@@ -127,9 +131,12 @@ trait ArrayInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
    *
    * @param index The location in the array whose value to overwrite
    * @param value The new value to place in the array
-   * @return Success containing the updated value, otherwise a failure
+   * @return Success containing the updated remote value, otherwise a failure
    */
-  def trySetValue(index: Int, value: Any): Try[Any] =
+  def trySetValue[T](
+    index: Int,
+    value: T
+  )(implicit typeTag: TypeTag[T]): Try[ValueInfoProfile] =
     Try(setValue(index, value))
 
   /**
@@ -137,18 +144,57 @@ trait ArrayInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
    *
    * @param index The location in the array whose value to overwrite
    * @param value The new value to place in the array
-   * @return The updated value
+   * @return The updated remote value
    */
-  def setValue(index: Int, value: Any): Any
+  def setValue[T](
+    index: Int,
+    value: T
+  )(implicit typeTag: TypeTag[T]): ValueInfoProfile = {
+    setValueFromInfo(index, newValueProfileFromLocalValue(value))
+  }
 
   /**
    * Sets the value of the array element at the specified location.
    *
    * @param index The location in the array whose value to overwrite
    * @param value The new value to place in the array
-   * @return The updated value
+   * @return The updated remote value
    */
-  def update(index: Int, value: Any): Any = setValue(index, value)
+  def update[T](
+    index: Int,
+    value: T
+  )(implicit typeTag: TypeTag[T]): ValueInfoProfile = setValue(index, value)
+
+  /**
+   * Sets the value of the array element at the specified location.
+   *
+   * @param index The location in the array whose value to overwrite
+   * @param value The new value to place in the array
+   * @return Success containing the updated remote value, otherwise a failure
+   */
+  def trySetValueFromInfo(
+    index: Int,
+    value: ValueInfoProfile
+  ): Try[ValueInfoProfile] = Try(setValueFromInfo(index, value))
+
+  /**
+   * Sets the value of the array element at the specified location.
+   *
+   * @param index The location in the array whose value to overwrite
+   * @param value The new value to place in the array
+   * @return The updated remote value
+   */
+  def setValueFromInfo(index: Int, value: ValueInfoProfile): ValueInfoProfile
+
+  /**
+   * Sets the value of the array element at the specified location.
+   *
+   * @param index The location in the array whose value to overwrite
+   * @param value The new value to place in the array
+   * @return The updated remote value
+   */
+  def update(index: Int, value: ValueInfoProfile): ValueInfoProfile =
+    setValueFromInfo(index, value)
 
   /**
    * Sets the values of the array elements starting at the specified location.
@@ -162,12 +208,13 @@ trait ArrayInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
    *               beginning of the index
    * @return Success containing the updated values, otherwise a failure
    */
-  def trySetValues(
+  def trySetValues[T](
     index: Int,
-    values: Seq[Any],
+    values: Seq[T],
     srcIndex: Int,
     length: Int
-  ): Try[Seq[Any]] = Try(setValues(index, values, srcIndex, length))
+  )(implicit typeTag: TypeTag[T]): Try[Seq[ValueInfoProfile]] =
+    Try(setValues(index, values, srcIndex, length))
 
   /**
    * Sets the values of the array elements starting at the specified location.
@@ -179,31 +226,99 @@ trait ArrayInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
    * @param length The total number of elements to overwrite, or -1 to
    *               overwrite all elements in the array from the
    *               beginning of the index
-   * @return The updated values
+   * @return The updated remote values
    */
-  def setValues(
+  def setValues[T](
     index: Int,
-    values: Seq[Any],
+    values: Seq[T],
     srcIndex: Int,
     length: Int
-  ): Seq[Any]
+  )(implicit typeTag: TypeTag[T]): Seq[ValueInfoProfile] = setValuesFromInfo(
+    index,
+    values.map(newValueProfileFromLocalValue(_: T)(typeTag)),
+    srcIndex,
+    length
+  )
+
+  /**
+   * Sets the values of the array elements starting at the specified location.
+   *
+   * @param index The location in the array to begin overwriting
+   * @param values The new values to use when overwriting elements in the array
+   * @param srcIndex The location in the provided value array to begin using
+   *                 values to overwrite this array
+   * @param length The total number of elements to overwrite, or -1 to
+   *               overwrite all elements in the array from the
+   *               beginning of the index
+   * @return Success containing the updated remote values, otherwise a failure
+   */
+  def trySetValuesFromInfo(
+    index: Int,
+    values: Seq[ValueInfoProfile],
+    srcIndex: Int,
+    length: Int
+  ): Try[Seq[ValueInfoProfile]] =
+    Try(setValuesFromInfo(index, values, srcIndex, length))
+
+  /**
+   * Sets the values of the array elements starting at the specified location.
+   *
+   * @param index The location in the array to begin overwriting
+   * @param values The new values to use when overwriting elements in the array
+   * @param srcIndex The location in the provided value array to begin using
+   *                 values to overwrite this array
+   * @param length The total number of elements to overwrite, or -1 to
+   *               overwrite all elements in the array from the
+   *               beginning of the index
+   * @return The updated remote values
+   */
+  def setValuesFromInfo(
+    index: Int,
+    values: Seq[ValueInfoProfile],
+    srcIndex: Int,
+    length: Int
+  ): Seq[ValueInfoProfile]
 
   /**
    * Sets the values of the array elements to the provided values.
    *
    * @param values The new values to use when overwriting elements in the array
-   * @return Success containing the updated values, otherwise a failure
+   * @return Success containing the updated remote values, otherwise a failure
    */
-  def trySetValues(values: Seq[Any]): Try[Seq[Any]] =
+  def trySetValues[T](
+    values: Seq[T]
+  )(implicit typeTag: TypeTag[T]): Try[Seq[ValueInfoProfile]] =
     Try(setValues(values))
 
   /**
    * Sets the values of the array elements to the provided values.
    *
    * @param values The new values to use when overwriting elements in the array
-   * @return The updated values
+   * @return The updated remote values
    */
-  def setValues(values: Seq[Any]): Seq[Any]
+  def setValues[T](
+    values: Seq[T]
+  )(implicit typeTag: TypeTag[T]): Seq[ValueInfoProfile] = {
+    setValuesFromInfo(values.map(newValueProfileFromLocalValue(_: T)(typeTag)))
+  }
+
+  /**
+   * Sets the values of the array elements to the provided values.
+   *
+   * @param values The new values to use when overwriting elements in the array
+   * @return Success containing the updated remote values, otherwise a failure
+   */
+  def trySetValuesFromInfo(
+    values: Seq[ValueInfoProfile]
+  ): Try[Seq[ValueInfoProfile]] = Try(setValuesFromInfo(values))
+
+  /**
+   * Sets the values of the array elements to the provided values.
+   *
+   * @param values The new values to use when overwriting elements in the array
+   * @return The updated remote values
+   */
+  def setValuesFromInfo(values: Seq[ValueInfoProfile]): Seq[ValueInfoProfile]
 
   /**
    * Returns a string presenting a better human-readable description of
@@ -235,5 +350,16 @@ trait ArrayInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
     if (l == 0)                 s"$prefix[<EMPTY>]"
     else if (l <= maxElements)  s"$prefix[$args]"
     else                        s"$prefix[$args,...]"
+  }
+
+  protected def newValueProfileFromLocalValue[T](
+    value: T
+  )(implicit typeTag: TypeTag[T]): ValueInfoProfile = {
+    if (typeTag.tpe <:< typeOf[AnyVal]) {
+      createRemotely(value.asInstanceOf[AnyVal])
+    } else value match {
+      case s: String  => createRemotely(s)
+      case v          => throw new UnsupportedTypeException(v)
+    }
   }
 }
