@@ -110,10 +110,12 @@ object InfoTestClasses {
   }
 
   class TestGrabInfoProfile extends GrabInfoProfile {
+    override def threadOption(threadId: Long): Option[ThreadInfoProfile] = throwException()
+    override def classOption(name: String): Option[ReferenceTypeInfoProfile] = throwException()
     override def `object`(threadReference: ThreadReference, objectReference: ObjectReference): ObjectInfoProfile = throwException()
     override def thread(threadReference: ThreadReference): ThreadInfoProfile = throwException()
-    override def thread(threadId: Long): ThreadInfoProfile = throwException()
     override def classes: Seq[ReferenceTypeInfoProfile] = throwException()
+    override def threads: Seq[ThreadInfoProfile] = throwException()
   }
 
   class TestFrameInfoProfile extends FrameInfoProfile {

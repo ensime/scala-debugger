@@ -19,14 +19,19 @@ trait SwappableGrabInfoProfile extends GrabInfoProfile {
     objectReference
   )
 
+  override def threads: Seq[ThreadInfoProfile] = withCurrentProfile.threads
+
   override def thread(
     threadReference: ThreadReference
   ): ThreadInfoProfile = withCurrentProfile.thread(threadReference)
 
-  override def thread(
+  override def threadOption(
     threadId: Long
-  ): ThreadInfoProfile = withCurrentProfile.thread(threadId)
+  ): Option[ThreadInfoProfile] = withCurrentProfile.threadOption(threadId)
 
   override def classes: Seq[ReferenceTypeInfoProfile] =
     withCurrentProfile.classes
+
+  override def classOption(name: String): Option[ReferenceTypeInfoProfile] =
+    withCurrentProfile.classOption(name)
 }

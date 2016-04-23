@@ -67,6 +67,21 @@ trait GrabInfoProfile {
   ): ObjectInfoProfile
 
   /**
+   * Retrieves all threads contained in the remote JVM.
+   *
+   * @return Success containing the collection of thread info profiles,
+   *         otherwise a failure
+   */
+  def tryThreads: Try[Seq[ThreadInfoProfile]] = Try(threads)
+
+  /**
+   * Retrieves all threads contained in the remote JVM.
+   *
+   * @return The collection of thread info profiles
+   */
+  def threads: Seq[ThreadInfoProfile]
+
+  /**
    * Retrieves a thread profile for the given JDI thread reference.
    *
    * @param threadReference The JDI thread reference with which to wrap in
@@ -103,7 +118,16 @@ trait GrabInfoProfile {
    * @param threadId The id of the thread
    * @return The profile of the matching thread, or throws an exception
    */
-  def thread(threadId: Long): ThreadInfoProfile
+  def thread(threadId: Long): ThreadInfoProfile = threadOption(threadId).get
+
+  /**
+   * Retrieves a thread profile for the thread reference whose unique id
+   * matches the provided id.
+   *
+   * @param threadId The id of the thread
+   * @return Some profile of the matching thread, or None
+   */
+  def threadOption(threadId: Long): Option[ThreadInfoProfile]
 
   /**
    * Retrieves all classes contained in the remote JVM in the form of
@@ -121,4 +145,27 @@ trait GrabInfoProfile {
    * @return The collection of reference type info profiles
    */
   def classes: Seq[ReferenceTypeInfoProfile]
+
+  /**
+   * Retrieves reference information for the class with the specified name.
+   *
+   * @return Success containing the reference type info profile for the class,
+   *         otherwise a failure
+   */
+  def tryClass(name: String): Try[ReferenceTypeInfoProfile] = Try(`class`(name))
+
+  /**
+   * Retrieves reference information for the class with the specified name.
+   *
+   * @return The reference type info profile for the class
+   */
+  def `class`(name: String): ReferenceTypeInfoProfile = classOption(name).get
+
+  /**
+   * Retrieves reference information for the class with the specified name.
+   *
+   * @return Some reference type info profile for the class if found,
+   *         otherwise None
+   */
+  def classOption(name: String): Option[ReferenceTypeInfoProfile]
 }

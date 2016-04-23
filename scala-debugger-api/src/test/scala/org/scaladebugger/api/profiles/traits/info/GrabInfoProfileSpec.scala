@@ -81,6 +81,21 @@ class GrabInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#tryThreads") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[Seq[ThreadInfoProfile]]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threads: Seq[ThreadInfoProfile] =
+            mockUnsafeMethod()
+        }
+
+        val r = Seq(mock[ThreadInfoProfile])
+        mockUnsafeMethod.expects().returning(r).once()
+        grabInfoProfile.tryThreads.get should be (r)
+      }
+    }
+
     describe("#tryThread(threadId)") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[Long, ThreadInfoProfile]
@@ -94,6 +109,22 @@ class GrabInfoProfileSpec extends FunSpec with Matchers
         val r = mock[ThreadInfoProfile]
         mockUnsafeMethod.expects(a1).returning(r).once()
         grabInfoProfile.tryThread(a1).get should be (r)
+      }
+    }
+
+    describe("#thread(threadId)") {
+      it("should return the Some result of threadOption(threadId)") {
+        val mockUnsafeMethod = mockFunction[Long, Option[ThreadInfoProfile]]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadOption(threadId: Long): Option[ThreadInfoProfile] =
+            mockUnsafeMethod(threadId)
+        }
+
+        val a1 = 999L
+        val r = mock[ThreadInfoProfile]
+        mockUnsafeMethod.expects(a1).returning(Some(r)).once()
+        grabInfoProfile.thread(a1) should be (r)
       }
     }
 
@@ -125,6 +156,38 @@ class GrabInfoProfileSpec extends FunSpec with Matchers
         val r = Seq(mock[ReferenceTypeInfoProfile])
         mockUnsafeMethod.expects().returning(r).once()
         grabInfoProfile.tryClasses.get should be (r)
+      }
+    }
+
+    describe("#tryClass(name)") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[String, ReferenceTypeInfoProfile]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def `class`(name: String): ReferenceTypeInfoProfile =
+            mockUnsafeMethod(name)
+        }
+
+        val a1 = "some.class.name"
+        val r = mock[ReferenceTypeInfoProfile]
+        mockUnsafeMethod.expects(a1).returning(r).once()
+        grabInfoProfile.tryClass(a1).get should be (r)
+      }
+    }
+
+    describe("#`class`(name)") {
+      it("should return the Some result of classOption(name)") {
+        val mockUnsafeMethod = mockFunction[String, Option[ReferenceTypeInfoProfile]]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def classOption(name: String): Option[ReferenceTypeInfoProfile] =
+            mockUnsafeMethod(name)
+        }
+
+        val a1 = "some.class.name"
+        val r = mock[ReferenceTypeInfoProfile]
+        mockUnsafeMethod.expects(a1).returning(Some(r)).once()
+        grabInfoProfile.`class`(a1) should be (r)
       }
     }
   }
