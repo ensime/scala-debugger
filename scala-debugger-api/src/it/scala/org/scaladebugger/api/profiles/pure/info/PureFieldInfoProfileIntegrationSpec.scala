@@ -130,7 +130,7 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
             .thread(t.get).topFrame
             .variable("z1")
 
-          field.setValue(333).toLocalValue should be (333)
+          field.setValue(33).toLocalValue should be (33)
         })
       }
     }

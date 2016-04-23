@@ -11,7 +11,7 @@ import org.scaladebugger.test.helpers.Stubs._
  * @note Should have a class name of org.scaladebugger.test.info.Variables
  */
 object Variables {
-  var z1 = 1
+  var z1 = 1.toByte
   var z2 = "something"
   val z3 = null
 

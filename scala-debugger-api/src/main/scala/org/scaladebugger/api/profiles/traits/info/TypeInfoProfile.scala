@@ -32,6 +32,69 @@ trait TypeInfoProfile extends CommonInfoProfile {
   def signature: String
 
   /**
+   * Returns whether or not this type represents a boolean.
+   *
+   * @return True if a boolean type, otherwise false
+   */
+  def isBooleanType: Boolean = signature == "Z"
+
+  /**
+   * Returns whether or not this type represents a byte.
+   *
+   * @return True if a byte type, otherwise false
+   */
+  def isByteType: Boolean = signature == "B"
+
+  /**
+   * Returns whether or not this type represents a character.
+   *
+   * @return True if a char type, otherwise false
+   */
+  def isCharType: Boolean = signature == "C"
+
+  /**
+   * Returns whether or not this type represents a short.
+   *
+   * @return True if a short type, otherwise false
+   */
+  def isShortType: Boolean = signature == "S"
+
+  /**
+   * Returns whether or not this type represents an integer.
+   *
+   * @return True if an integer type, otherwise false
+   */
+  def isIntegerType: Boolean = signature == "I"
+
+  /**
+   * Returns whether or not this type represents a long.
+   *
+   * @return True if a long type, otherwise false
+   */
+  def isLongType: Boolean = signature == "J"
+
+  /**
+   * Returns whether or not this type represents a float.
+   *
+   * @return True if a float type, otherwise false
+   */
+  def isFloatType: Boolean = signature == "F"
+
+  /**
+   * Returns whether or not this type represents a double.
+   *
+   * @return True if a double type, otherwise false
+   */
+  def isDoubleType: Boolean = signature == "D"
+
+  /**
+   * Returns whether or not this type represents a string.
+   *
+   * @return True if a string type, otherwise false
+   */
+  def isStringType: Boolean = signature == "Ljava/lang/String;"
+
+  /**
    * Returns whether or not this type represents an array type.
    *
    * @return True if an array type, otherwise false
@@ -147,6 +210,60 @@ trait TypeInfoProfile extends CommonInfoProfile {
    *         otherwise a failure
    */
   def tryToPrimitiveType: Try[PrimitiveTypeInfoProfile] = Try(toPrimitiveType)
+
+  /**
+   * Attempts to cast the provided primitive to this type, performing any
+   * necessary data conversions.
+   *
+   * @param value The value to transform
+   * @return Success containing the resulting value from the transformation,
+   *         otherwise a failure
+   */
+  def tryCastLocal(value: AnyVal): Try[Any] = Try(castLocal(value))
+
+  /**
+   * Attempts to cast the provided primitive to this type, performing any
+   * necessary data conversions.
+   *
+   * @param value The value to transform
+   * @return The resulting value from the transformation
+   */
+  @throws[CastNotPossibleException]
+  def castLocal(value: AnyVal): Any = castLocal(value.toString)
+
+  /**
+   * Attempts to cast the provided string to this type, performing any
+   * necessary data conversions.
+   *
+   * @param value The value to transform
+   * @return The resulting value from the transformation
+   */
+  def tryCastLocal(value: String): Try[Any] = Try(castLocal(value))
+
+  /**
+   * Attempts to cast the provided string to this type, performing any
+   * necessary data conversions.
+   *
+   * @param value The value to transform
+   * @return The resulting value from the transformation
+   */
+  @throws[CastNotPossibleException]
+  def castLocal(value: String): Any = {
+    def extractFromQuotes(s: String): String =
+      "^\"(.*)\"$".r.findFirstMatchIn(s).map(_.group(1)).getOrElse(s)
+
+    if (isBooleanType)  return value.toBoolean
+    if (isByteType)     return value.toByte
+    if (isCharType)     return value.charAt(0)
+    if (isShortType)    return value.toShort
+    if (isIntegerType)  return value.toInt
+    if (isLongType)     return value.toLong
+    if (isFloatType)    return value.toFloat
+    if (isDoubleType)   return value.toDouble
+    if (isStringType)   return extractFromQuotes(value)
+
+    throw new CastNotPossibleException(value, this)
+  }
 
   /**
    * Returns a string presenting a better human-readable description of

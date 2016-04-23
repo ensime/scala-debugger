@@ -62,7 +62,7 @@ class PureValueInfoProfileIntegrationSpec extends FunSpec with Matchers
             "l" -> "org.scaladebugger.test.info.Variables$NullToString$",
 
             // Field variables
-            "z1" -> "int",
+            "z1" -> "byte",
             "z2" -> "java.lang.String",
             "z3" -> "scala.runtime.Null$" // Old test was "null"
           )
