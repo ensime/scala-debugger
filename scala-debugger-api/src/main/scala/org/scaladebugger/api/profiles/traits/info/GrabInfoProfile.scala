@@ -149,6 +149,7 @@ trait GrabInfoProfile {
   /**
    * Retrieves reference information for the class with the specified name.
    *
+   * @param name The fully-qualified name of the class
    * @return Success containing the reference type info profile for the class,
    *         otherwise a failure
    */
@@ -157,6 +158,7 @@ trait GrabInfoProfile {
   /**
    * Retrieves reference information for the class with the specified name.
    *
+   * @param name The fully-qualified name of the class
    * @return The reference type info profile for the class
    */
   def `class`(name: String): ReferenceTypeInfoProfile = classOption(name).get
@@ -164,6 +166,7 @@ trait GrabInfoProfile {
   /**
    * Retrieves reference information for the class with the specified name.
    *
+   * @param name The fully-qualified name of the class
    * @return Some reference type info profile for the class if found,
    *         otherwise None
    */

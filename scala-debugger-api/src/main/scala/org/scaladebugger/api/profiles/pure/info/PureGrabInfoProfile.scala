@@ -1,9 +1,9 @@
 package org.scaladebugger.api.profiles.pure.info
 //import acyclic.file
 
-import com.sun.jdi.{ObjectReference, ReferenceType, ThreadReference, VirtualMachine}
+import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.classes.ClassManager
-import org.scaladebugger.api.profiles.traits.info.{GrabInfoProfile, ObjectInfoProfile, ReferenceTypeInfoProfile, ThreadInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.util.{Success, Try}
@@ -95,6 +95,51 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
     referenceType
   )
 
+  protected def newTypeProfile(_type: Type): TypeInfoProfile =
+    new PureTypeInfoProfile(scalaVirtualMachine, _type)
+
+  protected def newValueProfile(value: Value): ValueInfoProfile =
+    new PureValueInfoProfile(scalaVirtualMachine, value)
+
+  protected def newLocationProfile(location: Location): LocationInfoProfile =
+    new PureLocationInfoProfile(scalaVirtualMachine, location)
+
+  protected def newMethodProfile(method: Method): MethodInfoProfile =
+    new PureMethodInfoProfile(scalaVirtualMachine, method)
+
+  protected def newFrameProfile(stackFrame: StackFrame): FrameInfoProfile =
+    new PureFrameInfoProfile(scalaVirtualMachine, stackFrame, -1)
+
+  protected def newFieldProfile(
+    objectReference: ObjectReference,
+    field: Field
+  ): VariableInfoProfile = new PureFieldInfoProfile(
+    scalaVirtualMachine,
+    Left(objectReference),
+    field,
+    -1
+  )(_virtualMachine)
+
+  protected def newFieldProfile(
+    referenceType: ReferenceType,
+    field: Field
+  ): VariableInfoProfile = new PureFieldInfoProfile(
+    scalaVirtualMachine,
+    Right(referenceType),
+    field,
+    -1
+  )(_virtualMachine)
+
+  protected def newLocalVariableProfile(
+    stackFrame: StackFrame,
+    localVariable: LocalVariable
+  ): VariableInfoProfile = new PureLocalVariableInfoProfile(
+    scalaVirtualMachine,
+    newFrameProfile(stackFrame),
+    localVariable,
+    -1
+  )(_virtualMachine)
+
   protected def newObjectProfile(
     threadReference: ThreadReference,
     objectReference: ObjectReference
@@ -102,6 +147,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
     scalaVirtualMachine,
     objectReference
   )(
-    _threadReference = threadReference
+    _threadReference = threadReference,
+    _virtualMachine = _virtualMachine
   )
 }
