@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.pure.info
 //import acyclic.file
 
-import com.sun.jdi.{ReferenceType, ThreadReference, VirtualMachine}
-import org.scaladebugger.api.profiles.traits.info.{GrabInfoProfile, ReferenceTypeInfoProfile, ThreadInfoProfile}
+import com.sun.jdi.{ObjectReference, ReferenceType, ThreadReference, VirtualMachine}
+import org.scaladebugger.api.profiles.traits.info.{GrabInfoProfile, ObjectInfoProfile, ReferenceTypeInfoProfile, ThreadInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.util.{Success, Try}
@@ -14,6 +14,19 @@ import scala.util.{Success, Try}
 trait PureGrabInfoProfile extends GrabInfoProfile {
   protected val scalaVirtualMachine: ScalaVirtualMachine
   protected val _virtualMachine: VirtualMachine
+
+  /**
+   * Retrieves a object profile for the given JDI object reference.
+   *
+   * @param threadReference The thread to associate with the object
+   * @param objectReference The JDI object reference with which to wrap in
+   *                        a object info profile
+   * @return The new object info profile
+   */
+  override def `object`(
+    threadReference: ThreadReference,
+    objectReference: ObjectReference
+  ): ObjectInfoProfile = newObjectProfile(threadReference, objectReference)
 
   /**
    * Retrieves a thread profile for the given JDI thread reference.
@@ -63,5 +76,15 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   ): ReferenceTypeInfoProfile = new PureReferenceTypeInfoProfile(
     scalaVirtualMachine,
     referenceType
+  )
+
+  protected def newObjectProfile(
+    threadReference: ThreadReference,
+    objectReference: ObjectReference
+  ): ObjectInfoProfile = new PureObjectInfoProfile(
+    scalaVirtualMachine,
+    objectReference
+  )(
+    _threadReference = threadReference
   )
 }

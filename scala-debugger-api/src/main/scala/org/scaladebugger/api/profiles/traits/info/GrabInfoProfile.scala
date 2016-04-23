@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.traits.info
 //import acyclic.file
 
-import com.sun.jdi.ThreadReference
+import com.sun.jdi.{ObjectReference, ThreadReference}
 
 import scala.util.Try
 
@@ -10,6 +10,62 @@ import scala.util.Try
  * the ability to grab various information for a specific debug profile.
  */
 trait GrabInfoProfile {
+  /**
+   * Retrieves a object profile for the given JDI object reference.
+   *
+   * @param threadInfo The information about the thread to associate with the
+   *                   object
+   * @param objectReference The JDI object reference with which to wrap in
+   *                        a object info profile
+   * @return Success containing the object profile, otherwise a failure
+   */
+  def tryObject(
+    threadInfo: ThreadInfoProfile,
+    objectReference: ObjectReference
+  ): Try[ObjectInfoProfile] =
+    Try(`object`(threadInfo, objectReference))
+
+  /**
+   * Retrieves a object profile for the given JDI object reference.
+   *
+   * @param threadInfo The information about the thread to associate with the
+   *                   object
+   * @param objectReference The JDI object reference with which to wrap in
+   *                        a object info profile
+   * @return The new object info profile
+   */
+  def `object`(
+    threadInfo: ThreadInfoProfile,
+    objectReference: ObjectReference
+  ): ObjectInfoProfile = `object`(threadInfo.toJdiInstance, objectReference)
+
+  /**
+   * Retrieves a object profile for the given JDI object reference.
+   *
+   * @param threadReference The thread to associate with the object
+   * @param objectReference The JDI object reference with which to wrap in
+   *                        a object info profile
+   * @return Success containing the object profile, otherwise a failure
+   */
+  def tryObject(
+    threadReference: ThreadReference,
+    objectReference: ObjectReference
+  ): Try[ObjectInfoProfile] =
+    Try(`object`(threadReference, objectReference))
+
+  /**
+   * Retrieves a object profile for the given JDI object reference.
+   *
+   * @param threadReference The thread to associate with the object
+   * @param objectReference The JDI object reference with which to wrap in
+   *                        a object info profile
+   * @return The new object info profile
+   */
+  def `object`(
+    threadReference: ThreadReference,
+    objectReference: ObjectReference
+  ): ObjectInfoProfile
+
   /**
    * Retrieves a thread profile for the given JDI thread reference.
    *

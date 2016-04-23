@@ -110,6 +110,7 @@ object InfoTestClasses {
   }
 
   class TestGrabInfoProfile extends GrabInfoProfile {
+    override def `object`(threadReference: ThreadReference, objectReference: ObjectReference): ObjectInfoProfile = throwException()
     override def thread(threadReference: ThreadReference): ThreadInfoProfile = throwException()
     override def thread(threadId: Long): ThreadInfoProfile = throwException()
     override def classes: Seq[ReferenceTypeInfoProfile] = throwException()

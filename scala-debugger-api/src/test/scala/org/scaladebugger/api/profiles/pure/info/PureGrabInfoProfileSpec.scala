@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.pure.info
 
-import com.sun.jdi.{ReferenceType, ThreadReference, VirtualMachine}
+import com.sun.jdi.{ObjectReference, ReferenceType, ThreadReference, VirtualMachine}
 import org.scaladebugger.api.lowlevel.wrappers.ReferenceTypeWrapper
-import org.scaladebugger.api.profiles.traits.info.ReferenceTypeInfoProfile
+import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, ReferenceTypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -10,6 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 class PureGrabInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
+  private val mockNewObjectProfile = mockFunction[ThreadReference, ObjectReference, ObjectInfoProfile]
   private val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockVirtualMachine = mock[VirtualMachine]
@@ -17,12 +18,35 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
     override protected val _virtualMachine: VirtualMachine = mockVirtualMachine
 
+    override protected def newObjectProfile(
+      threadReference: ThreadReference,
+      objectReference: ObjectReference
+    ): ObjectInfoProfile = mockNewObjectProfile(threadReference, objectReference)
+
     override protected def newReferenceTypeProfile(
       referenceType: ReferenceType
     ): ReferenceTypeInfoProfile = mockNewReferenceTypeProfile(referenceType)
   }
 
   describe("PureGrabInfoProfile") {
+    describe("#`object`(threadReference, objectReference)") {
+      it("should return a pure object info profile wrapping the thread and object") {
+        val expected = mock[ObjectInfoProfile]
+        val mockThreadReference = mock[ThreadReference]
+        val mockObjectReference = mock[ObjectReference]
+
+        mockNewObjectProfile.expects(mockThreadReference, mockObjectReference)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.`object`(
+          mockThreadReference,
+          mockObjectReference
+        )
+
+        actual should be (expected)
+      }
+    }
+
     describe("#thread(threadReference)") {
       it("should return a pure thread info profile wrapping the thread") {
         val expected = mock[ThreadReference]
