@@ -13,8 +13,9 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *                            local variable
  * @param frame The frame associated with the local variable instance
  * @param _localVariable The reference to the underlying JDI local variable
- * @param offsetIndex The offset of the variable relative to the frame's
- *                    contained local variables
+ * @param offsetIndex The index of the offset of this variable relative to other
+ *                    variables in the same stack frame (or -1 if not
+ *                    providing the information)
  * @param _virtualMachine The virtual machine used to mirror local values on
  *                       the remote JVM
  */

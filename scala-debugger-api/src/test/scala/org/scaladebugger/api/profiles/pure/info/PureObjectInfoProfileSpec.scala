@@ -10,7 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 class PureObjectInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
-  private val mockNewFieldProfile = mockFunction[Field, VariableInfoProfile]
+  private val mockNewFieldProfile = mockFunction[Field, Int, VariableInfoProfile]
   private val mockNewMethodProfile = mockFunction[Method, MethodInfoProfile]
   private val mockNewValueProfile = mockFunction[Value, ValueInfoProfile]
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
@@ -28,8 +28,8 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
     _virtualMachine = mockVirtualMachine,
     _referenceType = mockReferenceType
   ) {
-    override protected def newFieldProfile(field: Field): VariableInfoProfile =
-      mockNewFieldProfile(field)
+    override protected def newFieldProfile(field: Field, offsetIndex: Int): VariableInfoProfile =
+      mockNewFieldProfile(field, offsetIndex)
     override protected def newMethodProfile(method: Method): MethodInfoProfile =
       mockNewMethodProfile(method)
     override protected def newValueProfile(value: Value): ValueInfoProfile =
@@ -366,8 +366,8 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
           .returning(mockFields.asJava).once()
 
         // Create the new profiles for the fields
-        mockFields.zip(expected).foreach { case (f, e) =>
-          mockNewFieldProfile.expects(f).returning(e).once()
+        mockFields.zip(expected).zipWithIndex.foreach { case ((f, e), i) =>
+          mockNewFieldProfile.expects(f, i).returning(e).once()
         }
 
         val actual = pureObjectInfoProfile.fields
@@ -399,7 +399,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
           .returning(mockField).once()
 
         // Create the new profile
-        mockNewFieldProfile.expects(mockField).returning(expected).once()
+        mockNewFieldProfile.expects(mockField, -1).returning(expected).once()
 
         val actual = pureObjectInfoProfile.field(name)
 

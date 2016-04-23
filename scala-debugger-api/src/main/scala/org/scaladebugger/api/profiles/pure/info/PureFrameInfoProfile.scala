@@ -69,19 +69,20 @@ class PureFrameInfoProfile(
   /**
    * Retrieves the variable with the specified name from the frame.
    *
+   * @note Provides no offset index information!
+   *
    * @param name The name of the variable to retrieve
    * @return Profile of the variable or throws an exception
    */
   override def variable(name: String): VariableInfoProfile = {
-    // NOTE: Had to switch from name lookup in local variables to find method
-    //       so we could include index information
-    // NOTE: Ensime implementation looks for last match, so we will do the same
-    localVariables.reverseIterator.find(_.name == name)
+    Option(_stackFrame.visibleVariableByName(name)).map(newLocalVariableProfile)
       .getOrElse(_thisObjectProfile.field(name))
   }
 
   /**
    * Retrieves all variables that represent field variables in this frame.
+   *
+   * @note Provides offset index information!
    *
    * @return The collection of variables as their profile equivalents
    */
@@ -92,6 +93,8 @@ class PureFrameInfoProfile(
   /**
    * Retrieves all variables in this frame.
    *
+   * @note Provides offset index information!
+   *
    * @return The collection of variables as their profile equivalents
    */
   override def allVariables: Seq[VariableInfoProfile] =
@@ -99,6 +102,8 @@ class PureFrameInfoProfile(
 
   /**
    * Retrieves all variables that represent local variables in this frame.
+   *
+   * @note Provides offset index information!
    *
    * @return The collection of variables as their profile equivalents
    */
@@ -111,6 +116,8 @@ class PureFrameInfoProfile(
   /**
    * Retrieves all variables that do not represent arguments in this frame.
    *
+   * @note Provides offset index information!
+   *
    * @return The collection of variables as their profile equivalents
    */
   override def nonArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = {
@@ -120,11 +127,17 @@ class PureFrameInfoProfile(
   /**
    * Retrieves all variables that represent arguments in this frame.
    *
+   * @note Provides offset index information!
+   *
    * @return The collection of variables as their profile equivalents
    */
   override def argumentLocalVariables: Seq[IndexedVariableInfoProfile] = {
     localVariables.filter(_.isArgument)
   }
+
+  protected def newLocalVariableProfile(
+    localVariable: LocalVariable
+  ): IndexedVariableInfoProfile = newLocalVariableProfile(localVariable, -1)
 
   protected def newLocalVariableProfile(
     localVariable: LocalVariable,

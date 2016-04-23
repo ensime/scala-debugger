@@ -24,6 +24,21 @@ trait VariableInfoProfile extends CreateInfoProfile with CommonInfoProfile {
   def name: String
 
   /**
+   * Returns whether or not this variable was provided with its offset index.
+   *
+   * @return True if an offset index exists, otherwise false
+   */
+  def hasOffsetIndex: Boolean = offsetIndex >= 0
+
+  /**
+   * Returns the position of this variable in relation to other variables
+   * in the same stack frame if local or class if field.
+   *
+   * @return Non-negative number if provided with an index, otherwise -1
+   */
+  def offsetIndex: Int
+
+  /**
    * Returns the name of the type representing the variable.
    *
    * @return The type name as a string

@@ -157,5 +157,30 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
         })
       }
     }
+
+    it("should be able to get the offset index of fields") {
+      val testClass = "org.scaladebugger.test.info.Variables"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 32, NoResume)
+        .foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val fieldsAndIndicies = s.withProfile(PureDebugProfile.Name)
+            .thread(t.get).topFrame.fieldVariables.zipWithIndex
+
+          fieldsAndIndicies should not be (empty)
+          fieldsAndIndicies.foreach { case (v, i) =>
+            v.offsetIndex should be (i)
+          }
+        })
+      }
+    }
   }
 }

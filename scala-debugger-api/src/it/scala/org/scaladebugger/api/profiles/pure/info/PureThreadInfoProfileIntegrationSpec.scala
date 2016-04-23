@@ -103,7 +103,8 @@ class PureThreadInfoProfileIntegrationSpec extends FunSpec with Matchers
           val thread = s.withProfile(PureDebugProfile.Name).thread(t.get)
 
           // Local variables are always indexed
-          val localVariable = thread.findVariableByName("a").get
+          val localVariable = thread.topFrame.localVariables
+            .find(_.name == "a").get
             .asInstanceOf[IndexedVariableInfoProfile]
 
           val indexedVariable = thread.findVariableByIndex(

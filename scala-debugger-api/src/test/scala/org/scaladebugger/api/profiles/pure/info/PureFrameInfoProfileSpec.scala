@@ -169,15 +169,13 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         val name = "someName"
         val mockLocalVariable = mock[LocalVariable]
-        val testOffsetIndex = 0
+        val testOffsetIndex = -1 // No index included here
 
-        // Match found in visible variable collection
-        import scala.collection.JavaConverters._
-        (mockStackFrame.visibleVariables _).expects()
-          .returning(Seq(mockLocalVariable).asJava).once()
+        // Match found in visible variables
+        (mockStackFrame.visibleVariableByName _).expects(name)
+          .returning(mockLocalVariable).once()
         mockNewLocalVariableProfile.expects(mockLocalVariable, testOffsetIndex)
           .returning(expected).once()
-        (expected.name _).expects().returning(name).once()
 
         val actual = pureFrameInfoProfile.variable(name)
 
@@ -189,10 +187,9 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         val name = "someName"
 
-        // No match found in visible variables, so return Nil
-        import scala.collection.JavaConverters._
-        (mockStackFrame.visibleVariables _).expects()
-          .returning(Seq[LocalVariable]().asJava).once()
+        // No match found in visible variables, so return null
+        (mockStackFrame.visibleVariableByName _).expects(name)
+          .returning(null).once()
 
         // 'this' object profile is created and used
         val mockObjectProfile = mock[ObjectInfoProfile]
@@ -212,10 +209,10 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
       it("should throw a NoSuchElement exception if no local variable or field matches") {
         val name = "someName"
 
-        // No match found in visible variables, so return Nil
+        // No match found in visible variables, so return null
         import scala.collection.JavaConverters._
-        (mockStackFrame.visibleVariables _).expects()
-          .returning(Seq[LocalVariable]().asJava).once()
+        (mockStackFrame.visibleVariableByName _).expects(name)
+          .returning(null).once()
 
         // 'this' object profile is created and used
         val mockObjectProfile = mock[ObjectInfoProfile]

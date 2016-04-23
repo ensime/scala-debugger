@@ -68,6 +68,7 @@ object InfoTestClasses {
   }
 
   class TestVariableInfoProfile extends VariableInfoProfile with TestCreateInfoProfileTrait {
+    override def offsetIndex: Int = throwException()
     override def typeName: String = throwException()
     override def typeInfo: TypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()

@@ -23,11 +23,4 @@ trait IndexedVariableInfoProfile
    * @return The frame starting from 0 (top of the stack)
    */
   def frameIndex: Int
-
-  /**
-   * Returns the variable's offset within the stack frame.
-   *
-   * @return The offset starting from 0
-   */
-  def offsetIndex: Int
 }

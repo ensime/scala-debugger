@@ -163,5 +163,30 @@ class PureLocalVariableInfoProfileIntegrationSpec extends FunSpec with Matchers
         })
       }
     }
+
+    it("should be able to get the offset index of variables") {
+      val testClass = "org.scaladebugger.test.info.Variables"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 32, NoResume)
+        .foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val variablesAndIndicies = s.withProfile(PureDebugProfile.Name)
+            .thread(t.get).topFrame.localVariables.zipWithIndex
+
+          variablesAndIndicies should not be (empty)
+          variablesAndIndicies.foreach { case (v, i) =>
+            v.offsetIndex should be (i)
+          }
+        })
+      }
+    }
   }
 }

@@ -10,6 +10,32 @@ class VariableInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
   describe("VariableInfoProfile") {
+    describe("#hasOffsetIndex") {
+      it("should return true if the offset index is greater than -1") {
+        val expected = true
+
+        val variableInfoProfile = new TestVariableInfoProfile {
+          override def offsetIndex: Int = 0
+        }
+
+        val actual = variableInfoProfile.hasOffsetIndex
+
+        actual should be (expected)
+      }
+
+      it("should return false if the offset index is negative") {
+        val expected = false
+
+        val variableInfoProfile = new TestVariableInfoProfile {
+          override def offsetIndex: Int = -1
+        }
+
+        val actual = variableInfoProfile.hasOffsetIndex
+
+        actual should be (expected)
+      }
+    }
+
     describe("#trySetValue(AnyVal)") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[AnyVal, ValueInfoProfile]

@@ -9,7 +9,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
-  private val mockNewFieldProfile = mockFunction[Field, VariableInfoProfile]
+  private val mockNewFieldProfile = mockFunction[Field, Int, VariableInfoProfile]
   private val mockNewMethodProfile = mockFunction[Method, MethodInfoProfile]
   private val mockNewLocationProfile = mockFunction[Location, LocationInfoProfile]
   private val mockNewObjectProfile = mockFunction[ObjectReference, ObjectInfoProfile]
@@ -23,8 +23,8 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
     _referenceType = mockReferenceType
   ) {
     override protected def newFieldProfile(
-      field: Field
-    ): VariableInfoProfile = mockNewFieldProfile(field)
+      field: Field, offsetIndex: Int
+    ): VariableInfoProfile = mockNewFieldProfile(field, offsetIndex)
 
     override protected def newMethodProfile(
       method: Method
@@ -72,7 +72,7 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
           .returning(fields.asJava).once()
 
         expected.zip(fields).foreach { case (e, f) =>
-          mockNewFieldProfile.expects(f).returning(e).once()
+          mockNewFieldProfile.expects(f, -1).returning(e).once()
         }
 
         val actual = pureReferenceTypeInfoProfile.allFields
@@ -90,8 +90,8 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
         (mockReferenceType.visibleFields _).expects()
           .returning(fields.asJava).once()
 
-        expected.zip(fields).foreach { case (e, f) =>
-          mockNewFieldProfile.expects(f).returning(e).once()
+        expected.zip(fields).zipWithIndex.foreach { case ((e, f), i) =>
+          mockNewFieldProfile.expects(f, i).returning(e).once()
         }
 
         val actual = pureReferenceTypeInfoProfile.visibleFields
@@ -123,7 +123,7 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
           .returning(mockField).once()
 
         // Create the new profile
-        mockNewFieldProfile.expects(mockField).returning(expected).once()
+        mockNewFieldProfile.expects(mockField, -1).returning(expected).once()
 
         val actual = pureReferenceTypeInfoProfile.field(name)
 

@@ -16,16 +16,39 @@ import scala.util.Try
  * @param _container Either the object or reference type containing the
  *                   field instance
  * @param _field The reference to the underlying JDI field
+ * @param offsetIndex The index of the offset of this field relative to other
+ *                    fields in the same class (or -1 if not providing the
+ *                    information)
  * @param _virtualMachine The virtual machine used to mirror local values on
  *                       the remote JVM
  */
 class PureFieldInfoProfile(
   val scalaVirtualMachine: ScalaVirtualMachine,
   private val _container: Either[ObjectReference, ReferenceType],
-  private val _field: Field
+  private val _field: Field,
+  val offsetIndex: Int
 )(
   protected val _virtualMachine: VirtualMachine = _field.virtualMachine()
 ) extends VariableInfoProfile with PureCreateInfoProfile {
+  /**
+   * Creates a new, pure field information profile with no offset index.
+   *
+   * @param scalaVirtualMachine The high-level virtual machine containing the
+   *                            field
+   * @param _container Either the object or reference type containing the
+   *                   field instance
+   * @param _field The reference to the underlying JDI field
+   * @param _virtualMachine The virtual machine used to mirror local values on
+   *                       the remote JVM
+   */
+  def this(
+    scalaVirtualMachine: ScalaVirtualMachine,
+    _container: Either[ObjectReference, ReferenceType],
+    _field: Field
+  )(
+    _virtualMachine: VirtualMachine = _field.virtualMachine()
+  ) = this(scalaVirtualMachine, _container, _field, -1)(_virtualMachine)
+
   /**
    * Returns the JDI representation this profile instance wraps.
    *

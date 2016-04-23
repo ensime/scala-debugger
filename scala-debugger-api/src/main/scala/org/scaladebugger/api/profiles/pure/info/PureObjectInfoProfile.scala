@@ -152,14 +152,20 @@ class PureObjectInfoProfile(
   /**
    * Returns all visible fields contained in this object.
    *
+   * @note Provides offset index information!
+   *
    * @return The profiles wrapping the visible fields in this object
    */
   override def fields: Seq[VariableInfoProfile] = {
-    _referenceType.visibleFields().asScala.map(newFieldProfile)
+    _referenceType.visibleFields().asScala.zipWithIndex.map { case (f, i) =>
+      newFieldProfile(f, i)
+    }
   }
 
   /**
    * Returns the object's field with the specified name.
+   *
+   * @note Provides no offset index information!
    *
    * @param name The name of the field
    * @return The profile wrapping the field
@@ -169,11 +175,17 @@ class PureObjectInfoProfile(
   }
 
   protected def newFieldProfile(field: Field): VariableInfoProfile =
-    new PureFieldInfoProfile(
-      scalaVirtualMachine,
-      Left(_objectReference),
-      field
-    )()
+    newFieldProfile(field, -1)
+
+  protected def newFieldProfile(
+    field: Field,
+    offsetIndex: Int
+  ): VariableInfoProfile = new PureFieldInfoProfile(
+    scalaVirtualMachine,
+    Left(_objectReference),
+    field,
+    offsetIndex
+  )()
 
   protected def newMethodProfile(method: Method): MethodInfoProfile =
     new PureMethodInfoProfile(scalaVirtualMachine, method)
