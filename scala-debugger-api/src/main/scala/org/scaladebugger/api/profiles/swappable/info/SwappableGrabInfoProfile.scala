@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.swappable.info
 //import acyclic.file
 
-import com.sun.jdi.{ObjectReference, ThreadReference}
+import com.sun.jdi._
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfileManagement
 import org.scaladebugger.api.profiles.traits.info._
 
@@ -34,4 +34,41 @@ trait SwappableGrabInfoProfile extends GrabInfoProfile {
 
   override def classOption(name: String): Option[ReferenceTypeInfoProfile] =
     withCurrentProfile.classOption(name)
+
+  override def `class`(
+    referenceType: ReferenceType
+  ): ReferenceTypeInfoProfile = withCurrentProfile.`class`(referenceType)
+
+  override def field(
+    referenceType: ReferenceType,
+    field: Field
+  ): VariableInfoProfile = withCurrentProfile.field(referenceType, field)
+
+  override def field(
+    objectReference: ObjectReference,
+    field: Field
+  ): VariableInfoProfile = withCurrentProfile.field(objectReference, field)
+
+  override def localVariable(
+    stackFrame: StackFrame,
+    localVariable: LocalVariable
+  ): VariableInfoProfile = withCurrentProfile.localVariable(
+    stackFrame,
+    localVariable
+  )
+
+  override def location(location: Location): LocationInfoProfile =
+    withCurrentProfile.location(location)
+
+  override def method(method: Method): MethodInfoProfile =
+    withCurrentProfile.method(method)
+
+  override def stackFrame(stackFrame: StackFrame): FrameInfoProfile =
+    withCurrentProfile.stackFrame(stackFrame)
+
+  override def `type`(_type: Type): TypeInfoProfile =
+    withCurrentProfile.`type`(_type)
+
+  override def value(value: Value): ValueInfoProfile =
+    withCurrentProfile.value(value)
 }
