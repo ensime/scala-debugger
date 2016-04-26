@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.traits.info
 //import acyclic.file
 
-import com.sun.jdi.{ObjectReference, ThreadReference}
+import com.sun.jdi.{Field, ObjectReference, ReferenceType, ThreadReference}
 
 import scala.util.Try
 
@@ -147,6 +147,13 @@ trait GrabInfoProfile {
   def classes: Seq[ReferenceTypeInfoProfile]
 
   /**
+   * Retrieves a reference type profile for the given JDI reference type.
+   *
+   * @return The reference type info profile wrapping the JDI instance
+   */
+  def `class`(referenceType: ReferenceType): ReferenceTypeInfoProfile
+
+  /**
    * Retrieves reference information for the class with the specified name.
    *
    * @param name The fully-qualified name of the class
@@ -171,4 +178,40 @@ trait GrabInfoProfile {
    *         otherwise None
    */
   def classOption(name: String): Option[ReferenceTypeInfoProfile]
+
+  // ==========================================================================
+
+  /**
+   * Retrieves a field profile for the given JDI field.
+   *
+   * @param referenceType The reference type to associate with the field
+   * @param field The JDI field with which to wrap in a variable info profile
+   * @return Success containing the variable profile, otherwise a failure
+   */
+  def tryField(
+    referenceType: ReferenceType,
+    field: Field
+  ): Try[VariableInfoProfile] = Try(this.field(referenceType, field))
+
+  /**
+   * Retrieves a field profile for the given JDI field.
+   *
+   * @param referenceType The reference type to associate with the field
+   * @param field The JDI field with which to wrap in a variable info profile
+   * @return The variable profile
+   */
+  def field(referenceType: ReferenceType, field: Field): VariableInfoProfile
+
+  def tryField(
+    referenceTypeInfo: ReferenceTypeInfoProfile,
+    field: Field
+  ): Try[VariableInfoProfile] = Try(this.field(referenceTypeInfo, field))
+
+  def field(
+    referenceTypeInfo: ReferenceTypeInfoProfile,
+    field: Field
+  ): VariableInfoProfile = this.field(referenceTypeInfo.toJdiInstance, field)
+
+  // ==========================================================================
+
 }
