@@ -24,6 +24,13 @@ trait FrameInfoProfile extends CommonInfoProfile {
   def index: Int
 
   /**
+   * Returns whether or not this frame was provided with its index.
+   *
+   * @return True if an index exists, otherwise false
+   */
+  def hasIndex: Boolean = index >= 0
+
+  /**
    * Retrieves the object representing 'this' in the current frame scope.
    *
    * @return Success containing the profile of this object, otherwise a failure

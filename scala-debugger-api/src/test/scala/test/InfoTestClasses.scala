@@ -116,6 +116,15 @@ object InfoTestClasses {
     override def thread(threadReference: ThreadReference): ThreadInfoProfile = throwException()
     override def classes: Seq[ReferenceTypeInfoProfile] = throwException()
     override def threads: Seq[ThreadInfoProfile] = throwException()
+    override def `class`(referenceType: ReferenceType): ReferenceTypeInfoProfile = throwException()
+    override def location(location: Location): LocationInfoProfile = throwException()
+    override def `type`(_type: Type): TypeInfoProfile = throwException()
+    override def field(referenceType: ReferenceType, field: Field): VariableInfoProfile = throwException()
+    override def field(objectReference: ObjectReference, field: Field): VariableInfoProfile = throwException()
+    override def localVariable(stackFrame: StackFrame, localVariable: LocalVariable): VariableInfoProfile = throwException()
+    override def stackFrame(stackFrame: StackFrame): FrameInfoProfile = throwException()
+    override def method(method: Method): MethodInfoProfile = throwException()
+    override def value(value: Value): ValueInfoProfile = throwException()
   }
 
   class TestFrameInfoProfile extends FrameInfoProfile {

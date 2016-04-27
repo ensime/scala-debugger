@@ -49,6 +49,32 @@ class FrameInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#hasIndex") {
+      it("should return true if index >= 0") {
+        val expected = true
+
+        val frameInfoProfile = new TestFrameInfoProfile {
+          override def index: Int = 0
+        }
+
+        val actual = frameInfoProfile.hasIndex
+
+        actual should be (expected)
+      }
+
+      it("should return false if index < 0") {
+        val expected = false
+
+        val frameInfoProfile = new TestFrameInfoProfile {
+          override def index: Int = -1
+        }
+
+        val actual = frameInfoProfile.hasIndex
+
+        actual should be (expected)
+      }
+    }
+
     describe("#tryThisObject") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[ObjectInfoProfile]

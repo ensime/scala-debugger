@@ -1,9 +1,9 @@
 package org.scaladebugger.api.profiles.pure.info
 
-import com.sun.jdi.{ObjectReference, ReferenceType, ThreadReference, VirtualMachine}
+import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.lowlevel.wrappers.ReferenceTypeWrapper
-import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, ReferenceTypeInfoProfile, ThreadInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -14,6 +14,14 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
   private val mockNewObjectProfile = mockFunction[ThreadReference, ObjectReference, ObjectInfoProfile]
   private val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfoProfile]
   private val mockNewThreadProfile = mockFunction[ThreadReference, ThreadInfoProfile]
+  private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
+  private val mockNewValueProfile = mockFunction[Value, ValueInfoProfile]
+  private val mockNewLocationProfile = mockFunction[Location, LocationInfoProfile]
+  private val mockNewMethodProfile = mockFunction[Method, MethodInfoProfile]
+  private val mockNewFrameProfile = mockFunction[StackFrame, FrameInfoProfile]
+  private val mockNewFieldProfileFromRef = mockFunction[ReferenceType, Field, VariableInfoProfile]
+  private val mockNewFieldProfileFromObj = mockFunction[ObjectReference, Field, VariableInfoProfile]
+  private val mockNewLocalVariableProfile = mockFunction[StackFrame, LocalVariable, VariableInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockClassManager = mock[ClassManager]
@@ -34,6 +42,38 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
     override protected def newReferenceTypeProfile(
       referenceType: ReferenceType
     ): ReferenceTypeInfoProfile = mockNewReferenceTypeProfile(referenceType)
+
+    override protected def newLocalVariableProfile(
+      stackFrame: StackFrame,
+      localVariable: LocalVariable
+    ): VariableInfoProfile = mockNewLocalVariableProfile(stackFrame, localVariable)
+
+    override protected def newTypeProfile(_type: Type): TypeInfoProfile =
+      mockNewTypeProfile(_type)
+
+    override protected def newValueProfile(value: Value): ValueInfoProfile =
+      mockNewValueProfile(value)
+
+    override protected def newLocationProfile(
+      location: Location
+    ): LocationInfoProfile = mockNewLocationProfile(location)
+
+    override protected def newMethodProfile(method: Method): MethodInfoProfile =
+      mockNewMethodProfile(method)
+
+    override protected def newFrameProfile(
+      stackFrame: StackFrame
+    ): FrameInfoProfile = mockNewFrameProfile(stackFrame)
+
+    override protected def newFieldProfile(
+      objectReference: ObjectReference,
+      field: Field
+    ): VariableInfoProfile = mockNewFieldProfileFromObj(objectReference, field)
+
+    override protected def newFieldProfile(
+      referenceType: ReferenceType,
+      field: Field
+    ): VariableInfoProfile = mockNewFieldProfileFromRef(referenceType, field)
   }
 
   describe("PureGrabInfoProfile") {
@@ -179,6 +219,138 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
         (mockReferenceTypeInfo.name _).expects().returning(name + 1).once()
 
         val actual = pureGrabInfoProfile.classOption(name)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#`class`") {
+      it("should return a reference type info profile wrapping the reference type") {
+        val expected = mock[ReferenceTypeInfoProfile]
+        val mockReferenceType = mock[ReferenceType]
+
+        mockNewReferenceTypeProfile.expects(mockReferenceType)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.`class`(mockReferenceType)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#location") {
+      it("should return a location info profile wrapping the location") {
+        val expected = mock[LocationInfoProfile]
+        val mockLocation = mock[Location]
+
+        mockNewLocationProfile.expects(mockLocation)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.location(mockLocation)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#`type`") {
+      it("should return a type info profile wrapping the type") {
+        val expected = mock[TypeInfoProfile]
+        val mockType = mock[Type]
+
+        mockNewTypeProfile.expects(mockType)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.`type`(mockType)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#field(reference type, field)") {
+      it("should return a variable info profile wrapping the field") {
+        val expected = mock[VariableInfoProfile]
+        val mockReferenceType = mock[ReferenceType]
+        val mockField = mock[Field]
+
+        mockNewFieldProfileFromRef.expects(mockReferenceType, mockField)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.field(mockReferenceType, mockField)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#field(object reference, field)") {
+      it("should return a variable info profile wrapping the field") {
+        val expected = mock[VariableInfoProfile]
+        val mockObjectReference = mock[ObjectReference]
+        val mockField = mock[Field]
+
+        mockNewFieldProfileFromObj.expects(mockObjectReference, mockField)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.field(mockObjectReference, mockField)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#localVariable") {
+      it("should return a variable info profile wrapping the local variable") {
+        val expected = mock[VariableInfoProfile]
+        val mockStackFrame = mock[StackFrame]
+        val mockLocalVariable = mock[LocalVariable]
+
+        mockNewLocalVariableProfile.expects(mockStackFrame, mockLocalVariable)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.localVariable(
+          mockStackFrame,
+          mockLocalVariable
+        )
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#stackFrame") {
+      it("should return a frame info profile wrapping the stack frame") {
+        val expected = mock[FrameInfoProfile]
+        val mockStackFrame = mock[StackFrame]
+
+        mockNewFrameProfile.expects(mockStackFrame)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.stackFrame(mockStackFrame)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#method") {
+      it("should return a method info profile wrapping the method") {
+        val expected = mock[MethodInfoProfile]
+        val mockMethod = mock[Method]
+
+        mockNewMethodProfile.expects(mockMethod)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.method(mockMethod)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#value") {
+      it("should return a value info profile wrapping the value") {
+        val expected = mock[ValueInfoProfile]
+        val mockValue = mock[Value]
+
+        mockNewValueProfile.expects(mockValue)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.value(mockValue)
 
         actual should be (expected)
       }
