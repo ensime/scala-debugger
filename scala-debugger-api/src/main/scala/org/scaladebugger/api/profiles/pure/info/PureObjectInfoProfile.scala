@@ -26,7 +26,7 @@ class PureObjectInfoProfile(
   private val _objectReference: ObjectReference
 )(
   protected val _virtualMachine: VirtualMachine = _objectReference.virtualMachine(),
-  private val _threadReference: ThreadReference = Option(_objectReference.owningThread()).get,
+  private val _threadReference: ThreadReference = _objectReference.owningThread(),
   private val _referenceType: ReferenceType = _objectReference.referenceType()
 ) extends PureValueInfoProfile(
   scalaVirtualMachine,
@@ -81,6 +81,7 @@ class PureObjectInfoProfile(
     arguments: Seq[Any],
     jdiArguments: JDIArgument*
   ): ValueInfoProfile = {
+    assert(_threadReference != null, "No thread available for invocation!")
     val m = method.toJdiInstance
 
     import org.scaladebugger.api.lowlevel.wrappers.Implicits._
