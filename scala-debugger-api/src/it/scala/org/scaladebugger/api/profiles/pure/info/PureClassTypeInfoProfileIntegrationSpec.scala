@@ -72,10 +72,10 @@ class PureClassTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
               "org.scaladebugger.test.info.ClassType$InterfaceFromBaseInterface")
 
           // Should be able to get the superclass of a class
-          classFromBaseClassType.superclass.map(_.name).get should
+          classFromBaseClassType.superclassOption.map(_.name).get should
             be("org.scaladebugger.test.info.ClassType$BaseClass")
-          baseClassType.superclass.map(_.name).get should be("java.lang.Object")
-          objectType.superclass.map(_.name) should be(None)
+          baseClassType.superclassOption.map(_.name).get should be("java.lang.Object")
+          objectType.superclassOption.map(_.name) should be(None)
 
           // Should be able to determine whether a class is a Java enumeration
           notEnumerationClassType.isEnumeration should be(false)
@@ -83,28 +83,28 @@ class PureClassTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
           javaEnumerationType.isEnumeration should be(true)
 
           // Should be able to find methods using their names and signatures
-          classWithMethodsType.method("method1", "()V").get.name should endWith("method1")
-          classWithMethodsType.method("method2", "(I)I").get.name should endWith("method2")
-          classWithMethodsType.method("method3", "(I)I").get.name should endWith("method3")
-          classWithMethodsType.method("method3", "(ILjava/lang/String;)Ljava/lang/String;").get.name should endWith("method3")
-          classWithMethodsType.method("invalid", "signature") should be(None)
+          classWithMethodsType.methodOption("method1", "()V").get.name should endWith("method1")
+          classWithMethodsType.methodOption("method2", "(I)I").get.name should endWith("method2")
+          classWithMethodsType.methodOption("method3", "(I)I").get.name should endWith("method3")
+          classWithMethodsType.methodOption("method3", "(ILjava/lang/String;)Ljava/lang/String;").get.name should endWith("method3")
+          classWithMethodsType.methodOption("invalid", "signature") should be(None)
 
           // Should be able to find object methods using their names and signatures
-          classWithStaticMethodsType.method("staticMethod1", "()V").get.name should endWith("staticMethod1")
-          classWithStaticMethodsType.method("staticMethod2", "(I)I").get.name should endWith("staticMethod2")
-          classWithStaticMethodsType.method("staticMethod3", "(I)I").get.name should endWith("staticMethod3")
-          classWithStaticMethodsType.method("staticMethod3", "(ILjava/lang/String;)Ljava/lang/String;").get.name should endWith("staticMethod3")
-          classWithStaticMethodsType.method("invalid", "signature") should be(None)
+          classWithStaticMethodsType.methodOption("staticMethod1", "()V").get.name should endWith("staticMethod1")
+          classWithStaticMethodsType.methodOption("staticMethod2", "(I)I").get.name should endWith("staticMethod2")
+          classWithStaticMethodsType.methodOption("staticMethod3", "(I)I").get.name should endWith("staticMethod3")
+          classWithStaticMethodsType.methodOption("staticMethod3", "(ILjava/lang/String;)Ljava/lang/String;").get.name should endWith("staticMethod3")
+          classWithStaticMethodsType.methodOption("invalid", "signature") should be(None)
 
           // Should be able to find static methods using their names and signatures
-          javaStaticMethodsType.method("staticMethod1", "()V").get.name should endWith("staticMethod1")
-          javaStaticMethodsType.method("staticMethod2", "(I)I").get.name should endWith("staticMethod2")
-          javaStaticMethodsType.method("staticMethod3", "(I)I").get.name should endWith("staticMethod3")
-          javaStaticMethodsType.method("staticMethod3", "(ILjava/lang/String;)Ljava/lang/String;").get.name should endWith("staticMethod3")
-          javaStaticMethodsType.method("invalid", "signature") should be(None)
+          javaStaticMethodsType.methodOption("staticMethod1", "()V").get.name should endWith("staticMethod1")
+          javaStaticMethodsType.methodOption("staticMethod2", "(I)I").get.name should endWith("staticMethod2")
+          javaStaticMethodsType.methodOption("staticMethod3", "(I)I").get.name should endWith("staticMethod3")
+          javaStaticMethodsType.methodOption("staticMethod3", "(ILjava/lang/String;)Ljava/lang/String;").get.name should endWith("staticMethod3")
+          javaStaticMethodsType.methodOption("invalid", "signature") should be(None)
 
           // Should be able to find constructors
-          classWithConstructorType.method("<init>", "(ILjava/lang/String;)V").get.name should endWith("<init>")
+          classWithConstructorType.methodOption("<init>", "(ILjava/lang/String;)V").get.name should endWith("<init>")
         })
       }
     }
@@ -129,7 +129,7 @@ class PureClassTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
           val javaStaticMethodsType = frame.variable("javaStaticMethodsClass").typeInfo.toClassType
 
           // Should be able to find static methods using their names and signatures
-          val method = javaStaticMethodsType.method("staticMethod3", "(I)I").get
+          val method = javaStaticMethodsType.methodOption("staticMethod3", "(I)I").get
           val result = javaStaticMethodsType.invokeStaticMethod(
             thread,
             method,

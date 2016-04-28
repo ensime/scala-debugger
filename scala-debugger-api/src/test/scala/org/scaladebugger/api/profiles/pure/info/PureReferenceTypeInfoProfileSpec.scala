@@ -100,21 +100,23 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#field") {
-      it("should throw a NoSuchElement exception if no field with matching name is found") {
+    describe("#fieldOption") {
+      it("should return None if no field with matching name is found") {
+        val expected = None
+
         val name = "someName"
 
         // Lookup the field and return null indicating no field found
         (mockReferenceType.fieldByName _).expects(name)
           .returning(null).once()
 
-        intercept[NoSuchElementException] {
-          pureReferenceTypeInfoProfile.field(name)
-        }
+        val actual = pureReferenceTypeInfoProfile.fieldOption(name)
+
+        actual should be (expected)
       }
 
-      it("should return a profile wrapping the associated field if found") {
-        val expected = mock[VariableInfoProfile]
+      it("should return Some profile wrapping the associated field if found") {
+        val expected = Some(mock[VariableInfoProfile])
         val name = "someName"
 
         // Lookup the field
@@ -123,9 +125,9 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
           .returning(mockField).once()
 
         // Create the new profile
-        mockNewFieldProfile.expects(mockField, -1).returning(expected).once()
+        mockNewFieldProfile.expects(mockField, -1).returning(expected.get).once()
 
-        val actual = pureReferenceTypeInfoProfile.field(name)
+        val actual = pureReferenceTypeInfoProfile.fieldOption(name)
 
         actual should be (expected)
       }
@@ -150,35 +152,36 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#indexedField") {
-      it("should throw a NoSuchElement exception if no field with matching name is found") {
+    describe("#indexedFieldOption") {
+      it("should return None if no field with matching name is found") {
+        val expected = None
         val name = "someName"
 
         import scala.collection.JavaConverters._
         (mockReferenceType.visibleFields _).expects()
           .returning(Seq[Field]().asJava).once()
 
-        intercept[NoSuchElementException] {
-          pureReferenceTypeInfoProfile.indexedField(name)
-        }
+        val actual = pureReferenceTypeInfoProfile.indexedFieldOption(name)
+
+        actual should be (expected)
       }
 
-      it("should return a profile wrapping the associated field if found") {
-        val expected = mock[VariableInfoProfile]
+      it("should return Some profile wrapping the associated field if found") {
+        val expected = Some(mock[VariableInfoProfile])
         val name = "someName"
 
         // Lookup the field
         val mockField = mock[Field]
-        (expected.name _).expects().returning(name).once()
+        (expected.get.name _).expects().returning(name).once()
 
         import scala.collection.JavaConverters._
         (mockReferenceType.visibleFields _).expects()
           .returning(Seq(mockField).asJava).once()
 
         // Create the new profile
-        mockNewFieldProfile.expects(mockField, 0).returning(expected).once()
+        mockNewFieldProfile.expects(mockField, 0).returning(expected.get).once()
 
-        val actual = pureReferenceTypeInfoProfile.indexedField(name)
+        val actual = pureReferenceTypeInfoProfile.indexedFieldOption(name)
 
         actual should be (expected)
       }
@@ -242,18 +245,28 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#classLoader") {
-      it("should return a profile wrapping the class loader of the reference type") {
-        val expected = mock[ClassLoaderInfoProfile]
+    describe("#classLoaderOption") {
+      it("should return Some profile wrapping the class loader of the reference type") {
+        val expected = Some(mock[ClassLoaderInfoProfile])
         val classLoader = mock[ClassLoaderReference]
 
         (mockReferenceType.classLoader _).expects()
           .returning(classLoader).once()
 
         mockNewClassLoaderProfile.expects(classLoader)
-          .returning(expected).once()
+          .returning(expected.get).once()
 
-        val actual = pureReferenceTypeInfoProfile.classLoader
+        val actual = pureReferenceTypeInfoProfile.classLoaderOption
+
+        actual should be (expected)
+      }
+
+      it("should return None if class loader is unavailable") {
+        val expected = None
+
+        (mockReferenceType.classLoader _).expects().returning(null).once()
+
+        val actual = pureReferenceTypeInfoProfile.classLoaderOption
 
         actual should be (expected)
       }

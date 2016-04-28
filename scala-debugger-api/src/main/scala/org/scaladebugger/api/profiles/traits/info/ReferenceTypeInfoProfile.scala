@@ -84,7 +84,18 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @param name The name of the field to retrieve
    * @return The field as a variable info profile
    */
-  def indexedField(name: String): VariableInfoProfile
+  @throws[NoSuchElementException]
+  def indexedField(name: String): VariableInfoProfile =
+    indexedFieldOption(name).get
+
+  /**
+   * Retrieves the visible field with the matching name with offset index
+   * information.
+   *
+   * @param name The name of the field to retrieve
+   * @return Some field as a variable info profile, or None if doesn't exist
+   */
+  def indexedFieldOption(name: String): Option[VariableInfoProfile]
 
   /**
    * Retrieves the visible field with the matching name with offset index
@@ -101,9 +112,18 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * Retrieves the visible field with the matching name.
    *
    * @param name The name of the field to retrieve
+   * @return Some field as a variable info profile, or None if doesn't exist
+   */
+  def fieldOption(name: String): Option[VariableInfoProfile]
+
+  /**
+   * Retrieves the visible field with the matching name.
+   *
+   * @param name The name of the field to retrieve
    * @return The field as a variable info profile
    */
-  def field(name: String): VariableInfoProfile
+  @throws[NoSuchElementException]
+  def field(name: String): VariableInfoProfile = fieldOption(name).get
 
   /**
    * Retrieves the visible field with the matching name.
@@ -176,7 +196,17 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    *
    * @return The profile representing the classloader
    */
-  def classLoader: ClassLoaderInfoProfile
+  @throws[NoSuchElementException]
+  def classLoader: ClassLoaderInfoProfile = classLoaderOption.get
+
+  /**
+   * Retrieves the classloader object which loaded the class associated with
+   * this type.
+   *
+   * @return Some profile representing the classloader,
+   *         otherwise None if loaded through the bootstrap classloader
+   */
+  def classLoaderOption: Option[ClassLoaderInfoProfile]
 
   /**
    * Retrieves the class object associated with this type.

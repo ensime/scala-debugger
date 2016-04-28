@@ -101,7 +101,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#superclass") {
+    describe("#superclassOption") {
       it("should return Some(ClassType) if this class has a superclass") {
         val expected = Some(mock[ClassTypeInfoProfile])
 
@@ -110,7 +110,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         mockNewClassTypeProfile.expects(mockClassType)
           .returning(expected.get).once()
 
-        val actual = pureClassTypeInfoProfile.superclass
+        val actual = pureClassTypeInfoProfile.superclassOption
 
         actual should be (expected)
       }
@@ -120,7 +120,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
 
         (mockClassType.superclass _).expects().returning(null).once()
 
-        val actual = pureClassTypeInfoProfile.superclass
+        val actual = pureClassTypeInfoProfile.superclassOption
 
         actual should be (expected)
       }
@@ -182,7 +182,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         mockNewMethodProfile.expects(mockMethod)
           .returning(expected.get).once()
 
-        val actual = pureClassTypeInfoProfile.method(methodName, methodSignature)
+        val actual = pureClassTypeInfoProfile.methodOption(methodName, methodSignature)
 
         actual should be (expected)
       }
@@ -198,7 +198,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
           .returning(null)
           .once()
 
-        val actual = pureClassTypeInfoProfile.method(methodName, methodSignature)
+        val actual = pureClassTypeInfoProfile.methodOption(methodName, methodSignature)
 
         actual should be (expected)
       }
@@ -238,7 +238,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
             jdiArguments
           )
 
-          override def method(
+          override def methodOption(
             name: String,
             signature: String
           ): Option[MethodInfoProfile] = mockUnsafeMethod(name, signature)
@@ -418,7 +418,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
             jdiArguments
           )
 
-          override def method(
+          override def methodOption(
             name: String,
             signature: String
           ): Option[MethodInfoProfile] = mockUnsafeMethod(name, signature)

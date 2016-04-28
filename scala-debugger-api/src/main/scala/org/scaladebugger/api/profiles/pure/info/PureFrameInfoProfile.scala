@@ -23,7 +23,8 @@ class PureFrameInfoProfile(
   val index: Int
 ) extends FrameInfoProfile {
   private lazy val _threadReference = _stackFrame.thread()
-  private lazy val _thisObjectProfile = newObjectProfile(_stackFrame.thisObject())
+  private lazy val _thisObjectProfile =
+    Option(_stackFrame.thisObject()).map(newObjectProfile)
   private lazy val _currentThreadProfile = newThreadProfile(_threadReference)
   private lazy val _locationProfile = newLocationProfile(_stackFrame.location())
 
@@ -34,12 +35,13 @@ class PureFrameInfoProfile(
    */
   override def toJdiInstance: StackFrame = _stackFrame
 
+
   /**
    * Retrieves the object representing 'this' in the current frame scope.
    *
-   * @return The profile of this object
+   * @return Some profile of this object, or None if not available
    */
-  override def thisObject: ObjectInfoProfile = _thisObjectProfile
+  override def thisObjectOption: Option[ObjectInfoProfile] = _thisObjectProfile
 
   /**
    * Retrieves the thread associated with this frame.
@@ -69,13 +71,12 @@ class PureFrameInfoProfile(
   /**
    * Retrieves the variable with the specified name from the frame.
    *
-   * @note Provides no offset index information!
    * @param name The name of the variable to retrieve
-   * @return Profile of the variable or throws an exception
+   * @return Some profile of the variable, or None if it doesn't exist
    */
-  override def variable(name: String): VariableInfoProfile = {
+  override def variableOption(name: String): Option[VariableInfoProfile] = {
     Option(_stackFrame.visibleVariableByName(name)).map(newLocalVariableProfile)
-      .getOrElse(_thisObjectProfile.field(name))
+      .orElse(_thisObjectProfile.flatMap(_.fieldOption(name)))
   }
 
   /**
@@ -85,7 +86,7 @@ class PureFrameInfoProfile(
    * @return The collection of variables as their profile equivalents
    */
   override def fieldVariables: Seq[VariableInfoProfile] = {
-    _thisObjectProfile.fields
+    _thisObjectProfile.map(_.fields).getOrElse(Nil)
   }
 
   /**
@@ -132,11 +133,11 @@ class PureFrameInfoProfile(
    * index information.
    *
    * @param name The name of the variable to retrieve
-   * @return Profile of the variable or throws an exception
+   * @return Some profile of the variable, or None if it doesn't exist
    */
-  override def indexedVariable(name: String): VariableInfoProfile = {
+  override def indexedVariableOption(name: String): Option[VariableInfoProfile] = {
     indexedLocalVariables.reverse.find(_.name == name)
-      .getOrElse(_thisObjectProfile.indexedField(name))
+      .orElse(_thisObjectProfile.flatMap(_.indexedFieldOption(name)))
   }
 
   /**
@@ -156,7 +157,7 @@ class PureFrameInfoProfile(
    * @return The collection of variables as their profile equivalents
    */
   override def indexedFieldVariables: Seq[VariableInfoProfile] = {
-    _thisObjectProfile.indexedFields
+    _thisObjectProfile.map(_.indexedFields).getOrElse(Nil)
   }
 
   /**

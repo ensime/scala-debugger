@@ -55,7 +55,7 @@ class PureClassTypeInfoProfile(
    *
    * @return Some class type info if the super class exists, otherwise None
    */
-  override def superclass: Option[ClassTypeInfoProfile] =
+  override def superclassOption: Option[ClassTypeInfoProfile] =
     Option(_classType.superclass()).map(newClassTypeProfile)
 
   /**
@@ -83,7 +83,7 @@ class PureClassTypeInfoProfile(
    * @param signature The JNI signature of the method
    * @return Some method if found, otherwise None
    */
-  override def method(
+  override def methodOption(
     name: String,
     signature: String
   ): Option[MethodInfoProfile] = Option(_classType.concreteMethodByName(
@@ -146,7 +146,7 @@ class PureClassTypeInfoProfile(
     jdiArguments: JDIArgument*
   ): ObjectInfoProfile = newInstance(
     thread,
-    method(constructorName, constructorSignature).get,
+    methodOption(constructorName, constructorSignature).get,
     arguments,
     jdiArguments: _*
   )
@@ -170,7 +170,7 @@ class PureClassTypeInfoProfile(
     jdiArguments: JDIArgument*
   ): ValueInfoProfile = invokeStaticMethod(
     thread,
-    method(methodName, methodSignature).get,
+    methodOption(methodName, methodSignature).get,
     arguments,
     jdiArguments: _*
   )

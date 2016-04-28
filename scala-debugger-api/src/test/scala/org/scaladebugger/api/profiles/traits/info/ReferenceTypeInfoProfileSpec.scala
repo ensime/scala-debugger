@@ -24,6 +24,39 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#classLoader") {
+      it("should retrieve the value from classLoaderOption") {
+        val expected = mock[ClassLoaderInfoProfile]
+        val mockOptionMethod = mockFunction[Option[ClassLoaderInfoProfile]]
+
+        val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
+          override def classLoaderOption: Option[ClassLoaderInfoProfile] =
+            mockOptionMethod()
+        }
+
+        mockOptionMethod.expects().returning(Some(expected)).once()
+
+        val actual = referenceTypeInfoProfile.classLoader
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if classLoaderOption is None") {
+        val mockOptionMethod = mockFunction[Option[ClassLoaderInfoProfile]]
+
+        val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
+          override def classLoaderOption: Option[ClassLoaderInfoProfile] =
+            mockOptionMethod()
+        }
+
+        mockOptionMethod.expects().returning(None).once()
+
+        intercept[NoSuchElementException] {
+          referenceTypeInfoProfile.classLoader
+        }
+      }
+    }
+
     describe("#tryIndexedField") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[String, VariableInfoProfile]
@@ -37,6 +70,41 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
         val r = mock[VariableInfoProfile]
         mockUnsafeMethod.expects(a1).returning(r).once()
         referenceTypeInfoProfile.tryIndexedField(a1).get should be (r)
+      }
+    }
+
+    describe("#indexedField") {
+      it("should retrieve the value from indexedFieldOption") {
+        val expected = mock[VariableInfoProfile]
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
+          override def indexedFieldOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(Some(expected)).once()
+
+        val actual = referenceTypeInfoProfile.indexedField(name)
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if indexedFieldOption is None") {
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
+          override def indexedFieldOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(None).once()
+
+        intercept[NoSuchElementException] {
+          referenceTypeInfoProfile.indexedField(name)
+        }
       }
     }
 
@@ -101,6 +169,41 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
         val r = mock[VariableInfoProfile]
         mockUnsafeMethod.expects(a1).returning(r).once()
         referenceTypeInfoProfile.tryField(a1).get should be (r)
+      }
+    }
+
+    describe("#field") {
+      it("should retrieve the value from fieldOption") {
+        val expected = mock[VariableInfoProfile]
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
+          override def fieldOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(Some(expected)).once()
+
+        val actual = referenceTypeInfoProfile.field(name)
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if fieldOption is None") {
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
+          override def fieldOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(None).once()
+
+        intercept[NoSuchElementException] {
+          referenceTypeInfoProfile.field(name)
+        }
       }
     }
   }

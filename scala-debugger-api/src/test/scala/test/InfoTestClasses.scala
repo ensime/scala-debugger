@@ -31,7 +31,6 @@ object InfoTestClasses {
 
   class TestThreadInfoProfile extends TestObjectInfoProfile with ThreadInfoProfile {
     override def indexedFields: Seq[VariableInfoProfile] = throwException()
-    override def indexedField(name: String): VariableInfoProfile = throwException()
     override def typeInfo: ReferenceTypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def frames: Seq[FrameInfoProfile] = throwException()
@@ -84,16 +83,16 @@ object InfoTestClasses {
   }
 
   class TestObjectInfoProfile extends TestValueInfoProfile with ObjectInfoProfile {
+    override def indexedFieldOption(name: String): Option[VariableInfoProfile] = throwException()
+    override def methodOption(name: String, parameterTypeNames: String*): Option[MethodInfoProfile] = throwException()
+    override def fieldOption(name: String): Option[VariableInfoProfile] = throwException()
     override def indexedFields: Seq[VariableInfoProfile] = throwException()
-    override def indexedField(name: String): VariableInfoProfile = throwException()
     override def typeInfo: ReferenceTypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def uniqueId: Long = throwException()
     override def invoke(methodInfoProfile: MethodInfoProfile, arguments: Seq[Any], jdiArguments: JDIArgument*): ValueInfoProfile = throwException()
     override def invoke(methodName: String, parameterTypeNames: Seq[String], arguments: Seq[Any], jdiArguments: JDIArgument*): ValueInfoProfile = throwException()
-    override def method(name: String, parameterTypeNames: String*): MethodInfoProfile = throwException()
     override def fields: Seq[VariableInfoProfile] = throwException()
-    override def field(name: String): VariableInfoProfile = throwException()
     override def methods: Seq[MethodInfoProfile] = throwException()
     override def toJdiInstance: ObjectReference = throwException()
     override def referenceType: ReferenceTypeInfoProfile = throwException()
@@ -128,7 +127,9 @@ object InfoTestClasses {
   }
 
   class TestFrameInfoProfile extends FrameInfoProfile {
-    override def indexedVariable(name: String): VariableInfoProfile = throwException()
+    override def thisObjectOption: Option[ObjectInfoProfile] = throwException()
+    override def variableOption(name: String): Option[VariableInfoProfile] = throwException()
+    override def indexedVariableOption(name: String): Option[VariableInfoProfile] = throwException()
     override def indexedArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = throwException()
     override def indexedFieldVariables: Seq[VariableInfoProfile] = throwException()
     override def indexedAllVariables: Seq[VariableInfoProfile] = throwException()
@@ -136,11 +137,9 @@ object InfoTestClasses {
     override def indexedLocalVariables: Seq[IndexedVariableInfoProfile] = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def index: Int = throwException()
-    override def thisObject: ObjectInfoProfile = throwException()
     override def currentThread: ThreadInfoProfile = throwException()
     override def location: LocationInfoProfile = throwException()
     override def fieldVariables: Seq[VariableInfoProfile] = throwException()
-    override def variable(name: String): VariableInfoProfile = throwException()
     override def allVariables: Seq[VariableInfoProfile] = throwException()
     override def localVariables: Seq[IndexedVariableInfoProfile] = throwException()
     override def argumentValues: Seq[ValueInfoProfile] = throwException()
@@ -198,8 +197,10 @@ object InfoTestClasses {
   }
 
   class TestReferenceTypeInfoProfile extends TestTypeInfoProfile with ReferenceTypeInfoProfile {
+    override def indexedFieldOption(name: String): Option[VariableInfoProfile] = throwException()
+    override def fieldOption(name: String): Option[VariableInfoProfile] = throwException()
+    override def classLoaderOption: Option[ClassLoaderInfoProfile] = throwException()
     override def indexedVisibleFields: Seq[VariableInfoProfile] = throwException()
-    override def indexedField(name: String): VariableInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def toJdiInstance: ReferenceType = throwException()
     override def isFinal: Boolean = throwException()
@@ -215,8 +216,6 @@ object InfoTestClasses {
     override def isStatic: Boolean = throwException()
     override def isAbstract: Boolean = throwException()
     override def allMethods: Seq[MethodInfoProfile] = throwException()
-    override def field(name: String): VariableInfoProfile = throwException()
-    override def classLoader: ClassLoaderInfoProfile = throwException()
     override def isVerified: Boolean = throwException()
     override def sourceDebugExtension: String = throwException()
     override def minorVersion: Int = throwException()

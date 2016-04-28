@@ -284,8 +284,10 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#method") {
-      it("should throw a NoSuchElement exception if no method with matching name is found") {
+    describe("#methodOption") {
+      it("should return None if no method with matching name is found") {
+        val expected = None
+
         val name = "someName"
         val paramTypes = Seq("some.type")
 
@@ -294,12 +296,14 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
         (mockReferenceType.methodsByName(_: String)).expects(name)
           .returning(Seq[Method]().asJava).once()
 
-        intercept[NoSuchElementException] {
-          pureObjectInfoProfile.method(name, paramTypes: _*)
-        }
+        val actual = pureObjectInfoProfile.methodOption(name, paramTypes: _*)
+
+        actual should be (expected)
       }
 
-      it("should throw a NoSuchElement exception if no method with matching parameters is found") {
+      it("should return None if no method with matching parameters is found") {
+        val expected = None
+
         val name = "someName"
         val paramTypes = Seq("some.type")
 
@@ -319,13 +323,13 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
         (mockTypeCheckerProfile.equalTypeNames _).expects(*, *)
           .returning(false).once()
 
-        intercept[NoSuchElementException] {
-          pureObjectInfoProfile.method(name, paramTypes: _*)
-        }
+        val actual = pureObjectInfoProfile.methodOption(name, paramTypes: _*)
+
+        actual should be (expected)
       }
 
-      it("should return a profile wrapping the associated method if found") {
-        val expected = mock[MethodInfoProfile]
+      it("should return Some profile wrapping the associated method if found") {
+        val expected = Some(mock[MethodInfoProfile])
 
         val name = "someName"
         val paramTypes = Seq("some.type")
@@ -347,9 +351,9 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
           .returning(true).once()
 
         // New method profile created
-        mockNewMethodProfile.expects(mockMethod).returning(expected).once()
+        mockNewMethodProfile.expects(mockMethod).returning(expected.get).once()
 
-        val actual = pureObjectInfoProfile.method(name, paramTypes: _*)
+        val actual = pureObjectInfoProfile.methodOption(name, paramTypes: _*)
 
         actual should be (expected)
       }
@@ -376,21 +380,23 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#field") {
-      it("should throw a NoSuchElement exception if no field with matching name is found") {
+    describe("#fieldOption") {
+      it("should return None if no field with matching name is found") {
+        val expected = None
+
         val name = "someName"
 
         // Lookup the field and return null indicating no field found
         (mockReferenceType.fieldByName _).expects(name)
           .returning(null).once()
 
-        intercept[NoSuchElementException] {
-          pureObjectInfoProfile.field(name)
-        }
+        val actual = pureObjectInfoProfile.fieldOption(name)
+
+        actual should be (expected)
       }
 
-      it("should return a profile wrapping the associated field if found") {
-        val expected = mock[VariableInfoProfile]
+      it("should return Some profile wrapping the associated field if found") {
+        val expected = Some(mock[VariableInfoProfile])
         val name = "someName"
 
         // Lookup the field
@@ -399,9 +405,9 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
           .returning(mockField).once()
 
         // Create the new profile
-        mockNewFieldProfile.expects(mockField, -1).returning(expected).once()
+        mockNewFieldProfile.expects(mockField, -1).returning(expected.get).once()
 
-        val actual = pureObjectInfoProfile.field(name)
+        val actual = pureObjectInfoProfile.fieldOption(name)
 
         actual should be(expected)
       }
@@ -429,7 +435,9 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
     }
 
     describe("#indexedField") {
-      it("should throw a NoSuchElement exception if no field with matching name is found") {
+      it("should return None if no field with matching name is found") {
+        val expected = None
+
         val name = "someName"
 
         // Lookup the visible fields (Nil indicates none)
@@ -437,27 +445,27 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
         (mockReferenceType.visibleFields _).expects()
           .returning(Seq[Field]().asJava).once()
 
-        intercept[NoSuchElementException] {
-          pureObjectInfoProfile.indexedField(name)
-        }
+        val actual = pureObjectInfoProfile.indexedFieldOption(name)
+
+        actual should be (expected)
       }
 
       it("should return a profile wrapping the associated field if found") {
-        val expected = mock[VariableInfoProfile]
+        val expected = Some(mock[VariableInfoProfile])
         val name = "someName"
 
         // Lookup the visible fields
         val mockField = mock[Field]
-        (expected.name _).expects().returning(name).once()
+        (expected.get.name _).expects().returning(name).once()
 
         import scala.collection.JavaConverters._
         (mockReferenceType.visibleFields _).expects()
           .returning(Seq(mockField).asJava).once()
 
         // Create the new profile
-        mockNewFieldProfile.expects(mockField, 0).returning(expected).once()
+        mockNewFieldProfile.expects(mockField, 0).returning(expected.get).once()
 
-        val actual = pureObjectInfoProfile.indexedField(name)
+        val actual = pureObjectInfoProfile.indexedFieldOption(name)
 
         actual should be (expected)
       }

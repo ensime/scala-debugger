@@ -60,7 +60,7 @@ trait ClassTypeInfoProfile extends ReferenceTypeInfoProfile with TypeInfoProfile
    *
    * @return Some class type info if the super class exists, otherwise None
    */
-  def superclass: Option[ClassTypeInfoProfile]
+  def superclassOption: Option[ClassTypeInfoProfile]
 
   /**
    * Indicates whether or not this class is a Java enumeration.
@@ -75,10 +75,9 @@ trait ClassTypeInfoProfile extends ReferenceTypeInfoProfile with TypeInfoProfile
    *
    * @param name The name of the method
    * @param signature The JNI signature of the method
-   *
    * @return Some method if found, otherwise None
    */
-  def method(name: String, signature: String): Option[MethodInfoProfile]
+  def methodOption(name: String, signature: String): Option[MethodInfoProfile]
 
   /**
    * Retrieves the single, non-abstract, visible method on this class with the
@@ -86,11 +85,10 @@ trait ClassTypeInfoProfile extends ReferenceTypeInfoProfile with TypeInfoProfile
    *
    * @param name The name of the method
    * @param signature The JNI signature of the method
-   *
    * @return Success containing the method if found, otherwise a failure
    */
   def tryMethod(name: String, signature: String): Try[MethodInfoProfile] =
-    Try(method(name, signature).get)
+    Try(methodOption(name, signature).get)
 
   /**
    * Invokes the class' static method.

@@ -26,7 +26,7 @@ class PureObjectInfoProfile(
   private val _objectReference: ObjectReference
 )(
   protected val _virtualMachine: VirtualMachine = _objectReference.virtualMachine(),
-  private val _threadReference: ThreadReference = _objectReference.owningThread(),
+  private val _threadReference: ThreadReference = Option(_objectReference.owningThread()).get,
   private val _referenceType: ReferenceType = _objectReference.referenceType()
 ) extends PureValueInfoProfile(
   scalaVirtualMachine,
@@ -137,16 +137,16 @@ class PureObjectInfoProfile(
    * @param name               The name of the method
    * @param parameterTypeNames The fully-qualified type names of the parameters
    *                           of the method to find
-   * @return The profile wrapping the method
+   * @return Some profile wrapping the method, otherwise None if doesn't exist
    */
-  override def method(
+  override def methodOption(
     name: String,
     parameterTypeNames: String*
-  ): MethodInfoProfile = {
+  ): Option[MethodInfoProfile] = {
     _referenceType.methodsByName(name).asScala.find(
       _.argumentTypeNames().asScala.zip(parameterTypeNames)
         .forall(s => typeChecker.equalTypeNames(s._1, s._2))
-    ).map(newMethodProfile).get
+    ).map(newMethodProfile)
   }
 
   /**
@@ -173,12 +173,11 @@ class PureObjectInfoProfile(
   /**
    * Returns the object's field with the specified name.
    *
-   * @note Provides no offset index information!
    * @param name The name of the field
-   * @return The profile wrapping the field
+   * @return Some profile wrapping the field, or None if doesn't exist
    */
-  override def field(name: String): VariableInfoProfile = {
-    newFieldProfile(Option(_referenceType.fieldByName(name)).get)
+  override def fieldOption(name: String): Option[VariableInfoProfile] = {
+    Option(_referenceType.fieldByName(name)).map(newFieldProfile)
   }
 
   /**
@@ -186,10 +185,10 @@ class PureObjectInfoProfile(
    * information.
    *
    * @param name The name of the field
-   * @return The profile wrapping the field
+   * @return Some profile wrapping the field, or None if doesn't exist
    */
-  override def indexedField(name: String): VariableInfoProfile = {
-    indexedFields.find(_.name == name).get
+  override def indexedFieldOption(name: String): Option[VariableInfoProfile] = {
+    indexedFields.reverse.find(_.name == name)
   }
 
   protected def newFieldProfile(field: Field): VariableInfoProfile =

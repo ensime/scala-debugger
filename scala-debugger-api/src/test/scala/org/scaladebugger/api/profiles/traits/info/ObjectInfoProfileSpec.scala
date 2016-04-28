@@ -228,6 +228,41 @@ class ObjectInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#indexedField") {
+      it("should retrieve the value from indexedFieldOption") {
+        val expected = mock[VariableInfoProfile]
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def indexedFieldOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(Some(expected)).once()
+
+        val actual = objectInfoProfile.indexedField(name)
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if indexedFieldOption is None") {
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def indexedFieldOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(None).once()
+
+        intercept[NoSuchElementException] {
+          objectInfoProfile.indexedField(name)
+        }
+      }
+    }
+
     describe("#tryField") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[String, VariableInfoProfile]
@@ -241,6 +276,41 @@ class ObjectInfoProfileSpec extends FunSpec with Matchers
         val r = mock[VariableInfoProfile]
         mockUnsafeMethod.expects(a1).returning(r).once()
         objectInfoProfile.tryField(a1).get should be (r)
+      }
+    }
+
+    describe("#field") {
+      it("should retrieve the value from fieldOption") {
+        val expected = mock[VariableInfoProfile]
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def fieldOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(Some(expected)).once()
+
+        val actual = objectInfoProfile.field(name)
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if fieldOption is None") {
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def fieldOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(None).once()
+
+        intercept[NoSuchElementException] {
+          objectInfoProfile.field(name)
+        }
       }
     }
 
@@ -274,6 +344,49 @@ class ObjectInfoProfileSpec extends FunSpec with Matchers
         val r = mock[MethodInfoProfile]
         mockUnsafeMethod.expects(a1, a2).returning(r).once()
         objectInfoProfile.tryMethod(a1, a2: _*).get should be (r)
+      }
+    }
+
+    describe("#method") {
+      it("should retrieve the value from methodOption") {
+        val expected = mock[MethodInfoProfile]
+        val mockOptionMethod = mockFunction[String, Seq[String], Option[MethodInfoProfile]]
+        val name = "some name"
+        val parameterTypeNames = Seq("one", "two")
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def methodOption(
+            name: String,
+            parameterTypeNames: String*
+          ): Option[MethodInfoProfile] = mockOptionMethod(name, parameterTypeNames)
+        }
+
+        mockOptionMethod.expects(name, parameterTypeNames)
+          .returning(Some(expected)).once()
+
+        val actual = objectInfoProfile.method(name, parameterTypeNames: _*)
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if methodOption is None") {
+        val mockOptionMethod = mockFunction[String, Seq[String], Option[MethodInfoProfile]]
+        val name = "some name"
+        val parameterTypeNames = Seq("one", "two")
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def methodOption(
+            name: String,
+            parameterTypeNames: String*
+          ): Option[MethodInfoProfile] = mockOptionMethod(name, parameterTypeNames)
+        }
+
+        mockOptionMethod.expects(name, parameterTypeNames)
+          .returning(None).once()
+
+        intercept[NoSuchElementException] {
+          objectInfoProfile.method(name, parameterTypeNames: _*)
+        }
       }
     }
   }

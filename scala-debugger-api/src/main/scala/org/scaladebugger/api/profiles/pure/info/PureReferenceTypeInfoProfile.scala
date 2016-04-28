@@ -110,12 +110,11 @@ class PureReferenceTypeInfoProfile(
   /**
    * Retrieves the visible field with the matching name.
    *
-   * @note Provides no offset index information!
    * @param name The name of the field to retrieve
-   * @return The field as a variable info profile
+   * @return Some field as a variable info profile, or None if doesn't exist
    */
-  override def field(name: String): VariableInfoProfile = {
-    newFieldProfile(Option(_referenceType.fieldByName(name)).get)
+  override def fieldOption(name: String): Option[VariableInfoProfile] = {
+    Option(_referenceType.fieldByName(name)).map(newFieldProfile)
   }
 
   /**
@@ -139,10 +138,10 @@ class PureReferenceTypeInfoProfile(
    * information.
    *
    * @param name The name of the field to retrieve
-   * @return The field as a variable info profile
+   * @return Some field as a variable info profile, or None if doesn't exist
    */
-  override def indexedField(name: String): VariableInfoProfile = {
-    indexedVisibleFields.reverse.find(_.name == name).get
+  override def indexedFieldOption(name: String): Option[VariableInfoProfile] = {
+    indexedVisibleFields.reverse.find(_.name == name)
   }
 
   /**
@@ -231,11 +230,11 @@ class PureReferenceTypeInfoProfile(
    * Retrieves the classloader object which loaded the class associated with
    * this type.
    *
-   * @return The profile representing the classloader
+   * @return Some profile representing the classloader,
+   *         otherwise None if loaded through the bootstrap classloader
    */
-  override def classLoader: ClassLoaderInfoProfile = newClassLoaderProfile(
-    _referenceType.classLoader()
-  )
+  override def classLoaderOption: Option[ClassLoaderInfoProfile] =
+    Option(_referenceType.classLoader()).map(newClassLoaderProfile)
 
   /**
    * Retrieves the class object associated with this type.

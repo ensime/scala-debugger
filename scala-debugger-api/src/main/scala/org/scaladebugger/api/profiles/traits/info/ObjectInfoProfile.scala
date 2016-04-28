@@ -215,7 +215,18 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @param name The name of the field
    * @return The profile wrapping the field
    */
-  def indexedField(name: String): VariableInfoProfile
+  @throws[NoSuchElementException]
+  def indexedField(name: String): VariableInfoProfile =
+    indexedFieldOption(name).get
+
+  /**
+   * Returns the object's field with the specified name with offset index
+   * information.
+   *
+   * @param name The name of the field
+   * @return Some profile wrapping the field, or None if doesn't exist
+   */
+  def indexedFieldOption(name: String): Option[VariableInfoProfile]
 
   /**
    * Returns the object's field with the specified name.
@@ -232,7 +243,16 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @param name The name of the field
    * @return The profile wrapping the field
    */
-  def field(name: String): VariableInfoProfile
+  @throws[NoSuchElementException]
+  def field(name: String): VariableInfoProfile = fieldOption(name).get
+
+  /**
+   * Returns the object's field with the specified name.
+   *
+   * @param name The name of the field
+   * @return Some profile wrapping the field, or None if doesn't exist
+   */
+  def fieldOption(name: String): Option[VariableInfoProfile]
 
   /**
    * Returns all visible methods contained in this object.
@@ -271,10 +291,24 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    *                           of the method to find
    * @return The profile wrapping the method
    */
+  @throws[NoSuchElementException]
   def method(
     name: String,
     parameterTypeNames: String*
-  ): MethodInfoProfile
+  ): MethodInfoProfile = methodOption(name, parameterTypeNames: _*).get
+
+  /**
+   * Returns the object's method with the specified name.
+   *
+   * @param name The name of the method
+   * @param parameterTypeNames The fully-qualified type names of the parameters
+   *                           of the method to find
+   * @return Some profile wrapping the method, otherwise None if doesn't exist
+   */
+  def methodOption(
+    name: String,
+    parameterTypeNames: String*
+  ): Option[MethodInfoProfile]
 
   /**
    * Returns a string presenting a better human-readable description of

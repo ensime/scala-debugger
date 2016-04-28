@@ -42,7 +42,15 @@ trait FrameInfoProfile extends CommonInfoProfile {
    *
    * @return The profile of this object
    */
-  def thisObject: ObjectInfoProfile
+  @throws[NoSuchElementException]
+  def thisObject: ObjectInfoProfile = thisObjectOption.get
+
+  /**
+   * Retrieves the object representing 'this' in the current frame scope.
+   *
+   * @return Some profile of this object, or None if not available
+   */
+  def thisObjectOption: Option[ObjectInfoProfile]
 
   /**
    * Retrieves the thread associated with this frame.
@@ -105,7 +113,16 @@ trait FrameInfoProfile extends CommonInfoProfile {
    * @param name The name of the variable to retrieve
    * @return Profile of the variable or throws an exception
    */
-  def variable(name: String): VariableInfoProfile
+  @throws[NoSuchElementException]
+  def variable(name: String): VariableInfoProfile = variableOption(name).get
+
+  /**
+   * Retrieves the variable with the specified name from the frame.
+   *
+   * @param name The name of the variable to retrieve
+   * @return Some profile of the variable, or None if it doesn't exist
+   */
+  def variableOption(name: String): Option[VariableInfoProfile]
 
   /**
    * Retrieves the variable with the specified name from the frame with offset
@@ -125,7 +142,18 @@ trait FrameInfoProfile extends CommonInfoProfile {
    * @param name The name of the variable to retrieve
    * @return Profile of the variable or throws an exception
    */
-  def indexedVariable(name: String): VariableInfoProfile
+  @throws[NoSuchElementException]
+  def indexedVariable(name: String): VariableInfoProfile =
+    indexedVariableOption(name).get
+
+  /**
+   * Retrieves the variable with the specified name from the frame with offset
+   * index information.
+   *
+   * @param name The name of the variable to retrieve
+   * @return Some profile of the variable, or None if it doesn't exist
+   */
+  def indexedVariableOption(name: String): Option[VariableInfoProfile]
 
   /**
    * Retrieves all variables in this frame.

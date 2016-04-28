@@ -89,6 +89,39 @@ class FrameInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#thisObject") {
+      it("should retrieve the value from thisObjectOption") {
+        val expected = mock[ObjectInfoProfile]
+        val mockOptionMethod = mockFunction[Option[ObjectInfoProfile]]
+
+        val frameInfoProfile = new TestFrameInfoProfile {
+          override def thisObjectOption: Option[ObjectInfoProfile] =
+            mockOptionMethod()
+        }
+
+        mockOptionMethod.expects().returning(Some(expected)).once()
+
+        val actual = frameInfoProfile.thisObject
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if thisObjectOption is None") {
+        val mockOptionMethod = mockFunction[Option[ObjectInfoProfile]]
+
+        val frameInfoProfile = new TestFrameInfoProfile {
+          override def thisObjectOption: Option[ObjectInfoProfile] =
+            mockOptionMethod()
+        }
+
+        mockOptionMethod.expects().returning(None).once()
+
+        intercept[NoSuchElementException] {
+          frameInfoProfile.thisObject
+        }
+      }
+    }
+
     describe("#tryCurrentThread") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[ThreadInfoProfile]
@@ -132,6 +165,41 @@ class FrameInfoProfileSpec extends FunSpec with Matchers
         val r = mock[VariableInfoProfile]
         mockUnsafeMethod.expects(a1).returning(r).once()
         frameInfoProfile.tryVariable(a1).get should be (r)
+      }
+    }
+
+    describe("#variable") {
+      it("should retrieve the value from variableOption") {
+        val expected = mock[VariableInfoProfile]
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val frameInfoProfile = new TestFrameInfoProfile {
+          override def variableOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(Some(expected)).once()
+
+        val actual = frameInfoProfile.variable(name)
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if variableOption is None") {
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val frameInfoProfile = new TestFrameInfoProfile {
+          override def variableOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(None).once()
+
+        intercept[NoSuchElementException] {
+          frameInfoProfile.variable(name)
+        }
       }
     }
 
@@ -238,6 +306,41 @@ class FrameInfoProfileSpec extends FunSpec with Matchers
         val r = mock[VariableInfoProfile]
         mockUnsafeMethod.expects(a1).returning(r).once()
         frameInfoProfile.tryIndexedVariable(a1).get should be (r)
+      }
+    }
+
+    describe("#indexedVariable") {
+      it("should retrieve the value from indexedVariableOption") {
+        val expected = mock[VariableInfoProfile]
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val frameInfoProfile = new TestFrameInfoProfile {
+          override def indexedVariableOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(Some(expected)).once()
+
+        val actual = frameInfoProfile.indexedVariable(name)
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if indexedVariableOption is None") {
+        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val name = "some name"
+
+        val frameInfoProfile = new TestFrameInfoProfile {
+          override def indexedVariableOption(name: String): Option[VariableInfoProfile] =
+            mockOptionMethod(name)
+        }
+
+        mockOptionMethod.expects(name).returning(None).once()
+
+        intercept[NoSuchElementException] {
+          frameInfoProfile.indexedVariable(name)
+        }
       }
     }
 

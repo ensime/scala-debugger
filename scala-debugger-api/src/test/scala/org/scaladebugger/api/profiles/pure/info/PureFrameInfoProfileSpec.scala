@@ -67,9 +67,9 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#thisObject") {
-      it("should return the stack frame's 'this' object wrapped in a profile") {
-        val expected = mock[ObjectInfoProfile]
+    describe("#thisObjectOption") {
+      it("should return Some stack frame's 'this' object wrapped in a profile") {
+        val expected = Some(mock[ObjectInfoProfile])
         val mockObjectReference = mock[ObjectReference]
 
         // stackFrame.thisObject() fed into newObjectProfile
@@ -78,9 +78,9 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         // New object profile created once using helper method
         mockNewObjectProfile.expects(mockObjectReference)
-          .returning(expected).once()
+          .returning(expected.get).once()
 
-        val actual = pureFrameInfoProfile.thisObject
+        val actual = pureFrameInfoProfile.thisObjectOption
         actual should be (expected)
       }
 
@@ -94,8 +94,18 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
         // New object profile created once using helper method
         mockNewObjectProfile.expects(*).returning(mockObjectProfile).once()
 
-        pureFrameInfoProfile.thisObject should
-          be (pureFrameInfoProfile.thisObject)
+        pureFrameInfoProfile.thisObjectOption should
+          be (pureFrameInfoProfile.thisObjectOption)
+      }
+
+      it("should return None if 'this' object is unavailable") {
+        val expected = None
+
+        (mockStackFrame.thisObject _).expects().returning(null).once()
+
+        val actual = pureFrameInfoProfile.thisObjectOption
+
+        actual should be (expected)
       }
     }
 
@@ -163,9 +173,9 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#variable") {
-      it("should return a local variable wrapped in a profile if it exists") {
-        val expected = mock[IndexedVariableInfoProfile]
+    describe("#variableOption") {
+      it("should return Some local variable wrapped in a profile if it exists") {
+        val expected = Some(mock[IndexedVariableInfoProfile])
 
         val name = "someName"
         val mockLocalVariable = mock[LocalVariable]
@@ -175,15 +185,15 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
         (mockStackFrame.visibleVariableByName _).expects(name)
           .returning(mockLocalVariable).once()
         mockNewLocalVariableProfile.expects(mockLocalVariable, testOffsetIndex)
-          .returning(expected).once()
+          .returning(expected.get).once()
 
-        val actual = pureFrameInfoProfile.variable(name)
+        val actual = pureFrameInfoProfile.variableOption(name)
 
         actual should be (expected)
       }
 
-      it("should return a field wrapped in a profile in no local variable exists") {
-        val expected = mock[VariableInfoProfile]
+      it("should return Some field wrapped in a profile in no local variable exists") {
+        val expected = Some(mock[VariableInfoProfile])
 
         val name = "someName"
 
@@ -197,20 +207,19 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
           .returning(mock[ObjectReference]).once()
         mockNewObjectProfile.expects(*).returning(mockObjectProfile).once()
 
-        // unsafeField used to find object profile field
-        (mockObjectProfile.field _).expects(name)
+        (mockObjectProfile.fieldOption _).expects(name)
           .returning(expected).once()
 
-        val actual = pureFrameInfoProfile.variable(name)
+        val actual = pureFrameInfoProfile.variableOption(name)
 
         actual should be (expected)
       }
 
-      it("should throw a NoSuchElement exception if no local variable or field matches") {
+      it("should return None if no local variable or field matches") {
+        val expected = None
         val name = "someName"
 
         // No match found in visible variables, so return null
-        import scala.collection.JavaConverters._
         (mockStackFrame.visibleVariableByName _).expects(name)
           .returning(null).once()
 
@@ -220,13 +229,11 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
           .returning(mock[ObjectReference]).once()
         mockNewObjectProfile.expects(*).returning(mockObjectProfile).once()
 
-        // unsafeField does not find a field and throws a NoSuchElement exception
-        (mockObjectProfile.field _).expects(name)
-          .throwing(new NoSuchElementException).once()
+        (mockObjectProfile.fieldOption _).expects(name).returning(None).once()
 
-        intercept[NoSuchElementException] {
-          pureFrameInfoProfile.variable(name)
-        }
+        val actual = pureFrameInfoProfile.variableOption(name)
+
+        actual should be (expected)
       }
     }
 
@@ -242,6 +249,16 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         // Field variable profiles are accessed
         (mockObjectProfile.fields _).expects().returning(expected).once()
+
+        val actual = pureFrameInfoProfile.fieldVariables
+
+        actual should be (expected)
+      }
+
+      it("should return an empty collection if 'this' object is unavailable") {
+        val expected = Nil
+
+        (mockStackFrame.thisObject _).expects().returning(null).once()
 
         val actual = pureFrameInfoProfile.fieldVariables
 
@@ -358,9 +375,9 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#indexedVariable") {
-      it("should return a local variable wrapped in a profile if it exists") {
-        val expected = mock[IndexedVariableInfoProfile]
+    describe("#indexedVariableOption") {
+      it("should return Some local variable wrapped in a profile if it exists") {
+        val expected = Some(mock[IndexedVariableInfoProfile])
 
         val name = "someName"
         val mockLocalVariable = mock[LocalVariable]
@@ -370,18 +387,18 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
         import scala.collection.JavaConverters._
         (mockStackFrame.visibleVariables _).expects()
           .returning(Seq(mockLocalVariable).asJava).once()
-        (expected.name _).expects().returning(name).once()
+        (expected.get.name _).expects().returning(name).once()
 
         mockNewLocalVariableProfile.expects(mockLocalVariable, testOffsetIndex)
-          .returning(expected).once()
+          .returning(expected.get).once()
 
-        val actual = pureFrameInfoProfile.indexedVariable(name)
+        val actual = pureFrameInfoProfile.indexedVariableOption(name)
 
         actual should be (expected)
       }
 
-      it("should return a field wrapped in a profile in no local variable exists") {
-        val expected = mock[VariableInfoProfile]
+      it("should return Some field wrapped in a profile in no local variable exists") {
+        val expected = Some(mock[VariableInfoProfile])
 
         val name = "someName"
 
@@ -396,16 +413,17 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
           .returning(mock[ObjectReference]).once()
         mockNewObjectProfile.expects(*).returning(mockObjectProfile).once()
 
-        // unsafeField used to find object profile field
-        (mockObjectProfile.indexedField _).expects(name)
+        (mockObjectProfile.indexedFieldOption _).expects(name)
           .returning(expected).once()
 
-        val actual = pureFrameInfoProfile.indexedVariable(name)
+        val actual = pureFrameInfoProfile.indexedVariableOption(name)
 
         actual should be (expected)
       }
 
-      it("should throw a NoSuchElement exception if no local variable or field matches") {
+      it("should return None if no local variable or field matches") {
+        val expected = None
+
         val name = "someName"
 
         // No match found in visible variables, so return Nil
@@ -419,13 +437,12 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
           .returning(mock[ObjectReference]).once()
         mockNewObjectProfile.expects(*).returning(mockObjectProfile).once()
 
-        // unsafeField does not find a field and throws a NoSuchElement exception
-        (mockObjectProfile.indexedField _).expects(name)
-          .throwing(new NoSuchElementException).once()
+        (mockObjectProfile.indexedFieldOption _).expects(name)
+          .returning(None).once()
 
-        intercept[NoSuchElementException] {
-          pureFrameInfoProfile.indexedVariable(name)
-        }
+        val actual = pureFrameInfoProfile.indexedVariableOption(name)
+
+        actual should be (expected)
       }
     }
 
@@ -441,6 +458,16 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         // Field variable profiles are accessed
         (mockObjectProfile.indexedFields _).expects().returning(expected).once()
+
+        val actual = pureFrameInfoProfile.indexedFieldVariables
+
+        actual should be (expected)
+      }
+
+      it("should return an empty collection if 'this' object is unavailable") {
+        val expected = Nil
+
+        (mockStackFrame.thisObject _).expects().returning(null).once()
 
         val actual = pureFrameInfoProfile.indexedFieldVariables
 
