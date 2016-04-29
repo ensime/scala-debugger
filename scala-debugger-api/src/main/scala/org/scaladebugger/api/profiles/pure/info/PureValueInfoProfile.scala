@@ -44,7 +44,7 @@ class PureValueInfoProfile(
    * @return The array profile wrapping this value
    */
   @throws[AssertionError]
-  override def toArray: ArrayInfoProfile = {
+  override def toArrayInfo: ArrayInfoProfile = {
     assert(isArray, "Value must be an array!")
     newArrayProfile(_value.asInstanceOf[ArrayReference])
   }
@@ -66,9 +66,20 @@ class PureValueInfoProfile(
    * @return The object profile wrapping this value
    */
   @throws[AssertionError]
-  override def toObject: ObjectInfoProfile = {
+  override def toObjectInfo: ObjectInfoProfile = {
     assert(isObject, "Value must be an object!")
     newObjectProfile(_value.asInstanceOf[ObjectReference])
+  }
+
+  /**
+   * Returns the value as a string (profile).
+   *
+   * @return The string profile wrapping this value
+   */
+  @throws[AssertionError]
+  override def toStringInfo: StringInfoProfile = {
+    assert(isString, "Value must be a string!")
+    newStringProfile(_value.asInstanceOf[StringReference])
   }
 
   /**
@@ -77,7 +88,7 @@ class PureValueInfoProfile(
    * @return The primitive profile wrapping this value
    */
   @throws[AssertionError]
-  override def toPrimitive: PrimitiveInfoProfile = {
+  override def toPrimitiveInfo: PrimitiveInfoProfile = {
     assert(isPrimitive, "Value must be a primitive!")
     _value match {
       case p: PrimitiveValue => newPrimitiveProfile(p)
@@ -139,6 +150,9 @@ class PureValueInfoProfile(
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfoProfile =
     new PureObjectInfoProfile(scalaVirtualMachine, objectReference)()
+
+  protected def newStringProfile(stringReference: StringReference): StringInfoProfile =
+    new PureStringInfoProfile(scalaVirtualMachine, stringReference)()
 
   protected def newArrayProfile(arrayReference: ArrayReference): ArrayInfoProfile =
     new PureArrayInfoProfile(scalaVirtualMachine, arrayReference)()

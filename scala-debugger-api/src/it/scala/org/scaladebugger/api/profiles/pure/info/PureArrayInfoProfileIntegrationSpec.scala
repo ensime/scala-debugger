@@ -35,7 +35,7 @@ class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val array = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .variable("i").toValue.toArray
+            .variable("i").toValueInfo.toArrayInfo
 
           array.length should be (3)
         })
@@ -58,7 +58,7 @@ class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val array = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .variable("i").toValue.toArray
+            .variable("i").toValueInfo.toArrayInfo
 
           array(1).toLocalValue should be (2)
         })
@@ -81,7 +81,7 @@ class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val array = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .variable("i").toValue.toArray
+            .variable("i").toValueInfo.toArrayInfo
 
           array.values(1, 2).map(_.toLocalValue) should be (Seq(2, 3))
         })
@@ -104,7 +104,7 @@ class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val array = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .variable("i").toValue.toArray
+            .variable("i").toValueInfo.toArrayInfo
 
           array.values.map(_.toLocalValue) should be (Seq(1, 2, 3))
         })
@@ -127,7 +127,7 @@ class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val array = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .variable("i").toValue.toArray
+            .variable("i").toValueInfo.toArrayInfo
 
           array(1) = 999
           array(1).toLocalValue should be (999)
@@ -151,7 +151,7 @@ class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val array = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .variable("i").toValue.toArray
+            .variable("i").toValueInfo.toArrayInfo
 
           // Set element at position 1 to source element 2 (12)
           val results = array.setValues(1, Seq(10, 11, 12), 2, 1).map(_.toLocalValue)
@@ -176,7 +176,7 @@ class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val array = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .variable("i").toValue.toArray
+            .variable("i").toValueInfo.toArrayInfo
 
           val results = array.setValues(Seq(10, 11, 12)).map(_.toLocalValue)
           results should be (Seq(10, 11, 12))

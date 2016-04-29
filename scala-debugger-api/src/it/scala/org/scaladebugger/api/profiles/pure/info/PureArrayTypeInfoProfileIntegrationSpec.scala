@@ -35,7 +35,7 @@ class PureArrayTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val array = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .variable("array").toValue.toArray
+            .variable("array").toValueInfo.toArrayInfo
 
           val arrayType = array.typeInfo
 
@@ -64,7 +64,7 @@ class PureArrayTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val array = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .variable("array").toValue.toArray
+            .variable("array").toValueInfo.toArrayInfo
 
           val arrayType = array.typeInfo
 

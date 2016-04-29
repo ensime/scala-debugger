@@ -143,7 +143,7 @@ class PureFrameInfoProfileIntegrationSpec extends FunSpec with Matchers
           val values = frame.argumentValues.map(_.toLocalValue)
 
           values should contain theSameElementsAs Seq(
-            frame.variable("args").toValue.toLocalValue
+            frame.variable("args").toValueInfo.toLocalValue
           )
         })
       }

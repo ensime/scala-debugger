@@ -104,7 +104,7 @@ class PureLocalVariableInfoProfile(
    *
    * @return The profile representing the value
    */
-  override def toValue: ValueInfoProfile = newValueProfile(
+  override def toValueInfo: ValueInfoProfile = newValueProfile(
     stackFrame.getValue(_localVariable)
   )
 

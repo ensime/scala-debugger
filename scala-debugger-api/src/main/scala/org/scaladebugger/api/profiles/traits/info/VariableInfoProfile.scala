@@ -87,14 +87,14 @@ trait VariableInfoProfile extends CreateInfoProfile with CommonInfoProfile {
    * @return Success containing the profile representing the value, otherwise
    *         a failure
    */
-  def tryToValue: Try[ValueInfoProfile] = Try(toValue)
+  def tryToValueInfo: Try[ValueInfoProfile] = Try(toValueInfo)
 
   /**
    * Returns a profile representing the value of this variable.
    *
    * @return The profile representing the value
    */
-  def toValue: ValueInfoProfile
+  def toValueInfo: ValueInfoProfile
 
   /**
    * Sets the primitive value of this variable.
@@ -156,7 +156,7 @@ trait VariableInfoProfile extends CreateInfoProfile with CommonInfoProfile {
    */
   override def toPrettyString: String = {
     val name = this.name
-    val value = this.tryToValue.map(_.toPrettyString).getOrElse("???")
+    val value = this.tryToValueInfo.map(_.toPrettyString).getOrElse("???")
     s"$name = $value"
   }
 }

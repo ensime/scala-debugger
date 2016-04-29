@@ -86,7 +86,7 @@ class PureValueInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val variableNamesAndTypes = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .allVariables.map(v => v.name -> v.toValue.isPrimitive)
+            .allVariables.map(v => v.name -> v.toValueInfo.isPrimitive)
             .toMap
 
           variableNamesAndTypes should contain theSameElementsAs Map(
@@ -135,7 +135,7 @@ class PureValueInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val variableNamesAndTypes = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .allVariables.map(v => v.name -> v.toValue.isArray)
+            .allVariables.map(v => v.name -> v.toValueInfo.isArray)
             .toMap
 
           variableNamesAndTypes should contain theSameElementsAs Map(
@@ -184,7 +184,7 @@ class PureValueInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val variableNamesAndTypes = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .allVariables.map(v => v.name -> v.toValue.isObject)
+            .allVariables.map(v => v.name -> v.toValueInfo.isObject)
             .toMap
 
           variableNamesAndTypes should contain theSameElementsAs Map(
@@ -233,7 +233,7 @@ class PureValueInfoProfileIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           val variableNamesAndTypes = s.withProfile(PureDebugProfile.Name)
             .thread(t.get).topFrame
-            .allVariables.map(v => v.name -> v.toValue.isString)
+            .allVariables.map(v => v.name -> v.toValueInfo.isString)
             .toMap
 
           variableNamesAndTypes should contain theSameElementsAs Map(

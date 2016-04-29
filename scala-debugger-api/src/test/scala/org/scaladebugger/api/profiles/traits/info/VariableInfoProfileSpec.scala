@@ -136,7 +136,7 @@ class VariableInfoProfileSpec extends FunSpec with Matchers
 
         val variableInfoProfile = new TestVariableInfoProfile {
           override def name: String = "someName"
-          override def tryToValue: Try[ValueInfoProfile] =
+          override def tryToValueInfo: Try[ValueInfoProfile] =
             Success(mockValueInfoProfile)
         }
 
@@ -150,7 +150,7 @@ class VariableInfoProfileSpec extends FunSpec with Matchers
 
         val variableInfoProfile = new TestVariableInfoProfile {
           override def name: String = "someName"
-          override def tryToValue: Try[ValueInfoProfile] =
+          override def tryToValueInfo: Try[ValueInfoProfile] =
             Failure(new Throwable)
         }
 
@@ -160,17 +160,17 @@ class VariableInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#toValue") {
+    describe("#toValueInfo") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[ValueInfoProfile]
 
         val variableInfoProfile = new TestVariableInfoProfile {
-          override def toValue: ValueInfoProfile = mockUnsafeMethod()
+          override def toValueInfo: ValueInfoProfile = mockUnsafeMethod()
         }
 
         val r = mock[ValueInfoProfile]
         mockUnsafeMethod.expects().returning(r).once()
-        variableInfoProfile.tryToValue.get should be (r)
+        variableInfoProfile.tryToValueInfo.get should be (r)
       }
     }
   }

@@ -123,7 +123,7 @@ class PureFieldInfoProfile(
    *
    * @return The profile representing the value
    */
-  override def toValue: ValueInfoProfile = newValueProfile(_container match {
+  override def toValueInfo: ValueInfoProfile = newValueProfile(_container match {
     case Left(_objectReference) => _objectReference.getValue(_field)
     case Right(_referenceType)  => _referenceType.getValue(_field)
   })

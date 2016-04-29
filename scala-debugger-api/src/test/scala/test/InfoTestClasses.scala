@@ -57,10 +57,11 @@ object InfoTestClasses {
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def isObject: Boolean = throwException()
     override def isPrimitive: Boolean = throwException()
-    override def toObject: ObjectInfoProfile = throwException()
-    override def toPrimitive: PrimitiveInfoProfile = throwException()
+    override def toStringInfo: StringInfoProfile = throwException()
+    override def toObjectInfo: ObjectInfoProfile = throwException()
+    override def toPrimitiveInfo: PrimitiveInfoProfile = throwException()
     override def toLocalValue: Any = throwException()
-    override def toArray: ArrayInfoProfile = throwException()
+    override def toArrayInfo: ArrayInfoProfile = throwException()
     override def isString: Boolean = throwException()
     override def isArray: Boolean = throwException()
     override def isVoid: Boolean = throwException()
@@ -74,7 +75,7 @@ object InfoTestClasses {
     override def typeInfo: TypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def name: String = throwException()
-    override def toValue: ValueInfoProfile = throwException()
+    override def toValueInfo: ValueInfoProfile = throwException()
     override def setValueFromInfo(valueInfo: ValueInfoProfile): ValueInfoProfile = throwException()
     override def isArgument: Boolean = throwException()
     override def isLocal: Boolean = throwException()
@@ -146,6 +147,10 @@ object InfoTestClasses {
     override def nonArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = throwException()
     override def argumentLocalVariables: Seq[IndexedVariableInfoProfile] = throwException()
     override def toJdiInstance: StackFrame = throwException()
+  }
+
+  class TestStringInfoProfile extends TestObjectInfoProfile with StringInfoProfile {
+    override def toJdiInstance: StringReference = throwException()
   }
 
   class TestArrayInfoProfile extends TestObjectInfoProfile with ArrayInfoProfile with TestCreateInfoProfileTrait {

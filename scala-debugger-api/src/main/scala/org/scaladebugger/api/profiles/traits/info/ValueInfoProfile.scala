@@ -94,14 +94,15 @@ trait ValueInfoProfile extends CommonInfoProfile {
    * @return Success containing the primitive profile wrapping this value,
    *         otherwise a failure
    */
-  def tryToPrimitive: Try[PrimitiveInfoProfile] = Try(toPrimitive)
+  def tryToPrimitiveInfo: Try[PrimitiveInfoProfile] = Try(toPrimitiveInfo)
 
   /**
    * Returns the value as a primitive (profile).
    *
    * @return The primitive profile wrapping this value
    */
-  def toPrimitive: PrimitiveInfoProfile
+  @throws[AssertionError]
+  def toPrimitiveInfo: PrimitiveInfoProfile
 
   /**
    * Returns the value as an object (profile).
@@ -109,14 +110,31 @@ trait ValueInfoProfile extends CommonInfoProfile {
    * @return Success containing the object profile wrapping this value,
    *         otherwise a failure
    */
-  def tryToObject: Try[ObjectInfoProfile] = Try(toObject)
+  def tryToObjectInfo: Try[ObjectInfoProfile] = Try(toObjectInfo)
 
   /**
    * Returns the value as an object (profile).
    *
    * @return The object profile wrapping this value
    */
-  def toObject: ObjectInfoProfile
+  @throws[AssertionError]
+  def toObjectInfo: ObjectInfoProfile
+
+  /**
+   * Returns the value as a string (profile).
+   *
+   * @return Success containing the string profile wrapping this value,
+   *         otherwise a failure
+   */
+  def tryToStringInfo: Try[StringInfoProfile] = Try(toStringInfo)
+
+  /**
+   * Returns the value as an string (profile).
+   *
+   * @return The string profile wrapping this value
+   */
+  @throws[AssertionError]
+  def toStringInfo: StringInfoProfile
 
   /**
    * Returns the value as an array (profile).
@@ -124,14 +142,15 @@ trait ValueInfoProfile extends CommonInfoProfile {
    * @return Success containing the array profile wrapping this value,
    *         otherwise a failure
    */
-  def tryToArray: Try[ArrayInfoProfile] = Try(toArray)
+  def tryToArrayInfo: Try[ArrayInfoProfile] = Try(toArrayInfo)
 
   /**
    * Returns the value as an array (profile).
    *
    * @return The array profile wrapping this value
    */
-  def toArray: ArrayInfoProfile
+  @throws[AssertionError]
+  def toArrayInfo: ArrayInfoProfile
 
   /**
    * Returns a string presenting a better human-readable description of
@@ -140,14 +159,13 @@ trait ValueInfoProfile extends CommonInfoProfile {
    * @return The human-readable description
    */
   override def toPrettyString: String = {
-    val q = "\""
     Try {
       if (this.isNull) "null"
       else if (this.isVoid) "void"
-      else if (this.isArray) this.toArray.toPrettyString
-      else if (this.isString) s"$q${this.toLocalValue}$q"
-      else if (this.isObject) this.toObject.toPrettyString
-      else if (this.isPrimitive) this.toPrimitive.toPrettyString
+      else if (this.isArray) this.toArrayInfo.toPrettyString
+      else if (this.isString) this.toStringInfo.toPrettyString
+      else if (this.isObject) this.toObjectInfo.toPrettyString
+      else if (this.isPrimitive) this.toPrimitiveInfo.toPrettyString
       else "???"
     }.getOrElse("<ERROR>")
   }

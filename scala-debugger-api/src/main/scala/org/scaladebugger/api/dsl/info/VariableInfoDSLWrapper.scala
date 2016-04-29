@@ -21,7 +21,7 @@ class VariableInfoDSLWrapper private[dsl] (
     implicit objectCache: ObjectCache = variableInfo.scalaVirtualMachine.cache
   ): VariableInfoProfile = {
     import org.scaladebugger.api.dsl.Implicits.ValueInfoDSL
-    variableInfo.toValue.cache()
+    variableInfo.toValueInfo.cache()
 
     variableInfo
   }
@@ -36,7 +36,7 @@ class VariableInfoDSLWrapper private[dsl] (
     implicit objectCache: ObjectCache = variableInfo.scalaVirtualMachine.cache
   ): VariableInfoProfile = {
     import org.scaladebugger.api.dsl.Implicits.ValueInfoDSL
-    variableInfo.toValue.uncache()
+    variableInfo.toValueInfo.uncache()
 
     variableInfo
   }

@@ -163,7 +163,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#toValue") {
+    describe("#toValueInfo") {
       it("should return a wrapper around the value of a class' static field") {
         val expected = mock[ValueInfoProfile]
         val mockValue = mock[Value]
@@ -184,7 +184,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
         }
 
         mockNewValueProfile.expects(mockValue).returning(expected).once()
-        pureFieldInfoProfile.toValue should be (expected)
+        pureFieldInfoProfile.toValueInfo should be (expected)
       }
 
       it("should return a wrapper around the value of an object's field instance") {
@@ -206,7 +206,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
         }
 
         mockNewValueProfile.expects(mockValue).returning(expected).once()
-        pureFieldInfoProfile.toValue should be (expected)
+        pureFieldInfoProfile.toValueInfo should be (expected)
       }
     }
   }

@@ -45,17 +45,21 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
         actual should be(expected)
       }
 
-      it("should display the value in quotes if the value is a string") {
-        val expected = "\"some value\""
+      it("should display the pretty string of the string instnace if a string") {
+        val expected = "STRING"
+
+        val mockStringInfoProfile = mock[StringInfoProfile]
+        (mockStringInfoProfile.toPrettyString _).expects()
+          .returning(expected).once()
 
         val valueInfoProfile = new TestValueInfoProfile {
-          override def toLocalValue: Any = "some value"
           override def isPrimitive: Boolean = false
           override def isObject: Boolean = true
           override def isString: Boolean = true
           override def isArray: Boolean = false
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
+          override def toStringInfo: StringInfoProfile = mockStringInfoProfile
         }
 
         val actual = valueInfoProfile.toPrettyString
@@ -77,7 +81,7 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = true
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
-          override def toArray: ArrayInfoProfile = mockArrayInfoProfile
+          override def toArrayInfo: ArrayInfoProfile = mockArrayInfoProfile
         }
 
         val actual = valueInfoProfile.toPrettyString
@@ -99,7 +103,7 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = false
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
-          override def toObject: ObjectInfoProfile = mockObjectInfoProfile
+          override def toObjectInfo: ObjectInfoProfile = mockObjectInfoProfile
         }
 
         val actual = valueInfoProfile.toPrettyString
@@ -121,7 +125,7 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = false
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
-          override def toPrimitive: PrimitiveInfoProfile = mockPrimitiveInfoProfile
+          override def toPrimitiveInfo: PrimitiveInfoProfile = mockPrimitiveInfoProfile
         }
 
         val actual = valueInfoProfile.toPrettyString
@@ -165,31 +169,31 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#tryToPrimitive") {
+    describe("#tryToPrimitiveInfo") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[PrimitiveInfoProfile]
 
         val valueInfoProfile = new TestValueInfoProfile {
-          override def toPrimitive: PrimitiveInfoProfile = mockUnsafeMethod()
+          override def toPrimitiveInfo: PrimitiveInfoProfile = mockUnsafeMethod()
         }
 
         val r = mock[PrimitiveInfoProfile]
         mockUnsafeMethod.expects().returning(r).once()
-        valueInfoProfile.tryToPrimitive.get should be (r)
+        valueInfoProfile.tryToPrimitiveInfo.get should be (r)
       }
     }
 
-    describe("#tryToObject") {
+    describe("#tryToObjectInfo") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[ObjectInfoProfile]
 
         val valueInfoProfile = new TestValueInfoProfile {
-          override def toObject: ObjectInfoProfile = mockUnsafeMethod()
+          override def toObjectInfo: ObjectInfoProfile = mockUnsafeMethod()
         }
 
         val r = mock[ObjectInfoProfile]
         mockUnsafeMethod.expects().returning(r).once()
-        valueInfoProfile.tryToObject.get should be (r)
+        valueInfoProfile.tryToObjectInfo.get should be (r)
       }
     }
 
@@ -207,17 +211,31 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#tryToArray") {
+    describe("#tryToStringInfo") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[StringInfoProfile]
+
+        val valueInfoProfile = new TestValueInfoProfile {
+          override def toStringInfo: StringInfoProfile = mockUnsafeMethod()
+        }
+
+        val r = mock[StringInfoProfile]
+        mockUnsafeMethod.expects().returning(r).once()
+        valueInfoProfile.tryToStringInfo.get should be (r)
+      }
+    }
+
+    describe("#tryToArrayInfo") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[ArrayInfoProfile]
 
         val valueInfoProfile = new TestValueInfoProfile {
-          override def toArray: ArrayInfoProfile = mockUnsafeMethod()
+          override def toArrayInfo: ArrayInfoProfile = mockUnsafeMethod()
         }
 
         val r = mock[ArrayInfoProfile]
         mockUnsafeMethod.expects().returning(r).once()
-        valueInfoProfile.tryToArray.get should be (r)
+        valueInfoProfile.tryToArrayInfo.get should be (r)
       }
     }
   }

@@ -45,35 +45,35 @@ class PureMiscInfoProfileIntegrationSpec extends FunSpec with Matchers
           val p = s.withProfile(PureDebugProfile.Name)
 
           val remoteBoolean = p.createRemotely(true)
-          remoteBoolean.toPrimitive.isBoolean should be (true)
+          remoteBoolean.toPrimitiveInfo.isBoolean should be (true)
           remoteBoolean.toLocalValue == true should be (true)
 
           val remoteByte = p.createRemotely(33.toByte)
-          remoteByte.toPrimitive.isByte should be (true)
+          remoteByte.toPrimitiveInfo.isByte should be (true)
           remoteByte.toLocalValue == 33 should be (true)
 
           val remoteChar = p.createRemotely(33.toChar)
-          remoteChar.toPrimitive.isChar should be (true)
+          remoteChar.toPrimitiveInfo.isChar should be (true)
           remoteChar.toLocalValue == 33 should be (true)
 
           val remoteInt = p.createRemotely(33.toInt)
-          remoteInt.toPrimitive.isInteger should be (true)
+          remoteInt.toPrimitiveInfo.isInteger should be (true)
           remoteInt.toLocalValue == 33 should be (true)
 
           val remoteShort = p.createRemotely(33.toShort)
-          remoteShort.toPrimitive.isShort should be (true)
+          remoteShort.toPrimitiveInfo.isShort should be (true)
           remoteShort.toLocalValue == 33 should be (true)
 
           val remoteLong = p.createRemotely(33.toLong)
-          remoteLong.toPrimitive.isLong should be (true)
+          remoteLong.toPrimitiveInfo.isLong should be (true)
           remoteLong.toLocalValue == 33 should be (true)
 
           val remoteFloat = p.createRemotely(33.toFloat)
-          remoteFloat.toPrimitive.isFloat should be (true)
+          remoteFloat.toPrimitiveInfo.isFloat should be (true)
           remoteFloat.toLocalValue == 33 should be (true)
 
           val remoteDouble = p.createRemotely(33.toDouble)
-          remoteDouble.toPrimitive.isDouble should be (true)
+          remoteDouble.toPrimitiveInfo.isDouble should be (true)
           remoteDouble.toLocalValue == 33 should be (true)
 
           val remoteString = p.createRemotely("test")

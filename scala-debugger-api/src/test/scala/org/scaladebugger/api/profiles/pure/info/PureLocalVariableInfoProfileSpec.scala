@@ -143,7 +143,7 @@ class PureLocalVariableInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#toValue") {
+    describe("#toValueInfo") {
       it("should return a wrapper around the value of the localVariable") {
         val expected = mock[ValueInfoProfile]
         val mockValue = mock[Value]
@@ -169,7 +169,7 @@ class PureLocalVariableInfoProfileSpec extends FunSpec with Matchers
         }
 
         mockNewValueProfile.expects(mockValue).returning(expected).once()
-        pureLocalVariableInfoProfile.toValue should be (expected)
+        pureLocalVariableInfoProfile.toValueInfo should be (expected)
       }
     }
   }

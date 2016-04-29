@@ -14,6 +14,7 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
   private val mockNewPrimitiveProfile = mockFunction[PrimitiveValue, PrimitiveInfoProfile]
   private val mockNewObjectProfile = mockFunction[ObjectReference, ObjectInfoProfile]
   private val mockNewArrayProfile = mockFunction[ArrayReference, ArrayInfoProfile]
+  private val mockNewStringProfile = mockFunction[StringReference, StringInfoProfile]
 
   describe("PureValueInfoProfile") {
     describe("#toJdiInstance") {
@@ -75,7 +76,7 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#toArray") {
+    describe("#toArrayInfo") {
       it("should throw an assertion error if the value is null") {
         val pureValueInfoProfile = new PureValueInfoProfile(
           mockScalaVirtualMachine,
@@ -83,7 +84,7 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         )
 
         intercept[AssertionError] {
-          pureValueInfoProfile.toArray
+          pureValueInfoProfile.toArrayInfo
         }
       }
 
@@ -94,7 +95,7 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         )
 
         intercept[AssertionError] {
-          pureValueInfoProfile.toArray
+          pureValueInfoProfile.toArrayInfo
         }
       }
 
@@ -114,13 +115,13 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         mockNewArrayProfile.expects(mockArrayReference)
           .returning(expected).once()
 
-        val actual = pureValueInfoProfile.toArray
+        val actual = pureValueInfoProfile.toArrayInfo
 
         actual should be (expected)
       }
     }
 
-    describe("#toPrimitive") {
+    describe("#toStringInfo") {
       it("should throw an assertion error if the value is null") {
         val pureValueInfoProfile = new PureValueInfoProfile(
           mockScalaVirtualMachine,
@@ -128,7 +129,52 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         )
 
         intercept[AssertionError] {
-          pureValueInfoProfile.toPrimitive
+          pureValueInfoProfile.toStringInfo
+        }
+      }
+
+      it("should throw an assertion error if the value is not a string") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mock[Value]
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toStringInfo
+        }
+      }
+
+      it("should return a string reference wrapped in a profile") {
+        val expected = mock[StringInfoProfile]
+        val mockStringReference = mock[StringReference]
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockStringReference
+        ) {
+          override protected def newStringProfile(
+            stringReference: StringReference
+          ): StringInfoProfile = mockNewStringProfile(stringReference)
+        }
+
+        mockNewStringProfile.expects(mockStringReference)
+          .returning(expected).once()
+
+        val actual = pureValueInfoProfile.toStringInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#toPrimitiveInfo") {
+      it("should throw an assertion error if the value is null") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          null
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toPrimitiveInfo
         }
       }
 
@@ -139,7 +185,7 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         )
 
         intercept[AssertionError] {
-          pureValueInfoProfile.toPrimitive
+          pureValueInfoProfile.toPrimitiveInfo
         }
       }
 
@@ -159,7 +205,7 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         mockNewPrimitiveProfile.expects(mockPrimitiveValue)
           .returning(expected).once()
 
-        val actual = pureValueInfoProfile.toPrimitive
+        val actual = pureValueInfoProfile.toPrimitiveInfo
 
         actual should be (expected)
       }
@@ -181,13 +227,13 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         mockNewPrimitiveProfile.expects(mockVoidValue)
           .returning(expected).once()
 
-        val actual = pureValueInfoProfile.toPrimitive
+        val actual = pureValueInfoProfile.toPrimitiveInfo
 
         actual should be (expected)
       }
     }
 
-    describe("#toObject") {
+    describe("#toObjectInfo") {
       it("should throw an assertion error if the value is null") {
         val pureValueInfoProfile = new PureValueInfoProfile(
           mockScalaVirtualMachine,
@@ -195,7 +241,7 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         )
 
         intercept[AssertionError] {
-          pureValueInfoProfile.toObject
+          pureValueInfoProfile.toObjectInfo
         }
       }
 
@@ -206,7 +252,7 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         )
 
         intercept[AssertionError] {
-          pureValueInfoProfile.toObject
+          pureValueInfoProfile.toObjectInfo
         }
       }
 
@@ -226,7 +272,7 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         mockNewObjectProfile.expects(mockObjectReference)
           .returning(expected).once()
 
-        val actual = pureValueInfoProfile.toObject
+        val actual = pureValueInfoProfile.toObjectInfo
 
         actual should be (expected)
       }
