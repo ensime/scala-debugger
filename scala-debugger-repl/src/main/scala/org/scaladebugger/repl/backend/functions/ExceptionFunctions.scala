@@ -5,6 +5,7 @@ import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.lowlevel.requests.filters.ClassInclusionFilter
 import org.scaladebugger.repl.backend.StateManager
 import org.scaladebugger.repl.backend.utils.Regex
+import org.scaladebugger.api.dsl.Implicits._
 
 /**
  * Represents a collection of functions for managing threads.

@@ -3,6 +3,7 @@ import acyclic.file
 
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.repl.backend.StateManager
+import org.scaladebugger.api.dsl.Implicits._
 
 /**
  * Represents a collection of functions for managing breakpoints.

@@ -1,5 +1,6 @@
 package org.scaladebugger.repl.backend.functions
 import acyclic.file
+import org.scaladebugger.api.dsl.Implicits._
 
 import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.events.misc.NoResume

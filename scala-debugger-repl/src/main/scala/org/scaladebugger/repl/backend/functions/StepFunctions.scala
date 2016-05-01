@@ -1,15 +1,16 @@
 package org.scaladebugger.repl.backend.functions
 import acyclic.file
-
 import com.sun.jdi.ThreadReference
 import com.sun.jdi.event.StepEvent
 import org.scaladebugger.api.lowlevel.events.JDIEventArgument
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.repl.backend.StateManager
 
-import scala.concurrent.{Future, Await}
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
+import org.scaladebugger.api.dsl.Implicits._
+import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
 
 /**
  * Represents a collection of functions for managing steps.
@@ -30,7 +31,7 @@ class StepFunctions(private val stateManager: StateManager) {
     thread.foreach(t => {
       // TODO: Handle using on JVM of active thread
       jvms.foreach(s => {
-        performStep(t, s.stepIntoLine)
+        performStep(s.thread(t), s.stepIntoLine)
       })
     })
   }
@@ -46,7 +47,7 @@ class StepFunctions(private val stateManager: StateManager) {
     thread.foreach(t => {
       // TODO: Handle using on JVM of active thread
       jvms.foreach(s => {
-        performStep(t, s.stepIntoMin)
+        performStep(s.thread(t), s.stepIntoMin)
       })
     })
   }
@@ -62,7 +63,7 @@ class StepFunctions(private val stateManager: StateManager) {
     thread.foreach(t => {
       // TODO: Handle using on JVM of active thread
       jvms.foreach(s => {
-        performStep(t, s.stepOverLine)
+        performStep(s.thread(t), s.stepOverLine)
       })
     })
   }
@@ -78,7 +79,7 @@ class StepFunctions(private val stateManager: StateManager) {
     thread.foreach(t => {
       // TODO: Handle using on JVM of active thread
       jvms.foreach(s => {
-        performStep(t, s.stepOverMin)
+        performStep(s.thread(t), s.stepOverMin)
       })
     })
   }
@@ -94,7 +95,7 @@ class StepFunctions(private val stateManager: StateManager) {
     thread.foreach(t => {
       // TODO: Handle using on JVM of active thread
       jvms.foreach(s => {
-        performStep(t, s.stepOutLine)
+        performStep(s.thread(t), s.stepOutLine)
       })
     })
   }
@@ -110,7 +111,7 @@ class StepFunctions(private val stateManager: StateManager) {
     thread.foreach(t => {
       // TODO: Handle using on JVM of active thread
       jvms.foreach(s => {
-        performStep(t, s.stepOutMin)
+        performStep(s.thread(t), s.stepOutMin)
       })
     })
   }
@@ -120,17 +121,17 @@ class StepFunctions(private val stateManager: StateManager) {
    * thread is not suspended (so it can process the request), and also
    * indicating that the step event should not resume the thread.
    *
-   * @param threadReference The thread within which to step
+   * @param threadInfo The info about the thread within which to step
    * @param stepFunc The function to create the step request
    */
   private def performStep(
-    threadReference: ThreadReference,
-    stepFunc: (ThreadReference, Seq[JDIEventArgument]) => Future[StepEvent]
+    threadInfo: ThreadInfoProfile,
+    stepFunc: (ThreadInfoProfile, Seq[JDIEventArgument]) => Future[StepEvent]
   ): Unit = {
-    val resumeCount = threadReference.suspendCount()
+    val resumeCount = threadInfo.toJdiInstance.suspendCount()
 
     // Create a step function that does not resume the thread upon completion
-    val f = stepFunc(threadReference, Seq(NoResume))
+    val f = stepFunc(threadInfo, Seq(NoResume))
 
     f.foreach(e => {
       val l = e.location()
@@ -145,7 +146,7 @@ class StepFunctions(private val stateManager: StateManager) {
 
     // Remove all suspensions on the thread so it can process the
     // step request
-    (1 to resumeCount).foreach(_ => threadReference.resume())
+    (1 to resumeCount).foreach(_ => threadInfo.toJdiInstance.resume())
 
     Await.ready(f, MaxWaitDuration)
   }
