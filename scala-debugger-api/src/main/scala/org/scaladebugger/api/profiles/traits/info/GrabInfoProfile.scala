@@ -2,6 +2,7 @@ package org.scaladebugger.api.profiles.traits.info
 //import acyclic.file
 
 import com.sun.jdi._
+import java.util.NoSuchElementException
 
 import scala.util.Try
 
@@ -118,7 +119,14 @@ trait GrabInfoProfile {
    * @param threadId The id of the thread
    * @return The profile of the matching thread, or throws an exception
    */
-  def thread(threadId: Long): ThreadInfoProfile = threadOption(threadId).get
+  def thread(threadId: Long): ThreadInfoProfile = {
+    val t = threadOption(threadId)
+
+    if (t.isEmpty)
+      throw new NoSuchElementException(s"No thread with $threadId found!")
+
+    t.get
+  }
 
   /**
    * Retrieves a thread profile for the thread reference whose unique id
@@ -168,7 +176,14 @@ trait GrabInfoProfile {
    * @param name The fully-qualified name of the class
    * @return The reference type info profile for the class
    */
-  def `class`(name: String): ReferenceTypeInfoProfile = classOption(name).get
+  def `class`(name: String): ReferenceTypeInfoProfile = {
+    val c = classOption(name)
+
+    if (c.isEmpty)
+      throw new NoSuchElementException(s"Class with name '$name' not found!")
+
+    c.get
+  }
 
   /**
    * Retrieves reference information for the class with the specified name.
