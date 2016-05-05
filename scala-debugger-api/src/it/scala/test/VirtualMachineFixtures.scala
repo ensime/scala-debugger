@@ -81,7 +81,7 @@ trait VirtualMachineFixtures extends TestUtilities with Logging {
 
     launchingDebugger.start(startProcessingEvents = false, { s =>
       try {
-        val startFunc = () => s.lowlevel.eventManager.start()
+        val startFunc = () => s.startProcessingEvents()
 
         testCode(s, startFunc)
       } finally {

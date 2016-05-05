@@ -18,6 +18,31 @@ trait ScalaVirtualMachine extends SwappableDebugProfile with ProfileManager {
   def initialize(startProcessingEvents: Boolean = true): Unit
 
   /**
+   * Starts actively processing events from the remote virtual machine.
+   */
+  def startProcessingEvents(): Unit
+
+  /**
+   * Stops actively processing events from the remote virtual machine.
+   */
+  def stopProcessingEvents(): Unit
+
+  /**
+   * Indicates whether or not events from the remote virtual machine are
+   * actively being processed.
+   *
+   * @return True if being processed, otherwise false
+   */
+  def isProcessingEvents: Boolean
+
+  /**
+   * Indicates whether or not the virtual machine has been initialized.
+   *
+   * @return True if initialized, otherwise false
+   */
+  def isInitialized: Boolean
+
+  /**
    * Indicates whether or not the virtual machine has started (received the
    * start event).
    *
@@ -54,6 +79,16 @@ trait ScalaVirtualMachine extends SwappableDebugProfile with ProfileManager {
    * @return The JDI VirtualMachine instance
    */
   val underlyingVirtualMachine: VirtualMachine
+
+  /**
+   * Resumes the virtual machine represented by the profile.
+   */
+  def resume(): Unit
+
+  /**
+   * Suspends the virtual machine represented by the profile.
+   */
+  def suspend(): Unit
 
   /**
    * Processes any pending requests contained by the provided Scala virtual

@@ -1,8 +1,8 @@
 package org.scaladebugger.api.virtualmachines
 import acyclic.file
-
 import com.sun.jdi.VirtualMachine
 import org.scaladebugger.api.lowlevel.ManagerContainer
+import org.scaladebugger.api.lowlevel.events.EventManager
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.traits.DebugProfile
 import org.scaladebugger.api.utils.LoopingTaskRunner
@@ -12,16 +12,95 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 class StandardScalaVirtualMachineSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
+  private val mockIsInitialized = mockFunction[Boolean]
+  private val mockProcessOwnPendingRequests = mockFunction[Unit]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
+  private val mockEventManager = mock[EventManager]
   private val scalaVirtualMachine = new StandardScalaVirtualMachine(
     mockVirtualMachine,
     mockProfileManager,
     mockLoopingTaskRunner
-  )
+  ) {
+    override def isInitialized: Boolean = mockIsInitialized()
 
-  describe("ScalaVirtualMachine") {
+    override protected def processOwnPendingRequests(): Unit =
+      mockProcessOwnPendingRequests()
+
+    override protected lazy val eventManager: EventManager = mockEventManager
+  }
+
+  describe("StandardScalaVirtualMachine") {
+    describe("#startProcessingEvents") {
+      it("should throw an exception if the scala vm is not initialized") {
+        mockIsInitialized.expects().returning(false).once()
+
+        intercept[AssertionError] {
+          scalaVirtualMachine.startProcessingEvents()
+        }
+      }
+
+      it("should do nothing if already started") {
+        mockIsInitialized.expects().returning(true).once()
+        (mockEventManager.isRunning _).expects().returning(true).once()
+
+        scalaVirtualMachine.startProcessingEvents()
+      }
+
+      it("should process pending requests and start the event manager") {
+        mockIsInitialized.expects().returning(true).once()
+        (mockEventManager.isRunning _).expects().returning(false).once()
+        mockProcessOwnPendingRequests.expects().once()
+        (mockEventManager.start _).expects().once()
+
+        scalaVirtualMachine.startProcessingEvents()
+      }
+    }
+
+    describe("#stopProcessingEvents") {
+      it("should stop the event manager") {
+        (mockEventManager.stop _).expects().once()
+        scalaVirtualMachine.stopProcessingEvents()
+      }
+    }
+
+    describe("#isProcessingEvents") {
+      it("should return true if the event manager is running") {
+        val expected = true
+
+        (mockEventManager.isRunning _).expects().returning(expected).once()
+
+        val actual = scalaVirtualMachine.isProcessingEvents
+
+        actual should be (expected)
+      }
+
+      it("should return false if the event manager is not running") {
+        val expected = false
+
+        (mockEventManager.isRunning _).expects().returning(expected).once()
+
+        val actual = scalaVirtualMachine.isProcessingEvents
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#resume") {
+      it("should resume the underlying vm") {
+        (mockVirtualMachine.resume _).expects().once()
+        scalaVirtualMachine.resume()
+      }
+    }
+
+    describe("#suspend") {
+      it("should suspend the underlying vm") {
+        (mockVirtualMachine.suspend _).expects().once()
+        scalaVirtualMachine.suspend()
+      }
+    }
+
     describe("#cache") {
       it("should return the same cache instance") {
         val expected = scalaVirtualMachine.cache

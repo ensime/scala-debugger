@@ -20,6 +20,12 @@ class ValueInfoDSLWrapperSpec extends FunSpec with Matchers
   private val testScalaVirtualMachine = new Object with ScalaVirtualMachine {
     override val cache: ObjectCache = testObjectCache
     override val lowlevel: ManagerContainer = null
+    override def startProcessingEvents(): Unit = {}
+    override def isInitialized: Boolean = false
+    override def isProcessingEvents: Boolean = false
+    override def suspend(): Unit = {}
+    override def stopProcessingEvents(): Unit = {}
+    override def resume(): Unit = {}
     override def initialize(startProcessingEvents: Boolean): Unit = {}
     override val underlyingVirtualMachine: VirtualMachine = null
     override def isStarted: Boolean = false

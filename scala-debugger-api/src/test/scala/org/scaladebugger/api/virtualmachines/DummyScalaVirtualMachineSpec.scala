@@ -31,6 +31,38 @@ class DummyScalaVirtualMachineSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#startProcessingEvents") {
+      it("should do nothing") {
+        dummyScalaVirtualMachine.startProcessingEvents()
+      }
+    }
+
+    describe("#stopProcessingEvents") {
+      it("should do nothing") {
+        dummyScalaVirtualMachine.stopProcessingEvents()
+      }
+    }
+
+    describe("#isProcessingEvents") {
+      it("should return false") {
+        val expected = false
+
+        val actual = dummyScalaVirtualMachine.isProcessingEvents
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isInitialized") {
+      it("should return false") {
+        val expected = false
+
+        val actual = dummyScalaVirtualMachine.isInitialized
+
+        actual should be (expected)
+      }
+    }
+
     describe("#isStarted") {
       it("should return false") {
         val expected = false
@@ -126,6 +158,18 @@ class DummyScalaVirtualMachineSpec extends FunSpec with Matchers
         val actual = dummyScalaVirtualMachine.underlyingVirtualMachine
 
         actual should be (expected)
+      }
+    }
+
+    describe("#resume") {
+      it("should do nothing") {
+        dummyScalaVirtualMachine.resume()
+      }
+    }
+
+    describe("#suspend") {
+      it("should do nothing") {
+        dummyScalaVirtualMachine.suspend()
       }
     }
 

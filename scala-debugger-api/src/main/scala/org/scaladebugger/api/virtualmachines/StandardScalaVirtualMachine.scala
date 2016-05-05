@@ -33,7 +33,9 @@ class StandardScalaVirtualMachine(
   private val loopingTaskRunner: LoopingTaskRunner,
   override val uniqueId: String = java.util.UUID.randomUUID().toString
 ) extends ScalaVirtualMachine with JDIHelperMethods with Logging {
+  private val initialized = new AtomicBoolean(false)
   private val started = new AtomicBoolean(false)
+  protected lazy val eventManager = lowlevel.eventManager
 
   /**
    * Indicates whether or not the virtual machine has started (received the
@@ -42,6 +44,13 @@ class StandardScalaVirtualMachine(
    * @return True if started, otherwise false
    */
   override def isStarted = started.get()
+
+  /**
+   * Indicates whether or not the virtual machine has been initialized.
+   *
+   * @return True if initialized, otherwise false
+   */
+  override def isInitialized: Boolean = initialized.get()
 
   /** Builds a string with the identifier of this virtual machine. */
   private def vmString(message: String) = s"(Scala VM $uniqueId) $message"
@@ -77,7 +86,9 @@ class StandardScalaVirtualMachine(
    *
    * @param startProcessingEvents If true, immediately starts processing events
    */
-  override def initialize(startProcessingEvents: Boolean = true): Unit = {
+  override def initialize(startProcessingEvents: Boolean = true): Unit = synchronized {
+    assert(!isInitialized, "Scala virtual machine already initialized!")
+
     logger.debug(vmString("Initializing Scala virtual machine!"))
 
     // Register our standard profiles
@@ -115,9 +126,44 @@ class StandardScalaVirtualMachine(
       processPendingForClass(referenceTypeName)
     })
 
+    initialized.set(true)
+
     // Try to start the event manager if indicated
-    if (startProcessingEvents) Try(lowlevel.eventManager.start())
+    if (startProcessingEvents) this.startProcessingEvents()
   }
+
+  /**
+   * Starts actively processing events from the remote virtual machine.
+   */
+  override def startProcessingEvents(): Unit = synchronized {
+    assert(isInitialized, "Scala virtual machine must be initialized!")
+
+    // Ignore if already processing events
+    if (isProcessingEvents) return
+
+    // Process all pending requests immediately
+    logger.debug("Processing all pending requests!")
+    processOwnPendingRequests()
+
+    logger.debug("Starting low-level event manager!")
+    Try(eventManager.start())
+  }
+
+  protected def processOwnPendingRequests(): Unit =
+    lowlevel.processPendingRequests()
+
+  /**
+   * Stops actively processing events from the remote virtual machine.
+   */
+  override def stopProcessingEvents(): Unit = Try(eventManager.stop())
+
+  /**
+   * Indicates whether or not events from the remote virtual machine are
+   * actively being processed.
+   *
+   * @return True if being processed, otherwise false
+   */
+  override def isProcessingEvents: Boolean = eventManager.isRunning
 
   private def registerStandardProfiles(): Unit = {
     this.register(
@@ -163,6 +209,16 @@ class StandardScalaVirtualMachine(
    * @return The JDI VirtualMachine instance
    */
   override val underlyingVirtualMachine: VirtualMachine = _virtualMachine
+
+  /**
+   * Resumes the virtual machine represented by the profile.
+   */
+  override def resume(): Unit = underlyingVirtualMachine.resume()
+
+  /**
+   * Suspends the virtual machine represented by the profile.
+   */
+  override def suspend(): Unit = underlyingVirtualMachine.suspend()
 
   /**
    * Registers the profile using the provided name. Ignores any registration

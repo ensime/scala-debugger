@@ -23,7 +23,12 @@ class ScalaVirtualMachineSpec extends FunSpec with Matchers
     new Object with ScalaVirtualMachine {
       override val cache: ObjectCache = null
       override val lowlevel: ManagerContainer = managerContainer
-
+      override def startProcessingEvents(): Unit = {}
+      override def isInitialized: Boolean = false
+      override def isProcessingEvents: Boolean = false
+      override def suspend(): Unit = {}
+      override def stopProcessingEvents(): Unit = {}
+      override def resume(): Unit = {}
       override def initialize(startProcessingEvents: Boolean): Unit = {}
       override val underlyingVirtualMachine: VirtualMachine = null
       override def isStarted: Boolean = false

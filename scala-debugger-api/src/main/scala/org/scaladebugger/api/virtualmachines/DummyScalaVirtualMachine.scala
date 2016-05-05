@@ -26,6 +26,31 @@ class DummyScalaVirtualMachine(
   override def initialize(startProcessingEvents: Boolean = true): Unit = {}
 
   /**
+   * Starts actively processing events from the remote virtual machine.
+   */
+  override def startProcessingEvents(): Unit = {}
+
+  /**
+   * Stops actively processing events from the remote virtual machine.
+   */
+  override def stopProcessingEvents(): Unit = {}
+
+  /**
+   * Indicates whether or not events from the remote virtual machine are
+   * actively being processed.
+   *
+   * @return True if being processed, otherwise false
+   */
+  override def isProcessingEvents: Boolean = false
+
+  /**
+   * Indicates whether or not the virtual machine has been initialized.
+   *
+   * @return True if initialized, otherwise false
+   */
+  override def isInitialized: Boolean = false
+
+  /**
    * Indicates whether or not the virtual machine has started (received the
    * start event).
    *
@@ -56,6 +81,16 @@ class DummyScalaVirtualMachine(
   override val underlyingVirtualMachine: VirtualMachine = null
 
   /**
+   * Resumes the virtual machine represented by the profile.
+   */
+  override def resume(): Unit = {}
+
+  /**
+   * Suspends the virtual machine represented by the profile.
+   */
+  override def suspend(): Unit = {}
+
+  /**
    * Registers the profile using the provided name. Ignores any registration
    * under an already-used name.
    *
@@ -71,7 +106,6 @@ class DummyScalaVirtualMachine(
    * Retrieves the profile with the provided name.
    *
    * @param name The name of the profile to retrieve
-   *
    * @return Some debug profile if found, otherwise None
    */
   override def retrieve(name: String): Option[DebugProfile] =
@@ -81,7 +115,6 @@ class DummyScalaVirtualMachine(
    * Unregisters the profile with the provided name.
    *
    * @param name The name of the profile to unregister
-   *
    * @return Some debug profile if unregistered, otherwise None
    */
   override def unregister(name: String): Option[DebugProfile] =
