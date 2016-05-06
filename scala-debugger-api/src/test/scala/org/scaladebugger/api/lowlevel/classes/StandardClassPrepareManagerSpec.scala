@@ -59,7 +59,7 @@ class StandardClassPrepareManagerSpec extends FunSpec with Matchers with MockFac
         // Should set enabled to true by default, and
         // set the suspend policy to vm level by default
         (mockClassPrepareRequest.setSuspendPolicy _)
-          .expects(EventRequest.SUSPEND_EVENT_THREAD).once()
+          .expects(EventRequest.SUSPEND_ALL).once()
         (mockClassPrepareRequest.setEnabled _).expects(true).once()
 
         val actual = classPrepareManager.createClassPrepareRequestWithId(expected.get)
@@ -76,7 +76,7 @@ class StandardClassPrepareManagerSpec extends FunSpec with Matchers with MockFac
         // Should set enabled to true by default, and
         // set the suspend policy to vm level by default
         (mockClassPrepareRequest.setSuspendPolicy _)
-          .expects(EventRequest.SUSPEND_EVENT_THREAD).once()
+          .expects(EventRequest.SUSPEND_ALL).once()
         (mockClassPrepareRequest.setEnabled _).expects(true).once()
 
         val actual = classPrepareManager.createClassPrepareRequestWithId(

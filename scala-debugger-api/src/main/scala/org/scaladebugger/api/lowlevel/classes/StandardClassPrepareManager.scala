@@ -42,7 +42,7 @@ class StandardClassPrepareManager(
     val request = Try(eventRequestManager.createClassPrepareRequest(
       Seq(
         EnabledProperty(value = true),
-        SuspendPolicyProperty.EventThread
+        SuspendPolicyProperty.AllThreads
       ) ++ extraArguments: _*
     ))
 
