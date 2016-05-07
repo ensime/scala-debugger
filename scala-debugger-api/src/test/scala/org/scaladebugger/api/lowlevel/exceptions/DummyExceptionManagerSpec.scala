@@ -84,6 +84,16 @@ class DummyExceptionManagerSpec extends FunSpec with Matchers with MockFactory
       }
     }
 
+    describe("#getExceptionRequestInfoWithId") {
+      it("should return None") {
+        val expected = None
+
+        val actual = exceptionManager.getExceptionRequestInfoWithId(TestRequestId)
+
+        actual should be (expected)
+      }
+    }
+
     describe("#getExceptionRequestWithId") {
       it("should return None") {
         val expected = None

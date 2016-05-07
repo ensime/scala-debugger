@@ -35,4 +35,6 @@ class TestMethodExitManager(
     methodExitManager.hasMethodExitRequestWithId(requestId)
   override def getMethodExitRequestWithId(requestId: String): Option[MethodExitRequest] =
     methodExitManager.getMethodExitRequestWithId(requestId)
+  override def getMethodExitRequestInfoWithId(requestId: String): Option[MethodExitRequestInfo] =
+    methodExitManager.getMethodExitRequestInfoWithId(requestId)
 }

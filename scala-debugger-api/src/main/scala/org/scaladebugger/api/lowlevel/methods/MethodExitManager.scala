@@ -134,6 +134,17 @@ trait MethodExitManager {
   ): Option[MethodExitRequest]
 
   /**
+   * Returns the information for a method exit request with the specified id.
+   *
+   * @param requestId The id of the request
+   *
+   * @return Some method exit information if found, otherwise None
+   */
+  def getMethodExitRequestInfoWithId(
+    requestId: String
+  ): Option[MethodExitRequestInfo]
+
+  /**
    * Removes the specified method exit request.
    *
    * @param className The name of the class targeted by the method exit request

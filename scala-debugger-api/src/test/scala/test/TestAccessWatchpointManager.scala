@@ -29,6 +29,8 @@ class TestAccessWatchpointManager(
     accessWatchpointManager.getAccessWatchpointRequest(className, fieldName)
   override def getAccessWatchpointRequestWithId(id: String): Option[AccessWatchpointRequest] =
     accessWatchpointManager.getAccessWatchpointRequestWithId(id)
+  override def getAccessWatchpointRequestInfoWithId(requestId: String): Option[AccessWatchpointRequestInfo] =
+    accessWatchpointManager.getAccessWatchpointRequestInfoWithId(requestId)
   override def accessWatchpointRequestListById: Seq[String] =
     accessWatchpointManager.accessWatchpointRequestListById
   override def removeAccessWatchpointRequestWithId(id: String): Boolean =

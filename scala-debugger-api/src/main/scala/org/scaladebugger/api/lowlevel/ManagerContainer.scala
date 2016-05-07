@@ -58,24 +58,32 @@ case class ManagerContainer(
           _logger.trace(s"Adding access watchpoint request from pending $i")
           accessWatchpointManager.removeAccessWatchpointRequestWithId(i.requestId)
           accessWatchpointManager.createAccessWatchpointRequestFromInfo(i)
+          accessWatchpointManager.getAccessWatchpointRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case breakpointManager: PendingBreakpointSupportLike =>
         breakpointManager.pendingBreakpointRequests.foreach(i => {
           _logger.trace(s"Adding breakpoint request from pending $i")
           breakpointManager.removeBreakpointRequestWithId(i.requestId)
           breakpointManager.createBreakpointRequestFromInfo(i)
+          breakpointManager.getBreakpointRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case classPrepareManager: PendingClassPrepareSupportLike =>
         classPrepareManager.pendingClassPrepareRequests.foreach(i => {
           _logger.trace(s"Adding class prepare request from pending $i")
           classPrepareManager.removeClassPrepareRequest(i.requestId)
           classPrepareManager.createClassPrepareRequestFromInfo(i)
+          classPrepareManager.getClassPrepareRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case classUnloadManager: PendingClassUnloadSupportLike =>
         classUnloadManager.pendingClassUnloadRequests.foreach(i => {
           _logger.trace(s"Adding class unload request from pending $i")
           classUnloadManager.removeClassUnloadRequest(i.requestId)
           classUnloadManager.createClassUnloadRequestFromInfo(i)
+          classUnloadManager.getClassUnloadRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case eventManager: PendingEventHandlerSupportLike =>
         eventManager.pendingEventHandlers.foreach(i => {
@@ -88,72 +96,96 @@ case class ManagerContainer(
           _logger.trace(s"Adding exception request from pending $i")
           exceptionManager.removeExceptionRequestWithId(i.requestId)
           exceptionManager.createExceptionRequestFromInfo(i)
+          exceptionManager.getExceptionRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case methodEntryManager: PendingMethodEntrySupportLike =>
         methodEntryManager.pendingMethodEntryRequests.foreach(i => {
           _logger.trace(s"Adding method entry request from pending $i")
           methodEntryManager.removeMethodEntryRequestWithId(i.requestId)
           methodEntryManager.createMethodEntryRequestFromInfo(i)
+          methodEntryManager.getMethodEntryRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case methodExitManager: PendingMethodExitSupportLike =>
         methodExitManager.pendingMethodExitRequests.foreach(i => {
           _logger.trace(s"Adding method exit request from pending $i")
           methodExitManager.removeMethodExitRequestWithId(i.requestId)
           methodExitManager.createMethodExitRequestFromInfo(i)
+          methodExitManager.getMethodExitRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case modificationWatchpointManager: PendingModificationWatchpointSupportLike =>
         modificationWatchpointManager.pendingModificationWatchpointRequests.foreach(i => {
           _logger.trace(s"Adding modification watchpoint request from pending $i")
           modificationWatchpointManager.removeModificationWatchpointRequestWithId(i.requestId)
           modificationWatchpointManager.createModificationWatchpointRequestFromInfo(i)
+          modificationWatchpointManager.getModificationWatchpointRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case monitorContendedEnteredManager: PendingMonitorContendedEnteredSupportLike =>
         monitorContendedEnteredManager.pendingMonitorContendedEnteredRequests.foreach(i => {
           _logger.trace(s"Adding monitor contended entered request from pending $i")
           monitorContendedEnteredManager.removeMonitorContendedEnteredRequest(i.requestId)
           monitorContendedEnteredManager.createMonitorContendedEnteredRequestFromInfo(i)
+          monitorContendedEnteredManager.getMonitorContendedEnteredRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case monitorContendedEnterManager: PendingMonitorContendedEnterSupportLike =>
         monitorContendedEnterManager.pendingMonitorContendedEnterRequests.foreach(i => {
           _logger.trace(s"Adding monitor contended enter request from pending $i")
           monitorContendedEnterManager.removeMonitorContendedEnterRequest(i.requestId)
           monitorContendedEnterManager.createMonitorContendedEnterRequestFromInfo(i)
+          monitorContendedEnterManager.getMonitorContendedEnterRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case monitorWaitedManager: PendingMonitorWaitedSupportLike =>
         monitorWaitedManager.pendingMonitorWaitedRequests.foreach(i => {
           _logger.trace(s"Adding monitor waited request from pending $i")
           monitorWaitedManager.removeMonitorWaitedRequest(i.requestId)
           monitorWaitedManager.createMonitorWaitedRequestFromInfo(i)
+          monitorWaitedManager.getMonitorWaitedRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case monitorWaitManager: PendingMonitorWaitSupportLike =>
         monitorWaitManager.pendingMonitorWaitRequests.foreach(i => {
           _logger.trace(s"Adding monitor wait request from pending $i")
           monitorWaitManager.removeMonitorWaitRequest(i.requestId)
           monitorWaitManager.createMonitorWaitRequestFromInfo(i)
+          monitorWaitManager.getMonitorWaitRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case stepManager: PendingStepSupportLike =>
         stepManager.pendingStepRequests.foreach(i => {
           _logger.trace(s"Adding step request from pending $i")
           stepManager.removeStepRequestWithId(i.requestId)
           stepManager.createStepRequestFromInfo(i)
+          stepManager.getStepRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case threadDeathManager: PendingThreadDeathSupportLike =>
         threadDeathManager.pendingThreadDeathRequests.foreach(i => {
           _logger.trace(s"Adding thread death request from pending $i")
           threadDeathManager.removeThreadDeathRequest(i.requestId)
           threadDeathManager.createThreadDeathRequestFromInfo(i)
+          threadDeathManager.getThreadDeathRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case threadStartManager: PendingThreadStartSupportLike =>
         threadStartManager.pendingThreadStartRequests.foreach(i => {
           _logger.trace(s"Adding thread start request from pending $i")
           threadStartManager.removeThreadStartRequest(i.requestId)
           threadStartManager.createThreadStartRequestFromInfo(i)
+          threadStartManager.getThreadStartRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case vmDeathManager: PendingVMDeathSupportLike =>
         vmDeathManager.pendingVMDeathRequests.foreach(i => {
           _logger.trace(s"Adding vm death request from pending $i")
           vmDeathManager.removeVMDeathRequest(i.requestId)
           vmDeathManager.createVMDeathRequestFromInfo(i)
+          vmDeathManager.getVMDeathRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
     }))
   }
@@ -176,21 +208,29 @@ case class ManagerContainer(
         accessWatchpointManager.pendingAccessWatchpointRequests.foreach(i => {
           _logger.trace(s"Adding access watchpoint request from pending $i")
           this.accessWatchpointManager.createAccessWatchpointRequestFromInfo(i)
+          this.accessWatchpointManager.getAccessWatchpointRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case breakpointManager: PendingBreakpointSupportLike =>
         breakpointManager.pendingBreakpointRequests.foreach(i => {
           _logger.trace(s"Adding breakpoint request from pending $i")
           this.breakpointManager.createBreakpointRequestFromInfo(i)
+          this.breakpointManager.getBreakpointRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case classPrepareManager: PendingClassPrepareSupportLike =>
         classPrepareManager.pendingClassPrepareRequests.foreach(i => {
           _logger.trace(s"Adding class prepare request from pending $i")
           this.classPrepareManager.createClassPrepareRequestFromInfo(i)
+          this.classPrepareManager.getClassPrepareRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case classUnloadManager: PendingClassUnloadSupportLike =>
         classUnloadManager.pendingClassUnloadRequests.foreach(i => {
           _logger.trace(s"Adding class unload request from pending $i")
           this.classUnloadManager.createClassUnloadRequestFromInfo(i)
+          this.classUnloadManager.getClassUnloadRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case eventManager: PendingEventHandlerSupportLike =>
         eventManager.pendingEventHandlers.foreach(i => {
@@ -201,61 +241,85 @@ case class ManagerContainer(
         exceptionManager.pendingExceptionRequests.foreach(i => {
           _logger.trace(s"Adding exception request from pending $i")
           this.exceptionManager.createExceptionRequestFromInfo(i)
+          this.exceptionManager.getExceptionRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case methodEntryManager: PendingMethodEntrySupportLike =>
         methodEntryManager.pendingMethodEntryRequests.foreach(i => {
           _logger.trace(s"Adding method entry request from pending $i")
           this.methodEntryManager.createMethodEntryRequestFromInfo(i)
+          this.methodEntryManager.getMethodEntryRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case methodExitManager: PendingMethodExitSupportLike =>
         methodExitManager.pendingMethodExitRequests.foreach(i => {
           _logger.trace(s"Adding method exit request from pending $i")
           this.methodExitManager.createMethodExitRequestFromInfo(i)
+          this.methodExitManager.getMethodExitRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case modificationWatchpointManager: PendingModificationWatchpointSupportLike =>
         modificationWatchpointManager.pendingModificationWatchpointRequests.foreach(i => {
           _logger.trace(s"Adding modification watchpoint request from pending $i")
           this.modificationWatchpointManager.createModificationWatchpointRequestFromInfo(i)
+          this.modificationWatchpointManager.getModificationWatchpointRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case monitorContendedEnteredManager: PendingMonitorContendedEnteredSupportLike =>
         monitorContendedEnteredManager.pendingMonitorContendedEnteredRequests.foreach(i => {
           _logger.trace(s"Adding monitor contended entered request from pending $i")
           this.monitorContendedEnteredManager.createMonitorContendedEnteredRequestFromInfo(i)
+          this.monitorContendedEnteredManager.getMonitorContendedEnteredRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case monitorContendedEnterManager: PendingMonitorContendedEnterSupportLike =>
         monitorContendedEnterManager.pendingMonitorContendedEnterRequests.foreach(i => {
           _logger.trace(s"Adding monitor contended enter request from pending $i")
           this.monitorContendedEnterManager.createMonitorContendedEnterRequestFromInfo(i)
+          this.monitorContendedEnterManager.getMonitorContendedEnterRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case monitorWaitedManager: PendingMonitorWaitedSupportLike =>
         monitorWaitedManager.pendingMonitorWaitedRequests.foreach(i => {
           _logger.trace(s"Adding monitor waited request from pending $i")
           this.monitorWaitedManager.createMonitorWaitedRequestFromInfo(i)
+          this.monitorWaitedManager.getMonitorWaitedRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case monitorWaitManager: PendingMonitorWaitSupportLike =>
         monitorWaitManager.pendingMonitorWaitRequests.foreach(i => {
           _logger.trace(s"Adding monitor wait request from pending $i")
           this.monitorWaitManager.createMonitorWaitRequestFromInfo(i)
+          this.monitorWaitManager.getMonitorWaitRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case stepManager: PendingStepSupportLike =>
         stepManager.pendingStepRequests.foreach(i => {
           _logger.trace(s"Adding step request from pending $i")
           this.stepManager.createStepRequestFromInfo(i)
+          this.stepManager.getStepRequestInfoWithId(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case threadDeathManager: PendingThreadDeathSupportLike =>
         threadDeathManager.pendingThreadDeathRequests.foreach(i => {
           _logger.trace(s"Adding thread death request from pending $i")
           this.threadDeathManager.createThreadDeathRequestFromInfo(i)
+          this.threadDeathManager.getThreadDeathRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case threadStartManager: PendingThreadStartSupportLike =>
         threadStartManager.pendingThreadStartRequests.foreach(i => {
           _logger.trace(s"Adding thread start request from pending $i")
           this.threadStartManager.createThreadStartRequestFromInfo(i)
+          this.threadStartManager.getThreadStartRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
       case vmDeathManager: PendingVMDeathSupportLike =>
         vmDeathManager.pendingVMDeathRequests.foreach(i => {
           _logger.trace(s"Adding vm death request from pending $i")
           this.vmDeathManager.createVMDeathRequestFromInfo(i)
+          this.vmDeathManager.getVMDeathRequestInfo(i.requestId)
+            .foreach(logPendingAttempt)
         })
     }))
   }
@@ -276,6 +340,34 @@ case class ManagerContainer(
       case p: PendingRequestSupport => p.setPendingSupport(value)
       case _                        => // Do nothing in this case
     }
+  }
+
+  /** Logs result of request creation. */
+  private def logPendingAttempt[T](requestInfo: RequestInfo): Unit = {
+    val requestName = requestInfo match {
+      case _: AccessWatchpointRequestInfo         => "access watchpoint"
+      case _: BreakpointRequestInfo               => "breakpoint"
+      case _: ClassPrepareRequestInfo             => "class prepare"
+      case _: ClassUnloadRequestInfo              => "class unload"
+      case _: ExceptionRequestInfo                => "exception"
+      case _: MethodEntryRequestInfo              => "method entry"
+      case _: MethodExitRequestInfo               => "method exit"
+      case _: ModificationWatchpointRequestInfo   => "modification watchpoint"
+      case _: MonitorContendedEnteredRequestInfo  => "monitor contended entered"
+      case _: MonitorContendedEnterRequestInfo    => "monitor contended enter"
+      case _: MonitorWaitedRequestInfo            => "monitor waited"
+      case _: MonitorWaitRequestInfo              => "monitor wait"
+      case _: StepRequestInfo                     => "step"
+      case _: ThreadDeathRequestInfo              => "thread death"
+      case _: ThreadStartRequestInfo              => "thread start"
+      case _: VMDeathRequestInfo                  => "vm death"
+      case _                                      => "???"
+    }
+
+    if (!requestInfo.isPending)
+      _logger.debug(s"Created $requestName request from pending $requestInfo")
+    else
+      _logger.debug(s"Did not create $requestName request from $requestInfo")
   }
 }
 

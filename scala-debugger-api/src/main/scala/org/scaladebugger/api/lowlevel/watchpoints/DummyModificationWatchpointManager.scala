@@ -16,7 +16,6 @@ class DummyModificationWatchpointManager extends ModificationWatchpointManager {
    *
    * @param className The name of the class containing the field
    * @param fieldName The name of the field to watch
-   *
    * @return True if a modification watchpoint request with the id exists,
    *         otherwise false
    */
@@ -38,7 +37,6 @@ class DummyModificationWatchpointManager extends ModificationWatchpointManager {
    *
    * @param className The name of the class containing the field
    * @param fieldName The name of the field to watch
-   *
    * @return Some collection of modification watchpoints for the field,
    *         or None if the specified field has no modification watchpoints
    */
@@ -51,7 +49,6 @@ class DummyModificationWatchpointManager extends ModificationWatchpointManager {
    * Removes the modification watchpoint request with the specified id.
    *
    * @param id The id of the Modification Watchpoint Request
-   *
    * @return True if the modification watchpoint request was removed
    *         (if it existed), otherwise false
    */
@@ -71,7 +68,6 @@ class DummyModificationWatchpointManager extends ModificationWatchpointManager {
    *
    * @param className The name of the class containing the field
    * @param fieldName The name of the field to watch
-   *
    * @return True if successfully removed modification watchpoint,
    *         otherwise false
    */
@@ -84,7 +80,6 @@ class DummyModificationWatchpointManager extends ModificationWatchpointManager {
    * Determines if a modification watchpoint request with the specified id.
    *
    * @param id The id of the Modification Watchpoint Request
-   *
    * @return True if a modification watchpoint request with the id exists,
    *         otherwise false
    */
@@ -96,12 +91,22 @@ class DummyModificationWatchpointManager extends ModificationWatchpointManager {
    * Retrieves the modification watchpoint request using the specified id.
    *
    * @param id The id of the Modification Watchpoint Request
-   *
    * @return Some modification watchpoint request if it exists, otherwise None
    */
   override def getModificationWatchpointRequestWithId(
     id: String
   ): Option[ModificationWatchpointRequest] = None
+
+  /**
+   * Returns the information for a modification watchpoint request with the
+   * specified id.
+   *
+   * @param requestId The id of the request
+   * @return Some modification watchpoint information if found, otherwise None
+   */
+  override def getModificationWatchpointRequestInfoWithId(
+    requestId: String
+  ): Option[ModificationWatchpointRequestInfo] = None
 
   /**
    * Creates a new modification watchpoint request for the specified field
@@ -111,7 +116,6 @@ class DummyModificationWatchpointManager extends ModificationWatchpointManager {
    * @param className The name of the class containing the field
    * @param fieldName The name of the field to watch
    * @param extraArguments Any additional arguments to provide to the request
-   *
    * @return Success(id) if successful, otherwise Failure
    */
   override def createModificationWatchpointRequestWithId(

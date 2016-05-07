@@ -23,6 +23,8 @@ class TestMethodEntryManager(
     methodEntryManager.createMethodEntryRequestWithId(requestId, className, methodName, extraArguments: _*)
   override def getMethodEntryRequest(className: String, methodName: String): Option[Seq[MethodEntryRequest]] =
     methodEntryManager.getMethodEntryRequest(className, methodName)
+  override def getMethodEntryRequestInfoWithId(requestId: String): Option[MethodEntryRequestInfo] =
+    methodEntryManager.getMethodEntryRequestInfoWithId(requestId)
   override def methodEntryRequestList: Seq[MethodEntryRequestInfo] =
     methodEntryManager.methodEntryRequestList
   override def removeMethodEntryRequest(className: String, methodName: String): Boolean =

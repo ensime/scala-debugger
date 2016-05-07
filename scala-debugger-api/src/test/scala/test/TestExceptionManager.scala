@@ -31,6 +31,8 @@ class TestExceptionManager(
     exceptionManager.removeExceptionRequest(exceptionName)
   override def getExceptionRequestWithId(requestId: String): Option[Seq[ExceptionRequest]] =
     exceptionManager.getExceptionRequestWithId(requestId)
+  override def getExceptionRequestInfoWithId(requestId: String): Option[ExceptionRequestInfo] =
+    exceptionManager.getExceptionRequestInfoWithId(requestId)
   override def hasExceptionRequest(exceptionName: String): Boolean =
     exceptionManager.hasExceptionRequest(exceptionName)
   override def getExceptionRequest(exceptionName: String): Option[Seq[ExceptionRequest]] =

@@ -29,6 +29,8 @@ class TestModificationWatchpointManager(
     modificationWatchpointManager.getModificationWatchpointRequest(className, fieldName)
   override def getModificationWatchpointRequestWithId(id: String): Option[ModificationWatchpointRequest] =
     modificationWatchpointManager.getModificationWatchpointRequestWithId(id)
+  override def getModificationWatchpointRequestInfoWithId(requestId: String): Option[ModificationWatchpointRequestInfo] =
+    modificationWatchpointManager.getModificationWatchpointRequestInfoWithId(requestId)
   override def modificationWatchpointRequestListById: Seq[String] =
     modificationWatchpointManager.modificationWatchpointRequestListById
   override def removeModificationWatchpointRequestWithId(id: String): Boolean =

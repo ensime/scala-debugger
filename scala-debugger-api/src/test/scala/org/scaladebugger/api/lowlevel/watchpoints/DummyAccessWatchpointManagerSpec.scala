@@ -68,6 +68,18 @@ class DummyAccessWatchpointManagerSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#getAccessWatchpointRequestInfoWithId") {
+      it("should return None") {
+        val expected = None
+
+        val actual = accessWatchpointManager.getAccessWatchpointRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+    }
+
     describe("#getAccessWatchpointRequestWithId") {
       it("should return None") {
         val expected = None

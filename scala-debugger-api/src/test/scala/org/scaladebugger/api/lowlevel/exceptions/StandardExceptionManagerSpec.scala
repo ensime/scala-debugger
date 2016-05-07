@@ -314,6 +314,41 @@ class StandardExceptionManagerSpec extends FunSpec with Matchers with MockFactor
       }
     }
 
+    describe("#getExceptionRequestInfoWithId") {
+      it("should return Some(ExceptionRequestInfo(id, not pending, class name, notify caught, notify uncaught)) if the id exists") {
+        val expected = Some(ExceptionRequestInfo(
+          requestId = TestRequestId,
+          isPending = false,
+          className = "some.exception.name",
+          notifyCaught = true,
+          notifyUncaught = false
+        ))
+
+        // Stub out the call to create a breakpoint request
+        (mockEventRequestManager.createExceptionRequest _).expects(*, *, *)
+          .returning(stub[ExceptionRequest]).once()
+
+        exceptionManager.createExceptionRequestWithId(
+          expected.get.requestId,
+          expected.get.className,
+          expected.get.notifyCaught,
+          expected.get.notifyUncaught
+        )
+
+        val actual = exceptionManager.getExceptionRequestInfoWithId(TestRequestId)
+
+        actual should be (expected)
+      }
+
+      it("should return None if there is no breakpoint with the id") {
+        val expected = None
+
+        val actual = exceptionManager.getExceptionRequestInfoWithId(TestRequestId)
+
+        actual should be (expected)
+      }
+    }
+
     describe("#getExceptionRequestWithId") {
       it("should return Some(Seq(ExceptionRequest)) if found") {
         val expected = Seq(stub[ExceptionRequest])

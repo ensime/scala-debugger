@@ -186,6 +186,43 @@ class StandardMethodEntryManagerSpec extends FunSpec with Matchers with MockFact
       }
     }
 
+    describe("#getMethodEntryRequestInfoWithId") {
+      it("should return Some(MethodEntryRequestInfo(id, not pending, class name, method name)) if the id exists") {
+        val expected = Some(MethodEntryRequestInfo(
+          requestId = TestRequestId,
+          isPending = false,
+          className = "some.class.name",
+          methodName = "someMethodName"
+        ))
+
+        // Stub out the call to create a breakpoint request
+        (mockEventRequestManager.createMethodEntryRequest _).expects()
+          .returning(stub[MethodEntryRequest]).once()
+
+        methodEntryManager.createMethodEntryRequestWithId(
+          expected.get.requestId,
+          expected.get.className,
+          expected.get.methodName
+        )
+
+        val actual = methodEntryManager.getMethodEntryRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+
+      it("should return None if there is no breakpoint with the id") {
+        val expected = None
+
+        val actual = methodEntryManager.getMethodEntryRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+    }
+
     describe("#getMethodEntryRequestWithId") {
       it("should return Some(collection of MethodEntryRequest) if found") {
         val expected = stub[MethodEntryRequest]

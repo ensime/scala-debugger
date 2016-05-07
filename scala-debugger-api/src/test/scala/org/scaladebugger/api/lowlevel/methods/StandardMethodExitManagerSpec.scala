@@ -186,6 +186,43 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
       }
     }
 
+    describe("#getMethodExitRequestInfoWithId") {
+      it("should return Some(MethodExitRequestInfo(id, not pending, class name, method name)) if the id exists") {
+        val expected = Some(MethodExitRequestInfo(
+          requestId = TestRequestId,
+          isPending = false,
+          className = "some.class.name",
+          methodName = "someMethodName"
+        ))
+
+        // Stub out the call to create a breakpoint request
+        (mockEventRequestManager.createMethodExitRequest _).expects()
+          .returning(stub[MethodExitRequest]).once()
+
+        methodExitManager.createMethodExitRequestWithId(
+          expected.get.requestId,
+          expected.get.className,
+          expected.get.methodName
+        )
+
+        val actual = methodExitManager.getMethodExitRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+
+      it("should return None if there is no breakpoint with the id") {
+        val expected = None
+
+        val actual = methodExitManager.getMethodExitRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+    }
+
     describe("#getMethodExitRequestWithId") {
       it("should return Some(MethodExitRequest) if found") {
         val expected = stub[MethodExitRequest]

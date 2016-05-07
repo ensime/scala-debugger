@@ -24,12 +24,10 @@ class DummyMethodExitManager extends MethodExitManager {
    * @note The method name is purely used for indexing the request in the
    *       internal list. You should set a method name filter on the event
    *       handler for the method exit event.
-   *
    * @param requestId The id of the request used to retrieve and delete it
    * @param className The name of the class whose method exit events to watch
    * @param methodName The name of the method whose exit to watch
    * @param extraArguments Any additional arguments to provide to the request
-   *
    * @return Success(id) if successful, otherwise Failure
    */
   override def createMethodExitRequestWithId(
@@ -45,7 +43,6 @@ class DummyMethodExitManager extends MethodExitManager {
    * @param className The name of the class targeted by the method exit request
    * @param methodName The name of the method targeted by the method exit
    *                   request
-   *
    * @return Some collection of method exit requests if they exist,
    *         otherwise None
    */
@@ -53,6 +50,16 @@ class DummyMethodExitManager extends MethodExitManager {
     className: String,
     methodName: String
   ): Option[Seq[MethodExitRequest]] = None
+
+  /**
+   * Returns the information for a method exit request with the specified id.
+   *
+   * @param requestId The id of the request
+   * @return Some method exit information if found, otherwise None
+   */
+  override def getMethodExitRequestInfoWithId(
+    requestId: String
+  ): Option[MethodExitRequestInfo] = None
 
   /**
    * Retrieves the list of method exit requests contained by this manager.
@@ -67,7 +74,6 @@ class DummyMethodExitManager extends MethodExitManager {
    * @param className The name of the class targeted by the method exit request
    * @param methodName The name of the method targeted by the method exit
    *                   request
-   *
    * @return True if the method exit request was removed (if it existed),
    *         otherwise false
    */
@@ -80,7 +86,6 @@ class DummyMethodExitManager extends MethodExitManager {
    * Removes the specified method exit request.
    *
    * @param requestId The id of the request
-   *
    * @return True if the method exit request was removed (if it existed),
    *         otherwise false
    */
@@ -95,7 +100,6 @@ class DummyMethodExitManager extends MethodExitManager {
    * @param className The name of the class targeted by the method exit request
    * @param methodName The name of the method targeted by the method exit
    *                   request
-   *
    * @return True if a method exit request exists, otherwise false
    */
   override def hasMethodExitRequest(
@@ -107,7 +111,6 @@ class DummyMethodExitManager extends MethodExitManager {
    * Determines if a method exit request exists with the specified id.
    *
    * @param requestId The id of the request
-   *
    * @return True if a method exit request exists, otherwise false
    */
   override def hasMethodExitRequestWithId(requestId: String): Boolean = false
@@ -116,7 +119,6 @@ class DummyMethodExitManager extends MethodExitManager {
    * Retrieves the method exit request with the specified id.
    *
    * @param requestId The id of the request
-   *
    * @return Some method exit request if it exists, otherwise None
    */
   override def getMethodExitRequestWithId(

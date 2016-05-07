@@ -196,6 +196,17 @@ trait ExceptionManager {
   ): Option[Seq[ExceptionRequest]]
 
   /**
+   * Returns the information for an exception request with the specified id.
+   *
+   * @param requestId The id of the request
+   *
+   * @return Some exception information if found, otherwise None
+   */
+  def getExceptionRequestInfoWithId(
+    requestId: String
+  ): Option[ExceptionRequestInfo]
+
+  /**
    * Removes the specified exception requests with the matching exception
    * class name.
    *

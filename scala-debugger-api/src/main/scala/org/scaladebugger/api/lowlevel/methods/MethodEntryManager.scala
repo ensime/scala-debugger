@@ -134,6 +134,17 @@ trait MethodEntryManager {
   ): Option[MethodEntryRequest]
 
   /**
+   * Returns the information for a method entry request with the specified id.
+   *
+   * @param requestId The id of the request
+   *
+   * @return Some method entry information if found, otherwise None
+   */
+  def getMethodEntryRequestInfoWithId(
+    requestId: String
+  ): Option[MethodEntryRequestInfo]
+
+  /**
    * Removes the specified method entry request.
    *
    * @param className The name of the class targeted by the method entry request

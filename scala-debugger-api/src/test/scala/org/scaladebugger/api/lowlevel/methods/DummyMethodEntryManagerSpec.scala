@@ -70,6 +70,18 @@ class DummyMethodEntryManagerSpec extends FunSpec with Matchers with MockFactory
       }
     }
 
+    describe("#getMethodEntryRequestInfoWithId") {
+      it("should return None") {
+        val expected = None
+
+        val actual = methodEntryManager.getMethodEntryRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+    }
+
     describe("#getMethodEntryRequestWithId") {
       it("should return None") {
         val expected = None

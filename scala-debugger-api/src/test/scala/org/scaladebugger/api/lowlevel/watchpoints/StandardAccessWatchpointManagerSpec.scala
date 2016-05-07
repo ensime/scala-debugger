@@ -307,6 +307,55 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#getAccessWatchpointRequestInfoWithId") {
+      it("should return Some(AccessWatchpointRequestInfo(id, not pending, class name, field name)) if the id exists") {
+        val expected = Some(AccessWatchpointRequestInfo(
+          requestId = TestRequestId,
+          isPending = false,
+          className = "some.class.name",
+          fieldName = "someFieldName"
+        ))
+
+        // Generate a fake field to be returned when searching for a field
+        // with matching name
+        val stubField = createFieldStub(expected.get.fieldName)
+        val mockReferenceType = mock[ReferenceType]
+        (mockClassManager.allClasses _).expects()
+          .returning(Seq(mockReferenceType)).once()
+        (mockReferenceType.name _).expects()
+          .returning(expected.get.className).once()
+        (mockReferenceType.allFields _).expects()
+          .returning(Seq(stubField).asJava).once()
+
+        // Stub out the call to create a breakpoint request
+        (mockEventRequestManager.createAccessWatchpointRequest _)
+          .expects(stubField)
+          .returning(stub[AccessWatchpointRequest]).once()
+
+        accessWatchpointManager.createAccessWatchpointRequestWithId(
+          expected.get.requestId,
+          expected.get.className,
+          expected.get.fieldName
+        )
+
+        val actual = accessWatchpointManager.getAccessWatchpointRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+
+      it("should return None if there is no breakpoint with the id") {
+        val expected = None
+
+        val actual = accessWatchpointManager.getAccessWatchpointRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+    }
+
     describe("#getAccessWatchpointRequestWithId") {
       it("should return Some(AccessWatchpointRequest) if found") {
         val expected = Some(stub[AccessWatchpointRequest])

@@ -67,6 +67,18 @@ class DummyMethodExitManagerSpec extends FunSpec with Matchers with MockFactory
       }
     }
 
+    describe("#getMethodExitRequestInfoWithId") {
+      it("should return None") {
+        val expected = None
+
+        val actual = methodExitManager.getMethodExitRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+    }
+
     describe("#getMethodExitRequestWithId") {
       it("should return None") {
         val expected = None

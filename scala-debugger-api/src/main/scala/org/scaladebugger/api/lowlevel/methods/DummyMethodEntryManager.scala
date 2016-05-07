@@ -24,12 +24,10 @@ class DummyMethodEntryManager extends MethodEntryManager {
    * @note The method name is purely used for indexing the request in the
    *       internal list. You should set a method name filter on the event
    *       handler for the method entry event.
-   *
    * @param requestId The id of the request used to retrieve and delete it
    * @param className The name of the class whose method entry events to watch
    * @param methodName The name of the method whose entry to watch
    * @param extraArguments Any additional arguments to provide to the request
-   *
    * @return Success(id) if successful, otherwise Failure
    */
   override def createMethodEntryRequestWithId(
@@ -45,7 +43,6 @@ class DummyMethodEntryManager extends MethodEntryManager {
    * @param className The name of the class targeted by the method entry request
    * @param methodName The name of the method targeted by the method entry
    *                   request
-   *
    * @return Some collection of method entry requests if they exist,
    *         otherwise None
    */
@@ -53,6 +50,16 @@ class DummyMethodEntryManager extends MethodEntryManager {
     className: String,
     methodName: String
   ): Option[Seq[MethodEntryRequest]] = None
+
+  /**
+   * Returns the information for a method entry request with the specified id.
+   *
+   * @param requestId The id of the request
+   * @return Some method entry information if found, otherwise None
+   */
+  override def getMethodEntryRequestInfoWithId(
+    requestId: String
+  ): Option[MethodEntryRequestInfo] = None
 
   /**
    * Retrieves the list of method entry requests contained by this manager.
@@ -67,7 +74,6 @@ class DummyMethodEntryManager extends MethodEntryManager {
    * @param className The name of the class targeted by the method entry request
    * @param methodName The name of the method targeted by the method entry
    *                   request
-   *
    * @return True if the method entry request was removed (if it existed),
    *         otherwise false
    */
@@ -80,7 +86,6 @@ class DummyMethodEntryManager extends MethodEntryManager {
    * Removes the specified method entry request.
    *
    * @param requestId The id of the request
-   *
    * @return True if the method entry request was removed (if it existed),
    *         otherwise false
    */
@@ -95,7 +100,6 @@ class DummyMethodEntryManager extends MethodEntryManager {
    * @param className The name of the class targeted by the method entry request
    * @param methodName The name of the method targeted by the method entry
    *                   request
-   *
    * @return True if a method entry request exists, otherwise false
    */
   override def hasMethodEntryRequest(
@@ -107,7 +111,6 @@ class DummyMethodEntryManager extends MethodEntryManager {
    * Determines if a method entry request exists with the specified id.
    *
    * @param requestId The id of the request
-   *
    * @return True if a method entry request exists, otherwise false
    */
   override def hasMethodEntryRequestWithId(requestId: String): Boolean = false
@@ -116,7 +119,6 @@ class DummyMethodEntryManager extends MethodEntryManager {
    * Retrieves the method entry request with the specified id.
    *
    * @param requestId The id of the request
-   *
    * @return Some method entry request if it exists, otherwise None
    */
   override def getMethodEntryRequestWithId(

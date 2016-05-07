@@ -307,6 +307,55 @@ class StandardModificationWatchpointManagerSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#getModificationWatchpointRequestInfoWithId") {
+      it("should return Some(ModificationWatchpointRequestInfo(id, not pending, class name, field name)) if the id exists") {
+        val expected = Some(ModificationWatchpointRequestInfo(
+          requestId = TestRequestId,
+          isPending = false,
+          className = "some.class.name",
+          fieldName = "someFieldName"
+        ))
+
+        // Generate a fake field to be returned when searching for a field
+        // with matching name
+        val stubField = createFieldStub(expected.get.fieldName)
+        val mockReferenceType = mock[ReferenceType]
+        (mockClassManager.allClasses _).expects()
+          .returning(Seq(mockReferenceType)).once()
+        (mockReferenceType.name _).expects()
+          .returning(expected.get.className).once()
+        (mockReferenceType.allFields _).expects()
+          .returning(Seq(stubField).asJava).once()
+
+        // Stub out the call to create a breakpoint request
+        (mockEventRequestManager.createModificationWatchpointRequest _)
+          .expects(stubField)
+          .returning(stub[ModificationWatchpointRequest]).once()
+
+        modificationWatchpointManager.createModificationWatchpointRequestWithId(
+          expected.get.requestId,
+          expected.get.className,
+          expected.get.fieldName
+        )
+
+        val actual = modificationWatchpointManager.getModificationWatchpointRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+
+      it("should return None if there is no breakpoint with the id") {
+        val expected = None
+
+        val actual = modificationWatchpointManager.getModificationWatchpointRequestInfoWithId(
+          TestRequestId
+        )
+
+        actual should be (expected)
+      }
+    }
+
     describe("#getModificationWatchpointRequestWithId") {
       it("should return Some(ModificationWatchpointRequest) if found") {
         val expected = Some(stub[ModificationWatchpointRequest])

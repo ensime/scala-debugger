@@ -16,7 +16,6 @@ class DummyAccessWatchpointManager extends AccessWatchpointManager {
    *
    * @param className The name of the class containing the field
    * @param fieldName The name of the field to watch
-   *
    * @return True if a access watchpoint request with the id exists,
    *         otherwise false
    */
@@ -38,7 +37,6 @@ class DummyAccessWatchpointManager extends AccessWatchpointManager {
    *
    * @param className The name of the class containing the field
    * @param fieldName The name of the field to watch
-   *
    * @return Some collection of access watchpoints for the field,
    *         or None if the specified field has no access watchpoints
    */
@@ -51,7 +49,6 @@ class DummyAccessWatchpointManager extends AccessWatchpointManager {
    * Removes the access watchpoint request with the specified id.
    *
    * @param id The id of the Access Watchpoint Request
-   *
    * @return True if the access watchpoint request was removed
    *         (if it existed), otherwise false
    */
@@ -71,7 +68,6 @@ class DummyAccessWatchpointManager extends AccessWatchpointManager {
    *
    * @param className The name of the class containing the field
    * @param fieldName The name of the field to watch
-   *
    * @return True if successfully removed access watchpoint,
    *         otherwise false
    */
@@ -84,7 +80,6 @@ class DummyAccessWatchpointManager extends AccessWatchpointManager {
    * Determines if a access watchpoint request with the specified id.
    *
    * @param id The id of the Access Watchpoint Request
-   *
    * @return True if a access watchpoint request with the id exists,
    *         otherwise false
    */
@@ -96,12 +91,22 @@ class DummyAccessWatchpointManager extends AccessWatchpointManager {
    * Retrieves the access watchpoint request using the specified id.
    *
    * @param id The id of the Access Watchpoint Request
-   *
    * @return Some access watchpoint request if it exists, otherwise None
    */
   override def getAccessWatchpointRequestWithId(
     id: String
   ): Option[AccessWatchpointRequest] = None
+
+  /**
+   * Returns the information for an access watchpoint request with the
+   * specified id.
+   *
+   * @param requestId The id of the request
+   * @return Some access watchpoint information if found, otherwise None
+   */
+  override def getAccessWatchpointRequestInfoWithId(
+    requestId: String
+  ): Option[AccessWatchpointRequestInfo] = None
 
   /**
    * Creates a new access watchpoint request for the specified field
@@ -111,7 +116,6 @@ class DummyAccessWatchpointManager extends AccessWatchpointManager {
    * @param className The name of the class containing the field
    * @param fieldName The name of the field to watch
    * @param extraArguments Any additional arguments to provide to the request
-   *
    * @return Success(id) if successful, otherwise Failure
    */
   override def createAccessWatchpointRequestWithId(

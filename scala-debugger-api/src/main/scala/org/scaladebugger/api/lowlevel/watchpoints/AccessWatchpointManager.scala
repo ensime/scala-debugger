@@ -135,6 +135,18 @@ trait AccessWatchpointManager {
   ): Option[AccessWatchpointRequest]
 
   /**
+   * Returns the information for an access watchpoint request with the
+   * specified id.
+   *
+   * @param requestId The id of the request
+   *
+   * @return Some access watchpoint information if found, otherwise None
+   */
+  def getAccessWatchpointRequestInfoWithId(
+    requestId: String
+  ): Option[AccessWatchpointRequestInfo]
+
+  /**
    * Removes the access watchpoint for the specified field.
    *
    * @param className The name of the class containing the field

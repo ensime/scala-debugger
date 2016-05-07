@@ -132,6 +132,18 @@ trait ModificationWatchpointManager {
   ): Option[ModificationWatchpointRequest]
 
   /**
+   * Returns the information for a modification watchpoint request with the
+   * specified id.
+   *
+   * @param requestId The id of the request
+   *
+   * @return Some modification watchpoint information if found, otherwise None
+   */
+  def getModificationWatchpointRequestInfoWithId(
+    requestId: String
+  ): Option[ModificationWatchpointRequestInfo]
+
+  /**
    * Removes the modification watchpoint for the specified field.
    *
    * @param className The name of the class containing the field
