@@ -58,10 +58,12 @@ object Common {
 
     concurrentRestrictions in Global := {
       val limited = scala.util.Properties.envOrElse(
-        "SBT_TASK_LIMIT", "4"
+        "SBT_TASK_LIMIT", "0"
       ).toInt
 
-      Seq(Tags.limitAll(limited))
+      // Only limit parallel if told to do so
+      if (limited > 0) Seq(Tags.limitAll(limited))
+      else Nil
     },
 
     testOptions in Test += Tests.Argument("-oDF"),
