@@ -56,6 +56,14 @@ object Common {
       Try(System.getenv("SCALATEST_SPAN_SCALE_FACTOR").toDouble).getOrElse(1.0)
     },
 
+    concurrentRestrictions in Global := {
+      val limited = scala.util.Properties.envOrElse(
+        "SBT_TASK_LIMIT", "4"
+      ).toInt
+
+      Seq(Tags.limitAll(limited))
+    },
+
     testOptions in Test += Tests.Argument("-oDF"),
 
     testOptions in IntegrationTest += Tests.Argument("-oDF"),
