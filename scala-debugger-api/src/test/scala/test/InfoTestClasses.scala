@@ -30,6 +30,9 @@ object InfoTestClasses {
   }
 
   class TestThreadInfoProfile extends TestObjectInfoProfile with ThreadInfoProfile {
+    override def status: ThreadStatusInfoProfile = throwException()
+    override def suspend(): Unit = throwException()
+    override def resume(): Unit = throwException()
     override def indexedFields: Seq[VariableInfoProfile] = throwException()
     override def typeInfo: ReferenceTypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
@@ -39,6 +42,20 @@ object InfoTestClasses {
     override def frame(index: Int): FrameInfoProfile = throwException()
     override def totalFrames: Int = throwException()
     override def toJdiInstance: ThreadReference = throwException()
+  }
+
+  class TestThreadStatusInfoProfile extends ThreadStatusInfoProfile {
+    override def statusCode: Int = throwException()
+    override def isMonitor: Boolean = throwException()
+    override def isUnknown: Boolean = throwException()
+    override def suspendCount: Int = throwException()
+    override def isSuspended: Boolean = throwException()
+    override def isWait: Boolean = throwException()
+    override def isSleeping: Boolean = throwException()
+    override def isAtBreakpoint: Boolean = throwException()
+    override def isNotStarted: Boolean = throwException()
+    override def isRunning: Boolean = throwException()
+    override def isZombie: Boolean = throwException()
   }
 
   class TestLocationInfoProfile extends LocationInfoProfile {

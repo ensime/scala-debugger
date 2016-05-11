@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi.{ReferenceType, StackFrame, ThreadReference, VirtualMachine}
-import org.scaladebugger.api.profiles.traits.info.FrameInfoProfile
+import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, ThreadStatusInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -13,6 +13,7 @@ class PureThreadInfoProfileSpec extends FunSpec with Matchers
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockReferenceType = mock[ReferenceType]
   private val mockNewFrameProfile = mockFunction[StackFrame, Int, FrameInfoProfile]
+  private val mockNewThreadStatusProfile = mockFunction[ThreadStatusInfoProfile]
   private val mockThreadReference = mock[ThreadReference]
   private val pureThreadInfoProfile = new PureThreadInfoProfile(
     mockScalaVirtualMachine,
@@ -21,6 +22,10 @@ class PureThreadInfoProfileSpec extends FunSpec with Matchers
     _virtualMachine = mockVirtualMachine,
     _referenceType = mockReferenceType
   ) {
+
+    override protected def newThreadStatusProfile(): ThreadStatusInfoProfile =
+      mockNewThreadStatusProfile()
+
     override protected def newFrameProfile(
       stackFrame: StackFrame,
       index: Int
@@ -47,6 +52,33 @@ class PureThreadInfoProfileSpec extends FunSpec with Matchers
         val actual = pureThreadInfoProfile.name
 
         actual should be (expected)
+      }
+    }
+
+    describe("#status") {
+      it("should return a new thread status info profile") {
+        val expected = mock[ThreadStatusInfoProfile]
+
+        mockNewThreadStatusProfile.expects().returning(expected).once()
+        val actual = pureThreadInfoProfile.status
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#suspend") {
+      it("should suspend the underlying thread") {
+        (mockThreadReference.suspend _).expects().once()
+
+        pureThreadInfoProfile.suspend()
+      }
+    }
+
+    describe("#resume") {
+      it("should resume the underlying thread") {
+        (mockThreadReference.resume _).expects().once()
+
+        pureThreadInfoProfile.resume()
       }
     }
 

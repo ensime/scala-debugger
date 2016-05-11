@@ -31,6 +31,25 @@ trait ThreadInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
   def name: String
 
   /**
+   * Represents the information about the thread's status.
+   *
+   * @return The thread's status as a profile
+   */
+  def status: ThreadStatusInfoProfile
+
+  /**
+   * Resumes the thread if suspended by decrementing the pending suspension
+   * counter. If the counter remains greater than zero, the thread remains
+   * suspended.
+   */
+  def resume(): Unit
+
+  /**
+   * Suspends the thread by incrementing the pending suspension counter.
+   */
+  def suspend(): Unit
+
+  /**
    * Retrieves profiles for all frames in the stack.
    *
    * @return Success of collection of frame profiles, otherwise a failure
