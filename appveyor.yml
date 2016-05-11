@@ -19,7 +19,7 @@ install:
   - cmd: SET JAVA_HOME=C:\Program Files\Java\jdk1.7.0
   - cmd: SET PATH=C:\sbt\sbt\bin;%JDK_HOME%\bin;%PATH%
   - cmd: SET SBT_OPTS=-Xss2m -Xms1024m -Xmx4096m -XX:+TieredCompilation -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:MaxPermSize=256m -XX:ReservedCodeCacheSize=256M
-  - cmd: SCALATEST_SPAN_SCALE_FACTOR=10
+  - cmd: SET SCALATEST_SPAN_SCALE_FACTOR=10
   - cmd: SET SBT_TASK_LIMIT=4
 build_script:
   - sbt compile test:compile it:compile
