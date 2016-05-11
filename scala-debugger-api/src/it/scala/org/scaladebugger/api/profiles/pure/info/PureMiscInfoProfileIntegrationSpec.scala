@@ -25,7 +25,7 @@ class PureMiscInfoProfileIntegrationSpec extends FunSpec with Matchers
         val expected = Seq(
           "org/scaladebugger/test/info/package1/ScalaSource.scala",
           "org/scaladebugger/test/info/package2/ScalaSource.scala"
-        )
+        ).map(_.replace('/', java.io.File.separatorChar))
         val fileName = "ScalaSource.scala"
 
         eventually {
