@@ -23,8 +23,6 @@ install:
   - cmd: SET SBT_TASK_LIMIT=4
 build_script:
   - sbt compile test:compile it:compile
-test_script:
-  - rmdir /s /q C:\Users\appveyor\.coursier\cache\v1\https\oss.sonatype.org
 cache:
   - C:\sbt\
   - C:\Users\appveyor\.m2
