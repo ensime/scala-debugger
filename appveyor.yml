@@ -24,7 +24,6 @@ install:
 build_script:
   - sbt compile test:compile it:compile
 test_script:
-  - sbt test it:test
   - rmdir /s /q C:\Users\appveyor\.coursier\cache\v1\https\oss.sonatype.org
 cache:
   - C:\sbt\
