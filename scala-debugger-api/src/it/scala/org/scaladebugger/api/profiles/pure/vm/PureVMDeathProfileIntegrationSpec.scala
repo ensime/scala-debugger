@@ -36,7 +36,9 @@ class PureVMDeathProfileIntegrationSpec extends FunSpec with Matchers
       // Start our VM and listen for the start event
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         // Kill the JVM process so we get a disconnect event
-        s.underlyingVirtualMachine.process().destroy()
+        val p  = s.underlyingVirtualMachine.process()
+        p.destroy()
+        p.waitFor()
 
         // Eventually, we should receive the start event
         logTimeTaken(eventually {
