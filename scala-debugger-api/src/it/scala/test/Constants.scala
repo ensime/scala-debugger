@@ -1,7 +1,7 @@
 package test
 import acyclic.file
-
-import org.scalatest.time.{Span, Milliseconds, Seconds}
+import org.scalatest.Tag
+import org.scalatest.time.{Milliseconds, Seconds, Span}
 
 /**
  * Constants for our tests.
@@ -9,4 +9,5 @@ import org.scalatest.time.{Span, Milliseconds, Seconds}
 object Constants {
   val EventuallyTimeout = Span(10, Seconds)
   val EventuallyInterval = Span(5, Milliseconds)
+  val NoWindows = Tag("NoWindows")
 }

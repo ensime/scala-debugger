@@ -24,7 +24,7 @@ install:
 build_script:
   - sbt compile test:compile it:compile
 test_script:
-  - sbt test it:test
+  - sbt test "it:testOnly -- -l NoWindows"
 cache:
   - C:\sbt\
   - C:\Users\appveyor\.m2

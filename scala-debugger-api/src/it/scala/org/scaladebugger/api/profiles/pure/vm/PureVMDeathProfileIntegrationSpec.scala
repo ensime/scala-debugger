@@ -1,15 +1,14 @@
 package org.scaladebugger.api.profiles.pure.vm
 import acyclic.file
-
-import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
 
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scalatest.{FunSpec, Matchers, ParallelTestExecution, Tag}
 import org.scaladebugger.api.lowlevel.events.EventType._
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
+import test.{Constants, TestUtilities, VirtualMachineFixtures}
 
 class PureVMDeathProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
@@ -21,7 +20,7 @@ class PureVMDeathProfileIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("PureVMDeathProfile") {
-    it("should trigger when a virtual machine dies") {
+    it("should trigger when a virtual machine dies", Constants.NoWindows) {
       val testClass = "org.scaladebugger.test.misc.MainUsingApp"
 
       val detectedDeath = new AtomicBoolean(false)
@@ -36,9 +35,8 @@ class PureVMDeathProfileIntegrationSpec extends FunSpec with Matchers
       // Start our VM and listen for the start event
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         // Kill the JVM process so we get a disconnect event
-        val p  = s.underlyingVirtualMachine.process()
-        p.destroy()
-        p.waitFor()
+        // NOTE: This does not seem to trigger the VMDeathEvent on Windows
+        s.underlyingVirtualMachine.process().destroy()
 
         // Eventually, we should receive the start event
         logTimeTaken(eventually {
