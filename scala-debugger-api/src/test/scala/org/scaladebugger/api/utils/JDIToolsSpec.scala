@@ -15,7 +15,8 @@ class JDIToolsSpec extends FunSpec with Matchers with ParallelTestExecution
   describe("JDITools") {
     describe("#scalaClassStringToFileString") {
       it("should convert the class name to a file name") {
-        val expected = "some/file/name.scala"
+        import java.io.File.{separator => sep}
+        val expected = s"some${sep}file${sep}name.scala"
 
         val actual = jdiTools.scalaClassStringToFileString("some.file.name")
 
@@ -25,7 +26,8 @@ class JDIToolsSpec extends FunSpec with Matchers with ParallelTestExecution
 
     describe("#jvmClassPath") {
       it("should return a separated list of urls from the system classloader if it is a url classloader") {
-        val expected = "somefile.class,somejar.jar,/some/path/to/file.jar"
+        import java.io.File.{separator => sep}
+        val expected = s"somefile.class,somejar.jar,${sep}some${sep}path${sep}to${sep}file.jar"
 
         val urlClassLoader = new URLClassLoader(
           expected.split(",").map("file:" + _).map(new URL(_))
@@ -116,7 +118,8 @@ class JDIToolsSpec extends FunSpec with Matchers with ParallelTestExecution
       }
 
       it("should set the process directory to the user directory") {
-        val expected = "some/user/dir"
+        import java.io.File.{separator => sep}
+        val expected = s"some${sep}user${sep}dir"
         val className = "some.class.name"
         val port = 9999
 
