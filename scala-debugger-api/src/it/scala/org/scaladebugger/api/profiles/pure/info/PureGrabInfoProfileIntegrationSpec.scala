@@ -34,12 +34,8 @@ class PureGrabInfoProfileIntegrationSpec extends FunSpec with Matchers
           val threadNames = s.withProfile(PureDebugProfile.Name)
             .threads.map(_.name)
 
-          threadNames should contain theSameElementsAs Seq(
-            "Signal Dispatcher",
-            "Finalizer",
-            "Reference Handler",
-            "main"
-          )
+          // Other threads such as "Signal Handler" can differ per JVM
+          threadNames should contain ("main")
         })
       }
     }
