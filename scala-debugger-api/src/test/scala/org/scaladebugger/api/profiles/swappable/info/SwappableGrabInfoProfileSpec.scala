@@ -108,6 +108,59 @@ class SwappableGrabInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#threadGroups") {
+      it("should invoke the method on the underlying profile") {
+        val expected = Seq(mock[ThreadGroupInfoProfile])
+
+        (mockProfileManager.retrieve _).expects(*)
+          .returning(Some(mockDebugProfile)).once()
+
+        (mockDebugProfile.threadGroups _).expects()
+          .returning(expected).once()
+
+        val actual = swappableDebugProfile.threadGroups
+
+        actual should be (expected)
+      }
+
+      it("should throw an exception if there is no underlying profile") {
+        intercept[AssertionError] {
+          (mockProfileManager.retrieve _).expects(*).returning(None).once()
+          swappableDebugProfile.threadGroups
+        }
+      }
+    }
+
+    describe("#threadGroupOption") {
+      it("should invoke the method on the underlying profile") {
+        val expected = mock[ThreadGroupInfoProfile]
+
+        (mockProfileManager.retrieve _).expects(*)
+          .returning(Some(mockDebugProfile)).twice()
+
+        (mockDebugProfile.threadGroupOption(_: Long)).expects(*)
+          .returning(Some(expected)).once()
+
+        (mockDebugProfile.threadGroup(_: ThreadGroupReference)).expects(*)
+          .returning(expected).once()
+
+        swappableDebugProfile.threadGroupOption(0L).get should be(expected)
+        swappableDebugProfile.threadGroup(mock[ThreadGroupReference]) should be(expected)
+      }
+
+      it("should throw an exception if there is no underlying profile") {
+        intercept[AssertionError] {
+          (mockProfileManager.retrieve _).expects(*).returning(None).once()
+          swappableDebugProfile.threadGroupOption(0L)
+        }
+
+        intercept[AssertionError] {
+          (mockProfileManager.retrieve _).expects(*).returning(None).once()
+          swappableDebugProfile.threadGroup(mock[ThreadGroupReference])
+        }
+      }
+    }
+
     describe("#classes") {
       it("should invoke the method on the underlying profile") {
         val expected = Seq(mock[ReferenceTypeInfoProfile])

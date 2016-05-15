@@ -2,7 +2,7 @@ package org.scaladebugger.api.profiles.pure.info
 //import acyclic.file
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, ThreadInfoProfile, ThreadStatusInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, ThreadGroupInfoProfile, ThreadInfoProfile, ThreadStatusInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.util.Try
@@ -49,6 +49,14 @@ class PureThreadInfoProfile(
    * @return The thread's status as a profile
    */
   override def status: ThreadStatusInfoProfile = newThreadStatusProfile()
+
+  /**
+   * Represents the thread group containing this thread.
+   *
+   * @return The profile of the thread group
+   */
+  override def threadGroup: ThreadGroupInfoProfile =
+    newThreadGroupProfile(_threadReference.threadGroup())
 
   /**
    * Suspends the thread by incrementing the pending suspension counter.
@@ -123,4 +131,15 @@ class PureThreadInfoProfile(
 
   protected def newThreadStatusProfile(): ThreadStatusInfoProfile =
     new PureThreadStatusInfoProfile(_threadReference)
+
+  protected def newThreadGroupProfile(
+    threadGroupReference: ThreadGroupReference
+  ): ThreadGroupInfoProfile = new PureThreadGroupInfoProfile(
+    scalaVirtualMachine,
+    threadGroupReference
+  )(
+    _virtualMachine = _virtualMachine,
+    _threadReference = _threadReference,
+    _referenceType = _referenceType
+  )
 }

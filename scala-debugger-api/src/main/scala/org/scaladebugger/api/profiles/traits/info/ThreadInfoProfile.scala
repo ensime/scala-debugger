@@ -17,13 +17,6 @@ trait ThreadInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
   override def toJdiInstance: ThreadReference
 
   /**
-   * Represents the unique id of this thread.
-   *
-   * @return The unique id as a long
-   */
-  def uniqueId: Long
-
-  /**
    * Represents the name of the thread.
    *
    * @return The thread name as a string
@@ -36,6 +29,13 @@ trait ThreadInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
    * @return The thread's status as a profile
    */
   def status: ThreadStatusInfoProfile
+
+  /**
+   * Represents the thread group containing this thread.
+   *
+   * @return The profile of the thread group
+   */
+  def threadGroup: ThreadGroupInfoProfile
 
   /**
    * Resumes the thread if suspended by decrementing the pending suspension

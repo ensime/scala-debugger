@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
-import com.sun.jdi.{ReferenceType, StackFrame, ThreadReference, VirtualMachine}
-import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, ThreadStatusInfoProfile}
+import com.sun.jdi._
+import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, ThreadGroupInfoProfile, ThreadStatusInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -14,6 +14,7 @@ class PureThreadInfoProfileSpec extends FunSpec with Matchers
   private val mockReferenceType = mock[ReferenceType]
   private val mockNewFrameProfile = mockFunction[StackFrame, Int, FrameInfoProfile]
   private val mockNewThreadStatusProfile = mockFunction[ThreadStatusInfoProfile]
+  private val mockNewThreadGroupProfile = mockFunction[ThreadGroupReference, ThreadGroupInfoProfile]
   private val mockThreadReference = mock[ThreadReference]
   private val pureThreadInfoProfile = new PureThreadInfoProfile(
     mockScalaVirtualMachine,
@@ -25,6 +26,10 @@ class PureThreadInfoProfileSpec extends FunSpec with Matchers
 
     override protected def newThreadStatusProfile(): ThreadStatusInfoProfile =
       mockNewThreadStatusProfile()
+
+    override protected def newThreadGroupProfile(
+      threadGroupReference: ThreadGroupReference
+    ): ThreadGroupInfoProfile = mockNewThreadGroupProfile(threadGroupReference)
 
     override protected def newFrameProfile(
       stackFrame: StackFrame,
@@ -61,6 +66,24 @@ class PureThreadInfoProfileSpec extends FunSpec with Matchers
 
         mockNewThreadStatusProfile.expects().returning(expected).once()
         val actual = pureThreadInfoProfile.status
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#threadGroup") {
+      it("should return a new thread group info profile wrapping the thread group") {
+        val expected = mock[ThreadGroupInfoProfile]
+
+        val mockThreadGroupReference = mock[ThreadGroupReference]
+
+        (mockThreadReference.threadGroup _).expects()
+          .returning(mockThreadGroupReference).once()
+
+        mockNewThreadGroupProfile.expects(mockThreadGroupReference)
+          .returning(expected).once()
+
+        val actual = pureThreadInfoProfile.threadGroup
 
         actual should be (expected)
       }

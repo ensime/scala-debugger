@@ -6,6 +6,7 @@ import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
+import scala.annotation.tailrec
 import scala.util.{Success, Try}
 
 /**
@@ -60,6 +61,65 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    */
   override def threadOption(threadId: Long): Option[ThreadInfoProfile] = {
     threads.find(_.uniqueId == threadId)
+  }
+
+  /**
+   * Retrieves all thread groups contained in the remote JVM.
+   *
+   * @return The collection of thread group info profiles
+   */
+  override def threadGroups: Seq[ThreadGroupInfoProfile] = {
+    import scala.collection.JavaConverters._
+    _virtualMachine.topLevelThreadGroups().asScala.map(newThreadGroupProfile)
+  }
+
+  /**
+   * Retrieves a threadGroup group profile for the thread group reference whose
+   * unique id matches the provided id.
+   *
+   * @param threadGroupReference The JDI thread group reference with which to
+   *                             wrap in a thread group info profile
+   * @return The profile of the matching thread group, or throws an exception
+   */
+  override def threadGroup(
+    threadGroupReference: ThreadGroupReference
+  ): ThreadGroupInfoProfile = newThreadGroupProfile(threadGroupReference)
+
+  /**
+   * Retrieves a thread group profile for the thread group reference whose
+   * unique id matches the provided id.
+   *
+   * @param threadGroupId The id of the thread group
+   * @return Some profile of the matching thread group, or None
+   */
+  override def threadGroupOption(
+    threadGroupId: Long
+  ): Option[ThreadGroupInfoProfile] = {
+    findThreadGroupById(threadGroups, threadGroupId)
+  }
+
+  /**
+   * Recursively searches a collection of thread groups (and their subgroups)
+   * for a thread group with the matching id.
+   *
+   * @param threadGroups The initial collection of thread groups to search
+   * @param threadGroupId The id of the thread group to find
+   * @return Some thread group if found, otherwise None
+   */
+  @tailrec private def findThreadGroupById(
+    threadGroups: Seq[ThreadGroupInfoProfile],
+    threadGroupId: Long
+  ): Option[ThreadGroupInfoProfile] = {
+    if (threadGroups.nonEmpty) {
+      val tg = threadGroups.find(_.uniqueId == threadGroupId)
+      if (tg.nonEmpty) {
+        tg
+      } else {
+        findThreadGroupById(threadGroups.flatMap(_.threadGroups), threadGroupId)
+      }
+    } else {
+      None
+    }
   }
 
   /**
@@ -179,6 +239,13 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   ): ThreadInfoProfile = new PureThreadInfoProfile(
     scalaVirtualMachine,
     threadReference
+  )(_virtualMachine = _virtualMachine)
+
+  protected def newThreadGroupProfile(
+    threadGroupReference: ThreadGroupReference
+  ): ThreadGroupInfoProfile = new PureThreadGroupInfoProfile(
+    scalaVirtualMachine,
+    threadGroupReference
   )(_virtualMachine = _virtualMachine)
 
   protected def newReferenceTypeProfile(

@@ -1,6 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
-import com.sun.jdi.{ObjectReference, ThreadReference}
+import com.sun.jdi.{ObjectReference, ThreadGroupReference, ThreadReference}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestGrabInfoProfile
@@ -141,6 +141,71 @@ class GrabInfoProfileSpec extends FunSpec with Matchers
         val r = mock[ThreadInfoProfile]
         mockUnsafeMethod.expects(a1).returning(r).once()
         grabInfoProfile.tryThread(a1).get should be (r)
+      }
+    }
+
+    describe("#tryThreadGroups") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[Seq[ThreadGroupInfoProfile]]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroups: Seq[ThreadGroupInfoProfile] =
+            mockUnsafeMethod()
+        }
+
+        val r = Seq(mock[ThreadGroupInfoProfile])
+        mockUnsafeMethod.expects().returning(r).once()
+        grabInfoProfile.tryThreadGroups.get should be (r)
+      }
+    }
+
+    describe("#tryThreadGroup(threadGroupId)") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[Long, ThreadGroupInfoProfile]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroup(threadGroupId: Long): ThreadGroupInfoProfile =
+            mockUnsafeMethod(threadGroupId)
+        }
+
+        val a1 = 999L
+        val r = mock[ThreadGroupInfoProfile]
+        mockUnsafeMethod.expects(a1).returning(r).once()
+        grabInfoProfile.tryThreadGroup(a1).get should be (r)
+      }
+    }
+
+    describe("#threadGroup(threadGroupId)") {
+      it("should return the Some result of threadGroupOption(threadGroupId)") {
+        val mockUnsafeMethod = mockFunction[Long, Option[ThreadGroupInfoProfile]]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroupOption(
+            threadGroupId: Long
+          ): Option[ThreadGroupInfoProfile] = mockUnsafeMethod(threadGroupId)
+        }
+
+        val a1 = 999L
+        val r = mock[ThreadGroupInfoProfile]
+        mockUnsafeMethod.expects(a1).returning(Some(r)).once()
+        grabInfoProfile.threadGroup(a1) should be (r)
+      }
+    }
+
+    describe("#tryThreadGroup(threadGroupReference)") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[ThreadGroupReference, ThreadGroupInfoProfile]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroup(
+            threadGroupReference: ThreadGroupReference
+          ): ThreadGroupInfoProfile = mockUnsafeMethod(threadGroupReference)
+        }
+
+        val a1 = mock[ThreadGroupReference]
+        val r = mock[ThreadGroupInfoProfile]
+        mockUnsafeMethod.expects(a1).returning(r).once()
+        grabInfoProfile.tryThreadGroup(a1).get should be (r)
       }
     }
 

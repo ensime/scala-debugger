@@ -29,6 +29,16 @@ object InfoTestClasses {
     override def mainClassName: String = throwException()
   }
 
+  class TestThreadGroupInfoProfile extends TestObjectInfoProfile with ThreadGroupInfoProfile {
+    override def name: String = throwException()
+    override def threadGroups: Seq[ThreadGroupInfoProfile] = throwException()
+    override def threads: Seq[ThreadInfoProfile] = throwException()
+    override def suspend(): Unit = throwException()
+    override def resume(): Unit = throwException()
+    override def parent: Option[ThreadGroupInfoProfile] = throwException()
+    override def toJdiInstance: ThreadGroupReference = throwException()
+  }
+
   class TestThreadInfoProfile extends TestObjectInfoProfile with ThreadInfoProfile {
     override def status: ThreadStatusInfoProfile = throwException()
     override def suspend(): Unit = throwException()
@@ -42,6 +52,7 @@ object InfoTestClasses {
     override def frame(index: Int): FrameInfoProfile = throwException()
     override def totalFrames: Int = throwException()
     override def toJdiInstance: ThreadReference = throwException()
+    override def threadGroup: ThreadGroupInfoProfile = throwException()
   }
 
   class TestThreadStatusInfoProfile extends ThreadStatusInfoProfile {
@@ -127,6 +138,9 @@ object InfoTestClasses {
   }
 
   class TestGrabInfoProfile extends GrabInfoProfile {
+    override def threadGroup(threadGroupReference: ThreadGroupReference): ThreadGroupInfoProfile = throwException()
+    override def threadGroups: Seq[ThreadGroupInfoProfile] = throwException()
+    override def threadGroupOption(threadGroupId: Long): Option[ThreadGroupInfoProfile] = throwException()
     override def threadOption(threadId: Long): Option[ThreadInfoProfile] = throwException()
     override def classOption(name: String): Option[ReferenceTypeInfoProfile] = throwException()
     override def `object`(threadReference: ThreadReference, objectReference: ObjectReference): ObjectInfoProfile = throwException()

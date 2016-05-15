@@ -138,6 +138,82 @@ trait GrabInfoProfile {
   def threadOption(threadId: Long): Option[ThreadInfoProfile]
 
   /**
+   * Retrieves a thread group profile for the thread group reference whose
+   * unique id matches the provided id.
+   *
+   * @param threadGroupReference The JDI thread group reference with which to
+   *                             wrap in a thread group info profile
+   * @return Success containing the thread group profile if found, otherwise
+   *         a failure
+   */
+  def tryThreadGroup(
+    threadGroupReference: ThreadGroupReference
+  ): Try[ThreadGroupInfoProfile] = Try(threadGroup(threadGroupReference))
+
+  /**
+   * Retrieves a threadGroup group profile for the thread group reference whose
+   * unique id matches the provided id.
+   *
+   * @param threadGroupReference The JDI thread group reference with which to
+   *                             wrap in a thread group info profile
+   * @return The profile of the matching thread group, or throws an exception
+   */
+  def threadGroup(
+    threadGroupReference: ThreadGroupReference
+  ): ThreadGroupInfoProfile
+
+  /**
+   * Retrieves a thread group profile for the thread group reference whose
+   * unique id matches the provided id.
+   *
+   * @param threadGroupId The id of the thread group
+   * @return Success containing the thread group profile if found, otherwise
+   *         a failure
+   */
+  def tryThreadGroup(threadGroupId: Long): Try[ThreadGroupInfoProfile] =
+    Try(threadGroup(threadGroupId))
+
+  /**
+   * Retrieves a thread group profile for the thread group reference whose
+   * unique id matches the provided id.
+   *
+   * @param threadGroupId The id of the thread group
+   * @return The profile of the matching thread group, or throws an exception
+   */
+  def threadGroup(threadGroupId: Long): ThreadGroupInfoProfile = {
+    val tg = threadGroupOption(threadGroupId)
+
+    if (tg.isEmpty) throw new NoSuchElementException(
+      s"No thread group with $threadGroupId found!")
+
+    tg.get
+  }
+
+  /**
+   * Retrieves a thread group profile for the thread group reference whose
+   * unique id matches the provided id.
+   *
+   * @param threadGroupId The id of the thread group
+   * @return Some profile of the matching thread group, or None
+   */
+  def threadGroupOption(threadGroupId: Long): Option[ThreadGroupInfoProfile]
+
+  /**
+   * Retrieves all thread groups contained in the remote JVM.
+   *
+   * @return Success containing the collection of thread group info profiles,
+   *         otherwise a failure
+   */
+  def tryThreadGroups: Try[Seq[ThreadGroupInfoProfile]] = Try(threadGroups)
+
+  /**
+   * Retrieves all thread groups contained in the remote JVM.
+   *
+   * @return The collection of thread group info profiles
+   */
+  def threadGroups: Seq[ThreadGroupInfoProfile]
+
+  /**
    * Retrieves all classes contained in the remote JVM in the form of
    * reference type information.
    *

@@ -25,6 +25,25 @@ class PureGrabInfoProfileIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("PureGrabInfoProfile") {
+    it("should be able to list all active threads") {
+      val testClass = "org.scaladebugger.test.misc.LaunchingMain"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      withVirtualMachine(testClass) { (s) =>
+        logTimeTaken(eventually {
+          val threadNames = s.withProfile(PureDebugProfile.Name)
+            .threads.map(_.name)
+
+          threadNames should contain theSameElementsAs Seq(
+            "Signal Dispatcher",
+            "Finalizer",
+            "Reference Handler",
+            "main"
+          )
+        })
+      }
+    }
+
     it("should be able to find a thread by its unique id") {
       val testClass = "org.scaladebugger.test.misc.LaunchingMain"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
@@ -43,6 +62,41 @@ class PureGrabInfoProfileIntegrationSpec extends FunSpec with Matchers
 
           s.withProfile(PureDebugProfile.Name)
             .thread(t.get).uniqueId should be (id)
+        })
+      }
+    }
+
+    it("should be able to list top-level thread groups") {
+      val testClass = "org.scaladebugger.test.misc.LaunchingMain"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      withVirtualMachine(testClass) { (s) =>
+        logTimeTaken(eventually {
+          s.withProfile(PureDebugProfile.Name).threadGroups.map(_.name) should
+            contain theSameElementsAs Seq("system")
+        })
+      }
+    }
+
+    it("should be able to find a thread group by its unique id") {
+      val testClass = "org.scaladebugger.test.misc.LaunchingMain"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 7).foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val tg = t.get.threadGroup()
+          val id = tg.uniqueID()
+
+          s.withProfile(PureDebugProfile.Name)
+            .threadGroup(id).uniqueId should be (id)
+
+          s.withProfile(PureDebugProfile.Name)
+            .threadGroup(tg).uniqueId should be (id)
         })
       }
     }

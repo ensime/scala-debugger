@@ -14,6 +14,7 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
   private val mockNewObjectProfile = mockFunction[ThreadReference, ObjectReference, ObjectInfoProfile]
   private val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfoProfile]
   private val mockNewThreadProfile = mockFunction[ThreadReference, ThreadInfoProfile]
+  private val mockNewThreadGroupProfile = mockFunction[ThreadGroupReference, ThreadGroupInfoProfile]
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
   private val mockNewValueProfile = mockFunction[Value, ValueInfoProfile]
   private val mockNewLocationProfile = mockFunction[Location, LocationInfoProfile]
@@ -33,6 +34,10 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
     override protected def newThreadProfile(
       threadReference: ThreadReference
     ): ThreadInfoProfile = mockNewThreadProfile(threadReference)
+
+    override protected def newThreadGroupProfile(
+      threadGroupReference: ThreadGroupReference
+    ): ThreadGroupInfoProfile = mockNewThreadGroupProfile(threadGroupReference)
 
     override protected def newObjectProfile(
       threadReference: ThreadReference,
@@ -162,6 +167,105 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
 
         (mockThreadInfo.uniqueId _).expects().returning(998L).once()
         val actual = pureGrabInfoProfile.threadOption(999L)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#threadGroups") {
+      it("should return a collection of profiles wrapping class reference types") {
+        val expected = Seq(mock[ThreadGroupInfoProfile])
+        val referenceTypes = Seq(mock[ThreadGroupReference])
+
+        import scala.collection.JavaConverters._
+        (mockVirtualMachine.topLevelThreadGroups _).expects()
+          .returning(referenceTypes.asJava).once()
+
+        expected.zip(referenceTypes).foreach { case (e, r) =>
+          mockNewThreadGroupProfile.expects(r).returning(e).once()
+        }
+
+        val actual = pureGrabInfoProfile.threadGroups
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#threadGroup(threadGroupReference)") {
+      it("should return a pure threadGroup info profile wrapping the threadGroup") {
+        val expected = mock[ThreadGroupInfoProfile]
+        val mockThreadGroupReference = mock[ThreadGroupReference]
+
+        mockNewThreadGroupProfile.expects(mockThreadGroupReference)
+          .returning(expected).once()
+
+        val actual = pureGrabInfoProfile.threadGroup(mockThreadGroupReference)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#threadGroupOption(threadGroupId)") {
+      it("should return Some(profile) if a threadGroup with matching unique id is found") {
+        val expected = Some(mock[ThreadGroupInfoProfile])
+        val mockThreadGroupReference = mock[ThreadGroupReference]
+        val threadGroupId = 999L
+
+        import scala.collection.JavaConverters._
+        (mockVirtualMachine.topLevelThreadGroups _).expects()
+          .returning(Seq(mockThreadGroupReference).asJava).once()
+
+        mockNewThreadGroupProfile.expects(mockThreadGroupReference)
+          .returning(expected.get).once()
+
+        (expected.get.uniqueId _).expects().returning(threadGroupId).once()
+
+        val actual = pureGrabInfoProfile.threadGroupOption(threadGroupId)
+
+        actual should be (expected)
+      }
+
+      it("should recurse through each thread group's subgroups to find a match") {
+        val expected = Some(mock[ThreadGroupInfoProfile])
+        val mockThreadGroupInfo = mock[ThreadGroupInfoProfile]
+        val mockThreadGroupReference = mock[ThreadGroupReference]
+
+        import scala.collection.JavaConverters._
+        (mockVirtualMachine.topLevelThreadGroups _).expects()
+          .returning(Seq(mockThreadGroupReference).asJava).once()
+
+        mockNewThreadGroupProfile.expects(mockThreadGroupReference)
+          .returning(mockThreadGroupInfo).once()
+
+        (mockThreadGroupInfo.uniqueId _).expects().returning(998L).once()
+
+        (mockThreadGroupInfo.threadGroups _).expects()
+          .returning(Seq(expected.get)).once()
+
+        (expected.get.uniqueId _).expects().returning(999L).once()
+
+        val actual = pureGrabInfoProfile.threadGroupOption(999L)
+
+        actual should be (expected)
+      }
+
+      it("should return None if no threadGroup with a matching unique id is found") {
+        val expected = None
+        val mockThreadGroupInfo = mock[ThreadGroupInfoProfile]
+        val mockThreadGroupReference = mock[ThreadGroupReference]
+
+        import scala.collection.JavaConverters._
+        (mockVirtualMachine.topLevelThreadGroups _).expects()
+          .returning(Seq(mockThreadGroupReference).asJava).once()
+
+        mockNewThreadGroupProfile.expects(mockThreadGroupReference)
+          .returning(mockThreadGroupInfo).once()
+
+        (mockThreadGroupInfo.uniqueId _).expects().returning(998L).once()
+
+        (mockThreadGroupInfo.threadGroups _).expects().returning(Nil).once()
+
+        val actual = pureGrabInfoProfile.threadGroupOption(999L)
 
         actual should be (expected)
       }
