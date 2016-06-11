@@ -173,14 +173,14 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @return Success containing the profiles wrapping the visible fields in
    *         this object, otherwise a failure
    */
-  def tryFields: Try[Seq[VariableInfoProfile]] = Try(fields)
+  def tryFields: Try[Seq[FieldVariableInfoProfile]] = Try(fields)
 
   /**
    * Returns all visible fields contained in this object.
    *
    * @return The profiles wrapping the visible fields in this object
    */
-  def fields: Seq[VariableInfoProfile]
+  def fields: Seq[FieldVariableInfoProfile]
 
   /**
    * Returns all visible fields contained in this object with offset index.
@@ -188,14 +188,14 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @return Success containing the profiles wrapping the visible fields in
    *         this object, otherwise a failure
    */
-  def tryIndexedFields: Try[Seq[VariableInfoProfile]] = Try(indexedFields)
+  def tryIndexedFields: Try[Seq[FieldVariableInfoProfile]] = Try(indexedFields)
 
   /**
    * Returns all visible fields contained in this object with offset index.
    *
    * @return The profiles wrapping the visible fields in this object
    */
-  def indexedFields: Seq[VariableInfoProfile]
+  def indexedFields: Seq[FieldVariableInfoProfile]
 
   /**
    * Returns the object's field with the specified name with offset index
@@ -205,7 +205,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @return Success containing the profile wrapping the field, otherwise
    *         a failure
    */
-  def tryIndexedField(name: String): Try[VariableInfoProfile] =
+  def tryIndexedField(name: String): Try[FieldVariableInfoProfile] =
     Try(indexedField(name))
 
   /**
@@ -216,7 +216,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @return The profile wrapping the field
    */
   @throws[NoSuchElementException]
-  def indexedField(name: String): VariableInfoProfile =
+  def indexedField(name: String): FieldVariableInfoProfile =
     indexedFieldOption(name).get
 
   /**
@@ -226,7 +226,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @param name The name of the field
    * @return Some profile wrapping the field, or None if doesn't exist
    */
-  def indexedFieldOption(name: String): Option[VariableInfoProfile]
+  def indexedFieldOption(name: String): Option[FieldVariableInfoProfile]
 
   /**
    * Returns the object's field with the specified name.
@@ -235,7 +235,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @return Success containing the profile wrapping the field, otherwise
    *         a failure
    */
-  def tryField(name: String): Try[VariableInfoProfile] = Try(field(name))
+  def tryField(name: String): Try[FieldVariableInfoProfile] = Try(field(name))
 
   /**
    * Returns the object's field with the specified name.
@@ -244,7 +244,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @return The profile wrapping the field
    */
   @throws[NoSuchElementException]
-  def field(name: String): VariableInfoProfile = fieldOption(name).get
+  def field(name: String): FieldVariableInfoProfile = fieldOption(name).get
 
   /**
    * Returns the object's field with the specified name.
@@ -252,7 +252,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @param name The name of the field
    * @return Some profile wrapping the field, or None if doesn't exist
    */
-  def fieldOption(name: String): Option[VariableInfoProfile]
+  def fieldOption(name: String): Option[FieldVariableInfoProfile]
 
   /**
    * Returns all visible methods contained in this object.

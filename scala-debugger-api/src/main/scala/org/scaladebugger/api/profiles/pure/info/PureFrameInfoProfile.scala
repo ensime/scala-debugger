@@ -85,7 +85,7 @@ class PureFrameInfoProfile(
    * @note Provides offset index information!
    * @return The collection of variables as their profile equivalents
    */
-  override def fieldVariables: Seq[VariableInfoProfile] = {
+  override def fieldVariables: Seq[FieldVariableInfoProfile] = {
     _thisObjectProfile.map(_.fields).getOrElse(Nil)
   }
 
@@ -156,7 +156,7 @@ class PureFrameInfoProfile(
    *
    * @return The collection of variables as their profile equivalents
    */
-  override def indexedFieldVariables: Seq[VariableInfoProfile] = {
+  override def indexedFieldVariables: Seq[FieldVariableInfoProfile] = {
     _thisObjectProfile.map(_.indexedFields).getOrElse(Nil)
   }
 

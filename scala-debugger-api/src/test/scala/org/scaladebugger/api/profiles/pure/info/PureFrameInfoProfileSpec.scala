@@ -193,7 +193,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
       }
 
       it("should return Some field wrapped in a profile in no local variable exists") {
-        val expected = Some(mock[VariableInfoProfile])
+        val expected = Some(mock[FieldVariableInfoProfile])
 
         val name = "someName"
 
@@ -239,7 +239,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
     describe("#fieldVariables") {
       it("should return a collection of profiles wrapping 'this' object's fields") {
-        val expected = Seq(mock[VariableInfoProfile])
+        val expected = Seq(mock[FieldVariableInfoProfile])
 
         // 'this' object profile is created and used
         val mockObjectProfile = mock[ObjectInfoProfile]
@@ -268,7 +268,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
     describe("#allVariables") {
       it("should return a combination of local and field variables") {
-        val _fieldVariables = Seq(mock[VariableInfoProfile])
+        val _fieldVariables = Seq(mock[FieldVariableInfoProfile])
         val _localVariables = Seq(mock[IndexedVariableInfoProfile])
         val expected = _localVariables ++ _fieldVariables
 
@@ -277,7 +277,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
           mockStackFrame,
           0
         ) {
-          override def fieldVariables: Seq[VariableInfoProfile] =
+          override def fieldVariables: Seq[FieldVariableInfoProfile] =
             _fieldVariables
           override def localVariables: Seq[IndexedVariableInfoProfile] =
             _localVariables
@@ -398,7 +398,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
       }
 
       it("should return Some field wrapped in a profile in no local variable exists") {
-        val expected = Some(mock[VariableInfoProfile])
+        val expected = Some(mock[FieldVariableInfoProfile])
 
         val name = "someName"
 
@@ -448,7 +448,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
     describe("#indexedFieldVariables") {
       it("should return a collection of profiles wrapping 'this' object's fields") {
-        val expected = Seq(mock[VariableInfoProfile])
+        val expected = Seq(mock[FieldVariableInfoProfile])
 
         // 'this' object profile is created and used
         val mockObjectProfile = mock[ObjectInfoProfile]
@@ -477,7 +477,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
     describe("#indexedAllVariables") {
       it("should return a combination of local and field indexed variables") {
-        val _fieldVariables = Seq(mock[VariableInfoProfile])
+        val _fieldVariables = Seq(mock[FieldVariableInfoProfile])
         val _localVariables = Seq(mock[IndexedVariableInfoProfile])
         val expected = _localVariables ++ _fieldVariables
 
@@ -486,7 +486,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
           mockStackFrame,
           0
         ) {
-          override def indexedFieldVariables: Seq[VariableInfoProfile] =
+          override def indexedFieldVariables: Seq[FieldVariableInfoProfile] =
             _fieldVariables
           override def indexedLocalVariables: Seq[IndexedVariableInfoProfile] =
             _localVariables

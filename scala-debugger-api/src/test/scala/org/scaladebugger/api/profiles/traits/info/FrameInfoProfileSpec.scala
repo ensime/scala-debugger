@@ -205,14 +205,14 @@ class FrameInfoProfileSpec extends FunSpec with Matchers
 
     describe("#tryFieldVariables") {
       it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[Seq[VariableInfoProfile]]
+        val mockUnsafeMethod = mockFunction[Seq[FieldVariableInfoProfile]]
 
         val frameInfoProfile = new TestFrameInfoProfile {
-          override def fieldVariables: Seq[VariableInfoProfile] =
+          override def fieldVariables: Seq[FieldVariableInfoProfile] =
             mockUnsafeMethod()
         }
 
-        val r = Seq(mock[VariableInfoProfile])
+        val r = Seq(mock[FieldVariableInfoProfile])
         mockUnsafeMethod.expects().returning(r).once()
         frameInfoProfile.tryFieldVariables.get should be (r)
       }
@@ -346,14 +346,14 @@ class FrameInfoProfileSpec extends FunSpec with Matchers
 
     describe("#tryIndexedFieldVariables") {
       it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[Seq[VariableInfoProfile]]
+        val mockUnsafeMethod = mockFunction[Seq[FieldVariableInfoProfile]]
 
         val frameInfoProfile = new TestFrameInfoProfile {
-          override def indexedFieldVariables: Seq[VariableInfoProfile] =
+          override def indexedFieldVariables: Seq[FieldVariableInfoProfile] =
             mockUnsafeMethod()
         }
 
-        val r = Seq(mock[VariableInfoProfile])
+        val r = Seq(mock[FieldVariableInfoProfile])
         mockUnsafeMethod.expects().returning(r).once()
         frameInfoProfile.tryIndexedFieldVariables.get should be (r)
       }

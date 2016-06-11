@@ -205,7 +205,7 @@ class FrameInfoDSLWrapperSpec extends FunSpec with Matchers
       it("should invoke the underlying profile method") {
         import org.scaladebugger.api.dsl.Implicits.FrameInfoDSL
 
-        val returnValue = Success(Seq(mock[VariableInfoProfile]))
+        val returnValue = Success(Seq(mock[FieldVariableInfoProfile]))
 
         mockTryGetFieldVariablesFunction.expects()
           .returning(returnValue).once()
@@ -218,7 +218,7 @@ class FrameInfoDSLWrapperSpec extends FunSpec with Matchers
       it("should invoke the underlying profile method") {
         import org.scaladebugger.api.dsl.Implicits.FrameInfoDSL
 
-        val returnValue = Seq(mock[VariableInfoProfile])
+        val returnValue = Seq(mock[FieldVariableInfoProfile])
 
         mockGetFieldVariablesFunction.expects()
           .returning(returnValue).once()
@@ -244,12 +244,12 @@ class FrameInfoDSLWrapperSpec extends FunSpec with Matchers
   private val mockTryGetArgumentsFunction = mockFunction[Try[Seq[IndexedVariableInfoProfile]]]
   private val mockTryGetNonArgumentsFunction = mockFunction[Try[Seq[IndexedVariableInfoProfile]]]
   private val mockTryGetLocalVariablesFunction = mockFunction[Try[Seq[IndexedVariableInfoProfile]]]
-  private val mockTryGetFieldVariablesFunction = mockFunction[Try[Seq[VariableInfoProfile]]]
+  private val mockTryGetFieldVariablesFunction = mockFunction[Try[Seq[FieldVariableInfoProfile]]]
   private val mockGetAllVariablesFunction = mockFunction[Seq[VariableInfoProfile]]
   private val mockGetArgumentsFunction = mockFunction[Seq[IndexedVariableInfoProfile]]
   private val mockGetNonArgumentsFunction = mockFunction[Seq[IndexedVariableInfoProfile]]
   private val mockGetLocalVariablesFunction = mockFunction[Seq[IndexedVariableInfoProfile]]
-  private val mockGetFieldVariablesFunction = mockFunction[Seq[VariableInfoProfile]]
+  private val mockGetFieldVariablesFunction = mockFunction[Seq[FieldVariableInfoProfile]]
   private val mockToJdiInstanceFunction = mockFunction[StackFrame]
 
   private class TestFrameInfoProfile extends FrameInfoProfile {
@@ -257,7 +257,7 @@ class FrameInfoDSLWrapperSpec extends FunSpec with Matchers
     override def variableOption(name: String): Option[VariableInfoProfile] = ???
     override def indexedVariableOption(name: String): Option[VariableInfoProfile] = ???
     override def indexedArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = ???
-    override def indexedFieldVariables: Seq[VariableInfoProfile] = ???
+    override def indexedFieldVariables: Seq[FieldVariableInfoProfile] = ???
     override def indexedAllVariables: Seq[VariableInfoProfile] = ???
     override def indexedNonArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = ???
     override def indexedLocalVariables: Seq[IndexedVariableInfoProfile] = ???
@@ -277,12 +277,12 @@ class FrameInfoDSLWrapperSpec extends FunSpec with Matchers
     override def tryArgumentLocalVariables: Try[Seq[IndexedVariableInfoProfile]] = mockTryGetArgumentsFunction()
     override def tryNonArgumentLocalVariables: Try[Seq[IndexedVariableInfoProfile]] = mockTryGetNonArgumentsFunction()
     override def tryLocalVariables: Try[Seq[IndexedVariableInfoProfile]] = mockTryGetLocalVariablesFunction()
-    override def tryFieldVariables: Try[Seq[VariableInfoProfile]] = mockTryGetFieldVariablesFunction()
+    override def tryFieldVariables: Try[Seq[FieldVariableInfoProfile]] = mockTryGetFieldVariablesFunction()
     override def allVariables: Seq[VariableInfoProfile] = mockGetAllVariablesFunction()
     override def argumentLocalVariables: Seq[IndexedVariableInfoProfile] = mockGetArgumentsFunction()
     override def nonArgumentLocalVariables: Seq[IndexedVariableInfoProfile] = mockGetNonArgumentsFunction()
     override def localVariables: Seq[IndexedVariableInfoProfile] = mockGetLocalVariablesFunction()
-    override def fieldVariables: Seq[VariableInfoProfile] = mockGetFieldVariablesFunction()
+    override def fieldVariables: Seq[FieldVariableInfoProfile] = mockGetFieldVariablesFunction()
     override def toJdiInstance: StackFrame = mockToJdiInstanceFunction()
   }
 }

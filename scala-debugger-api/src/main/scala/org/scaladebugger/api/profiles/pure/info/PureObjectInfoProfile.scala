@@ -156,7 +156,7 @@ class PureObjectInfoProfile(
    * @note Provides no offset index information!
    * @return The profiles wrapping the visible fields in this object
    */
-  override def fields: Seq[VariableInfoProfile] = {
+  override def fields: Seq[FieldVariableInfoProfile] = {
     _referenceType.visibleFields().asScala.map(newFieldProfile)
   }
 
@@ -165,7 +165,7 @@ class PureObjectInfoProfile(
    *
    * @return The profiles wrapping the visible fields in this object
    */
-  override def indexedFields: Seq[VariableInfoProfile] = {
+  override def indexedFields: Seq[FieldVariableInfoProfile] = {
     _referenceType.visibleFields().asScala.zipWithIndex.map { case (f, i) =>
       newFieldProfile(f, i)
     }
@@ -177,7 +177,7 @@ class PureObjectInfoProfile(
    * @param name The name of the field
    * @return Some profile wrapping the field, or None if doesn't exist
    */
-  override def fieldOption(name: String): Option[VariableInfoProfile] = {
+  override def fieldOption(name: String): Option[FieldVariableInfoProfile] = {
     Option(_referenceType.fieldByName(name)).map(newFieldProfile)
   }
 
@@ -188,17 +188,19 @@ class PureObjectInfoProfile(
    * @param name The name of the field
    * @return Some profile wrapping the field, or None if doesn't exist
    */
-  override def indexedFieldOption(name: String): Option[VariableInfoProfile] = {
+  override def indexedFieldOption(
+    name: String
+  ): Option[FieldVariableInfoProfile] = {
     indexedFields.reverse.find(_.name == name)
   }
 
-  protected def newFieldProfile(field: Field): VariableInfoProfile =
+  protected def newFieldProfile(field: Field): FieldVariableInfoProfile =
     newFieldProfile(field, -1)
 
   protected def newFieldProfile(
     field: Field,
     offsetIndex: Int
-  ): VariableInfoProfile = new PureFieldInfoProfile(
+  ): FieldVariableInfoProfile = new PureFieldInfoProfile(
     scalaVirtualMachine,
     Left(_objectReference),
     field,

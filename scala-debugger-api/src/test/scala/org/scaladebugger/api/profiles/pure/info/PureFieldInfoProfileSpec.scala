@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{TypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, ReferenceTypeInfoProfile, TypeInfoProfile, ValueInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -70,6 +70,44 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
           .returning(expected).once()
 
         val actual = pureFieldInfoProfile.typeInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#parent") {
+      it("should return Left(object) if the parent of the field is an object") {
+        val expected = Left(mock[ObjectInfoProfile])
+
+        val pureFieldInfoProfile = new PureFieldInfoProfile(
+          mockScalaVirtualMachine,
+          Left(mock[ObjectReference]),
+          mockField
+        )(mockVirtualMachine) {
+          override protected def newObjectProfile(
+            objectReference: ObjectReference
+          ): ObjectInfoProfile = expected.left.get
+        }
+
+        val actual = pureFieldInfoProfile.parent
+
+        actual should be (expected)
+      }
+
+      it("should return Right(type) if the parent of the field is a type") {
+        val expected = Right(mock[ReferenceTypeInfoProfile])
+
+        val pureFieldInfoProfile = new PureFieldInfoProfile(
+          mockScalaVirtualMachine,
+          Right(mock[ReferenceType]),
+          mockField
+        )(mockVirtualMachine) {
+          override protected def newReferenceTypeProfile(
+            referenceType: ReferenceType
+          ): ReferenceTypeInfoProfile = expected.right.get
+        }
+
+        val actual = pureFieldInfoProfile.parent
 
         actual should be (expected)
       }

@@ -10,7 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 class PureObjectInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
-  private val mockNewFieldProfile = mockFunction[Field, Int, VariableInfoProfile]
+  private val mockNewFieldProfile = mockFunction[Field, Int, FieldVariableInfoProfile]
   private val mockNewMethodProfile = mockFunction[Method, MethodInfoProfile]
   private val mockNewValueProfile = mockFunction[Value, ValueInfoProfile]
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
@@ -28,7 +28,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
     _virtualMachine = mockVirtualMachine,
     _referenceType = mockReferenceType
   ) {
-    override protected def newFieldProfile(field: Field, offsetIndex: Int): VariableInfoProfile =
+    override protected def newFieldProfile(field: Field, offsetIndex: Int): FieldVariableInfoProfile =
       mockNewFieldProfile(field, offsetIndex)
     override protected def newMethodProfile(method: Method): MethodInfoProfile =
       mockNewMethodProfile(method)
@@ -361,7 +361,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
 
     describe("#fields") {
       it("should return a collection of profiles wrapping the object's visible fields") {
-        val expected = Seq(mock[VariableInfoProfile])
+        val expected = Seq(mock[FieldVariableInfoProfile])
 
         // Lookup the visible fields
         import scala.collection.JavaConverters._
@@ -396,7 +396,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
       }
 
       it("should return Some profile wrapping the associated field if found") {
-        val expected = Some(mock[VariableInfoProfile])
+        val expected = Some(mock[FieldVariableInfoProfile])
         val name = "someName"
 
         // Lookup the field
@@ -415,7 +415,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
 
     describe("#indexedFields") {
       it("should return a collection of profiles wrapping the object's visible fields") {
-        val expected = Seq(mock[VariableInfoProfile])
+        val expected = Seq(mock[FieldVariableInfoProfile])
 
         // Lookup the visible fields
         import scala.collection.JavaConverters._
@@ -451,7 +451,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
       }
 
       it("should return a profile wrapping the associated field if found") {
-        val expected = Some(mock[VariableInfoProfile])
+        val expected = Some(mock[FieldVariableInfoProfile])
         val name = "someName"
 
         // Lookup the visible fields

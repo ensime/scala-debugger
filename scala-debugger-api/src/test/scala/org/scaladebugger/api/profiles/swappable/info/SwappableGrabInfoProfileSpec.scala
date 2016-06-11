@@ -241,7 +241,7 @@ class SwappableGrabInfoProfileSpec extends FunSpec with Matchers
 
   describe("#field(reference type, field)") {
     it("should invoke the method on the underlying profile") {
-      val expected = mock[VariableInfoProfile]
+      val expected = mock[FieldVariableInfoProfile]
       val mockReferenceType = mock[ReferenceType]
       val mockField = mock[Field]
 
@@ -270,7 +270,7 @@ class SwappableGrabInfoProfileSpec extends FunSpec with Matchers
 
   describe("#field(object reference, field)") {
     it("should invoke the method on the underlying profile") {
-      val expected = mock[VariableInfoProfile]
+      val expected = mock[FieldVariableInfoProfile]
       val mockObjectReference = mock[ObjectReference]
       val mockField = mock[Field]
 

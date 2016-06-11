@@ -179,7 +179,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   override def field(
     referenceType: ReferenceType,
     field: Field
-  ): VariableInfoProfile = newFieldProfile(referenceType, field)
+  ): FieldVariableInfoProfile = newFieldProfile(referenceType, field)
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -191,7 +191,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   override def field(
     objectReference: ObjectReference,
     field: Field
-  ): VariableInfoProfile = newFieldProfile(objectReference, field)
+  ): FieldVariableInfoProfile = newFieldProfile(objectReference, field)
 
   /**
    * Retrieves a localVariable profile for the given JDI local variable.
@@ -273,7 +273,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   protected def newFieldProfile(
     objectReference: ObjectReference,
     field: Field
-  ): VariableInfoProfile = new PureFieldInfoProfile(
+  ): FieldVariableInfoProfile = new PureFieldInfoProfile(
     scalaVirtualMachine,
     Left(objectReference),
     field,
@@ -283,7 +283,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   protected def newFieldProfile(
     referenceType: ReferenceType,
     field: Field
-  ): VariableInfoProfile = new PureFieldInfoProfile(
+  ): FieldVariableInfoProfile = new PureFieldInfoProfile(
     scalaVirtualMachine,
     Right(referenceType),
     field,

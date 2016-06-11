@@ -59,15 +59,15 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
 
     describe("#tryIndexedField") {
       it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[String, VariableInfoProfile]
+        val mockUnsafeMethod = mockFunction[String, FieldVariableInfoProfile]
 
         val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
-          override def indexedField(name: String): VariableInfoProfile =
+          override def indexedField(name: String): FieldVariableInfoProfile =
             mockUnsafeMethod(name)
         }
 
         val a1 = "someName"
-        val r = mock[VariableInfoProfile]
+        val r = mock[FieldVariableInfoProfile]
         mockUnsafeMethod.expects(a1).returning(r).once()
         referenceTypeInfoProfile.tryIndexedField(a1).get should be (r)
       }
@@ -75,12 +75,12 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
 
     describe("#indexedField") {
       it("should retrieve the value from indexedFieldOption") {
-        val expected = mock[VariableInfoProfile]
-        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val expected = mock[FieldVariableInfoProfile]
+        val mockOptionMethod = mockFunction[String, Option[FieldVariableInfoProfile]]
         val name = "some name"
 
         val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
-          override def indexedFieldOption(name: String): Option[VariableInfoProfile] =
+          override def indexedFieldOption(name: String): Option[FieldVariableInfoProfile] =
             mockOptionMethod(name)
         }
 
@@ -92,11 +92,11 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
       }
 
       it("should throw an exception if indexedFieldOption is None") {
-        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val mockOptionMethod = mockFunction[String, Option[FieldVariableInfoProfile]]
         val name = "some name"
 
         val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
-          override def indexedFieldOption(name: String): Option[VariableInfoProfile] =
+          override def indexedFieldOption(name: String): Option[FieldVariableInfoProfile] =
             mockOptionMethod(name)
         }
 
@@ -110,15 +110,15 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
 
     describe("#tryIndexedVisibleFields") {
       it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[Seq[VariableInfoProfile]]
+        val mockUnsafeMethod = mockFunction[Seq[FieldVariableInfoProfile]]
 
         val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
-          override def indexedVisibleFields: Seq[VariableInfoProfile] =
+          override def indexedVisibleFields: Seq[FieldVariableInfoProfile] =
             mockUnsafeMethod()
         }
 
         val a1 = "someName"
-        val r = Seq(mock[VariableInfoProfile])
+        val r = Seq(mock[FieldVariableInfoProfile])
         mockUnsafeMethod.expects().returning(r).once()
         referenceTypeInfoProfile.tryIndexedVisibleFields.get should be (r)
       }
@@ -126,15 +126,15 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
 
     describe("#tryVisibleFields") {
       it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[Seq[VariableInfoProfile]]
+        val mockUnsafeMethod = mockFunction[Seq[FieldVariableInfoProfile]]
 
         val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
-          override def visibleFields: Seq[VariableInfoProfile] =
+          override def visibleFields: Seq[FieldVariableInfoProfile] =
             mockUnsafeMethod()
         }
 
         val a1 = "someName"
-        val r = Seq(mock[VariableInfoProfile])
+        val r = Seq(mock[FieldVariableInfoProfile])
         mockUnsafeMethod.expects().returning(r).once()
         referenceTypeInfoProfile.tryVisibleFields.get should be (r)
       }
@@ -142,15 +142,15 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
 
     describe("#tryAllFields") {
       it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[Seq[VariableInfoProfile]]
+        val mockUnsafeMethod = mockFunction[Seq[FieldVariableInfoProfile]]
 
         val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
-          override def allFields: Seq[VariableInfoProfile] =
+          override def allFields: Seq[FieldVariableInfoProfile] =
             mockUnsafeMethod()
         }
 
         val a1 = "someName"
-        val r = Seq(mock[VariableInfoProfile])
+        val r = Seq(mock[FieldVariableInfoProfile])
         mockUnsafeMethod.expects().returning(r).once()
         referenceTypeInfoProfile.tryAllFields.get should be (r)
       }
@@ -158,15 +158,15 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
 
     describe("#tryField") {
       it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[String, VariableInfoProfile]
+        val mockUnsafeMethod = mockFunction[String, FieldVariableInfoProfile]
 
         val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
-          override def field(name: String): VariableInfoProfile =
+          override def field(name: String): FieldVariableInfoProfile =
             mockUnsafeMethod(name)
         }
 
         val a1 = "someName"
-        val r = mock[VariableInfoProfile]
+        val r = mock[FieldVariableInfoProfile]
         mockUnsafeMethod.expects(a1).returning(r).once()
         referenceTypeInfoProfile.tryField(a1).get should be (r)
       }
@@ -174,12 +174,12 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
 
     describe("#field") {
       it("should retrieve the value from fieldOption") {
-        val expected = mock[VariableInfoProfile]
-        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val expected = mock[FieldVariableInfoProfile]
+        val mockOptionMethod = mockFunction[String, Option[FieldVariableInfoProfile]]
         val name = "some name"
 
         val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
-          override def fieldOption(name: String): Option[VariableInfoProfile] =
+          override def fieldOption(name: String): Option[FieldVariableInfoProfile] =
             mockOptionMethod(name)
         }
 
@@ -191,11 +191,11 @@ class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
       }
 
       it("should throw an exception if fieldOption is None") {
-        val mockOptionMethod = mockFunction[String, Option[VariableInfoProfile]]
+        val mockOptionMethod = mockFunction[String, Option[FieldVariableInfoProfile]]
         val name = "some name"
 
         val referenceTypeInfoProfile = new TestReferenceTypeInfoProfile {
-          override def fieldOption(name: String): Option[VariableInfoProfile] =
+          override def fieldOption(name: String): Option[FieldVariableInfoProfile] =
             mockOptionMethod(name)
         }
 

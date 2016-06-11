@@ -29,7 +29,12 @@ class PureFieldInfoProfile(
   val offsetIndex: Int
 )(
   protected val _virtualMachine: VirtualMachine = _field.virtualMachine()
-) extends VariableInfoProfile with PureCreateInfoProfile {
+) extends FieldVariableInfoProfile with PureCreateInfoProfile {
+  private lazy val _parent = _container match {
+    case Left(o) => Left(newObjectProfile(o))
+    case Right(r) => Right(newReferenceTypeProfile(r))
+  }
+
   /**
    * Creates a new, pure field information profile with no offset index.
    *
@@ -76,6 +81,15 @@ class PureFieldInfoProfile(
    * @return The profile containing type information
    */
   override def typeInfo: TypeInfoProfile = newTypeProfile(_field.`type`())
+
+  /**
+   * Returns the parent that contains this field.
+   *
+   * @return The reference type information (if a static field) or object
+   *         information (if a non-static field)
+   */
+  override def parent: Either[ObjectInfoProfile, ReferenceTypeInfoProfile] =
+    _parent
 
   /**
    * Returns whether or not this variable represents a field.
@@ -127,6 +141,16 @@ class PureFieldInfoProfile(
     case Left(_objectReference) => _objectReference.getValue(_field)
     case Right(_referenceType)  => _referenceType.getValue(_field)
   })
+
+  protected def newObjectProfile(objectReference: ObjectReference): ObjectInfoProfile =
+    new PureObjectInfoProfile(scalaVirtualMachine, objectReference)()
+
+  protected def newReferenceTypeProfile(
+    referenceType: ReferenceType
+  ): ReferenceTypeInfoProfile = new PureReferenceTypeInfoProfile(
+    scalaVirtualMachine,
+    referenceType
+  )
 
   protected def newValueProfile(value: Value): ValueInfoProfile =
     new PureValueInfoProfile(scalaVirtualMachine, value)

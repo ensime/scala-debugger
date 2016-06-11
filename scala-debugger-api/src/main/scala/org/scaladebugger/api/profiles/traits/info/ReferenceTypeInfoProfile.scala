@@ -21,7 +21,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    *
    * @return The collection of fields as variable info profiles
    */
-  def allFields: Seq[VariableInfoProfile]
+  def allFields: Seq[FieldVariableInfoProfile]
 
   /**
    * Retrieves all fields declared in this type, its superclasses, implemented
@@ -30,7 +30,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @return Success containing the collection of fields as variable info
    *         profiles, otherwise a failure
    */
-  def tryAllFields: Try[Seq[VariableInfoProfile]] = Try(allFields)
+  def tryAllFields: Try[Seq[FieldVariableInfoProfile]] = Try(allFields)
 
   /**
    * Retrieves unhidden and unambiguous fields in this type. Fields hidden
@@ -40,7 +40,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    *
    * @return The collection of fields as variable info profiles
    */
-  def visibleFields: Seq[VariableInfoProfile]
+  def visibleFields: Seq[FieldVariableInfoProfile]
 
   /**
    * Retrieves unhidden and unambiguous fields in this type. Fields hidden
@@ -51,7 +51,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @return Success containing the collection of fields as variable info
    *         profiles, otherwise a failure
    */
-  def tryVisibleFields: Try[Seq[VariableInfoProfile]] = Try(visibleFields)
+  def tryVisibleFields: Try[Seq[FieldVariableInfoProfile]] = Try(visibleFields)
 
   /**
    * Retrieves unhidden and unambiguous fields in this type. Fields hidden
@@ -62,7 +62,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    *
    * @return The collection of fields as variable info profiles
    */
-  def indexedVisibleFields: Seq[VariableInfoProfile]
+  def indexedVisibleFields: Seq[FieldVariableInfoProfile]
 
   /**
    * Retrieves unhidden and unambiguous fields in this type. Fields hidden
@@ -74,7 +74,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @return Success containing the collection of fields as variable info
    *         profiles, otherwise a failure
    */
-  def tryIndexedVisibleFields: Try[Seq[VariableInfoProfile]] =
+  def tryIndexedVisibleFields: Try[Seq[FieldVariableInfoProfile]] =
     Try(indexedVisibleFields)
 
   /**
@@ -85,7 +85,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @return The field as a variable info profile
    */
   @throws[NoSuchElementException]
-  def indexedField(name: String): VariableInfoProfile =
+  def indexedField(name: String): FieldVariableInfoProfile =
     indexedFieldOption(name).get
 
   /**
@@ -95,7 +95,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @param name The name of the field to retrieve
    * @return Some field as a variable info profile, or None if doesn't exist
    */
-  def indexedFieldOption(name: String): Option[VariableInfoProfile]
+  def indexedFieldOption(name: String): Option[FieldVariableInfoProfile]
 
   /**
    * Retrieves the visible field with the matching name with offset index
@@ -105,7 +105,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @return Success containing the field as a variable info profile, otherwise
    *         a failure
    */
-  def tryIndexedField(name: String): Try[VariableInfoProfile] =
+  def tryIndexedField(name: String): Try[FieldVariableInfoProfile] =
     Try(indexedField(name))
 
   /**
@@ -114,7 +114,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @param name The name of the field to retrieve
    * @return Some field as a variable info profile, or None if doesn't exist
    */
-  def fieldOption(name: String): Option[VariableInfoProfile]
+  def fieldOption(name: String): Option[FieldVariableInfoProfile]
 
   /**
    * Retrieves the visible field with the matching name.
@@ -123,7 +123,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @return The field as a variable info profile
    */
   @throws[NoSuchElementException]
-  def field(name: String): VariableInfoProfile = fieldOption(name).get
+  def field(name: String): FieldVariableInfoProfile = fieldOption(name).get
 
   /**
    * Retrieves the visible field with the matching name.
@@ -132,7 +132,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
    * @return Success containing the field as a variable info profile, otherwise
    *         a failure
    */
-  def tryField(name: String): Try[VariableInfoProfile] = Try(field(name))
+  def tryField(name: String): Try[FieldVariableInfoProfile] = Try(field(name))
 
   /**
    * Retrieves all methods declared in this type, its superclasses, implemented

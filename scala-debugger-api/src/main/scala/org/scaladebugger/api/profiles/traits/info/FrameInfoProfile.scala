@@ -197,7 +197,7 @@ trait FrameInfoProfile extends CommonInfoProfile {
    * @return Success containing the collection of variables as their profile
    *         equivalents, otherwise a failure
    */
-  def tryFieldVariables: Try[Seq[VariableInfoProfile]] =
+  def tryFieldVariables: Try[Seq[FieldVariableInfoProfile]] =
     Try(fieldVariables)
 
   /**
@@ -246,7 +246,7 @@ trait FrameInfoProfile extends CommonInfoProfile {
    * @return Success containing the collection of variables as their profile
    *         equivalents, otherwise a failure
    */
-  def tryIndexedFieldVariables: Try[Seq[VariableInfoProfile]] =
+  def tryIndexedFieldVariables: Try[Seq[FieldVariableInfoProfile]] =
     Try(indexedFieldVariables)
 
   /**
@@ -282,7 +282,7 @@ trait FrameInfoProfile extends CommonInfoProfile {
    *
    * @return The collection of variables as their profile equivalents
    */
-  def fieldVariables: Seq[VariableInfoProfile]
+  def fieldVariables: Seq[FieldVariableInfoProfile]
 
   /**
    * Retrieves all variables in this frame with their offset index information.
@@ -321,7 +321,7 @@ trait FrameInfoProfile extends CommonInfoProfile {
    *
    * @return The collection of variables as their profile equivalents
    */
-  def indexedFieldVariables: Seq[VariableInfoProfile]
+  def indexedFieldVariables: Seq[FieldVariableInfoProfile]
 
   /**
    * Returns a string presenting a better human-readable description of

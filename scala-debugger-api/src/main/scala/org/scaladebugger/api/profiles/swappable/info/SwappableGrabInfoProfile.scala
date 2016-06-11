@@ -53,12 +53,12 @@ trait SwappableGrabInfoProfile extends GrabInfoProfile {
   override def field(
     referenceType: ReferenceType,
     field: Field
-  ): VariableInfoProfile = withCurrentProfile.field(referenceType, field)
+  ): FieldVariableInfoProfile = withCurrentProfile.field(referenceType, field)
 
   override def field(
     objectReference: ObjectReference,
     field: Field
-  ): VariableInfoProfile = withCurrentProfile.field(objectReference, field)
+  ): FieldVariableInfoProfile = withCurrentProfile.field(objectReference, field)
 
   override def localVariable(
     stackFrame: StackFrame,

@@ -281,7 +281,7 @@ trait GrabInfoProfile {
   def tryField(
     referenceType: ReferenceType,
     field: Field
-  ): Try[VariableInfoProfile] = Try(this.field(referenceType, field))
+  ): Try[FieldVariableInfoProfile] = Try(this.field(referenceType, field))
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -290,7 +290,10 @@ trait GrabInfoProfile {
    * @param field The JDI field with which to wrap in a variable info profile
    * @return The variable profile representing the field
    */
-  def field(referenceType: ReferenceType, field: Field): VariableInfoProfile
+  def field(
+    referenceType: ReferenceType,
+    field: Field
+  ): FieldVariableInfoProfile
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -304,7 +307,7 @@ trait GrabInfoProfile {
   def tryField(
     referenceTypeInfo: ReferenceTypeInfoProfile,
     field: Field
-  ): Try[VariableInfoProfile] = Try(this.field(referenceTypeInfo, field))
+  ): Try[FieldVariableInfoProfile] = Try(this.field(referenceTypeInfo, field))
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -317,7 +320,8 @@ trait GrabInfoProfile {
   def field(
     referenceTypeInfo: ReferenceTypeInfoProfile,
     field: Field
-  ): VariableInfoProfile = this.field(referenceTypeInfo.toJdiInstance, field)
+  ): FieldVariableInfoProfile =
+    this.field(referenceTypeInfo.toJdiInstance, field)
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -330,7 +334,7 @@ trait GrabInfoProfile {
   def tryField(
     objectReference: ObjectReference,
     field: Field
-  ): Try[VariableInfoProfile] = Try(this.field(objectReference, field))
+  ): Try[FieldVariableInfoProfile] = Try(this.field(objectReference, field))
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -339,7 +343,10 @@ trait GrabInfoProfile {
    * @param field The JDI field with which to wrap in a variable info profile
    * @return The variable profile representing the field
    */
-  def field(objectReference: ObjectReference, field: Field): VariableInfoProfile
+  def field(
+    objectReference: ObjectReference,
+    field: Field
+  ): FieldVariableInfoProfile
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -353,7 +360,7 @@ trait GrabInfoProfile {
   def tryField(
     objectInfo: ObjectInfoProfile,
     field: Field
-  ): Try[VariableInfoProfile] = Try(this.field(objectInfo, field))
+  ): Try[FieldVariableInfoProfile] = Try(this.field(objectInfo, field))
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -366,7 +373,7 @@ trait GrabInfoProfile {
   def field(
     objectInfo: ObjectInfoProfile,
     field: Field
-  ): VariableInfoProfile = this.field(objectInfo.toJdiInstance, field)
+  ): FieldVariableInfoProfile = this.field(objectInfo.toJdiInstance, field)
 
   /**
    * Retrieves a local variable profile for the given JDI local variable.

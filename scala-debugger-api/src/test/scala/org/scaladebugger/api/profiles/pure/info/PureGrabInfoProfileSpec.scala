@@ -20,8 +20,8 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
   private val mockNewLocationProfile = mockFunction[Location, LocationInfoProfile]
   private val mockNewMethodProfile = mockFunction[Method, MethodInfoProfile]
   private val mockNewFrameProfile = mockFunction[StackFrame, FrameInfoProfile]
-  private val mockNewFieldProfileFromRef = mockFunction[ReferenceType, Field, VariableInfoProfile]
-  private val mockNewFieldProfileFromObj = mockFunction[ObjectReference, Field, VariableInfoProfile]
+  private val mockNewFieldProfileFromRef = mockFunction[ReferenceType, Field, FieldVariableInfoProfile]
+  private val mockNewFieldProfileFromObj = mockFunction[ObjectReference, Field, FieldVariableInfoProfile]
   private val mockNewLocalVariableProfile = mockFunction[StackFrame, LocalVariable, VariableInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockVirtualMachine = mock[VirtualMachine]
@@ -73,12 +73,12 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
     override protected def newFieldProfile(
       objectReference: ObjectReference,
       field: Field
-    ): VariableInfoProfile = mockNewFieldProfileFromObj(objectReference, field)
+    ): FieldVariableInfoProfile = mockNewFieldProfileFromObj(objectReference, field)
 
     override protected def newFieldProfile(
       referenceType: ReferenceType,
       field: Field
-    ): VariableInfoProfile = mockNewFieldProfileFromRef(referenceType, field)
+    ): FieldVariableInfoProfile = mockNewFieldProfileFromRef(referenceType, field)
   }
 
   describe("PureGrabInfoProfile") {
@@ -372,7 +372,7 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
 
     describe("#field(reference type, field)") {
       it("should return a variable info profile wrapping the field") {
-        val expected = mock[VariableInfoProfile]
+        val expected = mock[FieldVariableInfoProfile]
         val mockReferenceType = mock[ReferenceType]
         val mockField = mock[Field]
 
@@ -387,7 +387,7 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
 
     describe("#field(object reference, field)") {
       it("should return a variable info profile wrapping the field") {
-        val expected = mock[VariableInfoProfile]
+        val expected = mock[FieldVariableInfoProfile]
         val mockObjectReference = mock[ObjectReference]
         val mockField = mock[Field]
 
