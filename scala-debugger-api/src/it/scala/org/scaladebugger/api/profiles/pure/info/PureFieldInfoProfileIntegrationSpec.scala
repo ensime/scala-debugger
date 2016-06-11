@@ -20,6 +20,32 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("PureFieldInfoProfile") {
+    it("should not fix Scala-specific field names like org$scaladebugger$test$bugs$BugFromGitter$$name") {
+      val testClass = "org.scaladebugger.test.bugs.BugFromGitter"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 20, NoResume)
+        .foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val fieldNames = s.withProfile(PureDebugProfile.Name)
+            .thread(t.get).topFrame.allVariables.map(_.name)
+
+          fieldNames should contain theSameElementsAs Seq(
+            "actualTimes",
+            "times",
+            "org$scaladebugger$test$bugs$BugFromGitter$$name"
+          )
+        })
+      }
+    }
+
     it("should be able to get fields from a class with inherited fields") {
       val testClass = "org.scaladebugger.test.info.Fields"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
