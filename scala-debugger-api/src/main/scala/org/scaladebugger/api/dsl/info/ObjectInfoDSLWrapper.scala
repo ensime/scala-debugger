@@ -8,8 +8,8 @@ import org.scaladebugger.api.virtualmachines.ObjectCache
  *
  * @param objectInfo The profile to wrap
  */
-class ObjectInfoDSLWrapper private[dsl] (
-  private val objectInfo: ObjectInfoProfile
+class ObjectInfoDSLWrapper[T <: ObjectInfoProfile] private[dsl] (
+  private val objectInfo: T
 ) {
   /**
    * Caches this object in its associated JVM cache.
@@ -19,7 +19,7 @@ class ObjectInfoDSLWrapper private[dsl] (
    */
   def cache()(
     implicit objectCache: ObjectCache = objectInfo.scalaVirtualMachine.cache
-  ): ObjectInfoProfile = {
+  ): T = {
     objectCache.save(objectInfo)
     objectInfo
   }
@@ -32,7 +32,7 @@ class ObjectInfoDSLWrapper private[dsl] (
    */
   def uncache()(
     implicit objectCache: ObjectCache = objectInfo.scalaVirtualMachine.cache
-  ): ObjectInfoProfile = {
+  ): T = {
     objectCache.remove(objectInfo.uniqueId)
     objectInfo
   }

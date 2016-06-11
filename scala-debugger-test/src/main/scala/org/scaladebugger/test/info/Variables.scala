@@ -15,7 +15,7 @@ object Variables {
   var z2 = "something"
   val z3 = null
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]) = {
     val a = true
     val b = 'c'
     val c = 3.asInstanceOf[Short]

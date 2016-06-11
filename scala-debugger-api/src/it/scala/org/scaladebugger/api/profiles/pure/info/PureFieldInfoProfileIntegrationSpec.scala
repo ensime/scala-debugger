@@ -20,6 +20,93 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("PureFieldInfoProfile") {
+    it("should be able to get fields from a class with inherited fields") {
+      val testClass = "org.scaladebugger.test.info.Fields"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 21, NoResume)
+        .foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val fieldNames = s.withProfile(PureDebugProfile.Name)
+            .thread(t.get).topFrame.fieldVariables.map(_.name)
+
+          fieldNames should contain theSameElementsAs Seq(
+            "publicBaseFinalPrimitiveField",
+            "publicBaseFinalObjectField",
+            "publicBaseMutablePrimitiveField",
+            "publicBaseMutableObjectField"
+          )
+        })
+      }
+    }
+
+    it("should be able to get fields from a class") {
+      val testClass = "org.scaladebugger.test.info.Fields"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 47, NoResume)
+        .foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val fieldNames = s.withProfile(PureDebugProfile.Name)
+            .thread(t.get).topFrame.fieldVariables.map(_.name)
+
+          fieldNames should contain theSameElementsAs Seq(
+            "publicFinalPrimitiveField",
+            "publicFinalObjectField",
+            "publicMutablePrimitiveField",
+            "publicMutableObjectField",
+            "protectedFinalPrimitiveField",
+            "protectedFinalObjectField",
+            "protectedMutablePrimitiveField",
+            "protectedMutableObjectField",
+            "privateFinalPrimitiveField",
+            "privateFinalObjectField",
+            "privateMutablePrimitiveField",
+            "privateMutableObjectField"
+          )
+        })
+      }
+    }
+
+    it("should be able to get fields from a case class") {
+      val testClass = "org.scaladebugger.test.info.Fields"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 56, NoResume)
+        .foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val fieldNames = s.withProfile(PureDebugProfile.Name)
+            .thread(t.get).topFrame.fieldVariables.map(_.name)
+
+          fieldNames should contain theSameElementsAs Seq(
+            "primitive",
+            "obj"
+          )
+        })
+      }
+    }
+
     it("should be able to get the name of the field") {
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)

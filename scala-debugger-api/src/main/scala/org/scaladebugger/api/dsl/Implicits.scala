@@ -95,9 +95,9 @@ object Implicits {
   ): MonitorWaitDSLWrapper = new MonitorWaitDSLWrapper(monitorWaitProfile)
 
   /** Converts object info profile to implicit DSL wrapping. */
-  implicit def ObjectInfoDSL(
-    objectInfoProfile: ObjectInfoProfile
-  ): ObjectInfoDSLWrapper = new ObjectInfoDSLWrapper(objectInfoProfile)
+  implicit def ObjectInfoDSL[T <: ObjectInfoProfile](
+    objectInfoProfile: T
+  ): ObjectInfoDSLWrapper[T] = new ObjectInfoDSLWrapper(objectInfoProfile)
 
   /** Converts step profile to implicit DSL wrapping. */
   implicit def StepDSL(
@@ -115,9 +115,9 @@ object Implicits {
   ): ThreadStartDSLWrapper = new ThreadStartDSLWrapper(threadStartProfile)
 
   /** Converts value info profile to implicit DSL wrapping. */
-  implicit def ValueInfoDSL(
-    valueInfoProfile: ValueInfoProfile
-  ): ValueInfoDSLWrapper = new ValueInfoDSLWrapper(valueInfoProfile)
+  implicit def ValueInfoDSL[T <: ValueInfoProfile](
+    valueInfoProfile: T
+  ): ValueInfoDSLWrapper[T] = new ValueInfoDSLWrapper(valueInfoProfile)
 
   /** Converts variable info profile to implicit DSL wrapping. */
   implicit def VariableInfoDSL(
