@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.scala210.Scala210DebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
 
 import scala.collection.JavaConverters._
@@ -80,6 +81,9 @@ object StandardProfileManager {
     // TODO: Refactor PureDebugProfile to not need virtual machine as providing
     //       null will cause usage of it to fail
     profileManager.register(PureDebugProfile.Name, new PureDebugProfile(
+      null, managerContainer
+    )(_virtualMachine = null))
+    profileManager.register(Scala210DebugProfile.Name, new Scala210DebugProfile(
       null, managerContainer
     )(_virtualMachine = null))
 
