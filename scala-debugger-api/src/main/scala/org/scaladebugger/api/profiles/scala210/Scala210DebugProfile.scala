@@ -14,6 +14,7 @@ import org.scaladebugger.api.profiles.pure.steps.PureStepProfile
 import org.scaladebugger.api.profiles.pure.threads.{PureThreadDeathProfile, PureThreadStartProfile}
 import org.scaladebugger.api.profiles.pure.vm.{PureVMDeathProfile, PureVMDisconnectProfile, PureVMStartProfile}
 import org.scaladebugger.api.profiles.pure.watchpoints.{PureAccessWatchpointProfile, PureModificationWatchpointProfile}
+import org.scaladebugger.api.profiles.scala210.info.Scala210GrabInfoProfile
 import org.scaladebugger.api.profiles.traits.ManagerContainerDebugProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
@@ -47,7 +48,7 @@ class Scala210DebugProfile(
   with PureCreateInfoProfile
   with PureEventProfile
   with PureExceptionProfile
-  with PureGrabInfoProfile // CHIP CHIP CHIP: Replace with Scala210 version
+  with Scala210GrabInfoProfile
   with PureMethodEntryProfile
   with PureMethodExitProfile
   with PureMiscInfoProfile
