@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, ThreadGroupInfoProfile, ThreadInfoProfile, ThreadStatusInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -13,12 +13,14 @@ class PureThreadGroupInfoProfileSpec extends FunSpec with Matchers
   private val mockNewThreadProfile = mockFunction[ThreadReference, ThreadInfoProfile]
 
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockReferenceType = mock[ReferenceType]
   private val mockThreadReference = mock[ThreadReference]
   private val mockThreadGroupReference = mock[ThreadGroupReference]
   private val pureThreadGroupInfoProfile = new PureThreadGroupInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     mockThreadGroupReference
   )(
     _virtualMachine = mockVirtualMachine,

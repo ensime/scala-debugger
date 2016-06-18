@@ -4,7 +4,7 @@ package org.scaladebugger.api.profiles.scala210.info
 
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.pure.info.PureFieldInfoProfile
-import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, ReferenceTypeInfoProfile, TypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -13,6 +13,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            field
+ * @param infoProducer The producer of info-based profile instances
  * @param _container Either the object or reference type containing the
  *                   field instance
  * @param _field The reference to the underlying JDI field
@@ -24,6 +25,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  */
 class Scala210FieldInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val _container: Either[ObjectReference, ReferenceType],
   private val _field: Field,
   override val offsetIndex: Int
@@ -31,6 +33,7 @@ class Scala210FieldInfoProfile(
   override protected val _virtualMachine: VirtualMachine = _field.virtualMachine()
 ) extends PureFieldInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
+  infoProducer = infoProducer,
   _container = _container,
   _field = _field
 )(
@@ -50,11 +53,18 @@ class Scala210FieldInfoProfile(
    */
   def this(
     scalaVirtualMachine: ScalaVirtualMachine,
+    infoProducer: InfoProducerProfile,
     _container: Either[ObjectReference, ReferenceType],
     _field: Field
   )(
     _virtualMachine: VirtualMachine
-  ) = this(scalaVirtualMachine, _container, _field, -1)(_virtualMachine)
+  ) = this(
+    scalaVirtualMachine,
+    infoProducer,
+    _container,
+    _field,
+    -1
+  )(_virtualMachine)
 
   /**
    * Returns the name of the variable.
@@ -73,20 +83,4 @@ class Scala210FieldInfoProfile(
       case _                          => rawName
     }
   }
-
-  override protected def newObjectProfile(objectReference: ObjectReference): ObjectInfoProfile =
-    new Scala210ObjectInfoProfile(scalaVirtualMachine, objectReference)()
-
-  override protected def newReferenceTypeProfile(
-    referenceType: ReferenceType
-  ): ReferenceTypeInfoProfile = new Scala210ReferenceTypeInfoProfile(
-    scalaVirtualMachine,
-    referenceType
-  )
-
-  override protected def newValueProfile(value: Value): ValueInfoProfile =
-    new Scala210ValueInfoProfile(scalaVirtualMachine, value)
-
-  override protected def newTypeProfile(_type: Type): TypeInfoProfile =
-    new Scala210TypeInfoProfile(scalaVirtualMachine, _type)
 }

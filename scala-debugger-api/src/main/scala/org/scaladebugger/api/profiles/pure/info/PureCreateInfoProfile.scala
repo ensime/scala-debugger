@@ -5,7 +5,7 @@ package org.scaladebugger.api.profiles.pure.info
 import com.sun.jdi.{ReferenceType, Value}
 import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.lowlevel.utils.JDIHelperMethods
-import org.scaladebugger.api.profiles.traits.info.{CreateInfoProfile, MiscInfoProfile, ReferenceTypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -14,6 +14,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  */
 trait PureCreateInfoProfile extends CreateInfoProfile with JDIHelperMethods {
   protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
 
   /**
    * Creates the provided value on the remote JVM.
@@ -37,5 +38,5 @@ trait PureCreateInfoProfile extends CreateInfoProfile with JDIHelperMethods {
   }
 
   protected def createNewValueProfile(value: Value): ValueInfoProfile =
-    new PureValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
 }

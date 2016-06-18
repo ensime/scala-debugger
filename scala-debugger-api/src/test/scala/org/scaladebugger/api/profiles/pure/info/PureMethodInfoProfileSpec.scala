@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi.{Method, Type}
-import org.scaladebugger.api.profiles.traits.info.TypeInfoProfile
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, TypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -11,9 +11,11 @@ class PureMethodInfoProfileSpec extends FunSpec with Matchers
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockMethod = mock[Method]
   private val pureMethodInfoProfile = new PureMethodInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     mockMethod
   ) {
     override protected def newTypeProfile(_type: Type): TypeInfoProfile =

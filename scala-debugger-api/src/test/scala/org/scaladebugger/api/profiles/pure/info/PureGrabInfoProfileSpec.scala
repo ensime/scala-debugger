@@ -24,10 +24,12 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
   private val mockNewFieldProfileFromObj = mockFunction[ObjectReference, Field, FieldVariableInfoProfile]
   private val mockNewLocalVariableProfile = mockFunction[StackFrame, LocalVariable, VariableInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockClassManager = mock[ClassManager]
   private val pureGrabInfoProfile = new PureGrabInfoProfile {
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
+    override protected val infoProducer: InfoProducerProfile = mockInfoProducerProfile
     override protected val _virtualMachine: VirtualMachine = mockVirtualMachine
     override protected val classManager: ClassManager = mockClassManager
 

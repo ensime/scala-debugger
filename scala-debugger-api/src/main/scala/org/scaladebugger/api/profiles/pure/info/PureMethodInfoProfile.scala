@@ -2,7 +2,7 @@ package org.scaladebugger.api.profiles.pure.info
 //import acyclic.file
 
 import com.sun.jdi.{Method, Type}
-import org.scaladebugger.api.profiles.traits.info.{MethodInfoProfile, TypeInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, MethodInfoProfile, TypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -11,10 +11,12 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            method
+ * @param infoProducer The producer of info-based profile instances
  * @param _method The reference to the underlying JDI method
  */
 class PureMethodInfoProfile(
   val scalaVirtualMachine: ScalaVirtualMachine,
+  protected val infoProducer: InfoProducerProfile,
   private val _method: Method
 ) extends MethodInfoProfile {
   /**
@@ -70,5 +72,5 @@ class PureMethodInfoProfile(
   }
 
   protected def newTypeProfile(_type: Type): TypeInfoProfile =
-    new PureTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
 }

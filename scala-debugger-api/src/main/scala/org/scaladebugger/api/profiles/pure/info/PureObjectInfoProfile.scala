@@ -15,6 +15,7 @@ import scala.collection.JavaConverters._
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            object
+ * @param infoProducer The producer of info-based profile instances
  * @param _objectReference The reference to the underlying JDI object
  * @param _virtualMachine The virtual machine associated with the object
  * @param _threadReference The thread associated with the object (for method
@@ -23,14 +24,16 @@ import scala.collection.JavaConverters._
  */
 class PureObjectInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val _objectReference: ObjectReference
 )(
   protected val _virtualMachine: VirtualMachine = _objectReference.virtualMachine(),
   private val _threadReference: ThreadReference = _objectReference.owningThread(),
   private val _referenceType: ReferenceType = _objectReference.referenceType()
 ) extends PureValueInfoProfile(
-  scalaVirtualMachine,
-  _objectReference
+  scalaVirtualMachine = scalaVirtualMachine,
+  infoProducer = infoProducer,
+  _value = _objectReference
 ) with ObjectInfoProfile {
   private lazy val typeChecker = newTypeCheckerProfile()
 
@@ -200,7 +203,7 @@ class PureObjectInfoProfile(
   protected def newFieldProfile(
     field: Field,
     offsetIndex: Int
-  ): FieldVariableInfoProfile = new PureFieldInfoProfile(
+  ): FieldVariableInfoProfile = infoProducer.newFieldInfoProfile(
     scalaVirtualMachine,
     Left(_objectReference),
     field,
@@ -208,11 +211,11 @@ class PureObjectInfoProfile(
   )()
 
   protected def newMethodProfile(method: Method): MethodInfoProfile =
-    new PureMethodInfoProfile(scalaVirtualMachine, method)
+    infoProducer.newMethodInfoProfile(scalaVirtualMachine, method)
 
   protected def newValueProfile(value: Value): ValueInfoProfile =
-    new PureValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
 
   protected def newTypeCheckerProfile(): TypeCheckerProfile =
-    new PureTypeCheckerProfile
+    infoProducer.newTypeCheckerProfile()
 }

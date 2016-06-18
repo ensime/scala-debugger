@@ -11,6 +11,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            local variable
+ * @param infoProducer The producer of info-based profile instances
  * @param frame The frame associated with the local variable instance
  * @param _localVariable The reference to the underlying JDI local variable
  * @param offsetIndex The index of the offset of this variable relative to other
@@ -21,6 +22,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  */
 class PureLocalVariableInfoProfile(
   val scalaVirtualMachine: ScalaVirtualMachine,
+  protected val infoProducer: InfoProducerProfile,
   val frame: FrameInfoProfile,
   private val _localVariable: LocalVariable,
   val offsetIndex: Int
@@ -109,8 +111,8 @@ class PureLocalVariableInfoProfile(
   )
 
   protected def newValueProfile(value: Value): ValueInfoProfile =
-    new PureValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
 
   protected def newTypeProfile(_type: Type): TypeInfoProfile =
-    new PureTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
 }

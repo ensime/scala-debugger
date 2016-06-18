@@ -2,7 +2,7 @@ package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.classes.ClassManager
-import org.scaladebugger.api.profiles.traits.info.{ReferenceTypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, ReferenceTypeInfoProfile, ValueInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -14,6 +14,7 @@ class PureCreateInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory with JDIMockHelpers
 {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockCreateNewValueProfile = mockFunction[Value, ValueInfoProfile]
 
@@ -22,6 +23,7 @@ class PureCreateInfoProfileSpec extends FunSpec with Matchers
       mockCreateNewValueProfile(value)
 
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
+    override protected val infoProducer: InfoProducerProfile = mockInfoProducerProfile
     override protected val _virtualMachine: VirtualMachine = mockVirtualMachine
   }
 

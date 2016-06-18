@@ -10,13 +10,16 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            reference type
+ * @param infoProducer The producer of info-based profile instances
  * @param _referenceType The reference to the underlying JDI reference type
  */
 class PureReferenceTypeInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val _referenceType: ReferenceType
 ) extends PureTypeInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
+  infoProducer = infoProducer,
   _type = _referenceType
 ) with ReferenceTypeInfoProfile {
   private lazy val defaultStratum: String = _referenceType.defaultStratum()
@@ -315,7 +318,7 @@ class PureReferenceTypeInfoProfile(
   protected def newFieldProfile(
     field: Field,
     offsetIndex: Int
-  ): FieldVariableInfoProfile = new PureFieldInfoProfile(
+  ): FieldVariableInfoProfile = infoProducer.newFieldInfoProfile(
     scalaVirtualMachine,
     Right(_referenceType),
     field,
@@ -323,29 +326,25 @@ class PureReferenceTypeInfoProfile(
   )()
 
   protected def newMethodProfile(method: Method): MethodInfoProfile =
-    new PureMethodInfoProfile(scalaVirtualMachine, method)
+    infoProducer.newMethodInfoProfile(scalaVirtualMachine, method)
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfoProfile =
-    new PureObjectInfoProfile(scalaVirtualMachine, objectReference)()
+    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)()
 
   protected def newLocationProfile(location: Location): LocationInfoProfile =
-    new PureLocationInfoProfile(scalaVirtualMachine, location)
+    infoProducer.newLocationInfoProfile(scalaVirtualMachine, location)
 
   protected def newClassObjectProfile(
     classObjectReference: ClassObjectReference
-  ): ClassObjectInfoProfile = new PureClassObjectInfoProfile(
+  ): ClassObjectInfoProfile = infoProducer.newClassObjectProfile(
     scalaVirtualMachine,
     classObjectReference
-  )(
-    _referenceType = _referenceType
-  )
+  )(referenceType = _referenceType)
 
   protected def newClassLoaderProfile(
     classLoaderReference: ClassLoaderReference
-  ): ClassLoaderInfoProfile = new PureClassLoaderInfoProfile(
+  ): ClassLoaderInfoProfile = infoProducer.newClassLoaderProfile(
     scalaVirtualMachine,
     classLoaderReference
-  )(
-    _referenceType = _referenceType
-  )
+  )(referenceType = _referenceType)
 }

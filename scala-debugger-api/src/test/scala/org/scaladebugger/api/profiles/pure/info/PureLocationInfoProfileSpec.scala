@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{MethodInfoProfile, ReferenceTypeInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, MethodInfoProfile, ReferenceTypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -12,9 +12,11 @@ class PureLocationInfoProfileSpec extends FunSpec with Matchers
   private val mockNewMethodProfile = mockFunction[Method, MethodInfoProfile]
   private val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockLocation = mock[Location]
   private val pureLocationInfoProfile = new PureLocationInfoProfile(
     scalaVirtualMachine = mockScalaVirtualMachine,
+    infoProducer = mockInfoProducerProfile,
     _location = mockLocation
   ) {
     override protected def newReferenceTypeProfile(

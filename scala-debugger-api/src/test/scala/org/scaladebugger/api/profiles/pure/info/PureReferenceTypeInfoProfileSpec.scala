@@ -17,9 +17,11 @@ class PureReferenceTypeInfoProfileSpec extends FunSpec with Matchers
   private val mockNewClassObjectProfile = mockFunction[ClassObjectReference, ClassObjectInfoProfile]
   private val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockReferenceType = mock[ReferenceType]
   private val pureReferenceTypeInfoProfile = new PureReferenceTypeInfoProfile(
     scalaVirtualMachine = mockScalaVirtualMachine,
+    infoProducer = mockInfoProducerProfile,
     _referenceType = mockReferenceType
   ) {
     override protected def newFieldProfile(

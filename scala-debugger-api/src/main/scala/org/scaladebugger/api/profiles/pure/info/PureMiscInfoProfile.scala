@@ -4,7 +4,7 @@ package org.scaladebugger.api.profiles.pure.info
 import com.sun.jdi.{ReferenceType, Value}
 import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.lowlevel.utils.JDIHelperMethods
-import org.scaladebugger.api.profiles.traits.info.{MiscInfoProfile, ReferenceTypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, MiscInfoProfile, ReferenceTypeInfoProfile, ValueInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.util.Try
@@ -15,6 +15,7 @@ import scala.util.Try
  */
 trait PureMiscInfoProfile extends MiscInfoProfile with JDIHelperMethods {
   protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
   protected val classManager: ClassManager
 
   /**
@@ -59,7 +60,7 @@ trait PureMiscInfoProfile extends MiscInfoProfile with JDIHelperMethods {
 
   protected def miscNewReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfoProfile = new PureReferenceTypeInfoProfile(
+  ): ReferenceTypeInfoProfile = infoProducer.newReferenceTypeInfoProfile(
     scalaVirtualMachine,
     referenceType
   )

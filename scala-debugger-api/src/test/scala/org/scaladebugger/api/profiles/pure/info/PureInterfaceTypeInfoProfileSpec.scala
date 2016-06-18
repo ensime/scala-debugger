@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{ClassTypeInfoProfile, InterfaceTypeInfoProfile, TypeInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{ClassTypeInfoProfile, InfoProducerProfile, InterfaceTypeInfoProfile, TypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -12,9 +12,11 @@ class PureInterfaceTypeInfoProfileSpec extends FunSpec with Matchers
   private val mockNewInterfaceTypeProfile = mockFunction[InterfaceType, InterfaceTypeInfoProfile]
   private val mockNewClassTypeProfile = mockFunction[ClassType, ClassTypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockInterfaceType = mock[InterfaceType]
   private val pureInterfaceTypeInfoProfile = new PureInterfaceTypeInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     mockInterfaceType
   ) {
     override protected def newInterfaceTypeProfile(

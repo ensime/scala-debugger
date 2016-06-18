@@ -6,14 +6,15 @@ import org.scaladebugger.api.profiles.pure.breakpoints.PureBreakpointProfile
 import org.scaladebugger.api.profiles.pure.classes.{PureClassPrepareProfile, PureClassUnloadProfile}
 import org.scaladebugger.api.profiles.pure.events.PureEventProfile
 import org.scaladebugger.api.profiles.pure.exceptions.PureExceptionProfile
-import org.scaladebugger.api.profiles.pure.info.{PureCreateInfoProfile, PureGrabInfoProfile, PureMiscInfoProfile}
+import org.scaladebugger.api.profiles.pure.info.{PureCreateInfoProfile, PureGrabInfoProfile, PureInfoProducerProfile, PureMiscInfoProfile}
 import org.scaladebugger.api.profiles.pure.methods.{PureMethodEntryProfile, PureMethodExitProfile}
 import org.scaladebugger.api.profiles.pure.monitors.{PureMonitorContendedEnterProfile, PureMonitorContendedEnteredProfile, PureMonitorWaitProfile, PureMonitorWaitedProfile}
 import org.scaladebugger.api.profiles.pure.steps.PureStepProfile
 import org.scaladebugger.api.profiles.pure.threads.{PureThreadDeathProfile, PureThreadStartProfile}
 import org.scaladebugger.api.profiles.pure.vm.{PureVMDeathProfile, PureVMDisconnectProfile, PureVMStartProfile}
 import org.scaladebugger.api.profiles.pure.watchpoints.{PureAccessWatchpointProfile, PureModificationWatchpointProfile}
-import org.scaladebugger.api.profiles.traits.{DebugProfile, ManagerContainerDebugProfile}
+import org.scaladebugger.api.profiles.traits.ManagerContainerDebugProfile
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -32,13 +33,15 @@ object PureDebugProfile {
  *                         underlying implementation
  * @param _virtualMachine The underlying virtual machine to use for various
  *                        retrieval methods
+ * @param infoProducer The producer of information profiles
  */
 class PureDebugProfile(
   protected val scalaVirtualMachine: ScalaVirtualMachine,
   protected val managerContainer: ManagerContainer
 )(
   protected val _virtualMachine: VirtualMachine =
-    scalaVirtualMachine.underlyingVirtualMachine
+    scalaVirtualMachine.underlyingVirtualMachine,
+  protected val infoProducer: InfoProducerProfile = new PureInfoProducerProfile
 ) extends ManagerContainerDebugProfile
   with PureAccessWatchpointProfile
   with PureBreakpointProfile

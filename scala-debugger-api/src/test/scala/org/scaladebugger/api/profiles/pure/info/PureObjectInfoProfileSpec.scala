@@ -16,12 +16,14 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
   private val mockNewTypeCheckerProfile = mockFunction[TypeCheckerProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockReferenceType = mock[ReferenceType]
   private val mockThreadReference = mock[ThreadReference]
   private val mockObjectReference = mock[ObjectReference]
   private val pureObjectInfoProfile = new PureObjectInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     mockObjectReference
   )(
     _threadReference = mockThreadReference,
@@ -130,6 +132,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
 
         val pureObjectInfoProfile = new PureObjectInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockObjectReference
         )(
           _threadReference = mockThreadReference,
@@ -176,6 +179,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
         val mockMethod = mock[Method]
         val pureMethodInfoProfile = new PureMethodInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockMethod
         )
 
@@ -206,6 +210,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
         val mockMethod = mock[Method]
         val pureMethodInfoProfile = new PureMethodInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockMethod
         )
 
@@ -244,6 +249,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
         val mockMethod = mock[Method]
         val pureMethodInfoProfile = new PureMethodInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockMethod
         )
 

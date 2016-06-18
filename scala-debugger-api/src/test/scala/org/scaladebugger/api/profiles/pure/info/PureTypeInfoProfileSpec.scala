@@ -10,9 +10,10 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockType = mock[Type]
   private val pureTypeInfoProfile = new PureTypeInfoProfile(
-    mockScalaVirtualMachine, mockType
+    mockScalaVirtualMachine, mockInfoProducerProfile, mockType
   )
 
   describe("PureTypeInfoProfile") {
@@ -41,7 +42,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = "null"
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, null
+          mockScalaVirtualMachine, mockInfoProducerProfile, null
         )
         val actual = pureTypeInfoProfile.name
 
@@ -64,7 +65,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = "null"
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, null
+          mockScalaVirtualMachine, mockInfoProducerProfile, null
         )
         val actual = pureTypeInfoProfile.signature
 
@@ -77,7 +78,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = true
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[ArrayType]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[ArrayType]
         )
         val actual = pureTypeInfoProfile.isArrayType
 
@@ -88,7 +89,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
         val actual = pureTypeInfoProfile.isArrayType
 
@@ -99,7 +100,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, null
+          mockScalaVirtualMachine, mockInfoProducerProfile, null
         )
         val actual = pureTypeInfoProfile.isArrayType
 
@@ -112,7 +113,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = true
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[ClassType]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[ClassType]
         )
         val actual = pureTypeInfoProfile.isClassType
 
@@ -123,7 +124,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
         val actual = pureTypeInfoProfile.isClassType
 
@@ -134,7 +135,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, null
+          mockScalaVirtualMachine, mockInfoProducerProfile, null
         )
         val actual = pureTypeInfoProfile.isClassType
 
@@ -147,7 +148,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = true
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[InterfaceType]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[InterfaceType]
         )
         val actual = pureTypeInfoProfile.isInterfaceType
 
@@ -158,7 +159,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
         val actual = pureTypeInfoProfile.isInterfaceType
 
@@ -169,7 +170,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, null
+          mockScalaVirtualMachine, mockInfoProducerProfile, null
         )
         val actual = pureTypeInfoProfile.isInterfaceType
 
@@ -182,7 +183,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = true
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[ReferenceType]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[ReferenceType]
         )
         val actual = pureTypeInfoProfile.isReferenceType
 
@@ -193,7 +194,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
         val actual = pureTypeInfoProfile.isReferenceType
 
@@ -204,7 +205,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, null
+          mockScalaVirtualMachine, mockInfoProducerProfile, null
         )
         val actual = pureTypeInfoProfile.isReferenceType
 
@@ -217,7 +218,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = true
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[PrimitiveType]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[PrimitiveType]
         )
         val actual = pureTypeInfoProfile.isPrimitiveType
 
@@ -228,7 +229,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = true
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[VoidType]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[VoidType]
         )
         val actual = pureTypeInfoProfile.isPrimitiveType
 
@@ -239,7 +240,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
         val actual = pureTypeInfoProfile.isPrimitiveType
 
@@ -250,7 +251,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, null
+          mockScalaVirtualMachine, mockInfoProducerProfile, null
         )
         val actual = pureTypeInfoProfile.isPrimitiveType
 
@@ -263,7 +264,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = false
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
         val actual = pureTypeInfoProfile.isNullType
 
@@ -274,7 +275,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val expected = true
 
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, null
+          mockScalaVirtualMachine, mockInfoProducerProfile, null
         )
         val actual = pureTypeInfoProfile.isNullType
 
@@ -285,7 +286,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
     describe("#toArrayType") {
       it("should throw an error if the type is not an array") {
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
 
         intercept[AssertionError] {
@@ -299,7 +300,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val mockArrayType = mock[ArrayType]
         val mockNewArrayTypeProfile = mockFunction[ArrayType, ArrayTypeInfoProfile]
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mockArrayType
+          mockScalaVirtualMachine, mockInfoProducerProfile, mockArrayType
         ) {
           override protected def newArrayTypeProfile(
             arrayType: ArrayType
@@ -318,7 +319,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
     describe("#toClassType") {
       it("should throw an error if the type is not a class") {
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
 
         intercept[AssertionError] {
@@ -332,7 +333,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val mockClassType = mock[ClassType]
         val mockNewClassTypeProfile = mockFunction[ClassType, ClassTypeInfoProfile]
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mockClassType
+          mockScalaVirtualMachine, mockInfoProducerProfile, mockClassType
         ) {
           override protected def newClassTypeProfile(
             classType: ClassType
@@ -351,7 +352,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
     describe("#toInterfaceType") {
       it("should throw an error if the type is not an interface") {
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
 
         intercept[AssertionError] {
@@ -365,7 +366,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val mockInterfaceType = mock[InterfaceType]
         val mockNewInterfaceTypeProfile = mockFunction[InterfaceType, InterfaceTypeInfoProfile]
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mockInterfaceType
+          mockScalaVirtualMachine, mockInfoProducerProfile, mockInterfaceType
         ) {
           override protected def newInterfaceTypeProfile(
             interfaceType: InterfaceType
@@ -384,7 +385,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
     describe("#toReferenceType") {
       it("should throw an error if the type is not a reference") {
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
 
         intercept[AssertionError] {
@@ -398,7 +399,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val mockReferenceType = mock[ReferenceType]
         val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfoProfile]
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mockReferenceType
+          mockScalaVirtualMachine, mockInfoProducerProfile, mockReferenceType
         ) {
           override protected def newReferenceTypeProfile(
             referenceType: ReferenceType
@@ -417,7 +418,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
     describe("#toPrimitiveType") {
       it("should throw an error if the type is not a primitive") {
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mock[Type]
+          mockScalaVirtualMachine, mockInfoProducerProfile, mock[Type]
         )
 
         intercept[AssertionError] {
@@ -431,7 +432,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val mockPrimitiveType = mock[PrimitiveType]
         val mockNewPrimitiveTypeProfile = mockFunction[PrimitiveType, PrimitiveTypeInfoProfile]
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mockPrimitiveType
+          mockScalaVirtualMachine, mockInfoProducerProfile, mockPrimitiveType
         ) {
           override protected def newPrimitiveTypeProfile(
             primitiveType: PrimitiveType
@@ -452,7 +453,7 @@ class PureTypeInfoProfileSpec extends FunSpec with Matchers
         val mockVoidType = mock[VoidType]
         val mockNewPrimitiveTypeProfile = mockFunction[VoidType, PrimitiveTypeInfoProfile]
         val pureTypeInfoProfile = new PureTypeInfoProfile(
-          mockScalaVirtualMachine, mockVoidType
+          mockScalaVirtualMachine, mockInfoProducerProfile, mockVoidType
         ) {
           override protected def newPrimitiveTypeProfile(
             voidType: VoidType

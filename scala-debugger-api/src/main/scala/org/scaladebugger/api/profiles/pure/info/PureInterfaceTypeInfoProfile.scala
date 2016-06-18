@@ -11,13 +11,16 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            interface type
+ * @param infoProducer The producer of info-based profile instances
  * @param _interfaceType The underlying JDI interface type to wrap
  */
 class PureInterfaceTypeInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val _interfaceType: InterfaceType
 ) extends PureReferenceTypeInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
+  infoProducer = infoProducer,
   _referenceType = _interfaceType
 ) with InterfaceTypeInfoProfile {
   /**

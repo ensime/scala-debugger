@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, TypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, InfoProducerProfile, TypeInfoProfile, ValueInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -12,12 +12,14 @@ class PureLocalVariableInfoProfileSpec extends FunSpec with Matchers
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockFrameInfoProfile = mock[FrameInfoProfile]
   private val mockLocalVariable = mock[LocalVariable]
   private val TestOffsetIndex = 999
   private val pureLocalVariableInfoProfile = new PureLocalVariableInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     mockFrameInfoProfile,
     mockLocalVariable,
     TestOffsetIndex
@@ -160,6 +162,7 @@ class PureLocalVariableInfoProfileSpec extends FunSpec with Matchers
         val mockNewValueProfile = mockFunction[Value, ValueInfoProfile]
         val pureLocalVariableInfoProfile = new PureLocalVariableInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockFrameInfoProfile,
           mockLocalVariable,
           TestOffsetIndex

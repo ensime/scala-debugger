@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.TypeInfoProfile
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, TypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -11,12 +11,13 @@ class PureStringInfoProfileSpec extends FunSpec with Matchers
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockThreadReference = mock[ThreadReference]
   private val mockReferenceType = mock[ReferenceType]
   private val mockStringReference = mock[StringReference]
   private val pureStringInfoProfile = new PureStringInfoProfile(
-    mockScalaVirtualMachine, mockStringReference
+    mockScalaVirtualMachine, mockInfoProducerProfile, mockStringReference
   )(
     _virtualMachine = mockVirtualMachine,
     _threadReference = mockThreadReference,

@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfoProfile, ThreadInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, ThreadGroupInfoProfile, ThreadInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -10,6 +10,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            thread group
+ * @param infoProducer The producer of info-based profile instances
  * @param _threadGroupReference The reference to the underlying JDI thread group
  * @param _virtualMachine The virtual machine used to mirror local values on
  *                       the remote JVM
@@ -18,12 +19,13 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  */
 class PureThreadGroupInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val _threadGroupReference: ThreadGroupReference
 )(
   override protected val _virtualMachine: VirtualMachine = _threadGroupReference.virtualMachine(),
   private val _threadReference: ThreadReference = _threadGroupReference.owningThread(),
   private val _referenceType: ReferenceType = _threadGroupReference.referenceType()
-) extends PureObjectInfoProfile(scalaVirtualMachine, _threadGroupReference)(
+) extends PureObjectInfoProfile(scalaVirtualMachine, infoProducer, _threadGroupReference)(
   _virtualMachine = _virtualMachine,
   _threadReference = _threadReference,
   _referenceType = _referenceType
@@ -86,22 +88,22 @@ class PureThreadGroupInfoProfile(
 
   protected def newThreadGroupProfile(
     threadGroupReference: ThreadGroupReference
-  ): ThreadGroupInfoProfile = new PureThreadGroupInfoProfile(
+  ): ThreadGroupInfoProfile = infoProducer.newThreadGroupInfoProfile(
     scalaVirtualMachine,
     threadGroupReference
   )(
-    _virtualMachine = _virtualMachine,
-    _threadReference = _threadReference,
-    _referenceType = _referenceType
+    virtualMachine = _virtualMachine,
+    threadReference = _threadReference,
+    referenceType = _referenceType
   )
 
   protected def newThreadProfile(
     threadReference: ThreadReference
-  ): ThreadInfoProfile = new PureThreadInfoProfile(
+  ): ThreadInfoProfile = infoProducer.newThreadInfoProfile(
     scalaVirtualMachine,
     threadReference
   )(
-    _virtualMachine = _virtualMachine,
-    _referenceType = _referenceType
+    virtualMachine = _virtualMachine,
+    referenceType = _referenceType
   )
 }

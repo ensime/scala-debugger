@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, ReferenceTypeInfoProfile, TypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -12,11 +12,13 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockObjectReference = mock[ObjectReference]
   private val mockField = mock[Field]
   private val pureFieldInfoProfile = new PureFieldInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     Left(mockObjectReference),
     mockField
   )(mockVirtualMachine) {
@@ -81,6 +83,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
 
         val pureFieldInfoProfile = new PureFieldInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[ObjectReference]),
           mockField
         )(mockVirtualMachine) {
@@ -99,6 +102,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
 
         val pureFieldInfoProfile = new PureFieldInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mock[ReferenceType]),
           mockField
         )(mockVirtualMachine) {
@@ -147,6 +151,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
       it("should throw an exception if no object reference or class type available") {
         val pureFieldInfoProfile = new PureFieldInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mock[ReferenceType]),
           mockField
         )(mockVirtualMachine)
@@ -183,6 +188,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
         val mockClassType = mock[ClassType]
         val pureFieldInfoProfile = new PureFieldInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockClassType),
           mockField
         )(mockVirtualMachine)
@@ -214,6 +220,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
         val mockNewValueProfile = mockFunction[Value, ValueInfoProfile]
         val pureFieldInfoProfile = new PureFieldInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockClassType),
           mockField
         )(mockVirtualMachine) {
@@ -236,6 +243,7 @@ class PureFieldInfoProfileSpec extends FunSpec with Matchers
         val mockNewValueProfile = mockFunction[Value, ValueInfoProfile]
         val pureFieldInfoProfile = new PureFieldInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mockObjectReference),
           mockField
         )(mockVirtualMachine) {

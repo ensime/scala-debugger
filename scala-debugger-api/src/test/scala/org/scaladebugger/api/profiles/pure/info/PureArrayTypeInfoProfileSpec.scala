@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{ArrayInfoProfile, TypeInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{ArrayInfoProfile, InfoProducerProfile, TypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -12,9 +12,11 @@ class PureArrayTypeInfoProfileSpec extends FunSpec with Matchers
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
   private val mockNewArrayProfile = mockFunction[ArrayReference, ArrayInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockArrayType = mock[ArrayType]
   private val pureArrayTypeInfoProfile = new PureArrayTypeInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     mockArrayType
   ) {
     override protected def newTypeProfile(_type: Type): TypeInfoProfile =

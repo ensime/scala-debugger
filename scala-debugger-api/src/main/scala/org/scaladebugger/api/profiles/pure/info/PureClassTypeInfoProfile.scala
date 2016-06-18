@@ -13,13 +13,16 @@ import scala.util.Try
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            class type
+ * @param infoProducer The producer of info-based profile instances
  * @param _classType The underlying JDI class type to wrap
  */
 class PureClassTypeInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val _classType: ClassType
 ) extends PureReferenceTypeInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
+  infoProducer = infoProducer,
   _referenceType = _classType
 ) with ClassTypeInfoProfile {
   /**
@@ -210,18 +213,17 @@ class PureClassTypeInfoProfile(
     objectReference: ObjectReference,
     threadReference: ThreadReference,
     virtualMachine: VirtualMachine
-  ): ObjectInfoProfile = new PureObjectInfoProfile(
-    scalaVirtualMachine,
-    objectReference
+  ): ObjectInfoProfile = infoProducer.newObjectInfoProfile(
+    scalaVirtualMachine = scalaVirtualMachine,
+    objectReference = objectReference
   )(
-    _virtualMachine = virtualMachine,
-    _threadReference = threadReference,
-    _referenceType = objectReference.referenceType()
+    threadReference = threadReference,
+    virtualMachine = virtualMachine
   )
 
   protected def newVirtualMachine(): VirtualMachine =
     scalaVirtualMachine.underlyingVirtualMachine
 
   protected def newValueProfile(value: Value): ValueInfoProfile =
-    new PureValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
 }

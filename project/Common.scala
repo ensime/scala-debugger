@@ -58,7 +58,7 @@ object Common {
 
     concurrentRestrictions in Global := {
       val limited = scala.util.Properties.envOrElse(
-        "SBT_TASK_LIMIT", "0"
+        "SBT_TASK_LIMIT", "4"
       ).toInt
 
       // Only limit parallel if told to do so

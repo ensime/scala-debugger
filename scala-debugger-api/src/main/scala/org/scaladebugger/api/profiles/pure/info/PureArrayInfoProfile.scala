@@ -13,6 +13,7 @@ import scala.util.Try
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            array
+ * @param infoProducer The producer of info-based profile instances
  * @param _arrayReference The reference to the underlying JDI array
  * @param _virtualMachine The virtual machine used to mirror local values on
  *                       the remote JVM
@@ -22,12 +23,13 @@ import scala.util.Try
  */
 class PureArrayInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val _arrayReference: ArrayReference
 )(
   override protected val _virtualMachine: VirtualMachine = _arrayReference.virtualMachine(),
   private val _threadReference: ThreadReference = _arrayReference.owningThread(),
   private val _referenceType: ReferenceType = _arrayReference.referenceType()
-) extends PureObjectInfoProfile(scalaVirtualMachine, _arrayReference)(
+) extends PureObjectInfoProfile(scalaVirtualMachine, infoProducer, _arrayReference)(
   _virtualMachine = _virtualMachine,
   _threadReference = _threadReference,
   _referenceType = _referenceType
@@ -147,5 +149,5 @@ class PureArrayInfoProfile(
   }
 
   override protected def newValueProfile(value: Value): ValueInfoProfile =
-    new PureValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
 }

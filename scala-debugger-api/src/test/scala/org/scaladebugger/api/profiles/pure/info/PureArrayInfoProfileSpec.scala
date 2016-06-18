@@ -3,7 +3,7 @@ package org.scaladebugger.api.profiles.pure.info
 import java.util
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{ArrayTypeInfoProfile, ReferenceTypeInfoProfile, TypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -14,12 +14,13 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockThreadReference = mock[ThreadReference]
   private val mockReferenceType = mock[ReferenceType]
   private val mockArrayReference = mock[ArrayReference]
   private val pureArrayInfoProfile = new PureArrayInfoProfile(
-    mockScalaVirtualMachine, mockArrayReference
+    mockScalaVirtualMachine, mockInfoProducerProfile, mockArrayReference
   )(
     _virtualMachine = mockVirtualMachine,
     _threadReference = mockThreadReference,
@@ -82,7 +83,7 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
         val mockValue = mock[Value]
 
         val pureArrayInfoProfile = new PureArrayInfoProfile(
-          mockScalaVirtualMachine, mockArrayReference
+          mockScalaVirtualMachine, mockInfoProducerProfile, mockArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
           _threadReference = mockThreadReference,
@@ -107,7 +108,7 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
         val mockValues = Seq(mock[Value])
 
         val pureArrayInfoProfile = new PureArrayInfoProfile(
-          mockScalaVirtualMachine, mockArrayReference
+          mockScalaVirtualMachine, mockInfoProducerProfile, mockArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
           _threadReference = mockThreadReference,
@@ -134,7 +135,7 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
         val mockValues = Seq(mock[Value])
 
         val pureArrayInfoProfile = new PureArrayInfoProfile(
-          mockScalaVirtualMachine, mockArrayReference
+          mockScalaVirtualMachine, mockInfoProducerProfile, mockArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
           _threadReference = mockThreadReference,
@@ -194,7 +195,7 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
         import scala.collection.JavaConverters._
         mockSetValues.expects(index, mockValues.asJava, srcIndex, totalElements).once()
         val pureArrayInfoProfile = new PureArrayInfoProfile(
-          mockScalaVirtualMachine, testArrayReference
+          mockScalaVirtualMachine, mockInfoProducerProfile, testArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
           _threadReference = mockThreadReference,
@@ -229,7 +230,7 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
         import scala.collection.JavaConverters._
         mockSetValues.expects(mockValues.asJava).once()
         val pureArrayInfoProfile = new PureArrayInfoProfile(
-          mockScalaVirtualMachine, testArrayReference
+          mockScalaVirtualMachine, mockInfoProducerProfile, testArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
           _threadReference = mockThreadReference,

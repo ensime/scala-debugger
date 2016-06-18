@@ -17,9 +17,11 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
   private val TestFrameIndex = 999
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockStackFrame = mock[StackFrame]
   private val pureFrameInfoProfile = new PureFrameInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     mockStackFrame,
     TestFrameIndex
   ) {
@@ -274,6 +276,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         val pureFrameInfoProfile = new PureFrameInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockStackFrame,
           0
         ) {
@@ -336,6 +339,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         val pureFrameInfoProfile = new PureFrameInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockStackFrame,
           TestFrameIndex
         ) {
@@ -359,6 +363,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         val pureFrameInfoProfile = new PureFrameInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockStackFrame,
           TestFrameIndex
         ) {
@@ -483,6 +488,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         val pureFrameInfoProfile = new PureFrameInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockStackFrame,
           0
         ) {
@@ -526,6 +532,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         val pureFrameInfoProfile = new PureFrameInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockStackFrame,
           TestFrameIndex
         ) {
@@ -549,6 +556,7 @@ class PureFrameInfoProfileSpec extends FunSpec with Matchers
 
         val pureFrameInfoProfile = new PureFrameInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockStackFrame,
           TestFrameIndex
         ) {

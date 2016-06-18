@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.scala210.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, ReferenceTypeInfoProfile, TypeInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -11,11 +11,13 @@ class Scala210FieldInfoProfileSpec extends FunSpec with Matchers
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockObjectReference = mock[ObjectReference]
   private val mockField = mock[Field]
   private val scala210FieldInfoProfile = new Scala210FieldInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     Left(mockObjectReference),
     mockField
   )(mockVirtualMachine) {

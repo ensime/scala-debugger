@@ -15,6 +15,7 @@ import scala.collection.JavaConverters._
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            class loader
+ * @param infoProducer The producer of info-based profile instances
  * @param _classLoaderReference The reference to the underlying JDI class loader
  * @param _virtualMachine The virtual machine associated with the class loader
  * @param _threadReference The thread associated with the class loader
@@ -23,12 +24,13 @@ import scala.collection.JavaConverters._
  */
 class PureClassLoaderInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val _classLoaderReference: ClassLoaderReference
 )(
   override protected val _virtualMachine: VirtualMachine = _classLoaderReference.virtualMachine(),
   private val _threadReference: ThreadReference = _classLoaderReference.owningThread(),
   private val _referenceType: ReferenceType = _classLoaderReference.referenceType()
-) extends PureObjectInfoProfile(scalaVirtualMachine, _classLoaderReference)(
+) extends PureObjectInfoProfile(scalaVirtualMachine, infoProducer, _classLoaderReference)(
   _virtualMachine = _virtualMachine,
   _threadReference = _threadReference,
   _referenceType = _referenceType

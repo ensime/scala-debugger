@@ -17,10 +17,12 @@ object PureValueInfoProfile {
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            value
+ * @param infoProducer The producer of info-based profile instances
  * @param _value The reference to the underlying JDI value
  */
 class PureValueInfoProfile(
   val scalaVirtualMachine: ScalaVirtualMachine,
+  protected val infoProducer: InfoProducerProfile,
   private val _value: Value
 ) extends ValueInfoProfile {
   /**
@@ -143,20 +145,20 @@ class PureValueInfoProfile(
   override def isNull: Boolean = _value == null
 
   protected def newPrimitiveProfile(primitiveValue: PrimitiveValue): PrimitiveInfoProfile =
-    new PurePrimitiveInfoProfile(scalaVirtualMachine, Left(primitiveValue))
+    infoProducer.newPrimitiveInfoProfile(scalaVirtualMachine, primitiveValue)
 
   protected def newPrimitiveProfile(voidValue: VoidValue): PrimitiveInfoProfile =
-    new PurePrimitiveInfoProfile(scalaVirtualMachine, Right(voidValue))
+    infoProducer.newPrimitiveInfoProfile(scalaVirtualMachine, voidValue)
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfoProfile =
-    new PureObjectInfoProfile(scalaVirtualMachine, objectReference)()
+    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)()
 
   protected def newStringProfile(stringReference: StringReference): StringInfoProfile =
-    new PureStringInfoProfile(scalaVirtualMachine, stringReference)()
+  infoProducer.newStringInfoProfile(scalaVirtualMachine, stringReference)()
 
   protected def newArrayProfile(arrayReference: ArrayReference): ArrayInfoProfile =
-    new PureArrayInfoProfile(scalaVirtualMachine, arrayReference)()
+    infoProducer.newArrayInfoProfile(scalaVirtualMachine, arrayReference)()
 
   protected def newTypeProfile(_type: Type): TypeInfoProfile =
-    new PureTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
 }

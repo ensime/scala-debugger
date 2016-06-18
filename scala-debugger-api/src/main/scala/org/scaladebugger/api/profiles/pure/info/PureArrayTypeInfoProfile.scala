@@ -10,13 +10,16 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            array type
+ * @param infoProducer The producer of info-based profile instances
  * @param _arrayType The underlying JDI array type to wrap
  */
 class PureArrayTypeInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val _arrayType: ArrayType
 ) extends PureReferenceTypeInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
+  infoProducer = infoProducer,
   _referenceType = _arrayType
 ) with ArrayTypeInfoProfile {
   /**
@@ -58,6 +61,10 @@ class PureArrayTypeInfoProfile(
   override def newInstance(length: Int): ArrayInfoProfile =
     newArrayProfile(_arrayType.newInstance(length))
 
-  protected def newArrayProfile(arrayReference: ArrayReference): ArrayInfoProfile =
-    new PureArrayInfoProfile(scalaVirtualMachine, arrayReference)()
+  protected def newArrayProfile(
+    arrayReference: ArrayReference
+  ): ArrayInfoProfile = infoProducer.newArrayInfoProfile(
+    scalaVirtualMachine,
+    arrayReference
+  )()
 }

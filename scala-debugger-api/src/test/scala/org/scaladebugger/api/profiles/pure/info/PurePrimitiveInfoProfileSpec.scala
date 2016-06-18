@@ -10,6 +10,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVoidValue = mock[VoidValue]
   private val mockPrimitiveValue = mock[PrimitiveValue]
 
@@ -20,6 +21,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 
@@ -33,6 +35,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mockPrimitiveValue)
         )
 
@@ -46,6 +49,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
       it("should throw an error if representing a void value") {
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 
@@ -62,6 +66,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mockByteValue)
         )
 
@@ -82,6 +87,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
         val mockNewTypeProfileFunction = mockFunction[Type, TypeInfoProfile]
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mockPrimitiveValue)
         ) {
           override protected def newTypeProfile(_type: Type): TypeInfoProfile =
@@ -110,6 +116,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
         val mockNewTypeProfileFunction = mockFunction[Type, TypeInfoProfile]
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         ) {
           override protected def newTypeProfile(_type: Type): TypeInfoProfile =
@@ -135,6 +142,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[BooleanValue])
         )
 
@@ -148,6 +156,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[PrimitiveValue])
         )
 
@@ -161,6 +170,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 
@@ -176,6 +186,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[ByteValue])
         )
 
@@ -189,6 +200,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[PrimitiveValue])
         )
 
@@ -202,6 +214,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 
@@ -217,6 +230,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[CharValue])
         )
 
@@ -230,6 +244,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[PrimitiveValue])
         )
 
@@ -243,6 +258,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 
@@ -258,6 +274,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[IntegerValue])
         )
 
@@ -271,6 +288,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[PrimitiveValue])
         )
 
@@ -284,6 +302,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 
@@ -299,6 +318,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[LongValue])
         )
 
@@ -312,6 +332,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[PrimitiveValue])
         )
 
@@ -325,6 +346,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 
@@ -340,6 +362,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[ShortValue])
         )
 
@@ -353,6 +376,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[PrimitiveValue])
         )
 
@@ -366,6 +390,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 
@@ -381,6 +406,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[DoubleValue])
         )
 
@@ -394,6 +420,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[PrimitiveValue])
         )
 
@@ -407,6 +434,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 
@@ -422,6 +450,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[FloatValue])
         )
 
@@ -435,6 +464,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Left(mock[PrimitiveValue])
         )
 
@@ -448,6 +478,7 @@ class PurePrimitiveInfoProfileSpec extends FunSpec with Matchers
 
         val purePrimitiveInfoProfile = new PurePrimitiveInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           Right(mockVoidValue)
         )
 

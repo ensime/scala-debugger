@@ -14,8 +14,9 @@ import org.scaladebugger.api.profiles.pure.steps.PureStepProfile
 import org.scaladebugger.api.profiles.pure.threads.{PureThreadDeathProfile, PureThreadStartProfile}
 import org.scaladebugger.api.profiles.pure.vm.{PureVMDeathProfile, PureVMDisconnectProfile, PureVMStartProfile}
 import org.scaladebugger.api.profiles.pure.watchpoints.{PureAccessWatchpointProfile, PureModificationWatchpointProfile}
-import org.scaladebugger.api.profiles.scala210.info.Scala210GrabInfoProfile
+import org.scaladebugger.api.profiles.scala210.info.Scala210InfoProducerProfile
 import org.scaladebugger.api.profiles.traits.ManagerContainerDebugProfile
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -33,13 +34,16 @@ object Scala210DebugProfile {
  *                         underlying implementation
  * @param _virtualMachine The underlying virtual machine to use for various
  *                        retrieval methods
+ * @param infoProducer The producer of information profiles
  */
 class Scala210DebugProfile(
   protected val scalaVirtualMachine: ScalaVirtualMachine,
   protected val managerContainer: ManagerContainer
 )(
   protected val _virtualMachine: VirtualMachine =
-    scalaVirtualMachine.underlyingVirtualMachine
+    scalaVirtualMachine.underlyingVirtualMachine,
+  protected val infoProducer: InfoProducerProfile =
+    new Scala210InfoProducerProfile
 ) extends ManagerContainerDebugProfile
   with PureAccessWatchpointProfile
   with PureBreakpointProfile
@@ -48,7 +52,7 @@ class Scala210DebugProfile(
   with PureCreateInfoProfile
   with PureEventProfile
   with PureExceptionProfile
-  with Scala210GrabInfoProfile
+  with PureGrabInfoProfile
   with PureMethodEntryProfile
   with PureMethodExitProfile
   with PureMiscInfoProfile

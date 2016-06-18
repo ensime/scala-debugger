@@ -13,15 +13,18 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            primitive
+ * @param infoProducer The producer of info-based profile instances
  * @param eitherValue Represents the primitive or void value wrapped by this
  *                   profile
  */
 class PurePrimitiveInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
+  override protected val infoProducer: InfoProducerProfile,
   private val eitherValue: Either[PrimitiveValue, VoidValue]
 ) extends PureValueInfoProfile(
-  scalaVirtualMachine,
-  eitherValue.merge
+  scalaVirtualMachine = scalaVirtualMachine,
+  infoProducer = infoProducer,
+  _value = eitherValue.merge
 ) with PrimitiveInfoProfile {
   /**
    * Returns the type information for the primitive.

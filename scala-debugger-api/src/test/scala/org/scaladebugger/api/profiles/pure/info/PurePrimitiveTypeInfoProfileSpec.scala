@@ -1,6 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -9,15 +10,16 @@ class PurePrimitiveTypeInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockPrimitiveType = mock[PrimitiveType]
   private val mockVoidType = mock[VoidType]
 
   private val leftPrimitiveTypeInfoProfile = new PurePrimitiveTypeInfoProfile(
-    mockScalaVirtualMachine, Left(mockPrimitiveType)
+    mockScalaVirtualMachine, mockInfoProducerProfile, Left(mockPrimitiveType)
   )
 
   private val rightPrimitiveTypeInfoProfile = new PurePrimitiveTypeInfoProfile(
-    mockScalaVirtualMachine, Right(mockVoidType)
+    mockScalaVirtualMachine, mockInfoProducerProfile, Right(mockVoidType)
   )
 
   describe("PurePrimitiveTypeInfoProfile") {

@@ -17,10 +17,12 @@ object PureTypeInfoProfile {
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            reference type
+ * @param infoProducer The producer of info-based profile instances
  * @param _type The reference to the underlying JDI type
  */
 class PureTypeInfoProfile(
   val scalaVirtualMachine: ScalaVirtualMachine,
+  protected val infoProducer: InfoProducerProfile,
   private val _type: Type
 ) extends TypeInfoProfile {
   /**
@@ -154,47 +156,47 @@ class PureTypeInfoProfile(
   }
 
   protected def newTypeProfile(_type: Type): TypeInfoProfile =
-    new PureTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
 
   protected def newReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfoProfile = new PureReferenceTypeInfoProfile(
+  ): ReferenceTypeInfoProfile = infoProducer.newReferenceTypeInfoProfile(
     scalaVirtualMachine,
     referenceType
   )
 
   protected def newArrayTypeProfile(
     arrayType: ArrayType
-  ): ArrayTypeInfoProfile = new PureArrayTypeInfoProfile(
+  ): ArrayTypeInfoProfile = infoProducer.newArrayTypeInfoProfile(
     scalaVirtualMachine,
     arrayType
   )
 
   protected def newClassTypeProfile(
     classType: ClassType
-  ): ClassTypeInfoProfile = new PureClassTypeInfoProfile(
+  ): ClassTypeInfoProfile = infoProducer.newClassTypeInfoProfile(
     scalaVirtualMachine,
     classType
   )
 
   protected def newInterfaceTypeProfile(
     interfaceType: InterfaceType
-  ): InterfaceTypeInfoProfile = new PureInterfaceTypeInfoProfile(
+  ): InterfaceTypeInfoProfile = infoProducer.newInterfaceTypeInfoProfile(
     scalaVirtualMachine,
     interfaceType
   )
 
   protected def newPrimitiveTypeProfile(
     primitiveType: PrimitiveType
-  ): PrimitiveTypeInfoProfile = new PurePrimitiveTypeInfoProfile(
+  ): PrimitiveTypeInfoProfile = infoProducer.newPrimitiveTypeInfoProfile(
     scalaVirtualMachine,
-    Left(primitiveType)
+    primitiveType
   )
 
   protected def newPrimitiveTypeProfile(
     voidType: VoidType
-  ): PrimitiveTypeInfoProfile = new PurePrimitiveTypeInfoProfile(
+  ): PrimitiveTypeInfoProfile = infoProducer.newPrimitiveTypeInfoProfile(
     scalaVirtualMachine,
-    Right(voidType)
+    voidType
   )
 }

@@ -13,6 +13,7 @@ import scala.util.Try
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            field
+ * @param infoProducer The producer of info-based profile instances
  * @param _container Either the object or reference type containing the
  *                   field instance
  * @param _field The reference to the underlying JDI field
@@ -24,6 +25,7 @@ import scala.util.Try
  */
 class PureFieldInfoProfile(
   val scalaVirtualMachine: ScalaVirtualMachine,
+  protected val infoProducer: InfoProducerProfile,
   private val _container: Either[ObjectReference, ReferenceType],
   private val _field: Field,
   val offsetIndex: Int
@@ -40,6 +42,7 @@ class PureFieldInfoProfile(
    *
    * @param scalaVirtualMachine The high-level virtual machine containing the
    *                            field
+   * @param infoProducer The producer of info-based profile instances
    * @param _container Either the object or reference type containing the
    *                   field instance
    * @param _field The reference to the underlying JDI field
@@ -48,11 +51,18 @@ class PureFieldInfoProfile(
    */
   def this(
     scalaVirtualMachine: ScalaVirtualMachine,
+    infoProducer: InfoProducerProfile,
     _container: Either[ObjectReference, ReferenceType],
     _field: Field
   )(
     _virtualMachine: VirtualMachine
-  ) = this(scalaVirtualMachine, _container, _field, -1)(_virtualMachine)
+  ) = this(
+    scalaVirtualMachine,
+    infoProducer,
+    _container,
+    _field,
+    -1
+  )(_virtualMachine)
 
   /**
    * Returns the JDI representation this profile instance wraps.
@@ -143,18 +153,18 @@ class PureFieldInfoProfile(
   })
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfoProfile =
-    new PureObjectInfoProfile(scalaVirtualMachine, objectReference)()
+    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)()
 
   protected def newReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfoProfile = new PureReferenceTypeInfoProfile(
+  ): ReferenceTypeInfoProfile = infoProducer.newReferenceTypeInfoProfile(
     scalaVirtualMachine,
     referenceType
   )
 
   protected def newValueProfile(value: Value): ValueInfoProfile =
-    new PureValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
 
   protected def newTypeProfile(_type: Type): TypeInfoProfile =
-    new PureTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
 }

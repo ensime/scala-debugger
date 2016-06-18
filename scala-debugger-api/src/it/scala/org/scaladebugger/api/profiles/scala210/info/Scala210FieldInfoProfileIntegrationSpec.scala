@@ -41,6 +41,16 @@ class Scala210FieldInfoProfileIntegrationSpec extends FunSpec with Matchers
             "times",
             "name" // Indicates fixed
           )
+
+          // Can also retrieve field with fixed name
+          val fieldValue = s.withProfile(Scala210DebugProfile.Name)
+            .thread(t.get)
+            .findVariableByName("name")
+            .get
+            .toValueInfo
+            .toLocalValue
+
+          fieldValue should be ("Rory")
         })
       }
     }

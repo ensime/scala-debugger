@@ -14,11 +14,13 @@ import scala.collection.JavaConverters._
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            stack frame
+ * @param infoProducer The producer of info-based profile instances
  * @param _stackFrame The reference to the underlying JDI stack frame instance
  * @param index The index of the frame relative to the frame stack
  */
 class PureFrameInfoProfile(
   val scalaVirtualMachine: ScalaVirtualMachine,
+  protected val infoProducer: InfoProducerProfile,
   private val _stackFrame: StackFrame,
   val index: Int
 ) extends FrameInfoProfile {
@@ -198,7 +200,7 @@ class PureFrameInfoProfile(
   protected def newLocalVariableProfile(
     localVariable: LocalVariable,
     offsetIndex: Int
-  ): IndexedVariableInfoProfile = new PureLocalVariableInfoProfile(
+  ): IndexedVariableInfoProfile = infoProducer.newLocalVariableInfoProfile(
     scalaVirtualMachine,
     this,
     localVariable,
@@ -206,16 +208,16 @@ class PureFrameInfoProfile(
   )()
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfoProfile =
-    new PureObjectInfoProfile(scalaVirtualMachine, objectReference)(
-      _threadReference = _threadReference
+    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)(
+      threadReference = _threadReference
     )
 
   protected def newThreadProfile(threadReference: ThreadReference): ThreadInfoProfile =
-    new PureThreadInfoProfile(scalaVirtualMachine, threadReference)()
+    infoProducer.newThreadInfoProfile(scalaVirtualMachine, threadReference)()
 
   protected def newLocationProfile(location: Location): LocationInfoProfile =
-    new PureLocationInfoProfile(scalaVirtualMachine, location)
+    infoProducer.newLocationInfoProfile(scalaVirtualMachine, location)
 
   protected def newValueProfile(value: Value): ValueInfoProfile =
-    new PureValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
 }

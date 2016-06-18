@@ -17,9 +17,11 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
   private val mockNewMethodProfile = mockFunction[Method, MethodInfoProfile]
   private val mockNewValueProfile = mockFunction[Value, ValueInfoProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+  private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockClassType = mock[ClassType]
   private val pureClassTypeInfoProfile = new PureClassTypeInfoProfile(
     mockScalaVirtualMachine,
+    mockInfoProducerProfile,
     mockClassType
   ) {
     override protected def newTypeProfile(_type: Type): TypeInfoProfile =
@@ -224,6 +226,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
 
         val pureClassTypeInfoProfile = new PureClassTypeInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockClassType
         ) {
           override def invokeStaticMethod(
@@ -275,6 +278,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         val mockMethod = mock[Method]
         val methodInfo = new PureMethodInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockMethod
         )
 
@@ -309,12 +313,14 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         val mockMethod = mock[Method]
         val methodInfo = new PureMethodInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockMethod
         )
 
         val mockVirtualMachine = mock[VirtualMachine]
         val pureClassTypeInfoProfile = new PureClassTypeInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockClassType
         ) {
           override protected def newTypeProfile(_type: Type): TypeInfoProfile =
@@ -365,6 +371,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         val mockMethod = mock[Method]
         val methodInfo = new PureMethodInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockMethod
         )
 
@@ -404,6 +411,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
 
         val pureClassTypeInfoProfile = new PureClassTypeInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockClassType
         ) {
           override def invokeStaticMethod(
@@ -454,12 +462,14 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         val mockMethod = mock[Method]
         val methodInfo = new PureMethodInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockMethod
         )
 
         val mockVirtualMachine = mock[VirtualMachine]
         val pureClassTypeInfoProfile = new PureClassTypeInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockClassType
         ) {
           override protected def newTypeProfile(_type: Type): TypeInfoProfile =
@@ -517,12 +527,14 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         val mockMethod = mock[Method]
         val methodInfo = new PureMethodInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockMethod
         )
 
         val mockVirtualMachine = mock[VirtualMachine]
         val pureClassTypeInfoProfile = new PureClassTypeInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockClassType
         ) {
           override protected def newTypeProfile(_type: Type): TypeInfoProfile =
@@ -583,6 +595,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         val mockMethod = mock[Method]
         val methodInfo = new PureMethodInfoProfile(
           mockScalaVirtualMachine,
+          mockInfoProducerProfile,
           mockMethod
         )
 

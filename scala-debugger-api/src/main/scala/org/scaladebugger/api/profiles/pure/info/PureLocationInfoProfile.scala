@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi.{Location, Method, ReferenceType}
-import org.scaladebugger.api.profiles.traits.info.{LocationInfoProfile, MethodInfoProfile, ReferenceTypeInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, LocationInfoProfile, MethodInfoProfile, ReferenceTypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -10,10 +10,12 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            location
+ * @param infoProducer The producer of info-based profile instances
  * @param _location The reference to the underlying JDI location
  */
 class PureLocationInfoProfile(
   val scalaVirtualMachine: ScalaVirtualMachine,
+  protected val infoProducer: InfoProducerProfile,
   private val _location: Location
 ) extends LocationInfoProfile {
   /**
@@ -71,11 +73,11 @@ class PureLocationInfoProfile(
 
   protected def newReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfoProfile = new PureReferenceTypeInfoProfile(
+  ): ReferenceTypeInfoProfile = infoProducer.newReferenceTypeInfoProfile(
     scalaVirtualMachine,
     referenceType
   )
 
   protected def newMethodProfile(method: Method): MethodInfoProfile =
-    new PureMethodInfoProfile(scalaVirtualMachine, method)
+    infoProducer.newMethodInfoProfile(scalaVirtualMachine, method)
 }
