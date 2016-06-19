@@ -94,6 +94,14 @@ object InfoTestClasses {
     override def isArray: Boolean = throwException()
     override def isVoid: Boolean = throwException()
     override def isNull: Boolean = throwException()
+    override def isClassLoader: Boolean = throwException()
+    override def toClassObjectInfo: ClassObjectInfoProfile = throwException()
+    override def isThreadGroup: Boolean = throwException()
+    override def toClassLoaderInfo: ClassLoaderInfoProfile = throwException()
+    override def toThreadInfo: ThreadInfoProfile = throwException()
+    override def isThread: Boolean = throwException()
+    override def isClassObject: Boolean = throwException()
+    override def toThreadGroupInfo: ThreadGroupInfoProfile = throwException()
     override def toJdiInstance: Value = throwException()
   }
 

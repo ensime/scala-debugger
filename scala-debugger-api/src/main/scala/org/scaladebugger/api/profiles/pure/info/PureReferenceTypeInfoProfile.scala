@@ -336,14 +336,14 @@ class PureReferenceTypeInfoProfile(
 
   protected def newClassObjectProfile(
     classObjectReference: ClassObjectReference
-  ): ClassObjectInfoProfile = infoProducer.newClassObjectProfile(
+  ): ClassObjectInfoProfile = infoProducer.newClassObjectInfoProfile(
     scalaVirtualMachine,
     classObjectReference
   )(referenceType = _referenceType)
 
   protected def newClassLoaderProfile(
     classLoaderReference: ClassLoaderReference
-  ): ClassLoaderInfoProfile = infoProducer.newClassLoaderProfile(
+  ): ClassLoaderInfoProfile = infoProducer.newClassLoaderInfoProfile(
     scalaVirtualMachine,
     classLoaderReference
   )(referenceType = _referenceType)

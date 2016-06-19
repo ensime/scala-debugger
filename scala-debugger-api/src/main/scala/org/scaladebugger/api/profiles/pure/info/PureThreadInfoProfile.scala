@@ -134,7 +134,7 @@ class PureThreadInfoProfile(
   protected def newThreadStatusProfile(): ThreadStatusInfoProfile =
     infoProducer.newThreadStatusInfoProfile(_threadReference)
 
-  protected def newThreadGroupProfile(
+  override protected def newThreadGroupProfile(
     threadGroupReference: ThreadGroupReference
   ): ThreadGroupInfoProfile = infoProducer.newThreadGroupInfoProfile(
     scalaVirtualMachine,

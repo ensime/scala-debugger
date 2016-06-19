@@ -111,7 +111,7 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     _threadReference = threadReference
   )
 
-  override def newClassObjectProfile(
+  override def newClassObjectInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     classObjectReference: ClassObjectReference
   )(
@@ -128,7 +128,7 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     _threadReference = threadReference
   )
 
-  override def newClassLoaderProfile(
+  override def newClassLoaderInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     classLoaderReference: ClassLoaderReference
   )(

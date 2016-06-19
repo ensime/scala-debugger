@@ -41,6 +41,17 @@ class PureValueInfoProfile(
     newTypeProfile(if (!isNull) _value.`type`() else null)
 
   /**
+   * Returns the value as a value local to this JVM.
+   *
+   * @return The value as a local instance
+   */
+  override def toLocalValue: Any = {
+    import org.scaladebugger.api.lowlevel.wrappers.Implicits._
+    if (!isNull) _value.value()
+    else null
+  }
+
+  /**
    * Returns the value as an array (profile).
    *
    * @return The array profile wrapping this value
@@ -52,14 +63,47 @@ class PureValueInfoProfile(
   }
 
   /**
-   * Returns the value as a value local to this JVM.
+   * Returns the value as a class loader (profile).
    *
-   * @return The value as a local instance
+   * @return The class loader profile wrapping this value
    */
-  override def toLocalValue: Any = {
-    import org.scaladebugger.api.lowlevel.wrappers.Implicits._
-    if (!isNull) _value.value()
-    else null
+  @throws[AssertionError]
+  override def toClassLoaderInfo: ClassLoaderInfoProfile = {
+    assert(isClassLoader, "Value must be a class loader!")
+    newClassLoaderProfile(_value.asInstanceOf[ClassLoaderReference])
+  }
+
+  /**
+   * Returns the value as a class object (profile).
+   *
+   * @return The class object profile wrapping this value
+   */
+  @throws[AssertionError]
+  override def toClassObjectInfo: ClassObjectInfoProfile = {
+    assert(isClassObject, "Value must be a class object!")
+    newClassObjectProfile(_value.asInstanceOf[ClassObjectReference])
+  }
+
+  /**
+   * Returns the value as a thread (profile).
+   *
+   * @return The thread profile wrapping this value
+   */
+  @throws[AssertionError]
+  override def toThreadInfo: ThreadInfoProfile = {
+    assert(isThread, "Value must be a thread!")
+    newThreadProfile(_value.asInstanceOf[ThreadReference])
+  }
+
+  /**
+   * Returns the value as a thread group (profile).
+   *
+   * @return The thread group profile wrapping this value
+   */
+  @throws[AssertionError]
+  override def toThreadGroupInfo: ThreadGroupInfoProfile = {
+    assert(isThreadGroup, "Value must be a thread group!")
+    newThreadGroupProfile(_value.asInstanceOf[ThreadGroupReference])
   }
 
   /**
@@ -115,6 +159,38 @@ class PureValueInfoProfile(
     !isNull && _value.isInstanceOf[ArrayReference]
 
   /**
+   * Returns whether or not this value represents a class loader.
+   *
+   * @return True if a class loader, otherwise false
+   */
+  override def isClassLoader: Boolean =
+    !isNull && _value.isInstanceOf[ClassLoaderReference]
+
+  /**
+   * Returns whether or not this value represents a class object.
+   *
+   * @return True if a class object, otherwise false
+   */
+  override def isClassObject: Boolean =
+    !isNull && _value.isInstanceOf[ClassObjectReference]
+
+  /**
+   * Returns whether or not this value represents a thread.
+   *
+   * @return True if a thread, otherwise false
+   */
+  override def isThread: Boolean =
+    !isNull && _value.isInstanceOf[ThreadReference]
+
+  /**
+   * Returns whether or not this value represents a thread group.
+   *
+   * @return True if a thread group, otherwise false
+   */
+  override def isThreadGroup: Boolean =
+    !isNull && _value.isInstanceOf[ThreadGroupReference]
+
+  /**
    * Returns whether or not this value represents an object.
    *
    * @return True if an object, otherwise false
@@ -158,6 +234,18 @@ class PureValueInfoProfile(
 
   protected def newArrayProfile(arrayReference: ArrayReference): ArrayInfoProfile =
     infoProducer.newArrayInfoProfile(scalaVirtualMachine, arrayReference)()
+
+  protected def newClassLoaderProfile(classLoaderReference: ClassLoaderReference): ClassLoaderInfoProfile =
+    infoProducer.newClassLoaderInfoProfile(scalaVirtualMachine, classLoaderReference)()
+
+  protected def newClassObjectProfile(classObjectReference: ClassObjectReference): ClassObjectInfoProfile =
+    infoProducer.newClassObjectInfoProfile(scalaVirtualMachine, classObjectReference)()
+
+  protected def newThreadGroupProfile(threadGroupReference: ThreadGroupReference): ThreadGroupInfoProfile =
+    infoProducer.newThreadGroupInfoProfile(scalaVirtualMachine, threadGroupReference)()
+
+  protected def newThreadProfile(threadReference: ThreadReference): ThreadInfoProfile =
+    infoProducer.newThreadInfoProfile(scalaVirtualMachine, threadReference)()
 
   protected def newTypeProfile(_type: Type): TypeInfoProfile =
     infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)

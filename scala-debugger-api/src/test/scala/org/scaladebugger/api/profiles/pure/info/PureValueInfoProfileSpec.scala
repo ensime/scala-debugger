@@ -15,6 +15,10 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
   private val mockNewPrimitiveProfile = mockFunction[PrimitiveValue, PrimitiveInfoProfile]
   private val mockNewObjectProfile = mockFunction[ObjectReference, ObjectInfoProfile]
   private val mockNewArrayProfile = mockFunction[ArrayReference, ArrayInfoProfile]
+  private val mockNewThreadProfile = mockFunction[ThreadReference, ThreadInfoProfile]
+  private val mockNewThreadGroupProfile = mockFunction[ThreadGroupReference, ThreadGroupInfoProfile]
+  private val mockNewClassObjectProfile = mockFunction[ClassObjectReference, ClassObjectInfoProfile]
+  private val mockNewClassLoaderProfile = mockFunction[ClassLoaderReference, ClassLoaderInfoProfile]
   private val mockNewStringProfile = mockFunction[StringReference, StringInfoProfile]
 
   describe("PureValueInfoProfile") {
@@ -123,6 +127,198 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
           .returning(expected).once()
 
         val actual = pureValueInfoProfile.toArrayInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#toClassLoaderInfo") {
+      it("should throw an assertion error if the value is null") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          null
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toClassLoaderInfo
+        }
+      }
+
+      it("should throw an assertion error if the value is not an class loader") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[Value]
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toClassLoaderInfo
+        }
+      }
+
+      it("should return an class loader reference wrapped in a profile") {
+        val expected = mock[ClassLoaderInfoProfile]
+        val mockClassLoaderReference = mock[ClassLoaderReference]
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mockClassLoaderReference
+        ) {
+          override protected def newClassLoaderProfile(
+            classLoaderReference: ClassLoaderReference
+          ): ClassLoaderInfoProfile = mockNewClassLoaderProfile(classLoaderReference)
+        }
+
+        mockNewClassLoaderProfile.expects(mockClassLoaderReference)
+          .returning(expected).once()
+
+        val actual = pureValueInfoProfile.toClassLoaderInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#toClassObjectInfo") {
+      it("should throw an assertion error if the value is null") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          null
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toClassObjectInfo
+        }
+      }
+
+      it("should throw an assertion error if the value is not an class object") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[Value]
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toClassObjectInfo
+        }
+      }
+
+      it("should return an class object reference wrapped in a profile") {
+        val expected = mock[ClassObjectInfoProfile]
+        val mockClassObjectReference = mock[ClassObjectReference]
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mockClassObjectReference
+        ) {
+          override protected def newClassObjectProfile(
+            classObjectReference: ClassObjectReference
+          ): ClassObjectInfoProfile = mockNewClassObjectProfile(classObjectReference)
+        }
+
+        mockNewClassObjectProfile.expects(mockClassObjectReference)
+          .returning(expected).once()
+
+        val actual = pureValueInfoProfile.toClassObjectInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#toThreadGroupInfo") {
+      it("should throw an assertion error if the value is null") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          null
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toThreadGroupInfo
+        }
+      }
+
+      it("should throw an assertion error if the value is not an thread group") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[Value]
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toThreadGroupInfo
+        }
+      }
+
+      it("should return an thread group reference wrapped in a profile") {
+        val expected = mock[ThreadGroupInfoProfile]
+        val mockThreadGroupReference = mock[ThreadGroupReference]
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mockThreadGroupReference
+        ) {
+          override protected def newThreadGroupProfile(
+            threadGroupReference: ThreadGroupReference
+          ): ThreadGroupInfoProfile = mockNewThreadGroupProfile(threadGroupReference)
+        }
+
+        mockNewThreadGroupProfile.expects(mockThreadGroupReference)
+          .returning(expected).once()
+
+        val actual = pureValueInfoProfile.toThreadGroupInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#toThreadInfo") {
+      it("should throw an assertion error if the value is null") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          null
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toThreadInfo
+        }
+      }
+
+      it("should throw an assertion error if the value is not an thread") {
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[Value]
+        )
+
+        intercept[AssertionError] {
+          pureValueInfoProfile.toThreadInfo
+        }
+      }
+
+      it("should return an thread reference wrapped in a profile") {
+        val expected = mock[ThreadInfoProfile]
+        val mockThreadReference = mock[ThreadReference]
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mockThreadReference
+        ) {
+          override protected def newThreadProfile(
+            threadReference: ThreadReference
+          ): ThreadInfoProfile = mockNewThreadProfile(threadReference)
+        }
+
+        mockNewThreadProfile.expects(mockThreadReference)
+          .returning(expected).once()
+
+        val actual = pureValueInfoProfile.toThreadInfo
 
         actual should be (expected)
       }
@@ -556,6 +752,182 @@ class PureValueInfoProfileSpec extends FunSpec with Matchers
         )
 
         val actual = pureValueInfoProfile.isArray
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isClassLoader") {
+      it("should return false if the value is null") {
+        val expected = false
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          null
+        )
+
+        val actual = pureValueInfoProfile.isClassLoader
+
+        actual should be (expected)
+      }
+
+      it("should return false if the value is not a class loader") {
+        val expected = false
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[Value]
+        )
+
+        val actual = pureValueInfoProfile.isClassLoader
+
+        actual should be (expected)
+      }
+
+      it("should return true if the value is a class loader") {
+        val expected = true
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[ClassLoaderReference]
+        )
+
+        val actual = pureValueInfoProfile.isClassLoader
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isClassObject") {
+      it("should return false if the value is null") {
+        val expected = false
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          null
+        )
+
+        val actual = pureValueInfoProfile.isClassObject
+
+        actual should be (expected)
+      }
+
+      it("should return false if the value is not a class object") {
+        val expected = false
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[Value]
+        )
+
+        val actual = pureValueInfoProfile.isClassObject
+
+        actual should be (expected)
+      }
+
+      it("should return true if the value is a class object") {
+        val expected = true
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[ClassObjectReference]
+        )
+
+        val actual = pureValueInfoProfile.isClassObject
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isThreadGroup") {
+      it("should return false if the value is null") {
+        val expected = false
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          null
+        )
+
+        val actual = pureValueInfoProfile.isThreadGroup
+
+        actual should be (expected)
+      }
+
+      it("should return false if the value is not a thread group") {
+        val expected = false
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[Value]
+        )
+
+        val actual = pureValueInfoProfile.isThreadGroup
+
+        actual should be (expected)
+      }
+
+      it("should return true if the value is a thread group") {
+        val expected = true
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[ThreadGroupReference]
+        )
+
+        val actual = pureValueInfoProfile.isThreadGroup
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isThread") {
+      it("should return false if the value is null") {
+        val expected = false
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          null
+        )
+
+        val actual = pureValueInfoProfile.isThread
+
+        actual should be (expected)
+      }
+
+      it("should return false if the value is not a thread") {
+        val expected = false
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[Value]
+        )
+
+        val actual = pureValueInfoProfile.isThread
+
+        actual should be (expected)
+      }
+
+      it("should return true if the value is a thread") {
+        val expected = true
+
+        val pureValueInfoProfile = new PureValueInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          mock[ThreadReference]
+        )
+
+        val actual = pureValueInfoProfile.isThread
 
         actual should be (expected)
       }

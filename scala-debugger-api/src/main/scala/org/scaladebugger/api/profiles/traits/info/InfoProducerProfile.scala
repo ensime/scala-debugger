@@ -91,7 +91,7 @@ trait InfoProducerProfile {
     offsetIndex: Int
   ): FrameInfoProfile
 
-  def newClassObjectProfile(
+  def newClassObjectInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     classObjectReference: ClassObjectReference
   )(
@@ -100,7 +100,7 @@ trait InfoProducerProfile {
     referenceType: ReferenceType = classObjectReference.referenceType()
   ): ClassObjectInfoProfile
 
-  def newClassLoaderProfile(
+  def newClassLoaderInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     classLoaderReference: ClassLoaderReference
   )(

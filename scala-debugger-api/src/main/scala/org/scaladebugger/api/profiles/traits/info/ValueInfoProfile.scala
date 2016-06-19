@@ -61,6 +61,34 @@ trait ValueInfoProfile extends CommonInfoProfile {
   def isArray: Boolean
 
   /**
+   * Returns whether or not this value represents a class loader.
+   *
+   * @return True if a class loader, otherwise false
+   */
+  def isClassLoader: Boolean
+
+  /**
+   * Returns whether or not this value represents a class object.
+   *
+   * @return True if a class object, otherwise false
+   */
+  def isClassObject: Boolean
+
+  /**
+   * Returns whether or not this value represents a thread group.
+   *
+   * @return True if a thread group, otherwise false
+   */
+  def isThreadGroup: Boolean
+
+  /**
+   * Returns whether or not this value represents a thread.
+   *
+   * @return True if a thread, otherwise false
+   */
+  def isThread: Boolean
+
+  /**
    * Returns whether or not this value represents an object.
    *
    * @return True if an object, otherwise false
@@ -103,6 +131,70 @@ trait ValueInfoProfile extends CommonInfoProfile {
    */
   @throws[AssertionError]
   def toPrimitiveInfo: PrimitiveInfoProfile
+
+  /**
+   * Returns the value as a class loader (profile).
+   *
+   * @return Success containing the class loader profile wrapping this value,
+   *         otherwise a failure
+   */
+  def tryToClassLoaderInfo: Try[ClassLoaderInfoProfile] = Try(toClassLoaderInfo)
+
+  /**
+   * Returns the value as a class loader (profile).
+   *
+   * @return The class loader profile wrapping this value
+   */
+  @throws[AssertionError]
+  def toClassLoaderInfo: ClassLoaderInfoProfile
+
+  /**
+   * Returns the value as a class object (profile).
+   *
+   * @return Success containing the class object profile wrapping this value,
+   *         otherwise a failure
+   */
+  def tryToClassObjectInfo: Try[ClassObjectInfoProfile] = Try(toClassObjectInfo)
+
+  /**
+   * Returns the value as a class object (profile).
+   *
+   * @return The class object profile wrapping this value
+   */
+  @throws[AssertionError]
+  def toClassObjectInfo: ClassObjectInfoProfile
+
+  /**
+   * Returns the value as a thread group (profile).
+   *
+   * @return Success containing the thread group profile wrapping this value,
+   *         otherwise a failure
+   */
+  def tryToThreadGroupInfo: Try[ThreadGroupInfoProfile] = Try(toThreadGroupInfo)
+
+  /**
+   * Returns the value as a thread group (profile).
+   *
+   * @return The thread group profile wrapping this value
+   */
+  @throws[AssertionError]
+  def toThreadGroupInfo: ThreadGroupInfoProfile
+
+  /**
+   * Returns the value as a thread (profile).
+   *
+   * @return Success containing the thread profile wrapping this value,
+   *         otherwise a failure
+   */
+  def tryToThreadInfo: Try[ThreadInfoProfile] = Try(toThreadInfo)
+
+  /**
+   * Returns the value as a thread (profile).
+   *
+   * @return The thread profile wrapping this value
+   */
+  @throws[AssertionError]
+  def toThreadInfo: ThreadInfoProfile
 
   /**
    * Returns the value as an object (profile).
@@ -164,6 +256,10 @@ trait ValueInfoProfile extends CommonInfoProfile {
       else if (this.isVoid) "void"
       else if (this.isArray) this.toArrayInfo.toPrettyString
       else if (this.isString) this.toStringInfo.toPrettyString
+      else if (this.isClassLoader) this.toClassLoaderInfo.toPrettyString
+      else if (this.isClassObject) this.toClassObjectInfo.toPrettyString
+      else if (this.isThreadGroup) this.toThreadGroupInfo.toPrettyString
+      else if (this.isThread) this.toThreadInfo.toPrettyString
       else if (this.isObject) this.toObjectInfo.toPrettyString
       else if (this.isPrimitive) this.toPrimitiveInfo.toPrettyString
       else "???"

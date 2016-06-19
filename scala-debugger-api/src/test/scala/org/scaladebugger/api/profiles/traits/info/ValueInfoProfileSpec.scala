@@ -21,6 +21,10 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = false
           override def isVoid: Boolean = false
           override def isNull: Boolean = true
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
         }
 
         val actual = valueInfoProfile.toPrettyString
@@ -38,6 +42,10 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = false
           override def isVoid: Boolean = true
           override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
         }
 
         val actual = valueInfoProfile.toPrettyString
@@ -59,6 +67,10 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = false
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
           override def toStringInfo: StringInfoProfile = mockStringInfoProfile
         }
 
@@ -81,7 +93,118 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = true
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
           override def toArrayInfo: ArrayInfoProfile = mockArrayInfoProfile
+        }
+
+        val actual = valueInfoProfile.toPrettyString
+
+        actual should be(expected)
+      }
+
+      it("should display the pretty string of the thread instance if a thread") {
+        val expected = "THREAD"
+
+        val mockThreadInfoProfile = mock[ThreadInfoProfile]
+        (mockThreadInfoProfile.toPrettyString _).expects()
+          .returning(expected).once()
+
+        val valueInfoProfile = new TestValueInfoProfile {
+          override def isPrimitive: Boolean = false
+          override def isObject: Boolean = true
+          override def isString: Boolean = false
+          override def isArray: Boolean = false
+          override def isVoid: Boolean = false
+          override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = true
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
+          override def toThreadInfo: ThreadInfoProfile = mockThreadInfoProfile
+        }
+
+        val actual = valueInfoProfile.toPrettyString
+
+        actual should be(expected)
+      }
+
+      it("should display the pretty string of the thread group instance if a thread group") {
+        val expected = "THREAD GROUP"
+
+        val mockThreadGroupInfoProfile = mock[ThreadGroupInfoProfile]
+        (mockThreadGroupInfoProfile.toPrettyString _).expects()
+          .returning(expected).once()
+
+        val valueInfoProfile = new TestValueInfoProfile {
+          override def isPrimitive: Boolean = false
+          override def isObject: Boolean = true
+          override def isString: Boolean = false
+          override def isArray: Boolean = false
+          override def isVoid: Boolean = false
+          override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = true
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
+          override def toThreadGroupInfo: ThreadGroupInfoProfile =
+            mockThreadGroupInfoProfile
+        }
+
+        val actual = valueInfoProfile.toPrettyString
+
+        actual should be(expected)
+      }
+
+      it("should display the pretty string of the class loader instance if a class loader") {
+        val expected = "CLASS LOADER"
+
+        val mockClassLoaderInfoProfile = mock[ClassLoaderInfoProfile]
+        (mockClassLoaderInfoProfile.toPrettyString _).expects()
+          .returning(expected).once()
+
+        val valueInfoProfile = new TestValueInfoProfile {
+          override def isPrimitive: Boolean = false
+          override def isObject: Boolean = true
+          override def isString: Boolean = false
+          override def isArray: Boolean = false
+          override def isVoid: Boolean = false
+          override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = true
+          override def isClassObject: Boolean = false
+          override def toClassLoaderInfo: ClassLoaderInfoProfile =
+            mockClassLoaderInfoProfile
+        }
+
+        val actual = valueInfoProfile.toPrettyString
+
+        actual should be(expected)
+      }
+
+      it("should display the pretty string of the class object instance if a class object") {
+        val expected = "CLASS OBJECT"
+
+        val mockClassObjectInfoProfile = mock[ClassObjectInfoProfile]
+        (mockClassObjectInfoProfile.toPrettyString _).expects()
+          .returning(expected).once()
+
+        val valueInfoProfile = new TestValueInfoProfile {
+          override def isPrimitive: Boolean = false
+          override def isObject: Boolean = true
+          override def isString: Boolean = false
+          override def isArray: Boolean = false
+          override def isVoid: Boolean = false
+          override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = true
+          override def toClassObjectInfo: ClassObjectInfoProfile =
+            mockClassObjectInfoProfile
         }
 
         val actual = valueInfoProfile.toPrettyString
@@ -103,6 +226,10 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = false
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
           override def toObjectInfo: ObjectInfoProfile = mockObjectInfoProfile
         }
 
@@ -112,7 +239,7 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
       }
 
       it("should display the pretty string of the primitive instance if a primitive") {
-        val expected = "ARRAY"
+        val expected = "PRIMITIVE"
 
         val mockPrimitiveInfoProfile = mock[PrimitiveInfoProfile]
         (mockPrimitiveInfoProfile.toPrettyString _).expects()
@@ -125,6 +252,10 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = false
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
           override def toPrimitiveInfo: PrimitiveInfoProfile = mockPrimitiveInfoProfile
         }
 
@@ -143,6 +274,10 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = false
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
         }
 
         val actual = valueInfoProfile.toPrettyString
@@ -161,6 +296,10 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
           override def isArray: Boolean = false
           override def isVoid: Boolean = false
           override def isNull: Boolean = false
+          override def isThreadGroup: Boolean = false
+          override def isThread: Boolean = false
+          override def isClassLoader: Boolean = false
+          override def isClassObject: Boolean = false
         }
 
         val actual = valueInfoProfile.toPrettyString
@@ -236,6 +375,65 @@ class ValueInfoProfileSpec extends FunSpec with Matchers
         val r = mock[ArrayInfoProfile]
         mockUnsafeMethod.expects().returning(r).once()
         valueInfoProfile.tryToArrayInfo.get should be (r)
+      }
+    }
+
+    describe("#tryToThreadInfo") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[ThreadInfoProfile]
+
+        val valueInfoProfile = new TestValueInfoProfile {
+          override def toThreadInfo: ThreadInfoProfile = mockUnsafeMethod()
+        }
+
+        val r = mock[ThreadInfoProfile]
+        mockUnsafeMethod.expects().returning(r).once()
+        valueInfoProfile.tryToThreadInfo.get should be (r)
+      }
+    }
+
+    describe("#tryToThreadGroupInfo") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[ThreadGroupInfoProfile]
+
+        val valueInfoProfile = new TestValueInfoProfile {
+          override def toThreadGroupInfo: ThreadGroupInfoProfile =
+            mockUnsafeMethod()
+        }
+
+        val r = mock[ThreadGroupInfoProfile]
+        mockUnsafeMethod.expects().returning(r).once()
+        valueInfoProfile.tryToThreadGroupInfo.get should be (r)
+      }
+    }
+
+    describe("#tryToClassLoaderInfo") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[ClassLoaderInfoProfile]
+
+        val valueInfoProfile = new TestValueInfoProfile {
+          override def toClassLoaderInfo: ClassLoaderInfoProfile =
+            mockUnsafeMethod()
+        }
+
+        val r = mock[ClassLoaderInfoProfile]
+        mockUnsafeMethod.expects().returning(r).once()
+        valueInfoProfile.tryToClassLoaderInfo.get should be (r)
+      }
+    }
+
+    describe("#tryToClassObjectInfo") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[ClassObjectInfoProfile]
+
+        val valueInfoProfile = new TestValueInfoProfile {
+          override def toClassObjectInfo: ClassObjectInfoProfile =
+            mockUnsafeMethod()
+        }
+
+        val r = mock[ClassObjectInfoProfile]
+        mockUnsafeMethod.expects().returning(r).once()
+        valueInfoProfile.tryToClassObjectInfo.get should be (r)
       }
     }
   }

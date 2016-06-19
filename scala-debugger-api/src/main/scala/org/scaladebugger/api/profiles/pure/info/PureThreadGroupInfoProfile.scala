@@ -86,7 +86,7 @@ class PureThreadGroupInfoProfile(
     _threadGroupReference.threads().asScala.map(newThreadProfile)
   }
 
-  protected def newThreadGroupProfile(
+  override protected def newThreadGroupProfile(
     threadGroupReference: ThreadGroupReference
   ): ThreadGroupInfoProfile = infoProducer.newThreadGroupInfoProfile(
     scalaVirtualMachine,
@@ -97,7 +97,7 @@ class PureThreadGroupInfoProfile(
     referenceType = _referenceType
   )
 
-  protected def newThreadProfile(
+  override protected def newThreadProfile(
     threadReference: ThreadReference
   ): ThreadInfoProfile = infoProducer.newThreadInfoProfile(
     scalaVirtualMachine,
