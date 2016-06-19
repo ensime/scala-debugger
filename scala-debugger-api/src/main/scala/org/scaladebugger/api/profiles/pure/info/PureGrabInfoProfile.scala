@@ -54,17 +54,6 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   ): ThreadInfoProfile = newThreadProfile(threadReference)
 
   /**
-   * Retrieves a thread profile for the thread reference whose unique id
-   * matches the provided id.
-   *
-   * @param threadId The id of the thread
-   * @return Some profile of the matching thread, or None
-   */
-  override def threadOption(threadId: Long): Option[ThreadInfoProfile] = {
-    threads.find(_.uniqueId == threadId)
-  }
-
-  /**
    * Retrieves all thread groups contained in the remote JVM.
    *
    * @return The collection of thread group info profiles
@@ -87,59 +76,6 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   ): ThreadGroupInfoProfile = newThreadGroupProfile(threadGroupReference)
 
   /**
-   * Retrieves a thread group profile for the thread group reference whose
-   * unique id matches the provided id.
-   *
-   * @param threadGroupId The id of the thread group
-   * @return Some profile of the matching thread group, or None
-   */
-  override def threadGroupOption(
-    threadGroupId: Long
-  ): Option[ThreadGroupInfoProfile] = {
-    findThreadGroupByPredicate(threadGroups, _.uniqueId == threadGroupId)
-  }
-
-  /**
-   * Retrieves a thread group profile for the thread group reference whose
-   * name matches the provided name.
-   *
-   * @param name The name of the thread group
-   * @return Some profile of the matching thread group, or None
-   */
-  override def threadGroupOption(
-    name: String
-  ): Option[ThreadGroupInfoProfile] = {
-    findThreadGroupByPredicate(threadGroups, _.name == name)
-  }
-
-  /**
-   * Recursively searches a collection of thread groups (and their subgroups)
-   * for a thread group that satisfies the predicate.
-   *
-   * @param threadGroups The initial collection of thread groups to search
-   * @param predicate The predicate used to find a matching thread group
-   * @return Some thread group if found, otherwise None
-   */
-  @tailrec private def findThreadGroupByPredicate(
-    threadGroups: Seq[ThreadGroupInfoProfile],
-    predicate: ThreadGroupInfoProfile => Boolean
-  ): Option[ThreadGroupInfoProfile] = {
-    if (threadGroups.nonEmpty) {
-      val tg = threadGroups.find(predicate)
-      if (tg.nonEmpty) {
-        tg
-      } else {
-        findThreadGroupByPredicate(
-          threadGroups.flatMap(_.threadGroups),
-          predicate
-        )
-      }
-    } else {
-      None
-    }
-  }
-
-  /**
    * Retrieves all classes contained in the remote JVM in the form of
    * reference type information.
    *
@@ -147,16 +83,6 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    */
   override def classes: Seq[ReferenceTypeInfoProfile] = {
     classManager.allClasses.map(newReferenceTypeProfile)
-  }
-
-  /**
-   * Retrieves reference information for the class with the specified name.
-   *
-   * @return Some reference type info profile for the class if found,
-   *         otherwise None
-   */
-  override def classOption(name: String): Option[ReferenceTypeInfoProfile] = {
-    classes.find(_.name == name)
   }
 
   /**

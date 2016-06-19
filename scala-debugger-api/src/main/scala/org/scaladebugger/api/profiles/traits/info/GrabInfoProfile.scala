@@ -136,7 +136,9 @@ trait GrabInfoProfile {
    * @param threadId The id of the thread
    * @return Some profile of the matching thread, or None
    */
-  def threadOption(threadId: Long): Option[ThreadInfoProfile]
+  def threadOption(threadId: Long): Option[ThreadInfoProfile] = {
+    threads.find(_.uniqueId == threadId)
+  }
 
   /**
    * Retrieves a thread group profile for the thread group reference whose
@@ -337,11 +339,12 @@ trait GrabInfoProfile {
   /**
    * Retrieves reference information for the class with the specified name.
    *
-   * @param name The fully-qualified name of the class
    * @return Some reference type info profile for the class if found,
    *         otherwise None
    */
-  def classOption(name: String): Option[ReferenceTypeInfoProfile]
+  def classOption(name: String): Option[ReferenceTypeInfoProfile] = {
+    classes.find(_.name == name)
+  }
 
   /**
    * Retrieves a field profile for the given JDI field.

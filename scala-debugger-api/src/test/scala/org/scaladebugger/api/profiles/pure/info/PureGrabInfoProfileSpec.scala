@@ -135,45 +135,6 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#threadOption(threadId)") {
-      it("should return Some(profile) if a thread with matching unique id is found") {
-        val expected = Some(mock[ThreadInfoProfile])
-        val mockThreadReference = mock[ThreadReference]
-        val threadId = 999L
-
-        import scala.collection.JavaConverters._
-        (mockVirtualMachine.allThreads _).expects()
-          .returning(Seq(mockThreadReference).asJava).once()
-
-        mockNewThreadProfile.expects(mockThreadReference)
-          .returning(expected.get).once()
-
-        (expected.get.uniqueId _).expects().returning(threadId).once()
-
-        val actual = pureGrabInfoProfile.threadOption(threadId)
-
-        actual should be (expected)
-      }
-
-      it("should return None if no thread with a matching unique id is found") {
-        val expected = None
-        val mockThreadInfo = mock[ThreadInfoProfile]
-        val mockThreadReference = mock[ThreadReference]
-
-        import scala.collection.JavaConverters._
-        (mockVirtualMachine.allThreads _).expects()
-          .returning(Seq(mockThreadReference).asJava).once()
-
-        mockNewThreadProfile.expects(mockThreadReference)
-          .returning(mockThreadInfo).once()
-
-        (mockThreadInfo.uniqueId _).expects().returning(998L).once()
-        val actual = pureGrabInfoProfile.threadOption(999L)
-
-        actual should be (expected)
-      }
-    }
-
     describe("#threadGroups") {
       it("should return a collection of profiles wrapping class reference types") {
         val expected = Seq(mock[ThreadGroupInfoProfile])
@@ -220,45 +181,6 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
         }
 
         val actual = pureGrabInfoProfile.classes
-
-        actual should be (expected)
-      }
-    }
-
-    describe("#classOption(name)") {
-      it("should return Some(profile) if a class with matching name is found") {
-        val expected = Some(mock[ReferenceTypeInfoProfile])
-        val referenceTypes = Seq(mock[ReferenceType])
-        val name = "some.class.name"
-
-        (mockClassManager.allClasses _).expects()
-          .returning(referenceTypes).once()
-
-        mockNewReferenceTypeProfile.expects(referenceTypes.head)
-          .returning(expected.get).once()
-
-        (expected.get.name _).expects().returning(name).once()
-
-        val actual = pureGrabInfoProfile.classOption(name)
-
-        actual should be (expected)
-      }
-
-      it("should return None if no class with a matching name is found") {
-        val expected = None
-        val referenceTypes = Seq(mock[ReferenceType])
-        val name = "some.class.name"
-
-        (mockClassManager.allClasses _).expects()
-          .returning(referenceTypes).once()
-
-        val mockReferenceTypeInfo = mock[ReferenceTypeInfoProfile]
-        mockNewReferenceTypeProfile.expects(referenceTypes.head)
-          .returning(mockReferenceTypeInfo).once()
-
-        (mockReferenceTypeInfo.name _).expects().returning(name + 1).once()
-
-        val actual = pureGrabInfoProfile.classOption(name)
 
         actual should be (expected)
       }
