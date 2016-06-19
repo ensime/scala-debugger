@@ -103,6 +103,102 @@ trait GrabInfoProfile {
   def thread(threadReference: ThreadReference): ThreadInfoProfile
 
   /**
+   * Retrieves a thread profile for the thread reference whose name matches
+   * the provided name.
+   *
+   * @param name The name of the thread
+   * @return Success containing the thread profile if found, otherwise
+   *         a failure
+   */
+  def tryThread(name: String): Try[ThreadInfoProfile] =
+    Try(thread(name))
+
+  /**
+   * Retrieves a thread profile for the thread reference whose name matches
+   * the provided name.
+   *
+   * @param name The name of the thread
+   * @return The profile of the matching thread, or throws an exception
+   */
+  def thread(name: String): ThreadInfoProfile = {
+    val t = threadOption(name)
+
+    if (t.isEmpty)
+      throw new NoSuchElementException(s"No thread named $name found!")
+
+    t.get
+  }
+
+  /**
+   * Retrieves a thread profile for the thread reference whose name matches
+   * the provided name.
+   *
+   * @param name The name of the thread
+   * @return Some profile of the matching thread, or None
+   */
+  def threadOption(name: String): Option[ThreadInfoProfile] = {
+    threads.find(_.name == name)
+  }
+
+  /**
+   * Retrieves a thread profile for the thread reference whose name matches
+   * the provided name and whose thread group has the specified name.
+   *
+   * @param threadName The name of the thread
+   * @param threadGroupName The name of the thread group
+   * @return Success containing the thread profile if found, otherwise
+   *         a failure
+   */
+  def tryThread(
+    threadName: String,
+    threadGroupName: String
+  ): Try[ThreadInfoProfile] = Try(thread(
+    threadGroupName = threadGroupName,
+    threadName = threadName
+  ))
+
+  /**
+   * Retrieves a thread profile for the thread reference whose name matches
+   * the provided name and whose thread group has the specified name.
+   *
+   * @param threadName The name of the thread
+   * @param threadGroupName The name of the thread group
+   * @return The profile of the matching thread, or throws an exception
+   */
+  def thread(
+    threadName: String,
+    threadGroupName: String
+  ): ThreadInfoProfile = {
+    val t = threadOption(
+      threadGroupName = threadGroupName,
+      threadName = threadName
+    )
+
+    if (t.isEmpty) throw new NoSuchElementException(
+      s"No thread named $threadName with thread group $threadGroupName found!"
+    )
+
+    t.get
+  }
+
+  /**
+   * Retrieves a thread profile for the thread reference whose name matches
+   * the provided name and whose thread group has the specified name.
+   *
+   * @param threadName The name of the thread
+   * @param threadGroupName The name of the thread group
+   * @return Some profile of the matching thread, or None
+   */
+  def threadOption(
+    threadName: String,
+    threadGroupName: String
+  ): Option[ThreadInfoProfile] = {
+    threads.find(t =>
+      t.name == threadName && t.threadGroup.name == threadGroupName
+    )
+  }
+
+  /**
    * Retrieves a thread profile for the thread reference whose unique id
    * matches the provided id.
    *
