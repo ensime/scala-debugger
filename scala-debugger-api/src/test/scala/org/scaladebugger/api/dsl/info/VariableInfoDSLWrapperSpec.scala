@@ -50,6 +50,10 @@ class VariableInfoDSLWrapperSpec extends FunSpec with Matchers
         (mockVariableInfoProfile.toValueInfo _).expects()
           .returning(mockObjectInfoProfile).once()
 
+        (mockObjectInfoProfile.isObject _).expects().returning(true).once()
+        (mockObjectInfoProfile.toObjectInfo _).expects()
+          .returning(mockObjectInfoProfile).once()
+
         implicit val objectCache: ObjectCache = testObjectCache
         mockVariableInfoProfile.cache()
 
@@ -68,6 +72,10 @@ class VariableInfoDSLWrapperSpec extends FunSpec with Matchers
         (mockVariableInfoProfile.toValueInfo _).expects()
           .returning(mockObjectInfoProfile).once()
 
+        (mockObjectInfoProfile.isObject _).expects().returning(true).once()
+        (mockObjectInfoProfile.toObjectInfo _).expects()
+          .returning(mockObjectInfoProfile).once()
+
         mockVariableInfoProfile.cache()
 
         testObjectCache.has(TestUniqueId) should be (true)
@@ -82,6 +90,10 @@ class VariableInfoDSLWrapperSpec extends FunSpec with Matchers
           .returning(TestUniqueId).twice()
 
         (mockVariableInfoProfile.toValueInfo _).expects()
+          .returning(mockObjectInfoProfile).once()
+
+        (mockObjectInfoProfile.isObject _).expects().returning(true).once()
+        (mockObjectInfoProfile.toObjectInfo _).expects()
           .returning(mockObjectInfoProfile).once()
 
         implicit val objectCache: ObjectCache = testObjectCache
@@ -102,6 +114,10 @@ class VariableInfoDSLWrapperSpec extends FunSpec with Matchers
           .returning(TestUniqueId).twice()
 
         (mockVariableInfoProfile.toValueInfo _).expects()
+          .returning(mockObjectInfoProfile).once()
+
+        (mockObjectInfoProfile.isObject _).expects().returning(true).once()
+        (mockObjectInfoProfile.toObjectInfo _).expects()
           .returning(mockObjectInfoProfile).once()
 
         testObjectCache.save(mockObjectInfoProfile)

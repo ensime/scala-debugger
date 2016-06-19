@@ -47,6 +47,10 @@ class ValueInfoDSLWrapperSpec extends FunSpec with Matchers
         (mockObjectInfoProfile.uniqueId _).expects()
           .returning(TestUniqueId).once()
 
+        (mockObjectInfoProfile.isObject _).expects().returning(true).once()
+        (mockObjectInfoProfile.toObjectInfo _).expects()
+          .returning(mockObjectInfoProfile).once()
+
         implicit val objectCache: ObjectCache = testObjectCache
         mockObjectInfoProfile.cache()
 
@@ -58,6 +62,10 @@ class ValueInfoDSLWrapperSpec extends FunSpec with Matchers
 
         (mockObjectInfoProfile.scalaVirtualMachine _).expects()
           .returning(testScalaVirtualMachine).once()
+
+        (mockObjectInfoProfile.isObject _).expects().returning(true).once()
+        (mockObjectInfoProfile.toObjectInfo _).expects()
+          .returning(mockObjectInfoProfile).once()
 
         (mockObjectInfoProfile.uniqueId _).expects()
           .returning(TestUniqueId).once()
@@ -73,6 +81,8 @@ class ValueInfoDSLWrapperSpec extends FunSpec with Matchers
         (mockValueInfoProfile.scalaVirtualMachine _).expects()
           .returning(testScalaVirtualMachine).once()
 
+        (mockValueInfoProfile.isObject _).expects().returning(false).once()
+
         mockValueInfoProfile.cache()
 
         testObjectCache.has(TestUniqueId) should be (false)
@@ -85,6 +95,10 @@ class ValueInfoDSLWrapperSpec extends FunSpec with Matchers
 
         (mockObjectInfoProfile.uniqueId _).expects()
           .returning(TestUniqueId).twice()
+
+        (mockObjectInfoProfile.isObject _).expects().returning(true).once()
+        (mockObjectInfoProfile.toObjectInfo _).expects()
+          .returning(mockObjectInfoProfile).once()
 
         implicit val objectCache: ObjectCache = testObjectCache
         objectCache.save(mockObjectInfoProfile)
@@ -100,6 +114,10 @@ class ValueInfoDSLWrapperSpec extends FunSpec with Matchers
         (mockObjectInfoProfile.scalaVirtualMachine _).expects()
           .returning(testScalaVirtualMachine).once()
 
+        (mockObjectInfoProfile.isObject _).expects().returning(true).once()
+        (mockObjectInfoProfile.toObjectInfo _).expects()
+          .returning(mockObjectInfoProfile).once()
+
         (mockObjectInfoProfile.uniqueId _).expects()
           .returning(TestUniqueId).twice()
 
@@ -114,6 +132,8 @@ class ValueInfoDSLWrapperSpec extends FunSpec with Matchers
 
         (mockValueInfoProfile.scalaVirtualMachine _).expects()
           .returning(testScalaVirtualMachine).once()
+
+        (mockValueInfoProfile.isObject _).expects().returning(false).once()
 
         mockValueInfoProfile.uncache()
 
