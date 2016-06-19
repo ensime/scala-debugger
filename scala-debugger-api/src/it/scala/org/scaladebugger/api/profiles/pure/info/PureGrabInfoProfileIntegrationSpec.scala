@@ -62,6 +62,73 @@ class PureGrabInfoProfileIntegrationSpec extends FunSpec with Matchers
       }
     }
 
+    it("should be able to find a thread by its name") {
+      val testClass = "org.scaladebugger.test.info.Threads"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      val s = DummyScalaVirtualMachine.newInstance()
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 24)
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val threadWithoutGroup = s.withProfile(PureDebugProfile.Name)
+            .thread("thread-without-group")
+          threadWithoutGroup.name should be ("thread-without-group")
+
+          // There is no guarantee that the thread is always from a specific
+          // group (test-thread exists in group 1 and 2)
+          val testThread = s.withProfile(PureDebugProfile.Name)
+            .thread("test-thread")
+          testThread.name should be ("test-thread")
+
+          val uniqueTestThread = s.withProfile(PureDebugProfile.Name)
+            .thread("unique-test-name")
+          uniqueTestThread.name should be ("unique-test-name")
+        })
+      }
+    }
+
+    it("should be able to find a thread by its name and thread group") {
+      val testClass = "org.scaladebugger.test.info.Threads"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      val s = DummyScalaVirtualMachine.newInstance()
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 24)
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val threadWithoutGroup = s.withProfile(PureDebugProfile.Name)
+            .thread("thread-without-group", "main")
+          threadWithoutGroup.name should be ("thread-without-group")
+
+          val testThreadFromGroup1 = s.withProfile(PureDebugProfile.Name)
+            .thread("test-thread", "test1")
+          testThreadFromGroup1.name should be ("test-thread")
+
+          val testThreadFromGroup2 = s.withProfile(PureDebugProfile.Name)
+            .thread("test-thread", "test2")
+          testThreadFromGroup2.name should be ("test-thread")
+
+          testThreadFromGroup1.uniqueId should
+            not be (testThreadFromGroup2.uniqueId)
+
+          val uniqueTestThread = s.withProfile(PureDebugProfile.Name)
+            .thread("unique-test-name", "test1")
+          uniqueTestThread.name should be ("unique-test-name")
+
+          // A matching thread name but incorrect thread group should be None
+          s.withProfile(PureDebugProfile.Name)
+            .threadOption("unique-test-name", "test2") should be (None)
+
+          // A matching thread group name but incorrect thread name should be None
+          s.withProfile(PureDebugProfile.Name)
+            .threadOption("unique-test-name2", "test1") should be (None)
+        })
+      }
+    }
+
     it("should be able to list top-level thread groups") {
       val testClass = "org.scaladebugger.test.misc.LaunchingMain"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
