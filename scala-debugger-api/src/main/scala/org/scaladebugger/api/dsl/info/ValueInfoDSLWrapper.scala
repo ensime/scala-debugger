@@ -22,7 +22,7 @@ class ValueInfoDSLWrapper[T <: ValueInfoProfile] private[dsl] (
   ): T = {
     import org.scaladebugger.api.dsl.Implicits.ObjectInfoDSL
     valueInfo match {
-      case obj: ObjectInfoProfile => obj.cache()
+      case obj if obj.isObject => obj.toObjectInfo.cache()
       case _                      =>
     }
     valueInfo
@@ -39,7 +39,7 @@ class ValueInfoDSLWrapper[T <: ValueInfoProfile] private[dsl] (
   ): T = {
     import org.scaladebugger.api.dsl.Implicits.ObjectInfoDSL
     valueInfo match {
-      case obj: ObjectInfoProfile => obj.uncache()
+      case obj if obj.isObject => obj.toObjectInfo.uncache()
       case _                      =>
     }
     valueInfo
