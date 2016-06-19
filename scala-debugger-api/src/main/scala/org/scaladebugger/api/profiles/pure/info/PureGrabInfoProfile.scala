@@ -96,27 +96,43 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   override def threadGroupOption(
     threadGroupId: Long
   ): Option[ThreadGroupInfoProfile] = {
-    findThreadGroupById(threadGroups, threadGroupId)
+    findThreadGroupByPredicate(threadGroups, _.uniqueId == threadGroupId)
+  }
+
+  /**
+   * Retrieves a thread group profile for the thread group reference whose
+   * name matches the provided name.
+   *
+   * @param name The name of the thread group
+   * @return Some profile of the matching thread group, or None
+   */
+  override def threadGroupOption(
+    name: String
+  ): Option[ThreadGroupInfoProfile] = {
+    findThreadGroupByPredicate(threadGroups, _.name == name)
   }
 
   /**
    * Recursively searches a collection of thread groups (and their subgroups)
-   * for a thread group with the matching id.
+   * for a thread group that satisfies the predicate.
    *
    * @param threadGroups The initial collection of thread groups to search
-   * @param threadGroupId The id of the thread group to find
+   * @param predicate The predicate used to find a matching thread group
    * @return Some thread group if found, otherwise None
    */
-  @tailrec private def findThreadGroupById(
+  @tailrec private def findThreadGroupByPredicate(
     threadGroups: Seq[ThreadGroupInfoProfile],
-    threadGroupId: Long
+    predicate: ThreadGroupInfoProfile => Boolean
   ): Option[ThreadGroupInfoProfile] = {
     if (threadGroups.nonEmpty) {
-      val tg = threadGroups.find(_.uniqueId == threadGroupId)
+      val tg = threadGroups.find(predicate)
       if (tg.nonEmpty) {
         tg
       } else {
-        findThreadGroupById(threadGroups.flatMap(_.threadGroups), threadGroupId)
+        findThreadGroupByPredicate(
+          threadGroups.flatMap(_.threadGroups),
+          predicate
+        )
       }
     } else {
       None

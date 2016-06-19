@@ -131,7 +131,7 @@ class SwappableGrabInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#threadGroupOption") {
+    describe("#threadGroupOption(id)") {
       it("should invoke the method on the underlying profile") {
         val expected = mock[ThreadGroupInfoProfile]
 
@@ -157,6 +157,27 @@ class SwappableGrabInfoProfileSpec extends FunSpec with Matchers
         intercept[AssertionError] {
           (mockProfileManager.retrieve _).expects(*).returning(None).once()
           swappableDebugProfile.threadGroup(mock[ThreadGroupReference])
+        }
+      }
+    }
+
+    describe("#threadGroupOption(name)") {
+      it("should invoke the method on the underlying profile") {
+        val expected = mock[ThreadGroupInfoProfile]
+
+        (mockProfileManager.retrieve _).expects(*)
+          .returning(Some(mockDebugProfile)).once()
+
+        (mockDebugProfile.threadGroupOption(_: String)).expects(*)
+          .returning(Some(expected)).once()
+
+        swappableDebugProfile.threadGroupOption("name").get should be(expected)
+      }
+
+      it("should throw an exception if there is no underlying profile") {
+        intercept[AssertionError] {
+          (mockProfileManager.retrieve _).expects(*).returning(None).once()
+          swappableDebugProfile.threadGroupOption("name")
         }
       }
     }

@@ -4,6 +4,7 @@ package org.scaladebugger.api.profiles.traits.info
 import com.sun.jdi._
 import java.util.NoSuchElementException
 
+import scala.annotation.tailrec
 import scala.util.Try
 
 /**
@@ -189,6 +190,7 @@ trait GrabInfoProfile {
     tg.get
   }
 
+
   /**
    * Retrieves a thread group profile for the thread group reference whose
    * unique id matches the provided id.
@@ -196,7 +198,78 @@ trait GrabInfoProfile {
    * @param threadGroupId The id of the thread group
    * @return Some profile of the matching thread group, or None
    */
-  def threadGroupOption(threadGroupId: Long): Option[ThreadGroupInfoProfile]
+  def threadGroupOption(
+    threadGroupId: Long
+  ): Option[ThreadGroupInfoProfile] = {
+    findThreadGroupByPredicate(threadGroups, _.uniqueId == threadGroupId)
+  }
+
+  /**
+   * Retrieves a thread group profile for the thread group reference whose
+   * name matches the provided name.
+   *
+   * @param name The name of the thread group
+   * @return Success containing the thread group profile if found, otherwise
+   *         a failure
+   */
+  def tryThreadGroup(name: String): Try[ThreadGroupInfoProfile] =
+    Try(threadGroup(name))
+
+  /**
+   * Retrieves a thread group profile for the thread group reference whose
+   * name matches the provided name.
+   *
+   * @param name The name of the thread group
+   * @return The profile of the matching thread group, or throws an exception
+   */
+  def threadGroup(name: String): ThreadGroupInfoProfile = {
+    val tg = threadGroupOption(name)
+
+    if (tg.isEmpty) throw new NoSuchElementException(
+      s"No thread group named $name found!")
+
+    tg.get
+  }
+
+  /**
+   * Retrieves a thread group profile for the thread group reference whose
+   * name matches the provided name.
+   *
+   * @param name The name of the thread group
+   * @return Some profile of the matching thread group, or None
+   */
+  def threadGroupOption(
+    name: String
+  ): Option[ThreadGroupInfoProfile] = {
+    findThreadGroupByPredicate(threadGroups, _.name == name)
+  }
+
+  /**
+   * Recursively searches a collection of thread groups (and their subgroups)
+   * for a thread group that satisfies the predicate.
+   *
+   * @param threadGroups The initial collection of thread groups to search
+   * @param predicate The predicate used to find a matching thread group
+   * @return Some thread group if found, otherwise None
+   */
+  @tailrec private def findThreadGroupByPredicate(
+    threadGroups: Seq[ThreadGroupInfoProfile],
+    predicate: ThreadGroupInfoProfile => Boolean
+  ): Option[ThreadGroupInfoProfile] = {
+    if (threadGroups.nonEmpty) {
+      val tg = threadGroups.find(predicate)
+      if (tg.nonEmpty) {
+        tg
+      } else {
+        findThreadGroupByPredicate(
+          threadGroups.flatMap(_.threadGroups),
+          predicate
+        )
+      }
+    } else {
+      None
+    }
+  }
 
   /**
    * Retrieves all thread groups contained in the remote JVM.

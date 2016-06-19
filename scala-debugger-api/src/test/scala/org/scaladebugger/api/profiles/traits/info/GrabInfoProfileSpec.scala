@@ -192,6 +192,153 @@ class GrabInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
+    describe("#tryThreadGroup(name)") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[String, ThreadGroupInfoProfile]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroup(name: String): ThreadGroupInfoProfile =
+            mockUnsafeMethod(name)
+        }
+
+        val a1 = "someName"
+        val r = mock[ThreadGroupInfoProfile]
+        mockUnsafeMethod.expects(a1).returning(r).once()
+        grabInfoProfile.tryThreadGroup(a1).get should be (r)
+      }
+    }
+
+    describe("#threadGroup(name)") {
+      it("should return the Some result of threadGroupOption(threadGroupId)") {
+        val mockUnsafeMethod = mockFunction[String, Option[ThreadGroupInfoProfile]]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroupOption(
+            name: String
+          ): Option[ThreadGroupInfoProfile] = mockUnsafeMethod(name)
+        }
+
+        val a1 = "someName"
+        val r = mock[ThreadGroupInfoProfile]
+        mockUnsafeMethod.expects(a1).returning(Some(r)).once()
+        grabInfoProfile.threadGroup(a1) should be (r)
+      }
+    }
+
+    describe("#threadGroupOption(threadGroupId)") {
+      it("should return Some(profile) if a threadGroup with matching unique id is found") {
+        val expected = Some(mock[ThreadGroupInfoProfile])
+        val threadGroupId = 999L
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroups: Seq[ThreadGroupInfoProfile] =
+            Seq(expected.get)
+        }
+
+        (expected.get.uniqueId _).expects().returning(threadGroupId).once()
+
+        val actual = grabInfoProfile.threadGroupOption(threadGroupId)
+
+        actual should be (expected)
+      }
+
+      it("should recurse through each thread group's subgroups to find a match") {
+        val expected = Some(mock[ThreadGroupInfoProfile])
+        val mockThreadGroupInfo = mock[ThreadGroupInfoProfile]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroups: Seq[ThreadGroupInfoProfile] =
+            Seq(mockThreadGroupInfo)
+        }
+
+        (mockThreadGroupInfo.uniqueId _).expects().returning(998L).once()
+
+        (mockThreadGroupInfo.threadGroups _).expects()
+          .returning(Seq(expected.get)).once()
+
+        (expected.get.uniqueId _).expects().returning(999L).once()
+
+        val actual = grabInfoProfile.threadGroupOption(999L)
+
+        actual should be (expected)
+      }
+
+      it("should return None if no threadGroup with a matching unique id is found") {
+        val expected = None
+        val mockThreadGroupInfo = mock[ThreadGroupInfoProfile]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroups: Seq[ThreadGroupInfoProfile] =
+            Seq(mockThreadGroupInfo)
+        }
+
+        (mockThreadGroupInfo.uniqueId _).expects().returning(998L).once()
+
+        (mockThreadGroupInfo.threadGroups _).expects().returning(Nil).once()
+
+        val actual = grabInfoProfile.threadGroupOption(999L)
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#threadGroupOption(name)") {
+      it("should return Some(profile) if a threadGroup with matching name is found") {
+        val expected = Some(mock[ThreadGroupInfoProfile])
+        val threadGroupName = "someName"
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroups: Seq[ThreadGroupInfoProfile] =
+            Seq(expected.get)
+        }
+
+        (expected.get.name _).expects().returning(threadGroupName).once()
+
+        val actual = grabInfoProfile.threadGroupOption(threadGroupName)
+
+        actual should be (expected)
+      }
+
+      it("should recurse through each thread group's subgroups to find a match") {
+        val expected = Some(mock[ThreadGroupInfoProfile])
+        val mockThreadGroupInfo = mock[ThreadGroupInfoProfile]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroups: Seq[ThreadGroupInfoProfile] =
+            Seq(mockThreadGroupInfo)
+        }
+
+        (mockThreadGroupInfo.name _).expects().returning("someOtherName").once()
+
+        (mockThreadGroupInfo.threadGroups _).expects()
+          .returning(Seq(expected.get)).once()
+
+        (expected.get.name _).expects().returning("someName").once()
+
+        val actual = grabInfoProfile.threadGroupOption("someName")
+
+        actual should be (expected)
+      }
+
+      it("should return None if no threadGroup with a matching name is found") {
+        val expected = None
+        val mockThreadGroupInfo = mock[ThreadGroupInfoProfile]
+
+        val grabInfoProfile = new TestGrabInfoProfile {
+          override def threadGroups: Seq[ThreadGroupInfoProfile] =
+            Seq(mockThreadGroupInfo)
+        }
+
+        (mockThreadGroupInfo.name _).expects().returning("someOtherName").once()
+
+        (mockThreadGroupInfo.threadGroups _).expects().returning(Nil).once()
+
+        val actual = grabInfoProfile.threadGroupOption("someName")
+
+        actual should be (expected)
+      }
+    }
+
     describe("#tryThreadGroup(threadGroupReference)") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[ThreadGroupReference, ThreadGroupInfoProfile]

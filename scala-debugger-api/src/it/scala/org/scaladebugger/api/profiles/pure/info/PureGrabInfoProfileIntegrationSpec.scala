@@ -96,5 +96,25 @@ class PureGrabInfoProfileIntegrationSpec extends FunSpec with Matchers
         })
       }
     }
+
+    it("should be able to find a thread group by its name") {
+      val testClass = "org.scaladebugger.test.misc.LaunchingMain"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 7).foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val tg = t.get.threadGroup()
+          val name = tg.name()
+
+          s.withProfile(PureDebugProfile.Name)
+            .threadGroup(name).name should be (name)
+        })
+      }
+    }
   }
 }

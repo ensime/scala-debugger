@@ -40,6 +40,10 @@ trait SwappableGrabInfoProfile extends GrabInfoProfile {
     threadGroupId: Long
   ): Option[ThreadGroupInfoProfile] = withCurrentProfile.threadGroupOption(threadGroupId)
 
+  override def threadGroupOption(
+    name: String
+  ): Option[ThreadGroupInfoProfile] = withCurrentProfile.threadGroupOption(name)
+
   override def classes: Seq[ReferenceTypeInfoProfile] =
     withCurrentProfile.classes
 
