@@ -33,9 +33,9 @@ class PureObjectInfoProfileIntegrationSpec extends FunSpec with Matchers
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val result = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.thisObject
-            .invoke("publicMethod", Seq(3, "test")).toLocalValue
+          val thread = s.withProfile(PureDebugProfile.Name).thread(t.get)
+          val result = thread.topFrame.thisObject
+            .invoke(thread, "publicMethod", Seq(3, "test")).toLocalValue
 
           result should be ("3test")
         })

@@ -107,74 +107,14 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#invoke(methodName, parameter types, arguments, JDI arguments)") {
-      it("should throw an AssertionError if parameter types and arguments are not same length") {
-        intercept[AssertionError] {
-          pureObjectInfoProfile.invoke("name", Nil, Seq(3))
-        }
-      }
 
-      it("should use unsafeMethod to search for method with name and parameter types") {
+    describe("#invoke(thread profile, method profile, arguments, JDI arguments)") {
+      it("should invoke using the provided thread and method, returning wrapper profile of value") {
         val expected = mock[ValueInfoProfile]
 
-        val name = "methodName"
-        val parameterTypeNames = Seq("some.type")
-        val arguments = Seq(3)
-        val jdiArguments = Nil
-
-        val mockUnsafeInvoke = mockFunction[
-          MethodInfoProfile,
-          Seq[Any],
-          Seq[JDIArgument],
-          ValueInfoProfile
-        ]
-        val mockUnsafeMethod = mockFunction[String, Seq[String], MethodInfoProfile]
-
-        val pureObjectInfoProfile = new PureObjectInfoProfile(
-          mockScalaVirtualMachine,
-          mockInfoProducerProfile,
-          mockObjectReference
-        )(
-          _threadReference = mockThreadReference,
-          _virtualMachine = mockVirtualMachine,
-          _referenceType = mockReferenceType
-        ) {
-          override def invoke(
-            methodInfoProfile: MethodInfoProfile,
-            arguments: Seq[Any],
-            jdiArguments: JDIArgument*
-          ): ValueInfoProfile = mockUnsafeInvoke(
-            methodInfoProfile,
-            arguments,
-            jdiArguments
-          )
-          override def method(
-            name: String,
-            parameterTypeNames: String*
-          ): MethodInfoProfile = mockUnsafeMethod(name, parameterTypeNames)
-        }
-
-        val mockMethodInfoProfile = mock[MethodInfoProfile]
-        mockUnsafeMethod.expects(name, parameterTypeNames)
-          .returning(mockMethodInfoProfile).once()
-
-        mockUnsafeInvoke.expects(mockMethodInfoProfile, arguments, jdiArguments)
-          .returning(expected).once()
-
-        val actual = pureObjectInfoProfile.invoke(
-          name,
-          parameterTypeNames,
-          arguments,
-          jdiArguments: _*
-        )
-
-        actual should be (expected)
-      }
-    }
-
-    describe("#invoke(method profile, arguments, JDI arguments)") {
-      it("should invoke using the current stack frame's thread and profile method, returning wrapper profile of value") {
-        val expected = mock[ValueInfoProfile]
+        val mockThreadInfoProfile = mock[ThreadInfoProfile]
+        (mockThreadInfoProfile.toJdiInstance _).expects()
+          .returning(mockThreadReference).once()
 
         val mockMethod = mock[Method]
         val pureMethodInfoProfile = new PureMethodInfoProfile(
@@ -197,6 +137,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
         mockNewValueProfile.expects(mockValue).returning(expected).once()
 
         val actual = pureObjectInfoProfile.invoke(
+          mockThreadInfoProfile,
           pureMethodInfoProfile,
           Nil
         )
@@ -206,6 +147,10 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
 
       it("should invoke using the provided arguments") {
         val arguments = Seq(1)
+
+        val mockThreadInfoProfile = mock[ThreadInfoProfile]
+        (mockThreadInfoProfile.toJdiInstance _).expects()
+          .returning(mockThreadReference).once()
 
         val mockMethod = mock[Method]
         val pureMethodInfoProfile = new PureMethodInfoProfile(
@@ -235,6 +180,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
         mockNewValueProfile.expects(*).once()
 
         pureObjectInfoProfile.invoke(
+          mockThreadInfoProfile,
           pureMethodInfoProfile,
           arguments
         )
@@ -245,6 +191,10 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
           InvokeNonVirtualArgument,
           InvokeSingleThreadedArgument
         )
+
+        val mockThreadInfoProfile = mock[ThreadInfoProfile]
+        (mockThreadInfoProfile.toJdiInstance _).expects()
+          .returning(mockThreadReference).once()
 
         val mockMethod = mock[Method]
         val pureMethodInfoProfile = new PureMethodInfoProfile(
@@ -262,6 +212,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
         mockNewValueProfile.expects(*).returning(null).once()
 
         pureObjectInfoProfile.invoke(
+          mockThreadInfoProfile,
           pureMethodInfoProfile,
           Nil,
           jdiArguments: _*

@@ -52,6 +52,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
   /**
    * Invokes the object's method with matching name and arguments.
    *
+   * @param thread The thread within which to invoke the method
    * @param methodName The name of the method to invoke
    * @param arguments The arguments to provide to the method
    * @param jdiArguments Optional arguments to provide custom settings to the
@@ -60,10 +61,12 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    *         a failure
    */
   def tryInvoke(
+    thread: ThreadInfoProfile,
     methodName: String,
     arguments: Seq[Any],
     jdiArguments: JDIArgument*
   ): Try[ValueInfoProfile] = tryInvoke(
+    thread,
     methodName,
     arguments.map(_.getClass.getName),
     arguments,
@@ -73,6 +76,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
   /**
    * Invokes the object's method with matching name and arguments.
    *
+   * @param thread The thread within which to invoke the method
    * @param methodName The name of the method to invoke
    * @param arguments The arguments to provide to the method
    * @param jdiArguments Optional arguments to provide custom settings to the
@@ -80,10 +84,12 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @return The resulting value of the invocation
    */
   def invoke(
+    thread: ThreadInfoProfile,
     methodName: String,
     arguments: Seq[Any],
     jdiArguments: JDIArgument*
   ): ValueInfoProfile = invoke(
+    thread,
     methodName,
     arguments.map(_.getClass.getName),
     arguments,
@@ -93,6 +99,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
   /**
    * Invokes the object's method with matching name and arguments.
    *
+   * @param thread The thread within which to invoke the method
    * @param methodName The name of the method to invoke
    * @param parameterTypeNames The names of the parameter types of the method
    *                           to invoke
@@ -103,11 +110,13 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    *         a failure
    */
   def tryInvoke(
+    thread: ThreadInfoProfile,
     methodName: String,
     parameterTypeNames: Seq[String],
     arguments: Seq[Any],
     jdiArguments: JDIArgument*
   ): Try[ValueInfoProfile] = Try(invoke(
+    thread,
     methodName,
     parameterTypeNames,
     arguments,
@@ -117,6 +126,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
   /**
    * Invokes the object's method with matching name and arguments.
    *
+   * @param thread The thread within which to invoke the method
    * @param methodName The name of the method to invoke
    * @param parameterTypeNames The names of the parameter types of the method
    *                           to invoke
@@ -124,17 +134,32 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @param jdiArguments Optional arguments to provide custom settings to the
    *                     method invocation
    * @return The resulting value of the invocation
+   * @throws AssertionError When the parameter type and argument counts are not
+   *                        equivalent
    */
+  @throws[AssertionError]
   def invoke(
+    thread: ThreadInfoProfile,
     methodName: String,
     parameterTypeNames: Seq[String],
     arguments: Seq[Any],
     jdiArguments: JDIArgument*
-  ): ValueInfoProfile
+  ): ValueInfoProfile = {
+    assert(parameterTypeNames.length == arguments.length,
+      "Inconsistent number of parameter types versus arguments!")
+
+    invoke(
+      thread,
+      method(methodName, parameterTypeNames: _*),
+      arguments,
+      jdiArguments: _*
+    )
+  }
 
   /**
    * Invokes the object's method.
    *
+   * @param thread The thread within which to invoke the method
    * @param method The method of the object to invoke
    * @param arguments The arguments to provide to the method
    * @param jdiArguments Optional arguments to provide custom settings to the
@@ -143,10 +168,12 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    *         a failure
    */
   def tryInvoke(
+    thread: ThreadInfoProfile,
     method: MethodInfoProfile,
     arguments: Seq[Any],
     jdiArguments: JDIArgument*
   ): Try[ValueInfoProfile] = Try(invoke(
+    thread,
     method,
     arguments,
     jdiArguments: _*
@@ -155,6 +182,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
   /**
    * Invokes the object's method.
    *
+   * @param thread The thread within which to invoke the method
    * @param method The method of the object to invoke
    * @param arguments The arguments to provide to the method
    * @param jdiArguments Optional arguments to provide custom settings to the
@@ -162,6 +190,7 @@ trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
    * @return The resulting value of the invocation
    */
   def invoke(
+    thread: ThreadInfoProfile,
     method: MethodInfoProfile,
     arguments: Seq[Any],
     jdiArguments: JDIArgument*

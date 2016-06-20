@@ -1,5 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.{InvokeNonVirtualArgument, InvokeSingleThreadedArgument, JDIArgument}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -46,97 +47,31 @@ class ObjectInfoProfileSpec extends FunSpec with Matchers
     describe("#tryInvoke(methodProfile, arguments, JDI arguments)") {
       it("should wrap the unsafe call in a Try") {
         val mockUnsafeMethod = mockFunction[
+          ThreadInfoProfile,
           MethodInfoProfile,
           Seq[Any],
           Seq[JDIArgument],
           ValueInfoProfile
         ]
 
+        val mockThreadInfoProfile = mock[ThreadInfoProfile]
+
         val objectInfoProfile = new TestObjectInfoProfile {
           override def invoke(
+            thread: ThreadInfoProfile,
             methodInfoProfile: MethodInfoProfile,
             arguments: Seq[Any],
             jdiArguments: JDIArgument*
           ): ValueInfoProfile = mockUnsafeMethod(
+            thread,
             methodInfoProfile,
             arguments,
             jdiArguments.toSeq
           )
         }
 
-        val a1 = mock[MethodInfoProfile]
-        val a2 = Seq(3, "test", new AnyRef)
-        val a3 = Seq(InvokeSingleThreadedArgument, InvokeNonVirtualArgument)
-        val r = mock[ValueInfoProfile]
-
-        mockUnsafeMethod.expects(a1, a2, a3).returning(r).once()
-
-        objectInfoProfile.tryInvoke(a1, a2, a3: _*).get should be (r)
-      }
-    }
-
-    describe("#tryInvoke(methodName, arguments, JDI arguments)") {
-      it("should infer parameter types from provided arguments") {
-        val mockUnsafeMethod = mockFunction[
-          String,
-          Seq[String],
-          Seq[Any],
-          Seq[JDIArgument],
-          ValueInfoProfile
-          ]
-
-        val objectInfoProfile = new TestObjectInfoProfile {
-          override def invoke(
-            methodName: String,
-            parameterTypeNames: Seq[String],
-            arguments: Seq[Any],
-            jdiArguments: JDIArgument*
-          ): ValueInfoProfile = mockUnsafeMethod(
-            methodName,
-            parameterTypeNames,
-            arguments,
-            jdiArguments.toSeq
-          )
-        }
-
-        val a1 = "some method name"
-        val a2 = Seq(3, "test", new AnyRef)
-        val a3 = Seq(InvokeSingleThreadedArgument, InvokeNonVirtualArgument)
-        val r = mock[ValueInfoProfile]
-        val t = Seq("java.lang.Integer", "java.lang.String", "java.lang.Object")
-
-        mockUnsafeMethod.expects(a1, t, a2, a3).returning(r).once()
-
-        objectInfoProfile.tryInvoke(a1, a2, a3: _*).get should be(r)
-      }
-    }
-
-    describe("#tryInvoke(methodName, parameter types, arguments, JDI arguments)") {
-      it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[
-          String,
-          Seq[String],
-          Seq[Any],
-          Seq[JDIArgument],
-          ValueInfoProfile
-        ]
-
-        val objectInfoProfile = new TestObjectInfoProfile {
-          override def invoke(
-            methodName: String,
-            parameterTypeNames: Seq[String],
-            arguments: Seq[Any],
-            jdiArguments: JDIArgument*
-          ): ValueInfoProfile = mockUnsafeMethod(
-            methodName,
-            parameterTypeNames,
-            arguments,
-            jdiArguments.toSeq
-          )
-        }
-
-        val a1 = "some method name"
-        val a2 = Seq("some", "parameter", "types")
+        val a1 = mockThreadInfoProfile
+        val a2 = mock[MethodInfoProfile]
         val a3 = Seq(3, "test", new AnyRef)
         val a4 = Seq(InvokeSingleThreadedArgument, InvokeNonVirtualArgument)
         val r = mock[ValueInfoProfile]
@@ -147,9 +82,10 @@ class ObjectInfoProfileSpec extends FunSpec with Matchers
       }
     }
 
-    describe("#invoke") {
+    describe("#tryInvoke(methodName, arguments, JDI arguments)") {
       it("should infer parameter types from provided arguments") {
         val mockUnsafeMethod = mockFunction[
+          ThreadInfoProfile,
           String,
           Seq[String],
           Seq[Any],
@@ -157,13 +93,17 @@ class ObjectInfoProfileSpec extends FunSpec with Matchers
           ValueInfoProfile
         ]
 
+        val mockThreadInfoProfile = mock[ThreadInfoProfile]
+
         val objectInfoProfile = new TestObjectInfoProfile {
           override def invoke(
+            thread: ThreadInfoProfile,
             methodName: String,
             parameterTypeNames: Seq[String],
             arguments: Seq[Any],
             jdiArguments: JDIArgument*
           ): ValueInfoProfile = mockUnsafeMethod(
+            thread,
             methodName,
             parameterTypeNames,
             arguments,
@@ -171,15 +111,169 @@ class ObjectInfoProfileSpec extends FunSpec with Matchers
           )
         }
 
-        val a1 = "some method name"
-        val a2 = Seq(3, "test", new AnyRef)
-        val a3 = Seq(InvokeSingleThreadedArgument, InvokeNonVirtualArgument)
+        val a1 = mockThreadInfoProfile
+        val a2 = "some method name"
+        val a3 = Seq(3, "test", new AnyRef)
+        val a4 = Seq(InvokeSingleThreadedArgument, InvokeNonVirtualArgument)
         val r = mock[ValueInfoProfile]
         val t = Seq("java.lang.Integer", "java.lang.String", "java.lang.Object")
 
-        mockUnsafeMethod.expects(a1, t, a2, a3).returning(r).once()
+        mockUnsafeMethod.expects(a1, a2, t, a3, a4).returning(r).once()
 
-        objectInfoProfile.invoke(a1, a2, a3: _*) should be(r)
+        objectInfoProfile.tryInvoke(a1, a2, a3, a4: _*).get should be(r)
+      }
+    }
+
+    describe("#tryInvoke(methodName, parameter types, arguments, JDI arguments)") {
+      it("should wrap the unsafe call in a Try") {
+        val mockUnsafeMethod = mockFunction[
+          ThreadInfoProfile,
+          String,
+          Seq[String],
+          Seq[Any],
+          Seq[JDIArgument],
+          ValueInfoProfile
+        ]
+
+        val mockThreadInfoProfile = mock[ThreadInfoProfile]
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def invoke(
+            thread: ThreadInfoProfile,
+            methodName: String,
+            parameterTypeNames: Seq[String],
+            arguments: Seq[Any],
+            jdiArguments: JDIArgument*
+          ): ValueInfoProfile = mockUnsafeMethod(
+            thread,
+            methodName,
+            parameterTypeNames,
+            arguments,
+            jdiArguments.toSeq
+          )
+        }
+
+        val a1 = mockThreadInfoProfile
+        val a2 = "some method name"
+        val a3 = Seq("some", "parameter", "types")
+        val a4 = Seq(3, "test", new AnyRef)
+        val a5 = Seq(InvokeSingleThreadedArgument, InvokeNonVirtualArgument)
+        val r = mock[ValueInfoProfile]
+
+        mockUnsafeMethod.expects(a1, a2, a3, a4, a5).returning(r).once()
+
+        objectInfoProfile.tryInvoke(a1, a2, a3, a4, a5: _*).get should be (r)
+      }
+    }
+
+    describe("#invoke(thread, methodName, parameter types, arguments, JDI arguments)") {
+      it("should throw an AssertionError if parameter types and arguments are not same length") {
+        val objectInfoProfile = new TestObjectInfoProfile
+
+        intercept[AssertionError] {
+          objectInfoProfile.invoke(mock[ThreadInfoProfile], "name", Nil, Seq(3))
+        }
+      }
+
+      it("should use unsafeMethod to search for method with name and parameter types") {
+        val expected = mock[ValueInfoProfile]
+
+        val name = "methodName"
+        val parameterTypeNames = Seq("some.type")
+        val arguments = Seq(3)
+        val jdiArguments = Nil
+
+        val mockUnsafeInvoke = mockFunction[
+          ThreadInfoProfile,
+          MethodInfoProfile,
+          Seq[Any],
+          Seq[JDIArgument],
+          ValueInfoProfile
+          ]
+        val mockUnsafeMethod = mockFunction[String, Seq[String], MethodInfoProfile]
+
+        val mockThreadInfoProfile = mock[ThreadInfoProfile]
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def invoke(
+            thread: ThreadInfoProfile,
+            methodInfoProfile: MethodInfoProfile,
+            arguments: Seq[Any],
+            jdiArguments: JDIArgument*
+          ): ValueInfoProfile = mockUnsafeInvoke(
+            thread,
+            methodInfoProfile,
+            arguments,
+            jdiArguments
+          )
+          override def method(
+            name: String,
+            parameterTypeNames: String*
+          ): MethodInfoProfile = mockUnsafeMethod(name, parameterTypeNames)
+        }
+
+        val mockMethodInfoProfile = mock[MethodInfoProfile]
+        mockUnsafeMethod.expects(name, parameterTypeNames)
+          .returning(mockMethodInfoProfile).once()
+
+        mockUnsafeInvoke.expects(
+          mockThreadInfoProfile,
+          mockMethodInfoProfile,
+          arguments,
+          jdiArguments
+        ).returning(expected).once()
+
+        val actual = objectInfoProfile.invoke(
+          mockThreadInfoProfile,
+          name,
+          parameterTypeNames,
+          arguments,
+          jdiArguments: _*
+        )
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#invoke(thread, methodName, arguments, JDI arguments)") {
+      it("should infer parameter types from provided arguments") {
+        val mockUnsafeMethod = mockFunction[
+          ThreadInfoProfile,
+          String,
+          Seq[String],
+          Seq[Any],
+          Seq[JDIArgument],
+          ValueInfoProfile
+        ]
+
+        val mockThreadInfoProfile = mock[ThreadInfoProfile]
+
+        val objectInfoProfile = new TestObjectInfoProfile {
+          override def invoke(
+            thread: ThreadInfoProfile,
+            methodName: String,
+            parameterTypeNames: Seq[String],
+            arguments: Seq[Any],
+            jdiArguments: JDIArgument*
+          ): ValueInfoProfile = mockUnsafeMethod(
+            thread,
+            methodName,
+            parameterTypeNames,
+            arguments,
+            jdiArguments.toSeq
+          )
+        }
+
+        val a1 = mockThreadInfoProfile
+        val a2 = "some method name"
+        val a3 = Seq(3, "test", new AnyRef)
+        val a4 = Seq(InvokeSingleThreadedArgument, InvokeNonVirtualArgument)
+        val r = mock[ValueInfoProfile]
+        val t = Seq("java.lang.Integer", "java.lang.String", "java.lang.Object")
+
+        mockUnsafeMethod.expects(a1, a2, t, a3, a4).returning(r).once()
+
+        objectInfoProfile.invoke(a1, a2, a3, a4: _*) should be(r)
       }
     }
 
