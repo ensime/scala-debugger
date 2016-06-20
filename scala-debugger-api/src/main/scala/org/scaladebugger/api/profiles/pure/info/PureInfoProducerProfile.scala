@@ -22,13 +22,11 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     arrayReference: ArrayReference
   )(
     virtualMachine: VirtualMachine,
-    threadReference: ThreadReference,
     referenceType: ReferenceType
   ): ArrayInfoProfile = new PureArrayInfoProfile(
     scalaVirtualMachine, this, arrayReference
   )(
     _virtualMachine = virtualMachine,
-    _threadReference = threadReference,
     _referenceType = referenceType
   )
 
@@ -38,7 +36,6 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     objectReference: ObjectReference
   )(
     virtualMachine: VirtualMachine,
-    threadReference: ThreadReference,
     referenceType: ReferenceType
   ): ObjectInfoProfile = new PureObjectInfoProfile(
     scalaVirtualMachine,
@@ -46,7 +43,6 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     objectReference
   )(
     _virtualMachine = virtualMachine,
-    _threadReference = threadReference,
     _referenceType = referenceType
   )
 
@@ -99,7 +95,6 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     threadGroupReference: ThreadGroupReference
   )(
     virtualMachine: VirtualMachine,
-    threadReference: ThreadReference,
     referenceType: ReferenceType
   ): ThreadGroupInfoProfile = new PureThreadGroupInfoProfile(
     scalaVirtualMachine,
@@ -107,8 +102,7 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     threadGroupReference
   )(
     _virtualMachine = virtualMachine,
-    _referenceType = referenceType,
-    _threadReference = threadReference
+    _referenceType = referenceType
   )
 
   override def newClassObjectInfoProfile(
@@ -116,7 +110,6 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     classObjectReference: ClassObjectReference
   )(
     virtualMachine: VirtualMachine,
-    threadReference: ThreadReference,
     referenceType: ReferenceType
   ): ClassObjectInfoProfile = new PureClassObjectInfoProfile(
     scalaVirtualMachine,
@@ -124,8 +117,7 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     classObjectReference
   )(
     _referenceType = referenceType,
-    _virtualMachine = virtualMachine,
-    _threadReference = threadReference
+    _virtualMachine = virtualMachine
   )
 
   override def newClassLoaderInfoProfile(
@@ -133,7 +125,6 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     classLoaderReference: ClassLoaderReference
   )(
     virtualMachine: VirtualMachine,
-    threadReference: ThreadReference,
     referenceType: ReferenceType
   ): ClassLoaderInfoProfile = new PureClassLoaderInfoProfile(
     scalaVirtualMachine,
@@ -141,8 +132,7 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     classLoaderReference
   )(
     _referenceType = referenceType,
-    _virtualMachine = virtualMachine,
-    _threadReference = threadReference
+    _virtualMachine = virtualMachine
   )
 
   override def newLocationInfoProfile(
@@ -261,7 +251,6 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     stringReference: StringReference
   )(
     virtualMachine: VirtualMachine,
-    threadReference: ThreadReference,
     referenceType: ReferenceType
   ): StringInfoProfile = new PureStringInfoProfile(
     scalaVirtualMachine,
@@ -269,8 +258,7 @@ class PureInfoProducerProfile extends InfoProducerProfile {
     stringReference
   )(
     _referenceType = referenceType,
-    _virtualMachine = virtualMachine,
-    _threadReference = threadReference
+    _virtualMachine = virtualMachine
   )
 
   override def newTypeCheckerProfile(): TypeCheckerProfile =

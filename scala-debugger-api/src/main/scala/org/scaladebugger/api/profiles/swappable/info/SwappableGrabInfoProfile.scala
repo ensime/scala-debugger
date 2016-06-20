@@ -11,13 +11,8 @@ import org.scaladebugger.api.profiles.traits.info._
  */
 trait SwappableGrabInfoProfile extends GrabInfoProfile {
   this: SwappableDebugProfileManagement =>
-  override def `object`(
-    threadReference: ThreadReference,
-    objectReference: ObjectReference
-  ): ObjectInfoProfile = withCurrentProfile.`object`(
-    threadReference,
-    objectReference
-  )
+  override def `object`(objectReference: ObjectReference): ObjectInfoProfile =
+    withCurrentProfile.`object`(objectReference)
 
   override def threads: Seq[ThreadInfoProfile] = withCurrentProfile.threads
 

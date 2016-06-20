@@ -19,14 +19,12 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
   private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockReferenceType = mock[ReferenceType]
-  private val mockThreadReference = mock[ThreadReference]
   private val mockObjectReference = mock[ObjectReference]
   private val pureObjectInfoProfile = new PureObjectInfoProfile(
     mockScalaVirtualMachine,
     mockInfoProducerProfile,
     mockObjectReference
   )(
-    _threadReference = mockThreadReference,
     _virtualMachine = mockVirtualMachine,
     _referenceType = mockReferenceType
   ) {
@@ -112,6 +110,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
       it("should invoke using the provided thread and method, returning wrapper profile of value") {
         val expected = mock[ValueInfoProfile]
 
+        val mockThreadReference = mock[ThreadReference]
         val mockThreadInfoProfile = mock[ThreadInfoProfile]
         (mockThreadInfoProfile.toJdiInstance _).expects()
           .returning(mockThreadReference).once()
@@ -148,6 +147,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
       it("should invoke using the provided arguments") {
         val arguments = Seq(1)
 
+        val mockThreadReference = mock[ThreadReference]
         val mockThreadInfoProfile = mock[ThreadInfoProfile]
         (mockThreadInfoProfile.toJdiInstance _).expects()
           .returning(mockThreadReference).once()
@@ -192,6 +192,7 @@ class PureObjectInfoProfileSpec extends FunSpec with Matchers
           InvokeSingleThreadedArgument
         )
 
+        val mockThreadReference = mock[ThreadReference]
         val mockThreadInfoProfile = mock[ThreadInfoProfile]
         (mockThreadInfoProfile.toJdiInstance _).expects()
           .returning(mockThreadReference).once()

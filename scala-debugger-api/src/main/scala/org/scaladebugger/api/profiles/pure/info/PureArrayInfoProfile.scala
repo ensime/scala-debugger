@@ -17,8 +17,6 @@ import scala.util.Try
  * @param _arrayReference The reference to the underlying JDI array
  * @param _virtualMachine The virtual machine used to mirror local values on
  *                       the remote JVM
- * @param _threadReference The thread associated with the array (for method
- *                        invocation)
  * @param _referenceType The reference type for this array
  */
 class PureArrayInfoProfile(
@@ -27,11 +25,9 @@ class PureArrayInfoProfile(
   private val _arrayReference: ArrayReference
 )(
   override protected val _virtualMachine: VirtualMachine = _arrayReference.virtualMachine(),
-  private val _threadReference: ThreadReference = _arrayReference.owningThread(),
   private val _referenceType: ReferenceType = _arrayReference.referenceType()
 ) extends PureObjectInfoProfile(scalaVirtualMachine, infoProducer, _arrayReference)(
   _virtualMachine = _virtualMachine,
-  _threadReference = _threadReference,
   _referenceType = _referenceType
 ) with ArrayInfoProfile with PureCreateInfoProfile {
   import scala.collection.JavaConverters._

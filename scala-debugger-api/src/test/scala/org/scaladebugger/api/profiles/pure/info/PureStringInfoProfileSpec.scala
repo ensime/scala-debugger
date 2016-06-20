@@ -13,14 +13,12 @@ class PureStringInfoProfileSpec extends FunSpec with Matchers
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
-  private val mockThreadReference = mock[ThreadReference]
   private val mockReferenceType = mock[ReferenceType]
   private val mockStringReference = mock[StringReference]
   private val pureStringInfoProfile = new PureStringInfoProfile(
     mockScalaVirtualMachine, mockInfoProducerProfile, mockStringReference
   )(
     _virtualMachine = mockVirtualMachine,
-    _threadReference = mockThreadReference,
     _referenceType = mockReferenceType
   ) {
     override protected def newTypeProfile(_type: Type): TypeInfoProfile =

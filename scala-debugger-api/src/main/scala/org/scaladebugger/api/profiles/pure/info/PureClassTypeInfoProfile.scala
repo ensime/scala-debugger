@@ -125,7 +125,6 @@ class PureClassTypeInfoProfile(
     val r = _classType.newInstance(t, c, v.asJava, o)
     newObjectProfile(
       objectReference = r,
-      threadReference = t,
       virtualMachine = virtualMachine
     )
   }
@@ -211,13 +210,11 @@ class PureClassTypeInfoProfile(
 
   protected def newObjectProfile(
     objectReference: ObjectReference,
-    threadReference: ThreadReference,
     virtualMachine: VirtualMachine
   ): ObjectInfoProfile = infoProducer.newObjectInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     objectReference = objectReference
   )(
-    threadReference = threadReference,
     virtualMachine = virtualMachine
   )
 

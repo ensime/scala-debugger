@@ -18,8 +18,6 @@ import scala.collection.JavaConverters._
  * @param infoProducer The producer of info-based profile instances
  * @param _objectReference The reference to the underlying JDI object
  * @param _virtualMachine The virtual machine associated with the object
- * @param _threadReference The thread associated with the object (for method
- *                        invocation)
  * @param _referenceType The reference type for this object
  */
 class PureObjectInfoProfile(
@@ -28,7 +26,6 @@ class PureObjectInfoProfile(
   private val _objectReference: ObjectReference
 )(
   protected val _virtualMachine: VirtualMachine = _objectReference.virtualMachine(),
-  private val _threadReference: ThreadReference = _objectReference.owningThread(),
   private val _referenceType: ReferenceType = _objectReference.referenceType()
 ) extends PureValueInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,

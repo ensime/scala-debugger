@@ -208,9 +208,7 @@ class PureFrameInfoProfile(
   )()
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfoProfile =
-    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)(
-      threadReference = _threadReference
-    )
+    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)()
 
   protected def newThreadProfile(threadReference: ThreadReference): ThreadInfoProfile =
     infoProducer.newThreadInfoProfile(scalaVirtualMachine, threadReference)()

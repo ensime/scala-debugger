@@ -11,7 +11,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 class PureGrabInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
-  private val mockNewObjectProfile = mockFunction[ThreadReference, ObjectReference, ObjectInfoProfile]
+  private val mockNewObjectProfile = mockFunction[ObjectReference, ObjectInfoProfile]
   private val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfoProfile]
   private val mockNewThreadProfile = mockFunction[ThreadReference, ThreadInfoProfile]
   private val mockNewThreadGroupProfile = mockFunction[ThreadGroupReference, ThreadGroupInfoProfile]
@@ -42,9 +42,8 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
     ): ThreadGroupInfoProfile = mockNewThreadGroupProfile(threadGroupReference)
 
     override protected def newObjectProfile(
-      threadReference: ThreadReference,
       objectReference: ObjectReference
-    ): ObjectInfoProfile = mockNewObjectProfile(threadReference, objectReference)
+    ): ObjectInfoProfile = mockNewObjectProfile(objectReference)
 
     override protected def newReferenceTypeProfile(
       referenceType: ReferenceType
@@ -84,19 +83,15 @@ class PureGrabInfoProfileSpec extends FunSpec with Matchers
   }
 
   describe("PureGrabInfoProfile") {
-    describe("#`object`(threadReference, objectReference)") {
-      it("should return a pure object info profile wrapping the thread and object") {
+    describe("#`object`") {
+      it("should return a pure object info profile wrapping the object") {
         val expected = mock[ObjectInfoProfile]
-        val mockThreadReference = mock[ThreadReference]
         val mockObjectReference = mock[ObjectReference]
 
-        mockNewObjectProfile.expects(mockThreadReference, mockObjectReference)
+        mockNewObjectProfile.expects(mockObjectReference)
           .returning(expected).once()
 
-        val actual = pureGrabInfoProfile.`object`(
-          mockThreadReference,
-          mockObjectReference
-        )
+        val actual = pureGrabInfoProfile.`object`(mockObjectReference)
 
         actual should be (expected)
       }

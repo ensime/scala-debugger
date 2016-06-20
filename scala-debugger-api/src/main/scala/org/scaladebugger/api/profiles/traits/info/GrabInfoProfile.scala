@@ -15,58 +15,23 @@ trait GrabInfoProfile {
   /**
    * Retrieves a object profile for the given JDI object reference.
    *
-   * @param threadInfo The information about the thread to associate with the
-   *                   object
    * @param objectReference The JDI object reference with which to wrap in
    *                        a object info profile
    * @return Success containing the object profile, otherwise a failure
    */
-  def tryObject(
-    threadInfo: ThreadInfoProfile,
-    objectReference: ObjectReference
-  ): Try[ObjectInfoProfile] =
-    Try(`object`(threadInfo, objectReference))
+  def tryObject(objectReference: ObjectReference): Try[ObjectInfoProfile] =
+    Try(`object`(objectReference))
 
   /**
    * Retrieves a object profile for the given JDI object reference.
    *
-   * @param threadInfo The information about the thread to associate with the
    *                   object
    * @param objectReference The JDI object reference with which to wrap in
    *                        a object info profile
    * @return The new object info profile
    */
-  def `object`(
-    threadInfo: ThreadInfoProfile,
-    objectReference: ObjectReference
-  ): ObjectInfoProfile = `object`(threadInfo.toJdiInstance, objectReference)
-
-  /**
-   * Retrieves a object profile for the given JDI object reference.
-   *
-   * @param threadReference The thread to associate with the object
-   * @param objectReference The JDI object reference with which to wrap in
-   *                        a object info profile
-   * @return Success containing the object profile, otherwise a failure
-   */
-  def tryObject(
-    threadReference: ThreadReference,
-    objectReference: ObjectReference
-  ): Try[ObjectInfoProfile] =
-    Try(`object`(threadReference, objectReference))
-
-  /**
-   * Retrieves a object profile for the given JDI object reference.
-   *
-   * @param threadReference The thread to associate with the object
-   * @param objectReference The JDI object reference with which to wrap in
-   *                        a object info profile
-   * @return The new object info profile
-   */
-  def `object`(
-    threadReference: ThreadReference,
-    objectReference: ObjectReference
-  ): ObjectInfoProfile
+  def `object`(objectReference: ObjectReference): ObjectInfoProfile =
+    `object`(objectReference)
 
   /**
    * Retrieves all threads contained in the remote JVM.

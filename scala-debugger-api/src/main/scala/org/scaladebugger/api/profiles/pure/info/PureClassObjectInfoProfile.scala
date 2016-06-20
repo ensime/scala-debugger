@@ -15,8 +15,6 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  * @param _classObjectReference The reference to the underlying JDI class object
  * @param _infoProducer The producer of info-based profile instances
  * @param _virtualMachine The virtual machine associated with the class object
- * @param _threadReference The thread associated with the class object
- *                        (for method invocation)
  * @param _referenceType The reference type for this class object
  */
 class PureClassObjectInfoProfile(
@@ -25,11 +23,9 @@ class PureClassObjectInfoProfile(
   private val _classObjectReference: ClassObjectReference
 )(
   override protected val _virtualMachine: VirtualMachine = _classObjectReference.virtualMachine(),
-  private val _threadReference: ThreadReference = _classObjectReference.owningThread(),
   private val _referenceType: ReferenceType = _classObjectReference.referenceType()
 ) extends PureObjectInfoProfile(scalaVirtualMachine, _infoProducer, _classObjectReference)(
   _virtualMachine = _virtualMachine,
-  _threadReference = _threadReference,
   _referenceType = _referenceType
 ) with ClassObjectInfoProfile {
   /**

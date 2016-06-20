@@ -15,12 +15,10 @@ class PureClassObjectInfoProfileSpec extends FunSpec with Matchers
   private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockReferenceType = mock[ReferenceType]
-  private val mockThreadReference = mock[ThreadReference]
   private val mockClassObjectReference = mock[ClassObjectReference]
   private val pureClassObjectInfoProfile = new PureClassObjectInfoProfile(
     mockScalaVirtualMachine, mockInfoProducerProfile, mockClassObjectReference
   )(
-    _threadReference = mockThreadReference,
     _virtualMachine = mockVirtualMachine,
     _referenceType = mockReferenceType
   ) {

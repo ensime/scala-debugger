@@ -14,12 +14,10 @@ class PureClassLoaderInfoProfileSpec extends FunSpec with Matchers
   private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockReferenceType = mock[ReferenceType]
-  private val mockThreadReference = mock[ThreadReference]
   private val mockClassLoaderReference = mock[ClassLoaderReference]
   private val pureClassLoaderInfoProfile = new PureClassLoaderInfoProfile(
     mockScalaVirtualMachine, mockInfoProducerProfile, mockClassLoaderReference
   )(
-    _threadReference = mockThreadReference,
     _virtualMachine = mockVirtualMachine,
     _referenceType = mockReferenceType
   ) {

@@ -22,15 +22,12 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   /**
    * Retrieves a object profile for the given JDI object reference.
    *
-   * @param threadReference The thread to associate with the object
    * @param objectReference The JDI object reference with which to wrap in
    *                        a object info profile
    * @return The new object info profile
    */
-  override def `object`(
-    threadReference: ThreadReference,
-    objectReference: ObjectReference
-  ): ObjectInfoProfile = newObjectProfile(threadReference, objectReference)
+  override def `object`(objectReference: ObjectReference): ObjectInfoProfile =
+    newObjectProfile(objectReference)
 
   /**
    * Retrieves all threads contained in the remote JVM.
@@ -244,13 +241,11 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   )(virtualMachine = _virtualMachine)
 
   protected def newObjectProfile(
-    threadReference: ThreadReference,
     objectReference: ObjectReference
   ): ObjectInfoProfile = infoProducer.newObjectInfoProfile(
     scalaVirtualMachine,
     objectReference
   )(
-    threadReference = threadReference,
     virtualMachine = _virtualMachine
   )
 }

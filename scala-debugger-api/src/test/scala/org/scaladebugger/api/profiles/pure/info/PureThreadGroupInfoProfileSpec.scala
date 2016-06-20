@@ -16,7 +16,6 @@ class PureThreadGroupInfoProfileSpec extends FunSpec with Matchers
   private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockReferenceType = mock[ReferenceType]
-  private val mockThreadReference = mock[ThreadReference]
   private val mockThreadGroupReference = mock[ThreadGroupReference]
   private val pureThreadGroupInfoProfile = new PureThreadGroupInfoProfile(
     mockScalaVirtualMachine,
@@ -24,7 +23,6 @@ class PureThreadGroupInfoProfileSpec extends FunSpec with Matchers
     mockThreadGroupReference
   )(
     _virtualMachine = mockVirtualMachine,
-    _threadReference = mockThreadReference,
     _referenceType = mockReferenceType
   ) {
     override protected def newThreadGroupProfile(

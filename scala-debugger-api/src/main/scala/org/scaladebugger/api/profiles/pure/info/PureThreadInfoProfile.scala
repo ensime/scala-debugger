@@ -28,7 +28,6 @@ class PureThreadInfoProfile(
   private val _referenceType: ReferenceType = _threadReference.referenceType()
 ) extends PureObjectInfoProfile(scalaVirtualMachine, infoProducer, _threadReference)(
   _virtualMachine = _virtualMachine,
-  _threadReference = _threadReference,
   _referenceType = _referenceType
 ) with ThreadInfoProfile {
   /**
@@ -141,7 +140,6 @@ class PureThreadInfoProfile(
     threadGroupReference
   )(
     virtualMachine = _virtualMachine,
-    threadReference = _threadReference,
     referenceType = _referenceType
   )
 }

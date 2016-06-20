@@ -14,7 +14,6 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  * @param _threadGroupReference The reference to the underlying JDI thread group
  * @param _virtualMachine The virtual machine used to mirror local values on
  *                       the remote JVM
- * @param _threadReference The thread containing this thread group object
  * @param _referenceType The reference type for this thread group
  */
 class PureThreadGroupInfoProfile(
@@ -23,11 +22,9 @@ class PureThreadGroupInfoProfile(
   private val _threadGroupReference: ThreadGroupReference
 )(
   override protected val _virtualMachine: VirtualMachine = _threadGroupReference.virtualMachine(),
-  private val _threadReference: ThreadReference = _threadGroupReference.owningThread(),
   private val _referenceType: ReferenceType = _threadGroupReference.referenceType()
 ) extends PureObjectInfoProfile(scalaVirtualMachine, infoProducer, _threadGroupReference)(
   _virtualMachine = _virtualMachine,
-  _threadReference = _threadReference,
   _referenceType = _referenceType
 ) with ThreadGroupInfoProfile {
   /**
@@ -93,7 +90,6 @@ class PureThreadGroupInfoProfile(
     threadGroupReference
   )(
     virtualMachine = _virtualMachine,
-    threadReference = _threadReference,
     referenceType = _referenceType
   )
 

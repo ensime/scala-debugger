@@ -11,73 +11,57 @@ class GrabInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
   describe("GrabInfoProfile") {
-    describe("#tryObject(threadInfo, objectReference)") {
+    describe("#tryObject(objectReference)") {
       it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[ThreadInfoProfile, ObjectReference, ObjectInfoProfile]
+        val mockUnsafeMethod = mockFunction[ObjectReference, ObjectInfoProfile]
 
         val grabInfoProfile = new TestGrabInfoProfile {
           override def `object`(
-            threadInfo: ThreadInfoProfile,
             objectReference: ObjectReference
-          ): ObjectInfoProfile = mockUnsafeMethod(
-            threadInfo,
-            objectReference
-          )
+          ): ObjectInfoProfile = mockUnsafeMethod(objectReference)
         }
 
-        val a1 = mock[ThreadInfoProfile]
-        val a2 = mock[ObjectReference]
+        val a1 = mock[ObjectReference]
         val r = mock[ObjectInfoProfile]
-        mockUnsafeMethod.expects(a1, a2).returning(r).once()
-        grabInfoProfile.tryObject(a1, a2).get should be (r)
+        mockUnsafeMethod.expects(a1).returning(r).once()
+        grabInfoProfile.tryObject(a1).get should be (r)
       }
     }
 
     describe("#object(threadInfo, objectReference)") {
       it("should invoke `object`(threadReference, objectReference)") {
-        val mockUnsafeMethod = mockFunction[ThreadReference, ObjectReference, ObjectInfoProfile]
+        val mockUnsafeMethod = mockFunction[ObjectReference, ObjectInfoProfile]
 
         val grabInfoProfile = new TestGrabInfoProfile {
           override def `object`(
-            threadReference: ThreadReference,
             objectReference: ObjectReference
           ): ObjectInfoProfile = mockUnsafeMethod(
-            threadReference,
             objectReference
           )
         }
 
-        val a1 = mock[ThreadInfoProfile]
-        val a2 = mock[ObjectReference]
+        val a1 = mock[ObjectReference]
         val r = mock[ObjectInfoProfile]
 
-        val b1 = mock[ThreadReference]
-        (a1.toJdiInstance _).expects().returning(b1).once()
-
-        mockUnsafeMethod.expects(b1, a2).returning(r).once()
-        grabInfoProfile.tryObject(a1, a2).get should be (r)
+        mockUnsafeMethod.expects(a1).returning(r).once()
+        grabInfoProfile.tryObject(a1).get should be (r)
       }
     }
 
     describe("#tryObject(threadReference, objectReference)") {
       it("should wrap the unsafe call in a Try") {
-        val mockUnsafeMethod = mockFunction[ThreadReference, ObjectReference, ObjectInfoProfile]
+        val mockUnsafeMethod = mockFunction[ObjectReference, ObjectInfoProfile]
 
         val grabInfoProfile = new TestGrabInfoProfile {
           override def `object`(
-            threadReference: ThreadReference,
             objectReference: ObjectReference
-          ): ObjectInfoProfile = mockUnsafeMethod(
-            threadReference,
-            objectReference
-          )
+          ): ObjectInfoProfile = mockUnsafeMethod(objectReference)
         }
 
-        val a1 = mock[ThreadReference]
-        val a2 = mock[ObjectReference]
+        val a1 = mock[ObjectReference]
         val r = mock[ObjectInfoProfile]
-        mockUnsafeMethod.expects(a1, a2).returning(r).once()
-        grabInfoProfile.tryObject(a1, a2).get should be (r)
+        mockUnsafeMethod.expects(a1).returning(r).once()
+        grabInfoProfile.tryObject(a1).get should be (r)
       }
     }
 

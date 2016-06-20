@@ -16,8 +16,6 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  * @param _stringReference The reference to the underlying JDI string
  * @param _virtualMachine The virtual machine used to mirror local values on
  *                       the remote JVM
- * @param _threadReference The thread associated with the string (for method
- *                        invocation)
  * @param _referenceType The reference type for this array
  */
 class PureStringInfoProfile(
@@ -26,11 +24,9 @@ class PureStringInfoProfile(
   private val _stringReference: StringReference
 )(
   override protected val _virtualMachine: VirtualMachine = _stringReference.virtualMachine(),
-  private val _threadReference: ThreadReference = _stringReference.owningThread(),
   private val _referenceType: ReferenceType = _stringReference.referenceType()
 ) extends PureObjectInfoProfile(scalaVirtualMachine, infoProducer, _stringReference)(
   _virtualMachine = _virtualMachine,
-  _threadReference = _threadReference,
   _referenceType = _referenceType
 ) with StringInfoProfile {
   /**

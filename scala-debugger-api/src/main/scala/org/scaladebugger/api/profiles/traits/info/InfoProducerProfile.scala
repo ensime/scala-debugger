@@ -17,7 +17,6 @@ trait InfoProducerProfile {
     arrayReference: ArrayReference
   )(
     virtualMachine: VirtualMachine = scalaVirtualMachine.underlyingVirtualMachine,
-    threadReference: ThreadReference = arrayReference.owningThread(),
     referenceType: ReferenceType = arrayReference.referenceType()
   ): ArrayInfoProfile
 
@@ -26,7 +25,6 @@ trait InfoProducerProfile {
     objectReference: ObjectReference
   )(
     virtualMachine: VirtualMachine = scalaVirtualMachine.underlyingVirtualMachine,
-    threadReference: ThreadReference = objectReference.owningThread(),
     referenceType: ReferenceType = objectReference.referenceType()
   ): ObjectInfoProfile
 
@@ -62,7 +60,6 @@ trait InfoProducerProfile {
     threadGroupReference: ThreadGroupReference
   )(
     virtualMachine: VirtualMachine = scalaVirtualMachine.underlyingVirtualMachine,
-    threadReference: ThreadReference = threadGroupReference.owningThread(),
     referenceType: ReferenceType = threadGroupReference.referenceType()
   ): ThreadGroupInfoProfile
 
@@ -96,7 +93,6 @@ trait InfoProducerProfile {
     classObjectReference: ClassObjectReference
   )(
     virtualMachine: VirtualMachine = scalaVirtualMachine.underlyingVirtualMachine,
-    threadReference: ThreadReference = classObjectReference.owningThread(),
     referenceType: ReferenceType = classObjectReference.referenceType()
   ): ClassObjectInfoProfile
 
@@ -105,7 +101,6 @@ trait InfoProducerProfile {
     classLoaderReference: ClassLoaderReference
   )(
     virtualMachine: VirtualMachine = scalaVirtualMachine.underlyingVirtualMachine,
-    threadReference: ThreadReference = classLoaderReference.owningThread(),
     referenceType: ReferenceType = classLoaderReference.referenceType()
   ): ClassLoaderInfoProfile
 
@@ -153,7 +148,6 @@ trait InfoProducerProfile {
     stringReference: StringReference
   )(
     virtualMachine: VirtualMachine = scalaVirtualMachine.underlyingVirtualMachine,
-    threadReference: ThreadReference = stringReference.owningThread(),
     referenceType: ReferenceType = stringReference.referenceType()
   ): StringInfoProfile
 

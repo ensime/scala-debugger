@@ -16,14 +16,12 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockInfoProducerProfile = mock[InfoProducerProfile]
   private val mockVirtualMachine = mock[VirtualMachine]
-  private val mockThreadReference = mock[ThreadReference]
   private val mockReferenceType = mock[ReferenceType]
   private val mockArrayReference = mock[ArrayReference]
   private val pureArrayInfoProfile = new PureArrayInfoProfile(
     mockScalaVirtualMachine, mockInfoProducerProfile, mockArrayReference
   )(
     _virtualMachine = mockVirtualMachine,
-    _threadReference = mockThreadReference,
     _referenceType = mockReferenceType
   ) {
     override protected def newTypeProfile(_type: Type): TypeInfoProfile =
@@ -86,7 +84,6 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
           mockScalaVirtualMachine, mockInfoProducerProfile, mockArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
-          _threadReference = mockThreadReference,
           _referenceType = mockReferenceType
         ) {
           override protected def newValueProfile(value: Value): ValueInfoProfile = {
@@ -111,7 +108,6 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
           mockScalaVirtualMachine, mockInfoProducerProfile, mockArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
-          _threadReference = mockThreadReference,
           _referenceType = mockReferenceType
         ) {
           override protected def newValueProfile(value: Value): ValueInfoProfile = {
@@ -138,7 +134,6 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
           mockScalaVirtualMachine, mockInfoProducerProfile, mockArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
-          _threadReference = mockThreadReference,
           _referenceType = mockReferenceType
         ) {
           override protected def newValueProfile(value: Value): ValueInfoProfile = {
@@ -198,7 +193,6 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
           mockScalaVirtualMachine, mockInfoProducerProfile, testArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
-          _threadReference = mockThreadReference,
           _referenceType = mockReferenceType
         )
 
@@ -233,7 +227,6 @@ class PureArrayInfoProfileSpec extends FunSpec with Matchers
           mockScalaVirtualMachine, mockInfoProducerProfile, testArrayReference
         )(
           _virtualMachine = mockVirtualMachine,
-          _threadReference = mockThreadReference,
           _referenceType = mockReferenceType
         )
 

@@ -147,7 +147,7 @@ object InfoTestClasses {
   class TestGrabInfoProfile extends GrabInfoProfile {
     override def threadGroup(threadGroupReference: ThreadGroupReference): ThreadGroupInfoProfile = throwException()
     override def threadGroups: Seq[ThreadGroupInfoProfile] = throwException()
-    override def `object`(threadReference: ThreadReference, objectReference: ObjectReference): ObjectInfoProfile = throwException()
+    override def `object`(objectReference: ObjectReference): ObjectInfoProfile = throwException()
     override def thread(threadReference: ThreadReference): ThreadInfoProfile = throwException()
     override def classes: Seq[ReferenceTypeInfoProfile] = throwException()
     override def threads: Seq[ThreadInfoProfile] = throwException()

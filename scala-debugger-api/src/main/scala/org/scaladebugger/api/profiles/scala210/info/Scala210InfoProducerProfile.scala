@@ -38,7 +38,6 @@ class Scala210InfoProducerProfile extends PureInfoProducerProfile {
     objectReference: ObjectReference
   )(
     virtualMachine: VirtualMachine,
-    threadReference: ThreadReference,
     referenceType: ReferenceType
   ): ObjectInfoProfile = new Scala210ObjectInfoProfile(
     scalaVirtualMachine,
@@ -46,7 +45,6 @@ class Scala210InfoProducerProfile extends PureInfoProducerProfile {
     objectReference
   )(
     _virtualMachine = virtualMachine,
-    _threadReference = threadReference,
     _referenceType = referenceType
   )
 }

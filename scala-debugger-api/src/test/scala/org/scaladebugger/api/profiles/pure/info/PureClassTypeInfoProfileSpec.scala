@@ -11,7 +11,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
   with ParallelTestExecution with MockFactory
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfoProfile]
-  private val mockNewObjectProfile = mockFunction[ObjectReference, ThreadReference, VirtualMachine, ObjectInfoProfile]
+  private val mockNewObjectProfile = mockFunction[ObjectReference, VirtualMachine, ObjectInfoProfile]
   private val mockNewInterfaceTypeProfile = mockFunction[InterfaceType, InterfaceTypeInfoProfile]
   private val mockNewClassTypeProfile = mockFunction[ClassType, ClassTypeInfoProfile]
   private val mockNewMethodProfile = mockFunction[Method, MethodInfoProfile]
@@ -29,11 +29,9 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
 
     override protected def newObjectProfile(
       objectReference: ObjectReference,
-      threadReference: ThreadReference,
       virtualMachine: VirtualMachine
     ): ObjectInfoProfile = mockNewObjectProfile(
       objectReference,
-      threadReference,
       virtualMachine
     )
 
@@ -483,11 +481,9 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
 
           override protected def newObjectProfile(
             objectReference: ObjectReference,
-            threadReference: ThreadReference,
             virtualMachine: VirtualMachine
           ): ObjectInfoProfile = mockNewObjectProfile(
             objectReference,
-            threadReference,
             virtualMachine
           )
         }
@@ -505,7 +501,6 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         // Profile is created for return value
         mockNewObjectProfile.expects(
           mockObjectReference,
-          mockThread,
           mockVirtualMachine
         ).returning(expected).once()
 
@@ -548,11 +543,9 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
 
           override protected def newObjectProfile(
             objectReference: ObjectReference,
-            threadReference: ThreadReference,
             virtualMachine: VirtualMachine
           ): ObjectInfoProfile = mockNewObjectProfile(
             objectReference,
-            threadReference,
             virtualMachine
           )
         }
@@ -575,7 +568,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
         ).returning(mockObjectReference).once()
 
         // Profile is created for return value
-        mockNewObjectProfile.expects(*, *, *).once()
+        mockNewObjectProfile.expects(*, *).once()
 
         pureClassTypeInfoProfile.newInstance(
           mockThreadInfo,
@@ -605,7 +598,7 @@ class PureClassTypeInfoProfileSpec extends FunSpec with Matchers
           .returning(mockObjectReference).once()
 
         // Profile is created for return value
-        mockNewObjectProfile.expects(*, *, *).returning(null).once()
+        mockNewObjectProfile.expects(*, *).returning(null).once()
 
         pureClassTypeInfoProfile.newInstance(
           mockThreadInfo,
