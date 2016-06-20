@@ -106,6 +106,7 @@ class ListeningDebugger private[api] (
    * Starts the debugger, resulting in opening the specified socket to listen
    * for remote JVM connections.
    *
+   * @param defaultProfile The default profile to use with the new VMs
    * @param startProcessingEvents If true, events are immediately processed by
    *                              the VM as soon as it is connected
    * @param newVirtualMachineFunc The function to be invoked once per JVM that
@@ -113,6 +114,7 @@ class ListeningDebugger private[api] (
    * @tparam T The return type of the callback function
    */
   override def start[T](
+    defaultProfile: String,
     startProcessingEvents: Boolean,
     newVirtualMachineFunc: ScalaVirtualMachine => T
   ): Unit = {
@@ -148,6 +150,7 @@ class ListeningDebugger private[api] (
       listenTask(
         connector,
         arguments,
+        defaultProfile,
         startProcessingEvents,
         newVirtualMachineFunc
       )
@@ -199,6 +202,7 @@ class ListeningDebugger private[api] (
    * @param connector The connector to use when listening
    * @param arguments The arguments for the connector to use when accepting
    *                  new connections
+   * @param defaultProfile The default profile to use with the virtual machine
    * @param startProcessingEvents If true, events are immediately processed by
    *                              the VM as soon as it is connected
    * @param newVirtualMachineFunc The callback for the new ScalaVirtualMachine
@@ -207,6 +211,7 @@ class ListeningDebugger private[api] (
   protected def listenTask[T](
     connector: ListeningConnector,
     arguments: java.util.Map[String, Connector.Argument],
+    defaultProfile: String,
     startProcessingEvents: Boolean,
     newVirtualMachineFunc: StandardScalaVirtualMachine => T
   ): Unit = {
@@ -222,6 +227,7 @@ class ListeningDebugger private[api] (
       scalaVirtualMachines :+= s
       getPendingScalaVirtualMachines.foreach(s.processPendingRequests)
       s.initialize(
+        defaultProfile = defaultProfile,
         startProcessingEvents = startProcessingEvents
       )
     })

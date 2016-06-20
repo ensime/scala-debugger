@@ -85,9 +85,13 @@ class StandardScalaVirtualMachine(
   /**
    * Initializes the ScalaVirtualMachine system.
    *
+   * @param defaultProfile The default profile to use with the virtual machine
    * @param startProcessingEvents If true, immediately starts processing events
    */
-  override def initialize(startProcessingEvents: Boolean = true): Unit = synchronized {
+  override def initialize(
+    defaultProfile: String,
+    startProcessingEvents: Boolean
+  ): Unit = synchronized {
     assert(!isInitialized, "Scala virtual machine already initialized!")
 
     logger.debug(vmString("Initializing Scala virtual machine!"))
@@ -96,12 +100,12 @@ class StandardScalaVirtualMachine(
     registerStandardProfiles()
 
     // Mark our default profile
-    this.use(PureDebugProfile.Name)
+    this.use(defaultProfile)
 
     logger.debug(vmString("Adding custom event handlers!"))
 
     // Mark start event to load all of our system classes
-    this.withProfile(PureDebugProfile.Name).getOrCreateVMStartRequest().foreach(_ => {
+    this.withProfile(defaultProfile).getOrCreateVMStartRequest().foreach(_ => {
       // Mark the VM as started
       started.set(true)
 
@@ -113,8 +117,7 @@ class StandardScalaVirtualMachine(
     })
 
     // Mark class prepare events to signal refreshing our classes
-    this.withProfile(PureDebugProfile.Name)
-      .getOrCreateClassPrepareRequest().foreach(classPrepareEvent => {
+    this.withProfile(defaultProfile).getOrCreateClassPrepareRequest().foreach(classPrepareEvent => {
       val referenceType = classPrepareEvent.referenceType()
       val referenceTypeName = referenceType.name()
       val fileName =

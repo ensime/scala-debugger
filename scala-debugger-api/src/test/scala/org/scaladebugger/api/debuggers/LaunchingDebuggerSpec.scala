@@ -191,7 +191,8 @@ class LaunchingDebuggerSpec extends FunSpec with Matchers
         (mockScalaVirtualMachine.processPendingRequests _)
           .expects(expected).once()
 
-        (mockScalaVirtualMachine.initialize _).expects(true).once()
+        (mockScalaVirtualMachine.initialize _)
+          .expects(Debugger.DefaultProfileName, true).once()
 
         launchingDebugger.start(_ => {})
       }
@@ -224,7 +225,8 @@ class LaunchingDebuggerSpec extends FunSpec with Matchers
         mockNewScalaVirtualMachineFunc.expects(mockVirtualMachine, *, *)
           .returning(mockScalaVirtualMachine).once()
 
-        (mockScalaVirtualMachine.initialize _).expects(true).once()
+        (mockScalaVirtualMachine.initialize _)
+          .expects(Debugger.DefaultProfileName, true).once()
 
         launchingDebugger.start(_ => {})
       }

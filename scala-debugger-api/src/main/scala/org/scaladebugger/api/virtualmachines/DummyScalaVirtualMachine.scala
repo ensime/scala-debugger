@@ -21,9 +21,13 @@ class DummyScalaVirtualMachine(
   /**
    * Initializes the ScalaVirtualMachine system.
    *
+   * @param defaultProfile The default profile to use with the virtual machine
    * @param startProcessingEvents If true, immediately starts processing events
    */
-  override def initialize(startProcessingEvents: Boolean = true): Unit = {}
+  override def initialize(
+    defaultProfile: String,
+    startProcessingEvents: Boolean
+  ): Unit = use(defaultProfile)
 
   /**
    * Starts actively processing events from the remote virtual machine.
@@ -122,13 +126,17 @@ class DummyScalaVirtualMachine(
 }
 
 object DummyScalaVirtualMachine {
+  /** Represents the default profile used by new instances of the dummy vm. */
+  val DefaultProfileName = PureDebugProfile.Name
+
   /**
    * Creates a new instance of the dummy Scala virtual machine using a new
    * instance of the default profile manager.
    *
+   * @param defaultProfile The default profile to use with the dummy vm
    * @return The new dummy Scala virtual machine
    */
-  def newInstance(): DummyScalaVirtualMachine = {
+  def newInstance(defaultProfile: String): DummyScalaVirtualMachine = {
     val managerContainer = ManagerContainer.usingDummyManagers()
 
     val dummyScalaVirtualMachine = new DummyScalaVirtualMachine(
@@ -136,8 +144,16 @@ object DummyScalaVirtualMachine {
       managerContainer
     )
 
-    dummyScalaVirtualMachine.use(PureDebugProfile.Name)
+    dummyScalaVirtualMachine.use(defaultProfile)
 
     dummyScalaVirtualMachine
   }
+
+  /**
+   * Creates a new instance of the dummy Scala virtual machine using a new
+   * instance of the default profile manager. Uses the default profile.
+   *
+   * @return The new dummy Scala virtual machine
+   */
+  def newInstance(): DummyScalaVirtualMachine = newInstance(DefaultProfileName)
 }

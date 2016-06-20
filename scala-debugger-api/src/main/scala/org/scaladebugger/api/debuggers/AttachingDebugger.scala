@@ -77,6 +77,7 @@ class AttachingDebugger private[api] (
   /**
    * Starts the debugger, resulting in attaching a new process to connect to.
    *
+   * @param defaultProfile The default profile to use with the new VMs
    * @param startProcessingEvents If true, events are immediately processed by
    *                              the VM as soon as it is connected
    * @param newVirtualMachineFunc The function to be invoked once the process
@@ -84,6 +85,7 @@ class AttachingDebugger private[api] (
    * @tparam T The return type of the callback function
    */
   override def start[T](
+    defaultProfile: String,
     startProcessingEvents: Boolean,
     newVirtualMachineFunc: ScalaVirtualMachine => T
   ): Unit = {
@@ -122,10 +124,12 @@ class AttachingDebugger private[api] (
       loopingTaskRunner
     ))
 
+
     getPendingScalaVirtualMachines.foreach(
       scalaVirtualMachine.get.processPendingRequests
     )
     scalaVirtualMachine.get.initialize(
+      defaultProfile = defaultProfile,
       startProcessingEvents = startProcessingEvents
     )
     newVirtualMachineFunc(scalaVirtualMachine.get)

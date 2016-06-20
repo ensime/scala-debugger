@@ -4,6 +4,7 @@ package org.scaladebugger.api.virtualmachines
 import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.ProfileManager
+import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 
 /**
@@ -13,9 +14,13 @@ trait ScalaVirtualMachine extends SwappableDebugProfile with ProfileManager {
   /**
    * Initializes the ScalaVirtualMachine system.
    *
+   * @param defaultProfile The default profile to use with the virtual machine
    * @param startProcessingEvents If true, immediately starts processing events
    */
-  def initialize(startProcessingEvents: Boolean = true): Unit
+  def initialize(
+    defaultProfile: String = PureDebugProfile.Name,
+    startProcessingEvents: Boolean = true
+  ): Unit
 
   /**
    * Starts actively processing events from the remote virtual machine.

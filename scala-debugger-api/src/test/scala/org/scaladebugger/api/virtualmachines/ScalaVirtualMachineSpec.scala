@@ -29,7 +29,10 @@ class ScalaVirtualMachineSpec extends FunSpec with Matchers
       override def suspend(): Unit = {}
       override def stopProcessingEvents(): Unit = {}
       override def resume(): Unit = {}
-      override def initialize(startProcessingEvents: Boolean): Unit = {}
+      override def initialize(
+        defaultProfile: String,
+        startProcessingEvents: Boolean
+      ): Unit = {}
       override val underlyingVirtualMachine: VirtualMachine = null
       override def isStarted: Boolean = false
       override val uniqueId: String = ""

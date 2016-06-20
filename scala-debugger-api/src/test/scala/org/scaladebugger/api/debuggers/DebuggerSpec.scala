@@ -17,6 +17,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
     override def stop(): Unit = ???
     override def isRunning: Boolean = ???
     override def start[T](
+      defaultProfile: String,
       startProcessingEvents: Boolean,
       newVirtualMachineFunc: (ScalaVirtualMachine) => T
     ): Unit = ???
@@ -31,6 +32,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
 
         val debugger = new TestDebugger(new JDILoader()) {
           override def start[T](
+            defaultProfile: String,
             startProcessingEvents: Boolean,
             newVirtualMachineFunc: (ScalaVirtualMachine) => T
           ): Unit = newVMFunc = newVirtualMachineFunc
@@ -48,6 +50,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
 
         val debugger = new TestDebugger(new JDILoader()) {
           override def start[T](
+            defaultProfile: String,
             startProcessingEvents: Boolean,
             newVirtualMachineFunc: (ScalaVirtualMachine) => T
           ): Unit = newVMFunc = newVirtualMachineFunc
@@ -68,6 +71,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
 
         val debugger = new TestDebugger(new JDILoader()) {
           override def start[T](
+            defaultProfile: String,
             startProcessingEvents: Boolean,
             newVirtualMachineFunc: (ScalaVirtualMachine) => T
           ): Unit = newVirtualMachineFunc(mockScalaVirtualMachine)
@@ -83,6 +87,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
 
         val debugger = new TestDebugger(new JDILoader()) {
           override def start[T](
+            defaultProfile: String,
             startProcessingEvents: Boolean,
             newVirtualMachineFunc: (ScalaVirtualMachine) => T
           ): Unit = {}

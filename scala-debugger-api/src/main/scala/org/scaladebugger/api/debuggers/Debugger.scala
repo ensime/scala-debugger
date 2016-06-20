@@ -1,14 +1,22 @@
 package org.scaladebugger.api.debuggers
 import acyclic.file
-
 import java.util.concurrent.ConcurrentHashMap
 
-import org.scaladebugger.api.utils.{Logging, JDILoader}
+import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.utils.{JDILoader, Logging}
 import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Promise, Future}
+import scala.concurrent.{Await, Future, Promise}
+
+import Debugger._
+
+/** Represents the constants available to the debugger interface. */
+object Debugger {
+  /** Represents the default profile named used with new VMs. */
+  val DefaultProfileName: String = PureDebugProfile.Name
+}
 
 /**
  * Represents the generic interface that all debugger instances implement.
@@ -43,58 +51,49 @@ trait Debugger extends Logging {
   /**
    * Starts the debugger, performing any necessary setup and ending with
    * an initialized debugger that is or will be capable of connecting to one or
-   * more virtual machine instances.
+   * more virtual machine instances. Uses the default profile for new VMs.
    *
-   * @param newVirtualMachineFunc The function that will be called when a new
-   *                              virtual machine connection is created as a
-   *                              result of this debugger
-   * @tparam T The return type of the callback function
+   * @note Returned Scala virtual machine represents next connected Scala
+   *       virtual machine. All other Scala virtual machines connected after
+   *       the first one will be ignored.
+   *
+   * @param timeout The maximum time to wait for the JVM to connect
+   *
+   * @return The connected Scala virtual machine
    */
-  def start[T](newVirtualMachineFunc: ScalaVirtualMachine => T): Unit = {
-    start(startProcessingEvents = true, newVirtualMachineFunc)
-  }
+  def start(timeout: Duration): ScalaVirtualMachine = start(
+    timeout = timeout,
+    defaultProfile = DefaultProfileName,
+    startProcessingEvents = true
+  )
 
   /**
    * Starts the debugger, performing any necessary setup and ending with
    * an initialized debugger that is or will be capable of connecting to one or
    * more virtual machine instances.
    *
-   * @note Returned future represents next connected Scala virtual machine. All
-   *       other Scala virtual machines connected after the first one will be
-   *       ignored.
+   * @note Returned Scala virtual machine represents next connected Scala
+   *       virtual machine. All other Scala virtual machines connected after
+   *       the first one will be ignored.
    *
-   * @param startProcessingEvents If true, events are immediately processed by
-   *                              the VM as soon as it is connected
+   * @param timeout The maximum time to wait for the JVM to connect
+   * @param defaultProfile The default profile to use with the new VMs
    *
-   * @return The future representing the connected Scala virtual machine
+   * @return The connected Scala virtual machine
    */
-  def start(startProcessingEvents: Boolean): Future[ScalaVirtualMachine] = {
-    val promise = Promise[ScalaVirtualMachine]()
-
-    start(startProcessingEvents, s => if (!promise.trySuccess(s)) logger.warn(
-      s"Unable to accept JVM ${s.uniqueId} as future already completed!"
-    ))
-
-    promise.future
-  }
+  def start(
+    timeout: Duration,
+    defaultProfile: String
+  ): ScalaVirtualMachine = start(
+    timeout = timeout,
+    defaultProfile = defaultProfile,
+    startProcessingEvents = true
+  )
 
   /**
    * Starts the debugger, performing any necessary setup and ending with
    * an initialized debugger that is or will be capable of connecting to one or
-   * more virtual machine instances.
-   *
-   * @note Returned future represents next connected Scala virtual machine. All
-   *       other Scala virtual machines connected after the first one will be
-   *       ignored.
-   *
-   * @return The future representing the connected Scala virtual machine
-   */
-  def start(): Future[ScalaVirtualMachine] = start(startProcessingEvents = true)
-
-  /**
-   * Starts the debugger, performing any necessary setup and ending with
-   * an initialized debugger that is or will be capable of connecting to one or
-   * more virtual machine instances.
+   * more virtual machine instances. Uses the default profile for new VMs.
    *
    * @note Returned Scala virtual machine represents next connected Scala
    *       virtual machine. All other Scala virtual machines connected after
@@ -109,7 +108,11 @@ trait Debugger extends Logging {
   def start(
     timeout: Duration,
     startProcessingEvents: Boolean
-  ): ScalaVirtualMachine = Await.result(start(startProcessingEvents), timeout)
+  ): ScalaVirtualMachine = start(
+    timeout = timeout,
+    defaultProfile = DefaultProfileName,
+    startProcessingEvents = startProcessingEvents
+  )
 
   /**
    * Starts the debugger, performing any necessary setup and ending with
@@ -121,16 +124,146 @@ trait Debugger extends Logging {
    *       the first one will be ignored.
    *
    * @param timeout The maximum time to wait for the JVM to connect
+   * @param defaultProfile The default profile to use with the new VMs
+   * @param startProcessingEvents If true, events are immediately processed by
+   *                              the VM as soon as it is connected
    *
    * @return The connected Scala virtual machine
    */
-  def start(timeout: Duration): ScalaVirtualMachine =
-    start(timeout, startProcessingEvents = true)
+  def start(
+    timeout: Duration,
+    defaultProfile: String,
+    startProcessingEvents: Boolean
+  ): ScalaVirtualMachine = Await.result(start(
+    defaultProfile = defaultProfile,
+    startProcessingEvents = startProcessingEvents
+  ), timeout)
+
+  /**
+   * Starts the debugger, performing any necessary setup and ending with
+   * an initialized debugger that is or will be capable of connecting to one or
+   * more virtual machine instances. Uses the default profile for new VMs.
+   *
+   * @note Returned future represents next connected Scala virtual machine. All
+   *       other Scala virtual machines connected after the first one will be
+   *       ignored.
+   *
+   * @return The future representing the connected Scala virtual machine
+   */
+  def start(): Future[ScalaVirtualMachine] = start(
+    defaultProfile = DefaultProfileName,
+    startProcessingEvents = true
+  )
 
   /**
    * Starts the debugger, performing any necessary setup and ending with
    * an initialized debugger that is or will be capable of connecting to one or
    * more virtual machine instances.
+   *
+   * @note Returned future represents next connected Scala virtual machine. All
+   *       other Scala virtual machines connected after the first one will be
+   *       ignored.
+   *
+   * @param defaultProfile The default profile to use with the new VMs
+   * @return The future representing the connected Scala virtual machine
+   */
+  def start(defaultProfile: String): Future[ScalaVirtualMachine] = start(
+    defaultProfile = defaultProfile,
+    startProcessingEvents = true
+  )
+
+  /**
+   * Starts the debugger, performing any necessary setup and ending with
+   * an initialized debugger that is or will be capable of connecting to one or
+   * more virtual machine instances. Uses the default profile for new VMs.
+   *
+   * @note Returned future represents next connected Scala virtual machine. All
+   *       other Scala virtual machines connected after the first one will be
+   *       ignored.
+   *
+   * @param startProcessingEvents If true, events are immediately processed by
+   *                              the VM as soon as it is connected
+   * @return The future representing the connected Scala virtual machine
+   */
+  def start(startProcessingEvents: Boolean): Future[ScalaVirtualMachine] = start(
+    defaultProfile = DefaultProfileName,
+    startProcessingEvents = startProcessingEvents
+  )
+
+  /**
+   * Starts the debugger, performing any necessary setup and ending with
+   * an initialized debugger that is or will be capable of connecting to one or
+   * more virtual machine instances.
+   *
+   * @note Returned future represents next connected Scala virtual machine. All
+   *       other Scala virtual machines connected after the first one will be
+   *       ignored.
+   *
+   * @param defaultProfile The default profile to use with the new VMs
+   * @param startProcessingEvents If true, events are immediately processed by
+   *                              the VM as soon as it is connected
+   *
+   * @return The future representing the connected Scala virtual machine
+   */
+  def start(
+    defaultProfile: String,
+    startProcessingEvents: Boolean
+  ): Future[ScalaVirtualMachine] = {
+    val promise = Promise[ScalaVirtualMachine]()
+
+    start(
+      defaultProfile = defaultProfile,
+      startProcessingEvents = startProcessingEvents,
+      newVirtualMachineFunc = s => if (!promise.trySuccess(s)) logger.warn(
+        s"Unable to accept JVM ${s.uniqueId} as future already completed!"
+      )
+    )
+
+    promise.future
+  }
+
+  /**
+   * Starts the debugger, performing any necessary setup and ending with
+   * an initialized debugger that is or will be capable of connecting to one or
+   * more virtual machine instances. Uses the default profile for new VMs.
+   *
+   * @param newVirtualMachineFunc The function that will be called when a new
+   *                              virtual machine connection is created as a
+   *                              result of this debugger
+   * @tparam T The return type of the callback function
+   */
+  def start[T](newVirtualMachineFunc: ScalaVirtualMachine => T): Unit = {
+    start(
+      defaultProfile = DefaultProfileName,
+      startProcessingEvents = true,
+      newVirtualMachineFunc
+    )
+  }
+
+  /**
+   * Starts the debugger, performing any necessary setup and ending with
+   * an initialized debugger that is or will be capable of connecting to one or
+   * more virtual machine instances.
+   *
+   * @param defaultProfile The default profile to use with the new VMs
+   * @param newVirtualMachineFunc The function that will be called when a new
+   *                              virtual machine connection is created as a
+   *                              result of this debugger
+   * @tparam T The return type of the callback function
+   */
+  def start[T](
+    defaultProfile: String,
+    newVirtualMachineFunc: ScalaVirtualMachine => T
+  ): Unit = start(
+    defaultProfile = defaultProfile,
+    startProcessingEvents = true,
+    newVirtualMachineFunc = newVirtualMachineFunc
+  )
+
+  /**
+   * Starts the debugger, performing any necessary setup and ending with
+   * an initialized debugger that is or will be capable of connecting to one or
+   * more virtual machine instances. Uses the default profile for new VMs.
    *
    * @param startProcessingEvents If true, events are immediately processed by
    *                              the VM as soon as it is connected
@@ -140,6 +273,29 @@ trait Debugger extends Logging {
    * @tparam T The return type of the callback function
    */
   def start[T](
+    startProcessingEvents: Boolean,
+    newVirtualMachineFunc: ScalaVirtualMachine => T
+  ): Unit = start(
+    defaultProfile = DefaultProfileName,
+    startProcessingEvents = startProcessingEvents,
+    newVirtualMachineFunc = newVirtualMachineFunc
+  )
+
+  /**
+   * Starts the debugger, performing any necessary setup and ending with
+   * an initialized debugger that is or will be capable of connecting to one or
+   * more virtual machine instances.
+   *
+   * @param defaultProfile The default profile to use with the new VMs
+   * @param startProcessingEvents If true, events are immediately processed by
+   *                              the VM as soon as it is connected
+   * @param newVirtualMachineFunc The function that will be called when a new
+   *                              virtual machine connection is created as a
+   *                              result of this debugger
+   * @tparam T The return type of the callback function
+   */
+  def start[T](
+    defaultProfile: String,
     startProcessingEvents: Boolean,
     newVirtualMachineFunc: ScalaVirtualMachine => T
   ): Unit

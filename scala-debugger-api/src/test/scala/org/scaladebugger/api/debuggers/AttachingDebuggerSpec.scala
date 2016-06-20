@@ -183,7 +183,8 @@ class AttachingDebuggerSpec extends FunSpec with Matchers
         (mockScalaVirtualMachine.processPendingRequests _)
           .expects(expected).once()
 
-        (mockScalaVirtualMachine.initialize _).expects(true).once()
+        (mockScalaVirtualMachine.initialize _)
+          .expects(Debugger.DefaultProfileName, true).once()
 
         attachingDebugger.start(_ => {})
       }
@@ -214,7 +215,8 @@ class AttachingDebuggerSpec extends FunSpec with Matchers
         mockNewScalaVirtualMachineFunc.expects(mockVirtualMachine, *, *)
           .returning(mockScalaVirtualMachine).once()
 
-        (mockScalaVirtualMachine.initialize _).expects(true).once()
+        (mockScalaVirtualMachine.initialize _)
+          .expects(Debugger.DefaultProfileName, true).once()
 
         attachingDebugger.start(_ => {})
       }

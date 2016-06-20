@@ -54,11 +54,13 @@ class ListeningDebuggerSpec extends FunSpec with Matchers
     override def listenTask[T](
       connector: ListeningConnector,
       arguments: util.Map[String, Argument],
+      defaultProfile: String,
       startProcessingEvents: Boolean,
       newVirtualMachineFunc: (StandardScalaVirtualMachine) => T
     ): Unit = super.listenTask(
       connector,
       arguments,
+      defaultProfile,
       startProcessingEvents,
       newVirtualMachineFunc
     )
@@ -269,6 +271,7 @@ class ListeningDebuggerSpec extends FunSpec with Matchers
         listeningDebugger.listenTask(
           mockListeningConnector,
           mockArguments,
+          "",
           true,
           mockCallback
         )
@@ -297,6 +300,7 @@ class ListeningDebuggerSpec extends FunSpec with Matchers
         listeningDebugger.listenTask(
           mockListeningConnector,
           mockArguments,
+          "",
           true,
           mockCallback
         )
@@ -324,11 +328,13 @@ class ListeningDebuggerSpec extends FunSpec with Matchers
         (mockScalaVirtualMachine.processPendingRequests _)
           .expects(expected).once()
 
-        (mockScalaVirtualMachine.initialize _).expects(true).once()
+        (mockScalaVirtualMachine.initialize _)
+          .expects(Debugger.DefaultProfileName, true).once()
 
         listeningDebugger.listenTask(
           mockListeningConnector,
           mockArguments,
+          Debugger.DefaultProfileName,
           true,
           _ => {}
         )
@@ -351,11 +357,13 @@ class ListeningDebuggerSpec extends FunSpec with Matchers
         mockNewScalaVirtualMachineFunc.expects(mockVirtualMachine, *, *)
           .returning(mockScalaVirtualMachine).once()
 
-        (mockScalaVirtualMachine.initialize _).expects(true).once()
+        (mockScalaVirtualMachine.initialize _)
+          .expects(Debugger.DefaultProfileName, true).once()
 
         listeningDebugger.listenTask(
           mockListeningConnector,
           mockArguments,
+          Debugger.DefaultProfileName,
           true,
           _ => {}
         )
@@ -389,6 +397,7 @@ class ListeningDebuggerSpec extends FunSpec with Matchers
         listeningDebugger.listenTask(
           mockListeningConnector,
           mockArguments,
+          "",
           true,
           mockCallback
         )
@@ -430,6 +439,7 @@ class ListeningDebuggerSpec extends FunSpec with Matchers
         listeningDebugger.listenTask(
           mockListeningConnector,
           mockArguments,
+          "",
           true,
           _ => {}
         )
