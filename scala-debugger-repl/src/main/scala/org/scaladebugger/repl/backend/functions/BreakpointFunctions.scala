@@ -3,7 +3,6 @@ import acyclic.file
 
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.repl.backend.StateManager
-import org.scaladebugger.api.dsl.Implicits._
 
 /**
  * Represents a collection of functions for managing breakpoints.
@@ -26,7 +25,7 @@ class BreakpointFunctions(private val stateManager: StateManager) {
     )
 
     jvms.foreach(s => {
-      s.onUnsafeBreakpoint(file, line, NoResume).foreach(e => {
+      s.getOrCreateBreakpointRequest(file, line, NoResume).foreach(e => {
         val t = e.thread()
         val loc = e.location()
         val locString = s"${loc.sourceName()}:${loc.lineNumber()}"
@@ -60,20 +59,10 @@ class BreakpointFunctions(private val stateManager: StateManager) {
 
     if (file.nonEmpty ^ line.nonEmpty) println("Missing file or line argument!")
 
-    import org.scaladebugger.api.profiles.Constants.CloseRemoveAll
     if (file.nonEmpty && line.nonEmpty) {
-      jvms.foreach(s => {
-        s.breakpointRequests
-          .filter(b => b.fileName == file.get && b.lineNumber == line.get)
-          .map(b => s.onUnsafeBreakpoint(b.fileName, b.lineNumber))
-          .foreach(_.close(data = CloseRemoveAll))
-      })
+      jvms.foreach(_.removeBreakpointRequests(file.get, line.get))
     } else if (file.isEmpty && line.isEmpty) {
-      jvms.foreach(s => {
-        s.breakpointRequests
-          .map(b => s.onUnsafeBreakpoint(b.fileName, b.lineNumber))
-          .foreach(_.close(data = CloseRemoveAll))
-      })
+      jvms.foreach(_.removeAllBreakpointRequests())
     }
   }
 }

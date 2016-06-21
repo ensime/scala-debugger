@@ -25,7 +25,7 @@ class ExpressionFunctions(private val stateManager: StateManager) {
       throw new RuntimeException("Missing expression argument!")
     )
 
-    thread.foreach(t => {
+    thread..foreach(t => {
       t.suspend()
 
       // TODO: Support expressions other than variable names

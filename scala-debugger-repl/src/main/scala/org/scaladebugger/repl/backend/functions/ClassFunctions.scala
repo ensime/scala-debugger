@@ -24,8 +24,7 @@ class ClassFunctions(private val stateManager: StateManager) {
       // Wildcard matching
       val r = Regex.wildcardString(filter)
 
-      s.lowlevel.classManager.allClasses.map(_.name()).filter(_.matches(r))
-        .foreach(println)
+      s.classes.map(_.name).filter(_.matches(r)).foreach(println)
     })
   }
 
@@ -42,11 +41,11 @@ class ClassFunctions(private val stateManager: StateManager) {
     jvms.foreach(s => {
       println(s"<= ${s.uniqueId} =>")
 
-      import scala.collection.JavaConverters._
-      s.lowlevel.classManager.allClasses
-        .find(_.name() == className)
-        .map(_.allMethods().asScala)
-        .foreach(_.foreach(println))
+      s.classOption(className)
+        .map(_.allMethods)
+        .map(_.map(_.name))
+        .map(_.mkString("\n"))
+        .foreach(println)
     })
   }
 
@@ -63,11 +62,11 @@ class ClassFunctions(private val stateManager: StateManager) {
     jvms.foreach(s => {
       println(s"<= ${s.uniqueId} =>")
 
-      import scala.collection.JavaConverters._
-      s.lowlevel.classManager.allClasses
-        .find(_.name() == className)
-        .map(_.allFields().asScala)
-        .foreach(_.foreach(println))
+      s.classOption(className)
+        .map(_.allFields)
+        .map(_.map(_.name))
+        .map(_.mkString("\n"))
+        .foreach(println)
     })
   }
 }

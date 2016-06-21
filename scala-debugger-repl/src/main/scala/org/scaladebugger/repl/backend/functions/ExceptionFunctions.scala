@@ -5,7 +5,6 @@ import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.lowlevel.requests.filters.ClassInclusionFilter
 import org.scaladebugger.repl.backend.StateManager
 import org.scaladebugger.repl.backend.utils.Regex
-import org.scaladebugger.api.dsl.Implicits._
 
 /**
  * Represents a collection of functions for managing threads.
@@ -98,27 +97,20 @@ class ExceptionFunctions(private val stateManager: StateManager) {
       .map(ClassInclusionFilter.apply)
       .toSeq
 
-    import org.scaladebugger.api.profiles.Constants.CloseRemoveAll
     jvms.foreach(s => {
-      if (exceptionName.isEmpty) {
-        s.onUnsafeAllExceptions(
+      if (exceptionName.isEmpty || extraArgs.nonEmpty) {
+        s.removeOnlyAllExceptionsRequestWithArgs(
           notifyCaught = notifyCaught,
           notifyUncaught = notifyUncaught,
           extraArgs: _*
-        ).close(data = CloseRemoveAll)
-      } else if (extraArgs.nonEmpty) {
-        s.onUnsafeAllExceptions(
-          notifyCaught = notifyCaught,
-          notifyUncaught = notifyUncaught,
-          extraArgs: _*
-        ).close(data = CloseRemoveAll)
+        )
       } else {
-        s.onUnsafeException(
+        s.removeExceptionRequestWithArgs(
           exceptionName = exceptionName.get,
           notifyCaught = notifyCaught,
           notifyUncaught = notifyUncaught,
           extraArgs: _*
-        ).close(data = CloseRemoveAll)
+        )
       }
     })
   }
@@ -151,21 +143,21 @@ class ExceptionFunctions(private val stateManager: StateManager) {
 
       val exceptionPipeline = if (exceptionName.isEmpty) {
         println(s"Watching for all $notifyText exceptions")
-        s.onUnsafeAllExceptions(
+        s.getOrCreateAllExceptionsRequest(
           notifyCaught = notifyCaught,
           notifyUncaught = notifyUncaught,
           NoResume +: extraArgs: _*
         )
       } else if (extraArgs.nonEmpty) {
         println(s"Watching for $notifyText exception pattern ${exceptionName.get}")
-        s.onUnsafeAllExceptions(
+        s.getOrCreateAllExceptionsRequest(
           notifyCaught = notifyCaught,
           notifyUncaught = notifyUncaught,
           NoResume +: extraArgs: _*
         )
       } else {
         println(s"Watching for $notifyText exception ${exceptionName.get}")
-        s.onUnsafeException(
+        s.getOrCreateExceptionRequest(
           exceptionName.get,
           notifyCaught = notifyCaught,
           notifyUncaught = notifyUncaught,
