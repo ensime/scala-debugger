@@ -25,17 +25,13 @@ class ExpressionFunctions(private val stateManager: StateManager) {
       throw new RuntimeException("Missing expression argument!")
     )
 
-    thread..foreach(t => {
+    thread.foreach(t => {
       t.suspend()
 
       // TODO: Support expressions other than variable names
       val variableName = expression
 
-      import org.scaladebugger.api.lowlevel.wrappers.Implicits._
-      val objMap = t.frame(0).localVisibleVariableMap()
-      val value = objMap.find(_._1.name() == variableName).map(_._2.value())
-
-      value.foreach(println)
+      t.findVariableByName(variableName).map(_.toPrettyString).foreach(println)
 
       t.resume()
     })
@@ -65,18 +61,13 @@ class ExpressionFunctions(private val stateManager: StateManager) {
     if (thread.isEmpty) println("No thread selected!")
 
     thread.foreach(t => {
-      if (!t.isSuspended) println("Active thread is not suspended!")
+      if (!t.status.isSuspended) println("Active thread is not suspended!")
       else {
-        import org.scaladebugger.api.lowlevel.wrappers.Implicits._
-        val fields = t.frame(0).thisVisibleFieldMap()
-        val obj = t.frame(0).localVisibleVariableMap()
-
         println("FIELDS:")
-        fields.map(t => (t._1.name(), new ValueWrapper(t._2).toString(5)))
-          .foreach(println)
+        t.topFrame.fieldVariables.map(_.toPrettyString).foreach(println)
 
         println("LOCALS:")
-        obj.map(t => (t._1.name(), t._2.value())).foreach(println)
+        t.topFrame.localVariables.map(_.toPrettyString).foreach(println)
       }
     })
   }

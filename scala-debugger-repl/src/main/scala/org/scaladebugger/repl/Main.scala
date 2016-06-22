@@ -109,8 +109,8 @@ object Main {
         val debuggerInfo =
           if (s.activeDebugger.exists(_.isRunning)) "Running" else "Idle"
 
-        val threadGroupInfo = s.activeThreadGroup.map(_.name()).getOrElse("-")
-        val threadInfo = s.activeThread.map(_.name()).getOrElse("-")
+        val threadGroupInfo = s.activeThreadGroup.map(_.name).getOrElse("-")
+        val threadInfo = s.activeThread.map(_.name).getOrElse("-")
 
         s"$debuggerInfo:$threadGroupInfo:$threadInfo> "
       })

@@ -1,10 +1,10 @@
 package org.scaladebugger.repl.backend
 import acyclic.file
-
 import java.net.URI
 
 import com.sun.jdi.{ThreadGroupReference, ThreadReference}
 import org.scaladebugger.api.debuggers.Debugger
+import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfoProfile, ThreadInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -86,7 +86,7 @@ class StateManager {
    *
    * @param thread The thread to serve as the active thread
    */
-  def updateActiveThread(thread: ThreadReference) = {
+  def updateActiveThread(thread: ThreadInfoProfile) = {
     updateState(state.copy(activeThread = Some(thread)))
   }
 
@@ -100,7 +100,7 @@ class StateManager {
    *
    * @param threadGroup The thread group to serve as the active thread group
    */
-  def updateActiveThreadGroup(threadGroup: ThreadGroupReference) = {
+  def updateActiveThreadGroup(threadGroup: ThreadGroupInfoProfile) = {
     updateState(state.copy(activeThreadGroup = Some(threadGroup)))
   }
 

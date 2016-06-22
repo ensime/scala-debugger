@@ -1,19 +1,19 @@
 package org.scaladebugger.repl.backend
 import acyclic.file
-
 import java.io.File
 import java.net.URI
 
 import ammonite.repl.Bind
 import com.sun.jdi.{ThreadGroupReference, ThreadReference}
 import org.scaladebugger.api.debuggers.Debugger
+import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfoProfile, ThreadInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 case class State(
   activeDebugger: Option[Debugger],
   scalaVirtualMachines: Seq[ScalaVirtualMachine],
-  activeThread: Option[ThreadReference],
-  activeThreadGroup: Option[ThreadGroupReference],
+  activeThread: Option[ThreadInfoProfile],
+  activeThreadGroup: Option[ThreadGroupInfoProfile],
   sourcePaths: Seq[URI]
 ) {
   /**

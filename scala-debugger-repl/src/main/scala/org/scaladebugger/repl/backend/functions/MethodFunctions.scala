@@ -1,7 +1,5 @@
 package org.scaladebugger.repl.backend.functions
 import acyclic.file
-import org.scaladebugger.api.dsl.Implicits._
-
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.repl.backend.StateManager
 
@@ -26,11 +24,8 @@ class MethodFunctions(private val stateManager: StateManager) {
     )
 
     jvms.foreach(s => {
-      s.onUnsafeMethodEntry(className, methodName, NoResume).foreach(e => {
-        val t = e.thread()
-
-        println(s"Method entry hit for $className.$methodName")
-      })
+      val m = s.getOrCreateMethodEntryRequest(className, methodName, NoResume)
+      m.foreach(_ => println(s"Method entry hit for $className.$methodName"))
     })
   }
 
@@ -49,11 +44,8 @@ class MethodFunctions(private val stateManager: StateManager) {
     )
 
     jvms.foreach(s => {
-      s.onUnsafeMethodExit(className, methodName, NoResume).foreach(e => {
-        val t = e.thread()
-
-        println(s"Method exit hit for $className.$methodName")
-      })
+      val m = s.getOrCreateMethodExitRequest(className, methodName, NoResume)
+      m.foreach(_ => println(s"Method exit hit for $className.$methodName"))
     })
   }
 
@@ -99,13 +91,7 @@ class MethodFunctions(private val stateManager: StateManager) {
       throw new RuntimeException("Missing method argument!")
     )
 
-    import org.scaladebugger.api.profiles.Constants.CloseRemoveAll
-    jvms.foreach(s => {
-      s.methodEntryRequests
-        .filter(m => m.className == className && m.methodName == methodName)
-        .map(m => s.onUnsafeMethodEntry(m.className, m.methodName))
-        .foreach(_.close(data = CloseRemoveAll))
-    })
+    jvms.foreach(_.removeMethodEntryRequests(className, methodName))
   }
 
   /** Entrypoint for clearing a method exit request. */
@@ -122,12 +108,6 @@ class MethodFunctions(private val stateManager: StateManager) {
       throw new RuntimeException("Missing method argument!")
     )
 
-    import org.scaladebugger.api.profiles.Constants.CloseRemoveAll
-    jvms.foreach(s => {
-      s.methodExitRequests
-        .filter(m => m.className == className && m.methodName == methodName)
-        .map(m => s.onUnsafeMethodEntry(m.className, m.methodName))
-        .foreach(_.close(data = CloseRemoveAll))
-    })
+    jvms.foreach(_.removeMethodExitRequests(className, methodName))
   }
 }

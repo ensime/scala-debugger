@@ -21,14 +21,14 @@ class ThreadGroupFunctions(private val stateManager: StateManager) {
     if (jvms.isEmpty) println("No VM connected!")
 
     jvms.foreach(s => {
-      val threadGroups = s.underlyingVirtualMachine
-        .allThreads().asScala.map(_.threadGroup()).distinct
+      val threadGroups = s.threads.map(_.threadGroup)
+        .groupBy(_.name).map(_._2.head)
 
       println(s"<= JVM ${s.uniqueId} =>")
       threadGroups.foreach(tg => {
-        val rName = tg.referenceType().name()
-        val id = "0x" + tg.uniqueID().toHexString
-        val name = tg.name()
+        val rName = tg.referenceType.name
+        val id = "0x" + tg.uniqueIdHexString
+        val name = tg.name
 
         println(s"($rName)$id $name")
       })
@@ -46,12 +46,8 @@ class ThreadGroupFunctions(private val stateManager: StateManager) {
     threadGroupName match {
       // If name provided, lookup and set as active thread group
       case Some(name) =>
-        val threadGroup = jvms.view.flatMap(
-          _.underlyingVirtualMachine.allThreads().asScala
-            .map(_.threadGroup()).distinct
-        ).collectFirst {
-          case tg if tg.name() == name => tg
-        }
+        val threadGroup = jvms.view.flatMap(_.threads).map(_.threadGroup)
+          .collectFirst { case tg if tg.name == name => tg }
 
         if (threadGroup.isEmpty) println(s"No thread group found named '$name'!")
         threadGroup.foreach(stateManager.updateActiveThreadGroup)

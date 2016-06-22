@@ -23,9 +23,9 @@ class SourceFunctions(private val stateManager: StateManager) {
       t.suspend()
 
       // Find current location
-      val location = t.frame(0).location()
-      val filePath = location.sourcePath()
-      val lineNumber = location.lineNumber()
+      val location = t.topFrame.location
+      val filePath = location.sourcePath
+      val lineNumber = location.lineNumber
 
       t.resume()
 

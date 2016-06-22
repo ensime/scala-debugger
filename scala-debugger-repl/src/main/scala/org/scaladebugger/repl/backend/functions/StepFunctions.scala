@@ -28,12 +28,12 @@ class StepFunctions(private val stateManager: StateManager) {
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) println("No active thread!")
 
-    thread.foreach(t => {
+    thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
-      jvms.foreach(s => {
-        performStep(s.thread(t), s.stepIntoLine)
-      })
-    })
+      jvms.foreach(s =>
+        performStep(t, s.stepIntoLine)
+      )
+    )
   }
 
   /** Entrypoint for stepping into using min size. */
@@ -44,12 +44,12 @@ class StepFunctions(private val stateManager: StateManager) {
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) println("No active thread!")
 
-    thread.foreach(t => {
+    thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
-      jvms.foreach(s => {
-        performStep(s.thread(t), s.stepIntoMin)
-      })
-    })
+      jvms.foreach(s =>
+        performStep(t, s.stepIntoMin)
+      )
+    )
   }
 
   /** Entrypoint for stepping over a line. */
@@ -60,12 +60,12 @@ class StepFunctions(private val stateManager: StateManager) {
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) println("No active thread!")
 
-    thread.foreach(t => {
+    thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
-      jvms.foreach(s => {
-        performStep(s.thread(t), s.stepOverLine)
-      })
-    })
+      jvms.foreach(s =>
+        performStep(t, s.stepOverLine)
+      )
+    )
   }
 
   /** Entrypoint for stepping over using min size. */
@@ -76,12 +76,12 @@ class StepFunctions(private val stateManager: StateManager) {
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) println("No active thread!")
 
-    thread.foreach(t => {
+    thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
-      jvms.foreach(s => {
-        performStep(s.thread(t), s.stepOverMin)
-      })
-    })
+      jvms.foreach(s =>
+        performStep(t, s.stepOverMin)
+      )
+    )
   }
 
   /** Entrypoint for stepping out of a line. */
@@ -92,12 +92,12 @@ class StepFunctions(private val stateManager: StateManager) {
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) println("No active thread!")
 
-    thread.foreach(t => {
+    thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
-      jvms.foreach(s => {
-        performStep(s.thread(t), s.stepOutLine)
-      })
-    })
+      jvms.foreach(s =>
+        performStep(t, s.stepOutLine)
+      )
+    )
   }
 
   /** Entrypoint for stepping over using min size. */
@@ -108,12 +108,12 @@ class StepFunctions(private val stateManager: StateManager) {
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) println("No active thread!")
 
-    thread.foreach(t => {
+    thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
-      jvms.foreach(s => {
-        performStep(s.thread(t), s.stepOutMin)
-      })
-    })
+      jvms.foreach(s =>
+        performStep(t, s.stepOutMin)
+      )
+    )
   }
 
   /**
@@ -128,7 +128,7 @@ class StepFunctions(private val stateManager: StateManager) {
     threadInfo: ThreadInfoProfile,
     stepFunc: (ThreadInfoProfile, Seq[JDIEventArgument]) => Future[StepEvent]
   ): Unit = {
-    val resumeCount = threadInfo.toJdiInstance.suspendCount()
+    val resumeCount = threadInfo.status.suspendCount
 
     // Create a step function that does not resume the thread upon completion
     val f = stepFunc(threadInfo, Seq(NoResume))
@@ -146,7 +146,7 @@ class StepFunctions(private val stateManager: StateManager) {
 
     // Remove all suspensions on the thread so it can process the
     // step request
-    (1 to resumeCount).foreach(_ => threadInfo.toJdiInstance.resume())
+    (1 to resumeCount).foreach(_ => threadInfo.resume())
 
     Await.ready(f, MaxWaitDuration)
   }
