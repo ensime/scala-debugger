@@ -1,7 +1,6 @@
 package org.scaladebugger.repl.backend.functions
 import acyclic.file
-
-import org.scaladebugger.api.debuggers.{ListeningDebugger, LaunchingDebugger, AttachingDebugger}
+import org.scaladebugger.api.debuggers.{AttachingDebugger, LaunchingDebugger, ListeningDebugger, ProcessDebugger}
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.repl.backend.StateManager
 
@@ -21,6 +20,23 @@ class DebuggerFunctions(private val stateManager: StateManager) {
     val timeout = m.getOrElse("timeout", 0).toString.toDouble.toInt
 
     val d = AttachingDebugger(port, hostname, timeout)
+    stateManager.updateActiveDebugger(d)
+
+    d.start(s => {
+      println("Attached with id " + s.uniqueId)
+      stateManager.addScalaVirtualMachine(s)
+    })
+  }
+
+  /** Entrypoint for attaching to a running JVM using its pid. */
+  def attachp(m: Map[String, Any]) = {
+    val pid = m.getOrElse(
+      "pid",
+      throw new RuntimeException("Missing pid argument!")
+    ).toString.toDouble.toInt
+    val timeout = m.getOrElse("timeout", 0).toString.toDouble.toInt
+
+    val d = ProcessDebugger(pid, timeout)
     stateManager.updateActiveDebugger(d)
 
     d.start(s => {

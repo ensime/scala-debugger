@@ -34,7 +34,8 @@ object Main {
       val exceptionFunctions = new ExceptionFunctions(stateManager)
       val watchpointFunctions = new WatchpointFunctions(stateManager)
 
-      interpreter.bindFunction("attach", Seq("port", "hostname", "timeout"), debuggerFunctions.attach, "Attaches to an already-running JVM process.")
+      interpreter.bindFunction("attach", Seq("port", "hostname", "timeout"), debuggerFunctions.attach, "Attaches to an already-running JVM process using a port.")
+      interpreter.bindFunction("attachp", Seq("pid", "timeout"), debuggerFunctions.attachp, "Attaches to an already-running JVM process using its pid.")
       interpreter.bindFunction("launch", Seq("class", "suspend"), debuggerFunctions.launch, "Launches a new JVM process and attaches to it.")
       interpreter.bindFunction("listen", Seq("port", "hostname"), debuggerFunctions.listen, "Listens for incoming JVM connections.")
       interpreter.bindFunction("stop", Nil, debuggerFunctions.stop, "Stops the current debugger and resets REPL state.")
