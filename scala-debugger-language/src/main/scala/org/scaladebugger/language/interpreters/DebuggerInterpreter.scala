@@ -47,7 +47,7 @@ class DebuggerInterpreter(
         function(m.filter {
           // TODO: Support filtering for native functions so you don't have
           //       variables with an undefined model as the value
-          case (i, e) => true//e != models.Undefined
+          case (i, e) => e != models.Undefined // true
         }.map { case (i, e) => (i.name, toPrimitiveValue(e).get) })
       ).get,
       Option(documentation)
