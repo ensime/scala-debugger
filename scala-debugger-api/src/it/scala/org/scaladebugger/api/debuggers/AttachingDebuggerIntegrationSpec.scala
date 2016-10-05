@@ -20,25 +20,30 @@ class AttachingDebuggerIntegrationSpec extends FunSpec with Matchers
     interval = scaled(Span(5, Milliseconds))
   )
 
+  @volatile private var attachingDebugger : Option[AttachingDebugger] = None
+
   @volatile private var jvmProcess: (Int, Process) = _
 
   before {
     jvmProcess = createProcess()
+    attachingDebugger = Some(AttachingDebugger(jvmProcess._1))
   }
 
   after {
     destroyProcess(jvmProcess._2)
+    attachingDebugger.foreach(_.stop())
+    attachingDebugger = None
   }
 
   describe("AttachingDebugger") {
     it("should be able to attach to a running JVM process") {
-      val attachingDebugger = AttachingDebugger(jvmProcess._1)
-
       val attachedToVirtualMachine = new AtomicBoolean(false)
 
       // Need to keep retrying until process is ready to be attached to
       eventually {
-        attachingDebugger.start(_ => attachedToVirtualMachine.set(true))
+        attachingDebugger.foreach(
+          _.start(_ => attachedToVirtualMachine.set(true))
+        )
       }
 
       // Keep checking back until we have successfully attached
