@@ -20,6 +20,8 @@ class ListeningDebuggerIntegrationSpec  extends FunSpec with Matchers
     interval = scaled(Span(5, Milliseconds))
   )
 
+  @volatile private var listeningDebugger : Option[ListeningDebugger] = None
+
   @volatile private var jvmProcesses: Seq[Process] = Nil
 
   @volatile private var address = ""
@@ -31,11 +33,15 @@ class ListeningDebuggerIntegrationSpec  extends FunSpec with Matchers
     address = socket.getInetAddress.getHostName
     port = socket.getLocalPort
     socket.close()
+
+    listeningDebugger = Some(ListeningDebugger(hostname = address, port = port))
   }
 
   // After each test, destroy any leftover JVM processes
   after {
     jvmProcesses.foreach(destroyProcess)
+    listeningDebugger.foreach(_.stop())
+    listeningDebugger = None
   }
 
   describe("ListeningDebugger") {
@@ -44,12 +50,15 @@ class ListeningDebuggerIntegrationSpec  extends FunSpec with Matchers
       val currentConnectedCount = new AtomicInteger(0)
 
       // Start listening for JVM connections
-      val listeningDebugger = ListeningDebugger(hostname = address, port = port)
-      listeningDebugger.start(_ => currentConnectedCount.incrementAndGet())
+      listeningDebugger.foreach(
+        _.start(_ =>
+          currentConnectedCount.incrementAndGet()
+        )
+      )
 
       // Verify that our listening debugger can actually support multiple
       // connections (it should as a socket listener)
-      if (!listeningDebugger.supportsMultipleConnections) {
+      if (!listeningDebugger.forall(_.supportsMultipleConnections)) {
         alert(
           "Listening debuggers do not support multiple connections on this JVM!"
         )
