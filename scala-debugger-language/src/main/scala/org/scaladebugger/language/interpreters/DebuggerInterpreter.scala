@@ -45,9 +45,9 @@ class DebuggerInterpreter(
       parameters.map(models.Identifier.apply),
       (m: Map[models.Identifier, models.Expression], _) => toExpression(
         function(m.filter {
-          // TODO: Support filtering for native functions so you don't have
-          //       variables with an undefined model as the value
-          case (i, e) => e != models.Undefined // true
+          // Filter undefined variables such that they do not naturally appear
+          // in the native functions
+          case (i, e) => e != models.Undefined
         }.map { case (i, e) => (i.name, toPrimitiveValue(e).get) })
       ).get,
       Option(documentation)

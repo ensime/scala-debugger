@@ -1,4 +1,5 @@
 package org.scaladebugger.language.interpreters
+import org.scaladebugger.language.models
 import acyclic.file
 
 import java.io.PrintStream
@@ -8,15 +9,22 @@ object DefaultFunctions {
   type IntpFuncRet = Any
   type IntpFunc = (IntpFuncArgs) => IntpFuncRet
 
-  private val GetArg = (m: IntpFuncArgs, name: String) => {
+  private def GetArg(
+    m: IntpFuncArgs,
+    name: String,
+    default: Option[Any] = None
+  ): Any = {
     val value = m.get(name)
-    if (value.isEmpty) throw new RuntimeException(s"Missing argument $name!")
-    value.get
+
+    if (value.isEmpty && default.isEmpty) 
+      throw new RuntimeException(s"Missing argument $name!")
+
+    value.orElse(default).get
   }
 
   private val Condition = (op: String, m: IntpFuncArgs) => {
-    val l = GetArg(m, "l")
-    val r = GetArg(m, "r")
+    val l = GetArg(m, "l", default = Some(models.Undefined))
+    val r = GetArg(m, "r", default = Some(models.Undefined))
 
     op match {
       case "<"  => l.toString.toDouble < r.toString.toDouble
