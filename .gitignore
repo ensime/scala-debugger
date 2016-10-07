@@ -9,4 +9,6 @@ target/
 site/
 .DS_Store
 **.log
+.ensime
+.ensime_cache/
 
