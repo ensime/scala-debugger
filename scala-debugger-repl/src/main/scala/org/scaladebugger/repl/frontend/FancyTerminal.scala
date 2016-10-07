@@ -3,7 +3,8 @@ import acyclic.file
 
 import java.io.OutputStreamWriter
 
-import ammonite.terminal._
+import ammonite.terminal.{Terminal => TermCore, _}
+import ammonite.terminal.filters._
 import ammonite.terminal.LazyList.~:
 import org.scaladebugger.language.parsers.grammar.ReservedKeywords
 
@@ -21,15 +22,17 @@ class FancyTerminal extends Terminal {
       Console.MAGENTA + prompt() + Console.RESET,
       reader,
       new OutputStreamWriter(System.out),
-      multilineFilter orElse
-        selection orElse
-        BasicFilters.tabFilter(4) orElse
-        GUILikeFilters.altFilter orElse
-        GUILikeFilters.fnFilter orElse
-        ReadlineFilters.navFilter orElse
-        ReadlineFilters.CutPasteFilter() orElse
-        ReadlineFilters.HistoryFilter(() => history) orElse
-        BasicFilters.all,
+      Filter.merge(
+        multilineFilter,
+        selection,
+        BasicFilters.tabFilter(4),
+        GUILikeFilters.altFilter,
+        GUILikeFilters.fnFilter,
+        ReadlineFilters.navFilter,
+        ReadlineFilters.CutPasteFilter(),
+        new HistoryFilter(() => history.toVector, fansi.Color.Blue),
+        BasicFilters.all
+      ),
       displayTransform = mainDisplayTransform(selection, _: Vector[Char], _: Int)
     )
 
@@ -42,14 +45,18 @@ class FancyTerminal extends Terminal {
     selection: GUILikeFilters.SelectionFilter,
     buffer: Vector[Char],
     cursor: Int
-  ): (Vector[Char], Int) = selection.mark match {
-    case Some(mark) if mark != cursor =>
-      val Seq(min, max) = Seq(mark, cursor).sorted
-      val (a, b0) = buffer.splitAt(min)
-      val (b, c) = b0.splitAt(max - min)
-      val displayOffset = if (cursor < mark) 0 else -1
-      (hl(a) ++ Console.REVERSED ++ b ++ Console.RESET ++ hl(c), displayOffset)
-    case _ => (hl(buffer), 0)
+  ): (fansi.Str, Int) = {
+    val data: (Vector[Char], Int) = selection.mark match {
+      case Some(mark) if mark != cursor =>
+        val Seq(min, max) = Seq(mark, cursor).sorted
+        val (a, b0) = buffer.splitAt(min)
+        val (b, c) = b0.splitAt(max - min)
+        val displayOffset = if (cursor < mark) 0 else -1
+        (hl(a) ++ Console.REVERSED ++ b ++ Console.RESET ++ hl(c), displayOffset)
+      case _ => (hl(buffer), 0)
+    }
+
+    (fansi.Str(data._1), data._2)
   }
 
   /**
@@ -58,10 +65,10 @@ class FancyTerminal extends Terminal {
    *
    * @return The filter for multi-line support
    */
-  private def multilineFilter: TermCore.Filter = {
-    case TermState(13 ~: rest, b, c) if b.count(_ == '(') != b.count(_ == ')') =>
+  private def multilineFilter: Filter = Filter.partial {
+    case TermState(13 ~: rest, b, c, _) if b.count(_ == '(') != b.count(_ == ')') =>
       BasicFilters.injectNewLine(b, c, rest)
-    case TermState(13 ~: rest, b, c) if b.count(_ == '{') != b.count(_ == '}') =>
+    case TermState(13 ~: rest, b, c, _) if b.count(_ == '{') != b.count(_ == '}') =>
       BasicFilters.injectNewLine(b, c, rest)
   }
 

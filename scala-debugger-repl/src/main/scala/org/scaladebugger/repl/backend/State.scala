@@ -3,7 +3,7 @@ import acyclic.file
 import java.io.File
 import java.net.URI
 
-import ammonite.repl.Bind
+import ammonite.util.Bind
 import com.sun.jdi.{ThreadGroupReference, ThreadReference}
 import org.scaladebugger.api.debuggers.Debugger
 import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfoProfile, ThreadInfoProfile}

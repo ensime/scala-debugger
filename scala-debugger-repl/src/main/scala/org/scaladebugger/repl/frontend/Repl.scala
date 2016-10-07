@@ -100,7 +100,7 @@ class Repl (
       true
     case "inline" =>
       val b = stateManager.state.toBindings
-      Try(ammonite.repl.Main.debug(b: _*)).failed.foreach(Console.err.println)
+      Try(ammonite.Main().run(b: _*)).failed.foreach(Console.err.println)
       true
     case "quit" =>
       println("Exiting")

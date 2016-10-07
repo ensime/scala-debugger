@@ -6,7 +6,8 @@ object Repl {
   /** REPL-specific project settings. */
   val settings = Seq(
     libraryDependencies ++= Seq(
-      "com.lihaoyi" % "ammonite-repl" % "0.7.7" cross CrossVersion.full,
+      "com.lihaoyi" % "ammonite" % "0.7.7" cross CrossVersion.full,
+      "com.lihaoyi" % "ammonite-util" % "0.7.7" cross CrossVersion.full,
       "com.lihaoyi" %% "ammonite-terminal" % "0.7.7",
       "org.slf4j" % "slf4j-api" % "1.7.5",
       "org.slf4j" % "slf4j-log4j12" % "1.7.5",
