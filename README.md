@@ -28,6 +28,39 @@ on your classpath when you are compiling and testing:
 addSbtPlugin("org.scala-debugger" % "sbt-jdi-tools" % "1.0.0")
 ```
 
+Building from source
+--------------------
+
+From the root of the project:
+
+```scala
+sbt compile
+```
+
+Running tests
+-------------
+
+Make sure that you have [sbt-extras](https://github.com/paulp/sbt-extras)
+installed as it will pick up memory and compiler options from `.jvmopts`.
+
+### Unit Tests
+
+From the root of the project:
+
+```scala
+sbt test
+```
+
+_Note: Roughly 2.5 GB of RAM is needed to compile the unit tests._
+
+### Integration Tests
+
+From the root of the project:
+
+```scala
+sbt it:test
+```
+
 License
 -------
 
