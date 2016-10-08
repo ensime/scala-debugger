@@ -38,7 +38,7 @@ lazy val scalaDebuggerMacros = project
   .settings(name := "scala-debugger-macros")
 
 //
-// LANGUAGE REPL PROJECT CONFIGURATION
+// LANGUAGE PROJECT CONFIGURATION
 //
 lazy val scalaDebuggerLanguage = project
   .in(file("scala-debugger-language"))
@@ -52,16 +52,16 @@ lazy val scalaDebuggerLanguage = project
   .dependsOn(scalaDebuggerApi % "compile->compile;test->compile;it->compile")
 
 //
-// DEBUGGER REPL PROJECT CONFIGURATION
+// DEBUGGER TOOL PROJECT CONFIGURATION
 //
-lazy val scalaDebuggerRepl = project
-  .in(file("scala-debugger-repl"))
+lazy val scalaDebuggerTool = project
+  .in(file("scala-debugger-tool"))
   .configs(IntegrationTest)
   .settings(Common.settings: _*)
   .settings(Acyclic.settings: _*)
   .settings(Defaults.itSettings: _*)
-  .settings(Repl.settings: _*)
-  .settings(name := "scala-debugger-repl")
+  .settings(Tool.settings: _*)
+  .settings(name := "scala-debugger-tool")
   .dependsOn(scalaDebuggerApi % "compile->compile;test->compile;it->compile")
   .dependsOn(scalaDebuggerLanguage % "compile->compile;test->compile;it->compile")
 
@@ -86,6 +86,6 @@ lazy val root = project
     scalaDebuggerTest,
     scalaDebuggerMacros,
     scalaDebuggerLanguage,
-    scalaDebuggerRepl
+    scalaDebuggerTool
   )
 
