@@ -11,15 +11,19 @@ import scala.collection.JavaConverters._
  * Represents a collection of functions for examining the remote JVM.
  *
  * @param stateManager The manager whose state to share among functions
+ * @param writeLine Used to write output to the terminal
  */
-class ExpressionFunctions(private val stateManager: StateManager) {
+class ExpressionFunctions(
+  private val stateManager: StateManager,
+  private val writeLine: String => Unit
+) {
   /** Entrypoint for printing the value of an expression. */
   def examine(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val thread = stateManager.state.activeThread
-    if (thread.isEmpty) println("No active thread!")
+    if (thread.isEmpty) writeLine("No active thread!")
 
     val expression = m.get("expression").map(_.toString).getOrElse(
       throw new RuntimeException("Missing expression argument!")
@@ -31,7 +35,7 @@ class ExpressionFunctions(private val stateManager: StateManager) {
       // TODO: Support expressions other than variable names
       val variableName = expression
 
-      t.findVariableByName(variableName).map(_.toPrettyString).foreach(println)
+      t.findVariableByName(variableName).map(_.toPrettyString).foreach(writeLine)
 
       t.resume()
     })
@@ -39,35 +43,35 @@ class ExpressionFunctions(private val stateManager: StateManager) {
 
   /** Entrypoint for printing all object information. */
   def dump(m: Map[String, Any]) = {
-    println("Not implemented!")
+    writeLine("Not implemented!")
   }
 
   /** Entrypoint to evaluate an expression (same as print). */
   def eval(m: Map[String, Any]) = {
-    println("Not implemented!")
+    writeLine("Not implemented!")
   }
 
   /** Entrypoint for assigning a new value to a field/variable/array element. */
   def set(m: Map[String, Any]) = {
-    println("Not implemented!")
+    writeLine("Not implemented!")
   }
 
   /** Entrypoint for printing all local variables in the current stack frame. */
   def locals(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val thread = stateManager.state.activeThread
-    if (thread.isEmpty) println("No thread selected!")
+    if (thread.isEmpty) writeLine("No thread selected!")
 
     thread.foreach(t => {
-      if (!t.status.isSuspended) println("Active thread is not suspended!")
+      if (!t.status.isSuspended) writeLine("Active thread is not suspended!")
       else {
-        println("FIELDS:")
-        t.topFrame.fieldVariables.map(_.toPrettyString).foreach(println)
+        writeLine("FIELDS:")
+        t.topFrame.fieldVariables.map(_.toPrettyString).foreach(writeLine)
 
-        println("LOCALS:")
-        t.topFrame.localVariables.map(_.toPrettyString).foreach(println)
+        writeLine("LOCALS:")
+        t.topFrame.localVariables.map(_.toPrettyString).foreach(writeLine)
       }
     })
   }

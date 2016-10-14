@@ -8,8 +8,12 @@ import org.scaladebugger.tool.backend.StateManager
  * Represents a collection of functions for starting debuggers.
  *
  * @param stateManager The manager whose state to share among functions
+ * @param writeLine Used to write output to the terminal
  */
-class DebuggerFunctions(private val stateManager: StateManager) {
+class DebuggerFunctions(
+  private val stateManager: StateManager,
+  private val writeLine: String => Unit
+) {
   /** Entrypoint for attaching to a running JVM. */
   def attach(m: Map[String, Any]) = {
     val port = m.getOrElse(
@@ -23,7 +27,7 @@ class DebuggerFunctions(private val stateManager: StateManager) {
     stateManager.updateActiveDebugger(d)
 
     d.start(s => {
-      println("Attached with id " + s.uniqueId)
+      writeLine("Attached with id " + s.uniqueId)
       stateManager.addScalaVirtualMachine(s)
     })
   }
@@ -40,7 +44,7 @@ class DebuggerFunctions(private val stateManager: StateManager) {
     stateManager.updateActiveDebugger(d)
 
     d.start(s => {
-      println("Attached with id " + s.uniqueId)
+      writeLine("Attached with id " + s.uniqueId)
       stateManager.addScalaVirtualMachine(s)
     })
   }
@@ -61,7 +65,7 @@ class DebuggerFunctions(private val stateManager: StateManager) {
     stateManager.updateActiveDebugger(d)
 
     d.start(s => {
-      println("Attached with id " + s.uniqueId)
+      writeLine("Attached with id " + s.uniqueId)
       stateManager.addScalaVirtualMachine(s)
     })
   }
@@ -78,7 +82,7 @@ class DebuggerFunctions(private val stateManager: StateManager) {
     stateManager.updateActiveDebugger(d)
 
     d.start(s => {
-      println("Received connection from JVM with id " + s.uniqueId)
+      writeLine("Received connection from JVM with id " + s.uniqueId)
       stateManager.addScalaVirtualMachine(s)
     })
   }

@@ -10,8 +10,12 @@ import org.scaladebugger.tool.backend.utils.Regex
  * Represents a collection of functions for managing threads.
  *
  * @param stateManager The manager whose state to share among functions
+ * @param writeLine Used to write output to the terminal
  */
-class ExceptionFunctions(private val stateManager: StateManager) {
+class ExceptionFunctions(
+  private val stateManager: StateManager,
+  private val writeLine: String => Unit
+) {
   /** Entrypoint for creating a request to detect caught/uncaught exceptions. */
   def catchAll(m: Map[String, Any]) = {
     handleCatchCommand(m, notifyCaught = true, notifyUncaught = true)
@@ -31,10 +35,10 @@ class ExceptionFunctions(private val stateManager: StateManager) {
   def listCatches(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     jvms.foreach(s => {
-      println(s"<= ${s.uniqueId} =>")
+      writeLine(s"<= ${s.uniqueId} =>")
       s.exceptionRequests.foreach(eri => {
         val notifyText = newNotifyText(eri.notifyCaught, eri.notifyUncaught)
         val classInclusionFilter = eri.extraArguments.collect {
@@ -43,17 +47,17 @@ class ExceptionFunctions(private val stateManager: StateManager) {
 
         // Global catchall (no class filter)
         if (eri.isCatchall && classInclusionFilter.isEmpty) {
-          println(s"Globally catch all $notifyText exceptions")
+          writeLine(s"Globally catch all $notifyText exceptions")
 
         // Wildcard catch
         } else if (eri.isCatchall && classInclusionFilter.nonEmpty) {
           val pattern = classInclusionFilter.get.classPattern
-          println(s"Catch all $notifyText exceptions with pattern $pattern")
+          writeLine(s"Catch all $notifyText exceptions with pattern $pattern")
 
         // Specific class catch
         } else {
           val exceptionName = eri.className
-          println(s"Catch all $notifyText for exception $exceptionName")
+          writeLine(s"Catch all $notifyText for exception $exceptionName")
         }
       })
     })
@@ -88,7 +92,7 @@ class ExceptionFunctions(private val stateManager: StateManager) {
   ) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     // NOTE: Wildcards handled directly by class inclusion filter
     val exceptionName = m.get("filter").map(_.toString)
@@ -129,7 +133,7 @@ class ExceptionFunctions(private val stateManager: StateManager) {
   ) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     // NOTE: Wildcards handled directly by class inclusion filter
     val exceptionName = m.get("filter").map(_.toString)
@@ -142,21 +146,21 @@ class ExceptionFunctions(private val stateManager: StateManager) {
       val notifyText = newNotifyText(notifyCaught, notifyUncaught)
 
       val exceptionPipeline = if (exceptionName.isEmpty) {
-        println(s"Watching for all $notifyText exceptions")
+        writeLine(s"Watching for all $notifyText exceptions")
         s.getOrCreateAllExceptionsRequest(
           notifyCaught = notifyCaught,
           notifyUncaught = notifyUncaught,
           NoResume +: extraArgs: _*
         )
       } else if (extraArgs.nonEmpty) {
-        println(s"Watching for $notifyText exception pattern ${exceptionName.get}")
+        writeLine(s"Watching for $notifyText exception pattern ${exceptionName.get}")
         s.getOrCreateAllExceptionsRequest(
           notifyCaught = notifyCaught,
           notifyUncaught = notifyUncaught,
           NoResume +: extraArgs: _*
         )
       } else {
-        println(s"Watching for $notifyText exception ${exceptionName.get}")
+        writeLine(s"Watching for $notifyText exception ${exceptionName.get}")
         s.getOrCreateExceptionRequest(
           exceptionName.get,
           notifyCaught = notifyCaught,
@@ -175,7 +179,7 @@ class ExceptionFunctions(private val stateManager: StateManager) {
         val exName = ex.referenceType().name()
         val ctext = if (cloc.nonEmpty) "Caught" else "Uncaught"
 
-        println(s"$ctext $exName detected ($fn:$ln)")
+        writeLine(s"$ctext $exName detected ($fn:$ln)")
       })
     })
   }

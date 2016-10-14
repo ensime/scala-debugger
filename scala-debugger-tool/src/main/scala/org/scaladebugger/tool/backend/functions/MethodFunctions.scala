@@ -7,13 +7,17 @@ import org.scaladebugger.tool.backend.StateManager
  * Represents a collection of functions for managing methods.
  *
  * @param stateManager The manager whose state to share among functions
+ * @param writeLine Used to write output to the terminal
  */
-class MethodFunctions(private val stateManager: StateManager) {
+class MethodFunctions(
+  private val stateManager: StateManager,
+  private val writeLine: String => Unit
+) {
   /** Entrypoint for creating a method entry break. */
   def createEntry(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val className = m.get("class").map(_.toString).getOrElse(
       throw new RuntimeException("Missing class argument!")
@@ -25,7 +29,7 @@ class MethodFunctions(private val stateManager: StateManager) {
 
     jvms.foreach(s => {
       val m = s.getOrCreateMethodEntryRequest(className, methodName, NoResume)
-      m.foreach(_ => println(s"Method entry hit for $className.$methodName"))
+      m.foreach(_ => writeLine(s"Method entry hit for $className.$methodName"))
     })
   }
 
@@ -33,7 +37,7 @@ class MethodFunctions(private val stateManager: StateManager) {
   def createExit(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val className = m.get("class").map(_.toString).getOrElse(
       throw new RuntimeException("Missing class argument!")
@@ -45,7 +49,7 @@ class MethodFunctions(private val stateManager: StateManager) {
 
     jvms.foreach(s => {
       val m = s.getOrCreateMethodExitRequest(className, methodName, NoResume)
-      m.foreach(_ => println(s"Method exit hit for $className.$methodName"))
+      m.foreach(_ => writeLine(s"Method exit hit for $className.$methodName"))
     })
   }
 
@@ -53,13 +57,13 @@ class MethodFunctions(private val stateManager: StateManager) {
   def listEntries(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     jvms.foreach(s => {
-      println(s"<= JVM ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
       s.methodEntryRequests
         .map(m => s"${m.className}.${m.methodName}")
-        .foreach(println)
+        .foreach(writeLine)
     })
   }
 
@@ -67,13 +71,13 @@ class MethodFunctions(private val stateManager: StateManager) {
   def listExits(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     jvms.foreach(s => {
-      println(s"<= JVM ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
       s.methodExitRequests
         .map(m => s"${m.className}.${m.methodName}")
-        .foreach(println)
+        .foreach(writeLine)
     })
   }
 
@@ -81,7 +85,7 @@ class MethodFunctions(private val stateManager: StateManager) {
   def clearEntry(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val className = m.get("class").map(_.toString).getOrElse(
       throw new RuntimeException("Missing class argument!")
@@ -98,7 +102,7 @@ class MethodFunctions(private val stateManager: StateManager) {
   def clearExit(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val className = m.get("class").map(_.toString).getOrElse(
       throw new RuntimeException("Missing class argument!")

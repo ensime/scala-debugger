@@ -6,8 +6,12 @@ import org.scaladebugger.tool.backend.StateManager
  * Represents a collection of functions for managing watchpoints.
  *
  * @param stateManager The manager whose state to share among functions
+ * @param writeLine Used to write output to the terminal
  */
-class WatchpointFunctions(private val stateManager: StateManager) {
+class WatchpointFunctions(
+  private val stateManager: StateManager,
+  private val writeLine: String => Unit
+) {
   /** Entrypoint for watching access/modification of field in JVMs. */
   def watchAll(m: Map[String, Any]) = {
     handleWatchCommand(m, includeAccess = true, includeModification = true)
@@ -27,19 +31,19 @@ class WatchpointFunctions(private val stateManager: StateManager) {
   def listWatches(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     jvms.foreach(s => {
-      println(s"<= ${s.uniqueId} =>")
+      writeLine(s"<= ${s.uniqueId} =>")
 
-      if (s.accessWatchpointRequests.nonEmpty) println("Access:")
+      if (s.accessWatchpointRequests.nonEmpty) writeLine("Access:")
       s.accessWatchpointRequests.zipWithIndex.foreach { case (awr, i) =>
-        println(s"[${i+1}] ${awr.className}.${awr.fieldName}")
+        writeLine(s"[${i+1}] ${awr.className}.${awr.fieldName}")
       }
 
-      if (s.modificationWatchpointRequests.nonEmpty) println("Modification:")
+      if (s.modificationWatchpointRequests.nonEmpty) writeLine("Modification:")
       s.modificationWatchpointRequests.zipWithIndex.foreach { case (mwr, i) =>
-        println(s"[${i+1}] ${mwr.className}.${mwr.fieldName}")
+        writeLine(s"[${i+1}] ${mwr.className}.${mwr.fieldName}")
       }
     })
   }
@@ -73,7 +77,7 @@ class WatchpointFunctions(private val stateManager: StateManager) {
   ) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val className = m.get("class").map(_.toString).getOrElse(
       throw new RuntimeException("Missing class argument!")
@@ -90,7 +94,7 @@ class WatchpointFunctions(private val stateManager: StateManager) {
         val loc = e.location()
         val sn = loc.sourceName()
         val ln = loc.lineNumber()
-        println(s"$className.$fieldName accessed ($sn:$ln)")
+        writeLine(s"$className.$fieldName accessed ($sn:$ln)")
       })
 
       if (includeModification) s.getOrCreateModificationWatchpointRequest(
@@ -99,7 +103,7 @@ class WatchpointFunctions(private val stateManager: StateManager) {
         val loc = e.location()
         val sn = loc.sourceName()
         val ln = loc.lineNumber()
-        println(s"$className.$fieldName modified ($sn:$ln)")
+        writeLine(s"$className.$fieldName modified ($sn:$ln)")
       })
     })
   }
@@ -118,7 +122,7 @@ class WatchpointFunctions(private val stateManager: StateManager) {
   ) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val className = m.get("class").map(_.toString).getOrElse(
       throw new RuntimeException("Missing class argument!")

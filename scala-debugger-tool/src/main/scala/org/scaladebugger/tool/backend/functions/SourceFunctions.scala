@@ -10,12 +10,16 @@ import org.scaladebugger.tool.backend.StateManager
  * Represents a collection of functions for inspecting source code.
  *
  * @param stateManager The manager whose state to share among functions
+ * @param writeLine Used to write output to the terminal
  */
-class SourceFunctions(private val stateManager: StateManager) {
+class SourceFunctions(
+  private val stateManager: StateManager,
+  private val writeLine: String => Unit
+) {
   /** Entrypoint for printing source code. */
   def list(m: Map[String, Any]) = {
     val thread = stateManager.state.activeThread
-    if (thread.isEmpty) println("No active thread!")
+    if (thread.isEmpty) writeLine("No active thread!")
 
     val sources = stateManager.state.sourcePaths
 
@@ -35,7 +39,7 @@ class SourceFunctions(private val stateManager: StateManager) {
         .map(_.toFile)
         .find(f => f.exists() && f.isFile)
 
-      if (file.isEmpty) println(s"Source not found for $filePath!")
+      if (file.isEmpty) writeLine(s"Source not found for $filePath!")
       file.foreach(f => {
         val lines = scala.io.Source.fromFile(f).getLines()
         val startLine = Math.max(lineNumber - 4, 1)
@@ -49,7 +53,7 @@ class SourceFunctions(private val stateManager: StateManager) {
           if (lines.hasNext) {
             val line = lines.next()
             val lineMarker = s"$i ${if (i == lineNumber) "=>" else "  "}"
-            println(s"$lineMarker\t$line")
+            writeLine(s"$lineMarker\t$line")
           }
         })
       })
@@ -63,7 +67,7 @@ class SourceFunctions(private val stateManager: StateManager) {
         stateManager.addSourcePath(new File(source).toURI)
       case None =>
         val sourcePaths = stateManager.state.sourcePaths.map(_.getPath)
-        println(s"Source paths: ${sourcePaths.mkString(",")}")
+        writeLine(s"Source paths: ${sourcePaths.mkString(",")}")
     }
   }
 
@@ -71,13 +75,13 @@ class SourceFunctions(private val stateManager: StateManager) {
   def classpath(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     jvms.foreach(s => {
-      println(s"<= ${s.uniqueId} =>")
+      writeLine(s"<= ${s.uniqueId} =>")
 
       // TODO: Implement using expression evaluator
-      println("TODO: Implement using expression evaluator")
+      writeLine("TODO: Implement using expression evaluator")
     })
   }
 }

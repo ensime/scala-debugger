@@ -8,13 +8,17 @@ import org.scaladebugger.tool.backend.StateManager
  * Represents a collection of functions for managing breakpoints.
  *
  * @param stateManager The manager whose state to share among functions
+ * @param writeLine Used to write output to the terminal
  */
-class BreakpointFunctions(private val stateManager: StateManager) {
+class BreakpointFunctions(
+  private val stateManager: StateManager,
+  private val writeLine: String => Unit
+) {
   /** Entrypoint for creating a breakpoint. */
   def createBreakpoint(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val file = m.get("file").map(_.toString).getOrElse(
       throw new RuntimeException("Missing file argument!")
@@ -30,7 +34,7 @@ class BreakpointFunctions(private val stateManager: StateManager) {
         val loc = e.location()
         val locString = s"${loc.sourceName()}:${loc.lineNumber()}"
 
-        println(s"Breakpoint hit at $locString")
+        writeLine(s"Breakpoint hit at $locString")
       })
     })
   }
@@ -39,12 +43,12 @@ class BreakpointFunctions(private val stateManager: StateManager) {
   def listBreakpoints(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     jvms.foreach(s => {
-      println(s"<= JVM ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
       s.breakpointRequests.map(b => s"${b.fileName}:${b.lineNumber}")
-          .foreach(println)
+          .foreach(writeLine)
     })
   }
 
@@ -52,12 +56,13 @@ class BreakpointFunctions(private val stateManager: StateManager) {
   def clearBreakpoint(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val file = m.get("file").map(_.toString)
     val line = m.get("line").map(_.toString.toDouble.toInt)
 
-    if (file.nonEmpty ^ line.nonEmpty) println("Missing file or line argument!")
+    if (file.nonEmpty ^ line.nonEmpty)
+      writeLine("Missing file or line argument!")
 
     if (file.nonEmpty && line.nonEmpty) {
       jvms.foreach(_.removeBreakpointRequests(file.get, line.get))

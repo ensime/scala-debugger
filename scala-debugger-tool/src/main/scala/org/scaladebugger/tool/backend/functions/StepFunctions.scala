@@ -16,17 +16,21 @@ import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
  * Represents a collection of functions for managing steps.
  *
  * @param stateManager The manager whose state to share among functions
+ * @param writeLine Used to write output to the terminal
  */
-class StepFunctions(private val stateManager: StateManager) {
+class StepFunctions(
+  private val stateManager: StateManager,
+  private val writeLine: String => Unit
+) {
   private val MaxWaitDuration = 3.seconds
 
   /** Entrypoint for stepping into a line. */
   def stepIntoLine(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val thread = stateManager.state.activeThread
-    if (thread.isEmpty) println("No active thread!")
+    if (thread.isEmpty) writeLine("No active thread!")
 
     thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
@@ -39,10 +43,10 @@ class StepFunctions(private val stateManager: StateManager) {
   /** Entrypoint for stepping into using min size. */
   def stepIntoMin(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val thread = stateManager.state.activeThread
-    if (thread.isEmpty) println("No active thread!")
+    if (thread.isEmpty) writeLine("No active thread!")
 
     thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
@@ -55,10 +59,10 @@ class StepFunctions(private val stateManager: StateManager) {
   /** Entrypoint for stepping over a line. */
   def stepOverLine(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val thread = stateManager.state.activeThread
-    if (thread.isEmpty) println("No active thread!")
+    if (thread.isEmpty) writeLine("No active thread!")
 
     thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
@@ -71,10 +75,10 @@ class StepFunctions(private val stateManager: StateManager) {
   /** Entrypoint for stepping over using min size. */
   def stepOverMin(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val thread = stateManager.state.activeThread
-    if (thread.isEmpty) println("No active thread!")
+    if (thread.isEmpty) writeLine("No active thread!")
 
     thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
@@ -87,10 +91,10 @@ class StepFunctions(private val stateManager: StateManager) {
   /** Entrypoint for stepping out of a line. */
   def stepOutLine(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val thread = stateManager.state.activeThread
-    if (thread.isEmpty) println("No active thread!")
+    if (thread.isEmpty) writeLine("No active thread!")
 
     thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
@@ -103,10 +107,10 @@ class StepFunctions(private val stateManager: StateManager) {
   /** Entrypoint for stepping over using min size. */
   def stepOutMin(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val thread = stateManager.state.activeThread
-    if (thread.isEmpty) println("No active thread!")
+    if (thread.isEmpty) writeLine("No active thread!")
 
     thread.foreach(t =>
       // TODO: Handle using on JVM of active thread
@@ -141,7 +145,7 @@ class StepFunctions(private val stateManager: StateManager) {
       val sn = l.sourceName()
       val ln = l.lineNumber()
 
-      println(s"Step completed: 'thread=$tn', $cn.$mn ($sn:$ln)")
+      writeLine(s"Step completed: 'thread=$tn', $cn.$mn ($sn:$ln)")
     })
 
     // Remove all suspensions on the thread so it can process the

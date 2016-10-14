@@ -41,6 +41,13 @@ class FancyTerminal extends Terminal {
     line
   }
 
+  /**
+   * Writes the provided text to the terminal.
+   *
+   * @param text The text to write out to the terminal
+   */
+  override def write(text: String): Unit = Console.print(text)
+
   private def mainDisplayTransform(
     selection: GUILikeFilters.SelectionFilter,
     buffer: Vector[Char],

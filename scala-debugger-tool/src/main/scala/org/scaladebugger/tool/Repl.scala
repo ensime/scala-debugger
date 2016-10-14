@@ -138,18 +138,20 @@ object Repl {
     import org.scaladebugger.tool.backend.functions._
     val interpreter = new DebuggerInterpreter
 
+    val writeLine = (text: String) => repl.activeTerminal.writeLine(text)
+
     val stateManager = new StateManager
-    val debuggerFunctions = new DebuggerFunctions(stateManager)
-    val threadFunctions = new ThreadFunctions(stateManager)
-    val expressionFunctions = new ExpressionFunctions(stateManager)
-    val breakpointFunctions = new BreakpointFunctions(stateManager)
-    val methodFunctions = new MethodFunctions(stateManager)
-    val classFunctions = new ClassFunctions(stateManager)
-    val threadGroupFunctions = new ThreadGroupFunctions(stateManager)
-    val sourceFunctions = new SourceFunctions(stateManager)
-    val stepFunctions = new StepFunctions(stateManager)
-    val exceptionFunctions = new ExceptionFunctions(stateManager)
-    val watchpointFunctions = new WatchpointFunctions(stateManager)
+    val debuggerFunctions = new DebuggerFunctions(stateManager, writeLine)
+    val threadFunctions = new ThreadFunctions(stateManager, writeLine)
+    val expressionFunctions = new ExpressionFunctions(stateManager, writeLine)
+    val breakpointFunctions = new BreakpointFunctions(stateManager, writeLine)
+    val methodFunctions = new MethodFunctions(stateManager, writeLine)
+    val classFunctions = new ClassFunctions(stateManager, writeLine)
+    val threadGroupFunctions = new ThreadGroupFunctions(stateManager, writeLine)
+    val sourceFunctions = new SourceFunctions(stateManager, writeLine)
+    val stepFunctions = new StepFunctions(stateManager, writeLine)
+    val exceptionFunctions = new ExceptionFunctions(stateManager, writeLine)
+    val watchpointFunctions = new WatchpointFunctions(stateManager, writeLine)
 
     interpreter.bindFunction("attach", Seq("port", "hostname", "timeout"), debuggerFunctions.attach, "Attaches to an already-running JVM process using a port.")
     interpreter.bindFunction("attachp", Seq("pid", "timeout"), debuggerFunctions.attachp, "Attaches to an already-running JVM process using its pid.")
@@ -214,7 +216,7 @@ object Repl {
     interpreter.bindFunction("unwatcha", Seq("class", "field"), watchpointFunctions.unwatchAccess, "Unwatches (deletes) only access watchpoints for the specified class' field.")
     interpreter.bindFunction("unwatchm", Seq("class", "field"), watchpointFunctions.unwatchModification, "Unwatches (deletes) only modification watchpoints for the specified class' field.")
 
-    val repl = new Repl(
+    lazy val repl = new Repl(
       interpreter,
       stateManager,
       forceUseFallback = forceUseFallback

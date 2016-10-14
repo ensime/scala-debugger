@@ -7,14 +7,18 @@ import org.scaladebugger.tool.backend.StateManager
  * Represents a collection of functions for managing threads.
  *
  * @param stateManager The manager whose state to share among functions
+ * @param writeLine Used to write output to the terminal
  */
-class ThreadFunctions(private val stateManager: StateManager) {
+class ThreadFunctions(
+  private val stateManager: StateManager,
+  private val writeLine: String => Unit
+) {
 
   /** Entrypoint for listing thread information for connected JVMs. */
   def threads(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     // Optional thread group (argument has priority, followed by active)
     val threadGroup = m.get("threadGroup").map(_.toString)
@@ -27,9 +31,9 @@ class ThreadFunctions(private val stateManager: StateManager) {
         .map(_._2.head)
         .filter(tg => threadGroup.isEmpty || tg.name == threadGroup.get)
 
-      println(s"<= JVM ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
       threadGroups.foreach(tg => {
-        println("Group " + tg.name + ":")
+        writeLine("Group " + tg.name + ":")
         tg.threads.foreach(t => {
           val rName = t.referenceType.name
           val id = "0x" + t.uniqueIdHexString
@@ -37,7 +41,7 @@ class ThreadFunctions(private val stateManager: StateManager) {
           val status = t.status.statusString
           val suspended = if (t.status.isSuspended) "suspended" else ""
           val atBreakpoint = if (t.status.isAtBreakpoint) "at breakpoint" else ""
-          println(s"\t($rName)$id $name $status $suspended $atBreakpoint")
+          writeLine(s"\t($rName)$id $name $status $suspended $atBreakpoint")
         })
       })
     })
@@ -47,7 +51,7 @@ class ThreadFunctions(private val stateManager: StateManager) {
   def thread(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     val threadName = m.get("thread").map(_.toString)
 
@@ -58,7 +62,7 @@ class ThreadFunctions(private val stateManager: StateManager) {
           case t if t.name == name => t
         }
 
-        if (thread.isEmpty) println(s"No thread found named '$name'!")
+        if (thread.isEmpty) writeLine(s"No thread found named '$name'!")
         thread.foreach(stateManager.updateActiveThread)
 
       // No name provided, so clear existing active thread
@@ -71,7 +75,7 @@ class ThreadFunctions(private val stateManager: StateManager) {
   def suspend(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     // TODO: Support more than one thread
     val threadNames = m.get("thread").map(t => Seq(t.toString)).getOrElse(Nil)
@@ -93,7 +97,7 @@ class ThreadFunctions(private val stateManager: StateManager) {
   def resume(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     // TODO: Support more than one thread
     val threadNames = m.get("thread").map(t => Seq(t.toString)).getOrElse(Nil)
@@ -115,7 +119,7 @@ class ThreadFunctions(private val stateManager: StateManager) {
   def where(m: Map[String, Any]) = {
     val jvms = stateManager.state.scalaVirtualMachines
 
-    if (jvms.isEmpty) println("No VM connected!")
+    if (jvms.isEmpty) writeLine("No VM connected!")
 
     // TODO: Support more than one thread
     val threadNames = m.get("thread").map(t => Seq(t.toString)).getOrElse(Nil)
@@ -131,7 +135,7 @@ class ThreadFunctions(private val stateManager: StateManager) {
     } else {
       stateManager.state.activeThread match {
         case Some(t) => printFrameStack(t)
-        case None => println("No active thread!")
+        case None => writeLine("No active thread!")
       }
     }
   }
@@ -145,7 +149,7 @@ class ThreadFunctions(private val stateManager: StateManager) {
       s"(${l.sourceName}:${l.lineNumber})"
     }.mkString("\n")
 
-    println(f)
+    writeLine(f)
 
     threadInfo.resume()
   }

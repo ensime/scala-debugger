@@ -30,4 +30,11 @@ class FallbackTerminal extends Terminal {
 
     if (!stop) Some(lineBuilder.toString().trim) else None
   }
+
+  /**
+   * Writes the provided text to the terminal.
+   *
+   * @param text The text to write out to the terminal
+   */
+  override def write(text: String): Unit = Console.print(text)
 }

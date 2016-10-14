@@ -12,6 +12,20 @@ trait Terminal {
    */
   def readLine(): Option[String]
 
+  /**
+   * Writes the provided text to the terminal.
+   *
+   * @param text The text to write out to the terminal
+   */
+  def write(text: String): Unit
+
+  /**
+   * Writes the provided text to the terminal and ends with a newline character.
+   *
+   * @param text The text to write out to the terminal
+   */
+  def writeLine(text: String): Unit = write(s"$text\n")
+
   /** Represents the underlying prompt function to generate new prompts. */
   @volatile private var _promptFunc: () => String = () => "> "
 

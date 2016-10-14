@@ -1,7 +1,6 @@
 package org.scaladebugger.api.utils
 import acyclic.file
-
-import java.io.{InputStreamReader, BufferedReader, File}
+import java.io.{BufferedReader, File, InputStreamReader}
 import java.net.URLClassLoader
 
 /**
@@ -32,6 +31,26 @@ class JDITools private[utils] extends JDILoader with Logging {
     case u: URLClassLoader =>
       u.getURLs.map(_.getPath).map(new File(_)).mkString(getPathSeparator)
     case _ => getJavaClassPath
+  }
+
+  /**
+   * Returns a random port that is currently open.
+   *
+   * @return The number of the port
+   */
+  def findOpenPort(): Option[Int] = {
+    import java.io.IOException
+    import java.net.ServerSocket
+
+    // Open an available port, get the number, and close it
+    try {
+      val socket = new ServerSocket(0)
+      val port = socket.getLocalPort
+      socket.close()
+      Some(port)
+    } catch {
+      case _: IOException => None
+    }
   }
 
   /**
