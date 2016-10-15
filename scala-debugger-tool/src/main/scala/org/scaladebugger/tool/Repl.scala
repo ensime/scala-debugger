@@ -20,34 +20,54 @@ import scala.util.{Failure, Success, Try}
  *                       the interpreter as a result
  */
 class Repl (
-  private val interpreter: Interpreter,
-  private val stateManager: StateManager,
+  val interpreter: Interpreter,
+  val stateManager: StateManager,
   private val mainTerminal: Terminal = new FancyTerminal,
   private val forceUseFallback: Boolean = false,
   private val printUndefined: Boolean = false
 ) {
+  /** Main execution thread of the REPL. */
+  private val executionThread = new Thread(new Runnable {
+    override def run(): Unit = {
+      try {
+        val result = Try(if (!forceUseFallback) mainImpl() else {})
+
+        result.failed.foreach { _ =>
+          Console.err.println("Main terminal failed! Trying fallback!")
+        }
+
+        if (result.isFailure || forceUseFallback) {
+          Console.out.println("Fallback REPL starting! Assuming 80 character width!")
+          fallbackImpl()
+        }
+      } finally {
+        stateManager.clear()
+      }
+    }
+  })
+
   /**
-   * Starts the REPL.
+   * Starts the REPL. Asynchronous operation that does not block the thread
+   * executing this method.
    */
   def start(): Unit = {
-    val result = Try(if (!forceUseFallback) mainImpl() else {})
-
-    result.failed.foreach { _ =>
-      Console.err.println("Main terminal failed! Trying fallback!")
-    }
-
-    if (result.isFailure || forceUseFallback) {
-      Console.out.println("Fallback REPL starting! Assuming 80 character width!")
-      fallbackImpl()
-    }
+    executionThread.start()
   }
 
   /**
-   * Stops the REPL.
+   * Stops the REPL. Blocks until fully stopped.
    */
   def stop(): Unit = {
-    stateManager.clear()
+    executionThread.interrupt()
+    executionThread.join()
   }
+
+  /**
+   * Returns whether or not the REPL is running.
+   *
+   * @return True if running (started and active), otherwise false
+   */
+  def isRunning: Boolean = executionThread.isAlive
 
   /**
    * Returns a new REPL using the provided terminal.
@@ -130,17 +150,26 @@ object Repl {
   /**
    * Creates a new instance of the REPL with custom functions.
    *
+   * @param mainTerminal The main terminal to use with the REPL
    * @param forceUseFallback If true, forces the use of the fallback
    *                         terminal instead of the fancy one
    * @return The new REPL instance
    */
-  def newInstance(forceUseFallback: Boolean): Repl = {
+  def newInstance(
+    mainTerminal: Terminal = new FancyTerminal,
+    forceUseFallback: Boolean = false
+  ): Repl = {
     import org.scaladebugger.tool.backend.functions._
     val interpreter = new DebuggerInterpreter
+    val stateManager = new StateManager
+    val repl = new Repl(
+      interpreter,
+      stateManager,
+      mainTerminal = mainTerminal,
+      forceUseFallback = forceUseFallback
+    )
 
     val writeLine = (text: String) => repl.activeTerminal.writeLine(text)
-
-    val stateManager = new StateManager
     val debuggerFunctions = new DebuggerFunctions(stateManager, writeLine)
     val threadFunctions = new ThreadFunctions(stateManager, writeLine)
     val expressionFunctions = new ExpressionFunctions(stateManager, writeLine)
@@ -215,12 +244,6 @@ object Repl {
     interpreter.bindFunction("unwatch", Seq("class", "field"), watchpointFunctions.unwatchAll, "Unwatches (deletes) access and modification watchpoints for the specified class' field.")
     interpreter.bindFunction("unwatcha", Seq("class", "field"), watchpointFunctions.unwatchAccess, "Unwatches (deletes) only access watchpoints for the specified class' field.")
     interpreter.bindFunction("unwatchm", Seq("class", "field"), watchpointFunctions.unwatchModification, "Unwatches (deletes) only modification watchpoints for the specified class' field.")
-
-    lazy val repl = new Repl(
-      interpreter,
-      stateManager,
-      forceUseFallback = forceUseFallback
-    )
 
     // Set a dynamic prompt to use based on our state
     repl.activeTerminal.setPromptFunction(() => {

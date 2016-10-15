@@ -43,25 +43,29 @@ trait ToolFixtures extends TestUtilities with Logging {
   }
 
   /**
+   * Creates a new JVM process with the specified class and arguments. Then,
+   * launches a virtual terminal to simulate the REPL.
    *
-   * @param className
-   * @param arguments
-   * @param testCode
+   * @param className The name of the main class to use as the JVM entrypoint
+   * @param arguments The arguments to provide to the main class
+   * @param testCode The test code to evaluate when the process has been started
    */
   def withToolRunning(
     className: String,
     arguments: Seq[String] = Nil
-  )(testCode: (Terminal) => Any): Unit = {
+  )(testCode: (VirtualTerminal) => Any): Unit = {
     withProcess(className, arguments) { (port) =>
       var repl: Option[Repl] = None
       try {
         val terminal = new VirtualTerminal()
 
-        repl = Some(Repl
-          .newInstance(forceUseFallback = false)
-          .withTerminal(terminal))
+        repl = Some(Repl.newInstance(mainTerminal = terminal))
 
-        repl.map(_.activeTerminal).foreach(testCode)
+        // Queue up attach action
+        terminal.newInputLine(s"attach $port")
+
+        // Execute test code
+        testCode(terminal)
       } finally {
         repl.foreach(_.stop())
       }

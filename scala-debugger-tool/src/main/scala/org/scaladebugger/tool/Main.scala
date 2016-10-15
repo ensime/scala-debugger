@@ -14,10 +14,11 @@ object Main {
     if (results.help) {
       Console.out.println("No help available.")
     } else {
-      val repl = Repl.newInstance(results.forceUseFallback)
+      val repl = Repl.newInstance(forceUseFallback = results.forceUseFallback)
 
-      // Blocking call, only completing upon exiting REPL
+      // Start REPL and wait for completion
       repl.start()
+      while (repl.isRunning) Thread.sleep(1000)
 
       // Clear state, which will shutdown active debugger and allow proper exit
       repl.stop()
