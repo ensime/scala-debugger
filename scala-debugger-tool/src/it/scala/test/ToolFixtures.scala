@@ -4,10 +4,9 @@ import java.io.IOException
 
 import org.scaladebugger.api.utils.{JDITools, Logging}
 import org.scaladebugger.tool.Repl
-import org.scaladebugger.tool.frontend.Terminal
 
 /**
- * Provides fixture methods to provide CLI tools connecting to
+ * Provides fixture methods to provide CLI tools connecting to remote JVMs.
  */
 trait ToolFixtures extends TestUtilities with Logging {
   /**
@@ -63,6 +62,9 @@ trait ToolFixtures extends TestUtilities with Logging {
 
         // Queue up attach action
         terminal.newInputLine(s"attach $port")
+
+        // Start processing input
+        repl.foreach(_.start())
 
         // Execute test code
         testCode(terminal)
