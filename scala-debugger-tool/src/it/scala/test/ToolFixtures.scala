@@ -16,8 +16,9 @@ trait ToolFixtures extends TestUtilities with Logging {
    * @param arguments The arguments to provide to the main class
    * @param suspend If true, suspends the process until a debugger connects
    * @param testCode The test code to evaluate when the process has been started
+   *                 (provided the open debug port of the process)
    */
-  def withProcess(
+  def withProcessPort(
     className: String,
     arguments: Seq[String] = Nil,
     suspend: Boolean = true
@@ -42,6 +43,38 @@ trait ToolFixtures extends TestUtilities with Logging {
   }
 
   /**
+   * Creates a new JVM process with the specified class and arguments. The
+   * process cannot start suspended.
+   *
+   * @param className The name of the main class to use as the JVM entrypoint
+   * @param arguments The arguments to provide to the main class
+   * @param testCode The test code to evaluate when the process has been started
+   *                 (provided the pid of the process)
+   */
+  def withProcessPid(
+    className: String,
+    arguments: Seq[String] = Nil
+  )(testCode: (Int) => Any): Unit = {
+    var process: Option[Process] = None
+    try {
+      val (pid, proc) = JDITools.spawnAndGetPid(
+        className = className,
+        port = 0, // Assign ephemeral port
+        args = arguments
+      )
+
+      process = Some(proc)
+
+      // If unable to retrieve the process PID, exit now
+      if (pid <= 0) throw new IOException("Unable to retrieve process PID!")
+
+      testCode(pid)
+    } finally {
+      process.foreach(_.destroy())
+    }
+  }
+
+  /**
    * Creates a new JVM process with the specified class and arguments. Then,
    * launches a virtual terminal to simulate the REPL.
    *
@@ -53,7 +86,7 @@ trait ToolFixtures extends TestUtilities with Logging {
     className: String,
     arguments: Seq[String] = Nil
   )(testCode: (VirtualTerminal) => Any): Unit = {
-    withProcess(className, arguments) { (port) =>
+    withProcessPort(className, arguments) { (port) =>
       var repl: Option[Repl] = None
       try {
         val terminal = new VirtualTerminal()

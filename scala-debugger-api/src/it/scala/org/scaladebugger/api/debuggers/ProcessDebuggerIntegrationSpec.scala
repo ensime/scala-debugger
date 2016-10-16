@@ -1,13 +1,13 @@
 package org.scaladebugger.api.debuggers
-import acyclic.file
+import java.io.IOException
 
-import java.net.ServerSocket
+import acyclic.file
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.scaladebugger.api.utils.JDITools
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{ParallelTestExecution, BeforeAndAfter, FunSpec, Matchers}
+import org.scalatest.{BeforeAndAfter, FunSpec, Matchers, ParallelTestExecution}
 import test.{TestUtilities, VirtualMachineFixtures}
 
 class ProcessDebuggerIntegrationSpec extends FunSpec with Matchers
@@ -27,7 +27,7 @@ class ProcessDebuggerIntegrationSpec extends FunSpec with Matchers
   }
 
   after {
-    destroyProcess(jvmProcess._2)
+    if (jvmProcess != null) destroyProcess(jvmProcess._2)
   }
 
   describe("ProcessDebugger") {
@@ -50,26 +50,17 @@ class ProcessDebuggerIntegrationSpec extends FunSpec with Matchers
   }
 
   private def createProcess(): (Int, Process) = {
-    val port = {
-      val socket = new ServerSocket(0)
-      val _port = socket.getLocalPort
-      socket.close()
-      _port
-    }
-
-    val quote = '"'
-    val uniqueId = java.util.UUID.randomUUID().toString
-    val process = JDITools.spawn(
+    val (pid, process) = JDITools.spawnAndGetPid(
       className = "org.scaladebugger.test.misc.AttachingMain",
       server = true,
-      suspend = false,
-      port = port,
-      options = Seq(s"-Dscala.debugger.id=$quote$uniqueId$quote")
+      port = 0 // Assign ephemeral port
     )
 
-    val pid = JDITools.javaProcesses()
-      .find(_.jvmOptions.properties.get("scala.debugger.id").exists(_ == uniqueId))
-      .map(_.pid.toInt).getOrElse(0)
+    // If unable to retrieve the process PID, exit now
+    if (pid <= 0) {
+      process.destroy()
+      throw new IOException("Unable to retrieve process PID!")
+    }
 
     (pid, process)
   }

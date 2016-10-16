@@ -120,6 +120,52 @@ class JDITools private[utils] extends JDILoader with Logging {
   }
 
   /**
+   * Spawns a new Scala process using the provided class name as the
+   * entrypoint. Retrieves the PID of the process. The spawned JVM cannot
+   * start suspended.
+   *
+   * @note Assumes that Scala is available on the path!
+   * @param className The name of the class to use as the entrypoint for the
+   *                  Scala process
+   * @param port The port to use for the Scala process to listen on
+   * @param hostname Optional hostname to use for the Scala process to listen on
+   * @param server Whether or not to launch the process as a server waiting for
+   *               a debugger connection or a client connecting to a listening
+   *               debugger
+   * @param args The collection of arguments to pass to the Scala process
+   * @param options Any additional JVM options to pass to the Scala process
+   * @return The tuple containing the PID (or 0 if failed to retrieve) and
+   *         the Scala process
+   */
+  def spawnAndGetPid(
+    className: String,
+    port: Int,
+    hostname: String = "",
+    server: Boolean = true,
+    args: Seq[String] = Nil,
+    options: Seq[String] = Nil
+  ): (Int, Process) = {
+    val quote = '"'
+    val uniqueId = java.util.UUID.randomUUID().toString
+    val process = JDITools.spawn(
+      className = className,
+      port = port,
+      hostname = hostname,
+      server = server,
+      suspend = false, // Must be false to show up in JPS
+      args = args,
+      options = options :+ s"-Dscala.debugger.id=$quote$uniqueId$quote"
+    )
+
+    val pid = JDITools.javaProcesses()
+      .find(_.jvmOptions.properties
+        .get("scala.debugger.id").exists(_ == uniqueId)
+      ).map(_.pid.toInt).getOrElse(0)
+
+    (pid, process)
+  }
+
+  /**
    * Collects a list of active Java processes using the JPS tool.
    *
    * @note Will fail if the JPS tool is not on PATH.

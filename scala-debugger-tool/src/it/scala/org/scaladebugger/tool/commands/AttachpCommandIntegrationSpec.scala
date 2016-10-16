@@ -6,7 +6,7 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{TestUtilities, ToolFixtures, VirtualTerminal}
 
-class AttachCommandIntegrationSpec extends FunSpec with Matchers
+class AttachpCommandIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with ToolFixtures
   with TestUtilities with Eventually
 {
@@ -15,18 +15,18 @@ class AttachCommandIntegrationSpec extends FunSpec with Matchers
     interval = scaled(test.Constants.EventuallyInterval)
   )
 
-  describe("AttachCommand") {
+  describe("AttachpCommand") {
     it("should attach successfully using a port") {
       val testClass = "org.scaladebugger.test.misc.AttachingMain"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      withProcessPort(testClass) { (port) =>
+      withProcessPid(testClass) { (pid) =>
         val terminal = new VirtualTerminal()
 
         val repl = Repl.newInstance(mainTerminal = terminal)
 
         // Queue up attach action
-        terminal.newInputLine(s"attach $port")
+        terminal.newInputLine(s"attachp $pid")
 
         // Start processing input
         // TODO: Add repl stop code regardless of test success

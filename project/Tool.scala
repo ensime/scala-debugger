@@ -5,6 +5,11 @@ import sbtassembly.AssemblyKeys._
 object Tool {
   /** Tool-specific project settings. */
   val settings = Seq(
+    // NOTE: Fork needed to avoid mixing in sbt classloader, which is causing
+    //       LinkageError to be thrown for JDI-based classes
+    fork in Test := true,
+    fork in IntegrationTest := true,
+
     libraryDependencies ++= Seq(
       "com.lihaoyi" % "ammonite" % "0.7.7" cross CrossVersion.full,
       "com.lihaoyi" % "ammonite-util" % "0.7.7" cross CrossVersion.full,

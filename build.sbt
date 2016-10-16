@@ -64,6 +64,7 @@ lazy val scalaDebuggerTool = project
   .settings(name := "scala-debugger-tool")
   .dependsOn(scalaDebuggerApi % "compile->compile;test->compile;it->compile")
   .dependsOn(scalaDebuggerLanguage % "compile->compile;test->compile;it->compile")
+  .dependsOn(scalaDebuggerTest % "test->compile;it->compile")
 
 //
 // MAIN PROJECT CONFIGURATION
