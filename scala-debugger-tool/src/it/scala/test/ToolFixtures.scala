@@ -4,6 +4,8 @@ import java.io.IOException
 
 import org.scaladebugger.api.utils.{JDITools, Logging}
 import org.scaladebugger.tool.Repl
+import org.scaladebugger.tool.backend.StateManager
+import org.scaladebugger.tool.frontend.VirtualTerminal
 
 /**
  * Provides fixture methods to provide CLI tools connecting to remote JVMs.
@@ -80,27 +82,69 @@ trait ToolFixtures extends TestUtilities with Logging {
    *
    * @param className The name of the main class to use as the JVM entrypoint
    * @param arguments The arguments to provide to the main class
-   * @param testCode The test code to evaluate when the process has been started
+   * @param waitTime Maximum time (in milliseconds) to wait for new input into
+   *                 the tool's terminal before terminating
+   * @param autoStart If true, automatically starts the REPL process, otherwise
+   *                  the start function must be executed
+   * @param testCode The test code to evaluate when the process has been
+   *                 started (provided a virtual terminal connected to a
+   *                 running tool, the underlying state manager for the REPL,
+   *                 and a start function that should be invoked
+   *                 if autoStart is false)
    */
   def withToolRunning(
     className: String,
-    arguments: Seq[String] = Nil
-  )(testCode: (VirtualTerminal) => Any): Unit = {
+    arguments: Seq[String] = Nil,
+    waitTime: Long = VirtualTerminal.DefaultWaitTime,
+    autoStart: Boolean = true
+  )(testCode: (VirtualTerminal, StateManager, () => Unit) => Any): Unit = {
+    withToolRunningUsingTerminal(
+      className = className,
+      arguments = arguments,
+      virtualTerminal = new VirtualTerminal(waitTime = waitTime),
+      autoStart = autoStart
+    )(testCode)
+  }
+
+  /**
+   * Creates a new JVM process with the specified class and arguments. Then,
+   * launches a virtual terminal to simulate the REPL.
+   *
+   * @param className The name of the main class to use as the JVM entrypoint
+   * @param arguments The arguments to provide to the main class
+   * @param virtualTerminal The virtual terminal to associate with the REPL
+   *                        created by this fixture
+   * @param autoStart If true, automatically starts the REPL process, otherwise
+   *                  the start function must be executed
+   * @param testCode The test code to evaluate when the process has been
+   *                 started (provided a virtual terminal connected to a
+   *                 running tool, the underlying state manager for the REPL,
+   *                 and a start function that should be invoked
+   *                 if autoStart is false)
+   */
+  def withToolRunningUsingTerminal(
+    className: String,
+    virtualTerminal: VirtualTerminal,
+    arguments: Seq[String] = Nil,
+    autoStart: Boolean = true
+  )(testCode: (VirtualTerminal, StateManager, () => Unit) => Any): Unit = {
     withProcessPort(className, arguments) { (port) =>
       var repl: Option[Repl] = None
       try {
-        val terminal = new VirtualTerminal()
-
-        repl = Some(Repl.newInstance(mainTerminal = terminal))
+        repl = Some(Repl.newInstance(mainTerminal = virtualTerminal))
 
         // Queue up attach action
-        terminal.newInputLine(s"attach $port")
+        virtualTerminal.newInputLine(s"attach $port")
 
-        // Start processing input
-        repl.foreach(_.start())
+        // Create start function to begin running the repl
+        val startFunc = () => repl.foreach(_.start())
+
+        // Start processing input if auto-starting
+        if (autoStart) startFunc()
 
         // Execute test code
-        testCode(terminal)
+        repl.map(_.stateManager)
+          .foreach(testCode(virtualTerminal, _, startFunc))
       } finally {
         repl.foreach(_.stop())
       }

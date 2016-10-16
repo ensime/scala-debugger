@@ -51,15 +51,17 @@ class Repl (
    * executing this method.
    */
   def start(): Unit = {
-    executionThread.start()
+    if (!executionThread.isAlive) executionThread.start()
   }
 
   /**
    * Stops the REPL. Blocks until fully stopped.
    */
   def stop(): Unit = {
-    executionThread.interrupt()
-    executionThread.join()
+    if (executionThread.isAlive) {
+      executionThread.interrupt()
+      executionThread.join()
+    }
   }
 
   /**

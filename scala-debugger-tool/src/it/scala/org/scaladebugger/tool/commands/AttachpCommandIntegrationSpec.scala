@@ -2,17 +2,18 @@ package org.scaladebugger.tool.commands
 
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.tool.Repl
+import org.scaladebugger.tool.frontend.VirtualTerminal
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, ToolFixtures, VirtualTerminal}
+import test.{TestUtilities, ToolFixtures, Constants}
 
 class AttachpCommandIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with ToolFixtures
   with TestUtilities with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
+    timeout = scaled(Constants.EventuallyTimeout),
+    interval = scaled(Constants.EventuallyInterval)
   )
 
   describe("AttachpCommand") {

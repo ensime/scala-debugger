@@ -1,9 +1,8 @@
-package test
+package org.scaladebugger.tool.frontend
 
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue, TimeUnit}
 
-import org.scaladebugger.tool.frontend.Terminal
-import VirtualTerminal._
+import org.scaladebugger.tool.frontend.VirtualTerminal._
 
 object VirtualTerminal {
   /** Maximum queue size for input data. */
