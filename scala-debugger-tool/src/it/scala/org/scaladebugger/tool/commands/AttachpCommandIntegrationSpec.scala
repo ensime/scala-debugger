@@ -16,7 +16,7 @@ class AttachpCommandIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("AttachpCommand") {
-    it("should attach successfully using a port") {
+    it("should attach successfully using a pid") {
       val testClass = "org.scaladebugger.test.misc.AttachingMain"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
