@@ -7,11 +7,12 @@ import ammonite.util.Bind
 import com.sun.jdi.{ThreadGroupReference, ThreadReference}
 import org.scaladebugger.api.debuggers.Debugger
 import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfoProfile, ThreadInfoProfile}
-import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine}
 
 case class State(
   activeDebugger: Option[Debugger],
   scalaVirtualMachines: Seq[ScalaVirtualMachine],
+  dummyScalaVirtualMachine: DummyScalaVirtualMachine,
   activeThread: Option[ThreadInfoProfile],
   activeThreadGroup: Option[ThreadGroupInfoProfile],
   sourcePaths: Seq[URI]
@@ -35,10 +36,14 @@ case class State(
 }
 
 object State {
-  /** Represents the default state (all values are None/Nil). */
+  /**
+   * Represents the default state where all values are None/Nil except the
+   * dummy virtual machine, which is initialized using the default profile.
+   */
   val Default = State(
     activeDebugger = None,
     scalaVirtualMachines = Nil,
+    dummyScalaVirtualMachine = DummyScalaVirtualMachine.newInstance(),
     activeThread = None,
     activeThreadGroup = None,
     sourcePaths = Nil

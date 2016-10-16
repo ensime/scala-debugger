@@ -40,6 +40,10 @@ class Repl (
           Console.out.println("Fallback REPL starting! Assuming 80 character width!")
           fallbackImpl()
         }
+      } catch {
+        case _: InterruptedException => /*
+          Suppress throwing of interrupt exceptions (but still end execution).
+        */
       } finally {
         stateManager.clear()
       }

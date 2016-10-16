@@ -24,6 +24,7 @@ class DebuggerFunctions(
     val timeout = m.getOrElse("timeout", 0).toString.toDouble.toInt
 
     val d = AttachingDebugger(port, hostname, timeout)
+      .withPending(stateManager.state.dummyScalaVirtualMachine)
     stateManager.updateActiveDebugger(d)
 
     d.start(s => {
@@ -41,6 +42,7 @@ class DebuggerFunctions(
     val timeout = m.getOrElse("timeout", 0).toString.toDouble.toInt
 
     val d = ProcessDebugger(pid, timeout)
+      .withPending(stateManager.state.dummyScalaVirtualMachine)
     stateManager.updateActiveDebugger(d)
 
     d.start(s => {
@@ -61,7 +63,7 @@ class DebuggerFunctions(
       className,
       jvmOptions = Seq("-classpath", JDITools.jvmClassPath),
       suspend = suspend
-    )
+    ).withPending(stateManager.state.dummyScalaVirtualMachine)
     stateManager.updateActiveDebugger(d)
 
     d.start(s => {
@@ -79,6 +81,7 @@ class DebuggerFunctions(
     val hostname = m.getOrElse("hostname", "localhost").toString
 
     val d = ListeningDebugger(port, hostname)
+      .withPending(stateManager.state.dummyScalaVirtualMachine)
     stateManager.updateActiveDebugger(d)
 
     d.start(s => {

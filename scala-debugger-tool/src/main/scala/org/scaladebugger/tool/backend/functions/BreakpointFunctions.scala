@@ -16,10 +16,6 @@ class BreakpointFunctions(
 ) {
   /** Entrypoint for creating a breakpoint. */
   def createBreakpoint(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-
-    if (jvms.isEmpty) writeLine("No VM connected!")
-
     val file = m.get("file").map(_.toString).getOrElse(
       throw new RuntimeException("Missing file argument!")
     )
@@ -28,6 +24,13 @@ class BreakpointFunctions(
       throw new RuntimeException("Missing line argument!")
     )
 
+    // Set as pending if no JVM is available
+    var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
+
+    writeLine(s"Set breakpoint at $file:$line")
     jvms.foreach(s => {
       s.getOrCreateBreakpointRequest(file, line, NoResume).foreach(e => {
         val t = e.thread()
@@ -41,9 +44,11 @@ class BreakpointFunctions(
 
   /** Entrypoint for listing all breakpoints. */
   def listBreakpoints(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    // Set as pending if no JVM is available
+    var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     jvms.foreach(s => {
       writeLine(s"<= JVM ${s.uniqueId} =>")
@@ -54,19 +59,23 @@ class BreakpointFunctions(
 
   /** Entrypoint for clearing a breakpoint. */
   def clearBreakpoint(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-
-    if (jvms.isEmpty) writeLine("No VM connected!")
-
     val file = m.get("file").map(_.toString)
     val line = m.get("line").map(_.toString.toDouble.toInt)
 
     if (file.nonEmpty ^ line.nonEmpty)
       writeLine("Missing file or line argument!")
 
+    // Set as pending if no JVM is available
+    var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
+
     if (file.nonEmpty && line.nonEmpty) {
+      writeLine(s"Cleared breakpoint at ${file.get}:${line.get}")
       jvms.foreach(_.removeBreakpointRequests(file.get, line.get))
     } else if (file.isEmpty && line.isEmpty) {
+      writeLine("Cleared all breakpoints")
       jvms.foreach(_.removeAllBreakpointRequests())
     }
   }
