@@ -38,7 +38,8 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
         // Construct our "nextLine" method based on average timeout
         val waitTime = Constants.NextOutputLineTimeout.millisPart
         val nextLineOpt = () => vt.nextOutputLine(waitTime = waitTime)
-        val nextLine = () => nextLineOpt().get
+        val nextLine = () => nextLineOpt().getOrElse(
+          throw new Exception("Next line input timed out!"))
 
         logTimeTaken({
           // Verify our breakpoints were set
@@ -56,7 +57,7 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
           vt.newInputLine("bpclear \"some/file.scala\" 999")
 
           // Verify action was performed
-          nextLine() should be ("Cleared breakpoint at some/file.scala:999")
+          nextLine() should be ("Cleared breakpoint at some/file.scala:999\n")
 
           // List all available breakpoints
           vt.newInputLine("bplist")
@@ -95,7 +96,8 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
         // Construct our "nextLine" method based on average timeout
         val waitTime = Constants.NextOutputLineTimeout.millisPart
         val nextLineOpt = () => vt.nextOutputLine(waitTime = waitTime)
-        val nextLine = () => nextLineOpt().get
+        val nextLine = () => nextLineOpt().getOrElse(
+          throw new Exception("Next line input timed out!"))
 
         logTimeTaken({
           // Verify our breakpoints were set
@@ -113,7 +115,7 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
           vt.newInputLine(s"bpclear $q$testFile$q 11")
 
           // Verify action was performed
-          nextLine() should be (s"Cleared breakpoint at $testFile:11")
+          nextLine() should be (s"Cleared breakpoint at $testFile:11\n")
 
           // List all available breakpoints
           vt.newInputLine("bplist")
@@ -152,7 +154,8 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
         // Construct our "nextLine" method based on average timeout
         val waitTime = Constants.NextOutputLineTimeout.millisPart
         val nextLineOpt = () => vt.nextOutputLine(waitTime = waitTime)
-        val nextLine = () => nextLineOpt().get
+        val nextLine = () => nextLineOpt().getOrElse(
+          throw new Exception("Next line input timed out!"))
 
         logTimeTaken({
           // Verify our breakpoints were set
@@ -170,7 +173,7 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
           vt.newInputLine("bpclear")
 
           // Verify action was performed
-          nextLine() should be ("Cleared all breakpoints")
+          nextLine() should be ("Cleared all breakpoints\n")
 
           // List all available breakpoints
           vt.newInputLine("bplist")
