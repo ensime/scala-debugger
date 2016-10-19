@@ -44,8 +44,10 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
           // them is still pending (no associated file remotely)
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
+            vt.nextOutputLine().foreach(l => println(s"${svm.uniqueId}::: $l"))
             val brs = svm.breakpointRequests
               .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
+            //println(s"PRE DELETE PENDING: $brs")
             brs should contain theSameElementsAs Seq(
               (testFile, 10, false),
               (testFile, 11, false),
@@ -102,8 +104,10 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
           // them is still pending (no associated file remotely)
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
+            vt.nextOutputLine().foreach(l => println(s"${svm.uniqueId}::: $l"))
             val brs = svm.breakpointRequests
               .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
+            //println(s"PRE DELETE ACTIVE: $brs")
             brs should contain theSameElementsAs Seq(
               (testFile, 10, false),
               (testFile, 11, false),
@@ -160,8 +164,10 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
           // them is still pending (no associated file remotely)
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
+            vt.nextOutputLine().foreach(l => println(s"${svm.uniqueId}::: $l"))
             val brs = svm.breakpointRequests
               .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
+            //println(s"PRE DELETE ALL: $brs")
             brs should contain theSameElementsAs Seq(
               (testFile, 10, false),
               (testFile, 11, false),
