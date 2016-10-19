@@ -22,7 +22,8 @@ object VirtualTerminal {
  * @param inputQueue The queue used for new input to the terminal
  * @param outputQueue The queue used for new output from the terminal
  * @param waitTime The maximum time to wait for retrieving input as well
- *                 as wait to add new input (in milliseconds)
+ *                 as wait to add new input (in milliseconds); if negative,
+ *                 will wait indefinitely
  */
 class VirtualTerminal(
   private val inputQueue: BlockingQueue[String] =
@@ -65,7 +66,8 @@ class VirtualTerminal(
    *         for new input has been exceeded
    */
   override def readLine(): Option[String] = {
-    Option(inputQueue.poll(waitTime, TimeUnit.MILLISECONDS))
+    if (waitTime < 0) Option(inputQueue.take())
+    else Option(inputQueue.poll(waitTime, TimeUnit.MILLISECONDS))
   }
 
   /**
