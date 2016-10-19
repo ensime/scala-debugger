@@ -3,6 +3,7 @@ package org.scaladebugger.api.lowlevel.events
 
 import com.sun.jdi.event.{Event, EventSet}
 import EventType.EventType
+import com.sun.jdi.VMDisconnectedException
 import org.scaladebugger.api.utils.Logging
 
 /**
@@ -33,29 +34,36 @@ class EventSetProcessor(
    */
   def process(): Boolean = {
     // Flag used to indicate whether or not to resume the event set
-    var resumeFlag = true
+    @volatile var resumeFlag = true
 
     // NOTE: Event sets are grouped into common events, so there is no need
     //       to worry about the resume flag being affected by different types
     //       of events
-    while (eventSetIterator.hasNext) {
-      val event = eventSetIterator.next()
-      val eventType = transformEventToEventType(event)
+    try {
+      while (eventSetIterator.hasNext) {
+        val event = eventSetIterator.next()
+        val eventType = transformEventToEventType(event)
 
-      // If an associated event type was found for the event, process it
-      eventType.foreach(et => {
-        logger.trace(s"Processing event: ${et.toString}")
+        // If an associated event type was found for the event, process it
+        eventType.foreach(et => {
+          logger.trace(s"Processing event: ${et.toString}")
 
-        // Retrieve the functions for the event type and evaluate each one,
-        // combining the results into an "all true or nothing"
-        val eventFunctions = eventFunctionRetrieval(et)
+          // Retrieve the functions for the event type and evaluate each one,
+          // combining the results into an "all true or nothing"
+          val eventFunctions = eventFunctionRetrieval(et)
 
-        // NOTE: Moved out of inline &&= as that has short-circuit logic that
-        //       results in not even processing the event, which is NOT what
-        //       we want to happen (no "missing" events)
-        val result = newEventProcessor(event, eventFunctions).process()
-        resumeFlag &&= result
-      })
+          // NOTE: Moved out of inline &&= as that has short-circuit logic that
+          //       results in not even processing the event, which is NOT what
+          //       we want to happen (no "missing" events)
+          val result = newEventProcessor(event, eventFunctions).process()
+          resumeFlag &&= result
+        })
+      }
+    } catch {
+      case e: VMDisconnectedException =>
+        logger.warn("Event set processing when VM disconnected", e)
+      case t: Throwable =>
+        logger.error("Error in event set processing", t)
     }
 
     // If result is that the event set should be resumed, then resume it

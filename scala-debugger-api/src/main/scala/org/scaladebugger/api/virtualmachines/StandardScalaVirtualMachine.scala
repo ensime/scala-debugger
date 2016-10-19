@@ -109,6 +109,7 @@ class StandardScalaVirtualMachine(
       // Mark the VM as started
       started.set(true)
 
+      logger.debug(vmString("Received start event!"))
       logger.trace(vmString("Refreshing all class references!"))
       lowlevel.classManager.refreshAllClasses()
 
@@ -123,7 +124,17 @@ class StandardScalaVirtualMachine(
       val fileName =
         lowlevel.classManager.fileNameForReferenceType(referenceType)
 
-      logger.trace(vmString(s"Received new class: $referenceTypeName"))
+      // TODO: Extract these checks out to helper methods (perhaps in the
+      // lowlevel class manager)
+      if (
+        referenceTypeName.startsWith("java") ||
+        referenceTypeName.startsWith("sun") ||
+        referenceTypeName.startsWith("scala")
+      ) {
+        logger.trace(vmString(s"Received new core class: $referenceTypeName"))
+      } else {
+        logger.trace(vmString(s"Received new non-core class: $referenceTypeName"))
+      }
       lowlevel.classManager.refreshClass(referenceType)
 
       processPendingForFile(fileName)
