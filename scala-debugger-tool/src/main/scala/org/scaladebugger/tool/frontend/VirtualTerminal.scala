@@ -36,13 +36,13 @@ class VirtualTerminal(
    * Retrieves the next line of output from the terminal.
    *
    * @param waitTime The maximum time to wait for new output in milliseconds,
-   *                 or 0 if waiting indefinitely
+   *                 or -1 if waiting indefinitely
    * @return Some new line of output from the terminal if output exists,
    *         otherwise None
    */
   def nextOutputLine(waitTime: Long = 0): Option[String] = {
-    if (waitTime > 0) Option(outputQueue.poll(waitTime, TimeUnit.MILLISECONDS))
-    else Option(outputQueue.take())
+    if (waitTime < 0) Option(outputQueue.take())
+    else Option(outputQueue.poll(waitTime, TimeUnit.MILLISECONDS))
   }
 
   /**
