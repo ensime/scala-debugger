@@ -34,15 +34,8 @@ class AttachCommandIntegrationSpec extends FunSpec with Matchers
         repl.start()
 
         // Eventually, attach should complete
-        logTimeTaken({
-          eventually {
-            val output = terminal.nextOutputLine(waitTime = 100)
-            output.get should startWith ("Attached with id")
-          }
-
-          eventually {
-            repl.stateManager.state.activeDebugger should not be None
-          }
+        logTimeTaken(eventually {
+          repl.stateManager.state.activeDebugger should not be None
         })
       }
     }

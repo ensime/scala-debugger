@@ -23,10 +23,14 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testFileName = new File(testFile).getName
 
+      // Create a virtual terminal that waits for new input
+      val virtualTerminal = new VirtualTerminal(
+        waitTime = Constants.NewInputLineTimeout.millisPart
+      )
+
       // Create two breakpoints before connecting to the JVM that are valid
       // and one breakpoint that is not (so always pending)
       val q = "\""
-      val virtualTerminal = new VirtualTerminal()
       virtualTerminal.newInputLine(s"bp $q$testFile$q 10")
       virtualTerminal.newInputLine(s"bp $q$testFile$q 11")
       virtualTerminal.newInputLine("bp \"some/file.scala\" 999")
@@ -35,43 +39,39 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
         className = testClass,
         virtualTerminal = virtualTerminal
       ) { (vt, sm, start) =>
-        // Construct our "nextLine" method based on average timeout
-        val waitTime = Constants.NextOutputLineTimeout.millisPart
-        val nextLineOpt = () => vt.nextOutputLine(waitTime = waitTime)
-        val nextLine = () => nextLineOpt().getOrElse(
-          throw new Exception("Next line input timed out!"))
-
         logTimeTaken({
-          // Verify our breakpoints were set
-          nextLine() should be (s"Set breakpoint at $testFile:10\n")
-          nextLine() should be (s"Set breakpoint at $testFile:11\n")
-          nextLine() should be ("Set breakpoint at some/file.scala:999\n")
+          // Verify all breakpoints have been set and that one of
+          // them is still pending (no associated file remotely)
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+            val brs = svm.breakpointRequests
+              .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
+            brs should contain theSameElementsAs Seq(
+              (testFile, 10, false),
+              (testFile, 11, false),
+              ("some/file.scala", 999, true)
+            )
+          }
 
-          // Verify that we have attached to the JVM
-          nextLine() should startWith ("Attached with id")
-
-          // Assert that we hit the first breakpoint
-          nextLine() should be (s"Breakpoint hit at $testFileName:10\n")
+          // Verify that debugger is running and we have an attached JVM
+          eventually {
+            sm.state.activeDebugger should not be (None)
+            sm.state.scalaVirtualMachines should not be empty
+          }
 
           // Clear a pending breakpoint (some/file.scala:999)
           vt.newInputLine("bpclear \"some/file.scala\" 999")
 
-          // Verify action was performed
-          nextLine() should be ("Cleared breakpoint at some/file.scala:999\n")
-
-          // List all available breakpoints
-          vt.newInputLine("bplist")
-
-          // First prints out JVM id
-          nextLine() should include ("JVM")
-
-          // Verify expected pending and active breakpoints show up
-          // by collecting the three available and checking their content
-          val lines = Seq(nextLineOpt(), nextLineOpt(), nextLineOpt()).flatten
-          lines should contain allOf(
-            s"$testFile:10\n",
-            s"$testFile:11\n"
-          )
+          // Verify that the deleted breakpoint is gone
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+            val brs = svm.breakpointRequests
+              .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
+            brs should contain theSameElementsAs Seq(
+              (testFile, 10, false),
+              (testFile, 11, false)
+            )
+          }
         })
       }
     }
@@ -81,10 +81,14 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testFileName = new File(testFile).getName
 
+      // Create a virtual terminal that waits for new input
+      val virtualTerminal = new VirtualTerminal(
+        waitTime = Constants.NewInputLineTimeout.millisPart
+      )
+
       // Create two breakpoints before connecting to the JVM that are valid
       // and one breakpoint that is not (so always pending)
       val q = "\""
-      val virtualTerminal = new VirtualTerminal()
       virtualTerminal.newInputLine(s"bp $q$testFile$q 10")
       virtualTerminal.newInputLine(s"bp $q$testFile$q 11")
       virtualTerminal.newInputLine("bp \"some/file.scala\" 999")
@@ -93,43 +97,39 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
         className = testClass,
         virtualTerminal = virtualTerminal
       ) { (vt, sm, start) =>
-        // Construct our "nextLine" method based on average timeout
-        val waitTime = Constants.NextOutputLineTimeout.millisPart
-        val nextLineOpt = () => vt.nextOutputLine(waitTime = waitTime)
-        val nextLine = () => nextLineOpt().getOrElse(
-          throw new Exception("Next line input timed out!"))
-
         logTimeTaken({
-          // Verify our breakpoints were set
-          nextLine() should be (s"Set breakpoint at $testFile:10\n")
-          nextLine() should be (s"Set breakpoint at $testFile:11\n")
-          nextLine() should be ("Set breakpoint at some/file.scala:999\n")
+          // Verify all breakpoints have been set and that one of
+          // them is still pending (no associated file remotely)
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+            val brs = svm.breakpointRequests
+              .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
+            brs should contain theSameElementsAs Seq(
+              (testFile, 10, false),
+              (testFile, 11, false),
+              ("some/file.scala", 999, true)
+            )
+          }
 
-          // Verify that we have attached to the JVM
-          nextLine() should startWith ("Attached with id")
+          // Verify that debugger is running and we have an attached JVM
+          eventually {
+            sm.state.activeDebugger should not be (None)
+            sm.state.scalaVirtualMachines should not be empty
+          }
 
-          // Assert that we hit the first breakpoint
-          nextLine() should be (s"Breakpoint hit at $testFileName:10\n")
-
-          // Clear an active breakpoint (testFile:11)
+          // Clear an active breakpoint (testFile:999)
           vt.newInputLine(s"bpclear $q$testFile$q 11")
 
-          // Verify action was performed
-          nextLine() should be (s"Cleared breakpoint at $testFile:11\n")
-
-          // List all available breakpoints
-          vt.newInputLine("bplist")
-
-          // First prints out JVM id
-          nextLine() should include ("JVM")
-
-          // Verify expected pending and active breakpoints show up
-          // by collecting the three available and checking their content
-          val lines = Seq(nextLineOpt(), nextLineOpt(), nextLineOpt()).flatten
-          lines should contain allOf(
-            s"$testFile:10\n",
-            "some/file.scala:999\n"
-          )
+          // Verify that the deleted breakpoint is gone
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+            val brs = svm.breakpointRequests
+              .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
+            brs should contain theSameElementsAs Seq(
+              (testFile, 10, false),
+              ("some/file.scala", 999, true)
+            )
+          }
         })
       }
     }
@@ -139,10 +139,14 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testFileName = new File(testFile).getName
 
+      // Create a virtual terminal that waits for new input
+      val virtualTerminal = new VirtualTerminal(
+        waitTime = Constants.NewInputLineTimeout.millisPart
+      )
+
       // Create two breakpoints before connecting to the JVM that are valid
       // and one breakpoint that is not (so always pending)
       val q = "\""
-      val virtualTerminal = new VirtualTerminal()
       virtualTerminal.newInputLine(s"bp $q$testFile$q 10")
       virtualTerminal.newInputLine(s"bp $q$testFile$q 11")
       virtualTerminal.newInputLine("bp \"some/file.scala\" 999")
@@ -151,38 +155,34 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
         className = testClass,
         virtualTerminal = virtualTerminal
       ) { (vt, sm, start) =>
-        // Construct our "nextLine" method based on average timeout
-        val waitTime = Constants.NextOutputLineTimeout.millisPart
-        val nextLineOpt = () => vt.nextOutputLine(waitTime = waitTime)
-        val nextLine = () => nextLineOpt().getOrElse(
-          throw new Exception("Next line input timed out!"))
-
         logTimeTaken({
-          // Verify our breakpoints were set
-          nextLine() should be (s"Set breakpoint at $testFile:10\n")
-          nextLine() should be (s"Set breakpoint at $testFile:11\n")
-          nextLine() should be ("Set breakpoint at some/file.scala:999\n")
+          // Verify all breakpoints have been set and that one of
+          // them is still pending (no associated file remotely)
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+            val brs = svm.breakpointRequests
+              .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
+            brs should contain theSameElementsAs Seq(
+              (testFile, 10, false),
+              (testFile, 11, false),
+              ("some/file.scala", 999, true)
+            )
+          }
 
-          // Verify that we have attached to the JVM
-          nextLine() should startWith ("Attached with id")
-
-          // Assert that we hit the first breakpoint
-          nextLine() should be (s"Breakpoint hit at $testFileName:10\n")
+          // Verify that debugger is running and we have an attached JVM
+          eventually {
+            sm.state.activeDebugger should not be (None)
+            sm.state.scalaVirtualMachines should not be empty
+          }
 
           // Clear all breakpoints
           vt.newInputLine("bpclear")
 
-          // Verify action was performed
-          nextLine() should be ("Cleared all breakpoints\n")
-
-          // List all available breakpoints
-          vt.newInputLine("bplist")
-
-          // First prints out JVM id
-          nextLine() should include ("JVM")
-
-          // Nothing else should be printed
-          nextLineOpt() should be (None)
+          // Verify that all breakpoints are gone
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+            svm.breakpointRequests should be (empty)
+          }
         })
       }
     }
