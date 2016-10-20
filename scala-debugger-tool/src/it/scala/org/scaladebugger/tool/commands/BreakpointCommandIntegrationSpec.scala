@@ -33,26 +33,32 @@ class BreakpointCommandIntegrationSpec extends FunSpec with Matchers
         className = testClass,
         virtualTerminal = virtualTerminal
       ) { (vt, sm, start) =>
-        // Construct our "nextLine" method based on average timeout
-        val waitTime = Constants.NextOutputLineTimeout.millisPart
-        val nextLine = () => vt.nextOutputLine(waitTime = waitTime).get
-
         logTimeTaken({
           // Verify our breakpoints were set
-          nextLine() should be (s"Set breakpoint at $testFile:10\n")
-          nextLine() should be (s"Set breakpoint at $testFile:11\n")
-
-          // Verify that we have attached to the JVM
-          nextLine() should startWith ("Attached with id")
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+            val brs = svm.breakpointRequests
+              .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
+            brs should contain theSameElementsAs Seq(
+              (testFile, 10, false),
+              (testFile, 11, false)
+            )
+          }
 
           // Assert that we hit the first breakpoint
-          nextLine() should be (s"Breakpoint hit at $testFileName:10\n")
+          eventually {
+            val line = vt.nextOutputLine()
+            line.get should be (s"Breakpoint hit at $testFileName:10\n")
+          }
 
           // Continue on to the next breakpoint (resume main thread)
           vt.newInputLine("resume \"main\"")
 
           // Assert that we hit the second breakpoint
-          nextLine() should be (s"Breakpoint hit at $testFileName:11\n")
+          eventually {
+            val line = vt.nextOutputLine()
+            line.get should be (s"Breakpoint hit at $testFileName:11\n")
+          }
         })
       }
     }

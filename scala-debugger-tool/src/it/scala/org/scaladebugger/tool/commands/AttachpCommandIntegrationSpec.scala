@@ -37,6 +37,9 @@ class AttachpCommandIntegrationSpec extends FunSpec with Matchers
         logTimeTaken(eventually {
           repl.stateManager.state.activeDebugger should not be None
         })
+
+        // Finished
+        repl.stop()
       }
     }
   }

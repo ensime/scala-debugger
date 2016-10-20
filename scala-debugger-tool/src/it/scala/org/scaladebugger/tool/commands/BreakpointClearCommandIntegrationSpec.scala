@@ -46,7 +46,6 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
             val svm = sm.state.scalaVirtualMachines.head
             val brs = svm.breakpointRequests
               .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
-            //println(s"PRE DELETE PENDING: $brs")
             brs should contain theSameElementsAs Seq(
               (testFile, 10, false),
               (testFile, 11, false),
@@ -105,7 +104,6 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
             val svm = sm.state.scalaVirtualMachines.head
             val brs = svm.breakpointRequests
               .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
-            //println(s"PRE DELETE ACTIVE: $brs")
             brs should contain theSameElementsAs Seq(
               (testFile, 10, false),
               (testFile, 11, false),
@@ -164,7 +162,6 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
             val svm = sm.state.scalaVirtualMachines.head
             val brs = svm.breakpointRequests
               .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
-            //println(s"PRE DELETE ALL: $brs")
             brs should contain theSameElementsAs Seq(
               (testFile, 10, false),
               (testFile, 11, false),
