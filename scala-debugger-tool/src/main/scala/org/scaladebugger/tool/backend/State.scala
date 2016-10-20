@@ -40,7 +40,14 @@ object State {
    * Represents the default state where all values are None/Nil except the
    * dummy virtual machine, which is initialized using the default profile.
    */
-  val Default = State(
+  lazy val Default = newDefault()
+
+  /**
+   * Creates a new state with default values.
+   *
+   * @return The new state instance
+   */
+  def newDefault(): State = State(
     activeDebugger = None,
     scalaVirtualMachines = Nil,
     dummyScalaVirtualMachine = DummyScalaVirtualMachine.newInstance(),

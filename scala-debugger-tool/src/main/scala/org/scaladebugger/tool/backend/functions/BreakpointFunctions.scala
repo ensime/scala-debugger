@@ -27,7 +27,8 @@ class BreakpointFunctions(
     // Set as pending if no JVM is available
     var jvms = stateManager.state.scalaVirtualMachines
     if (jvms.isEmpty) {
-      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+      val dsvm = stateManager.state.dummyScalaVirtualMachine
+      jvms = Seq(dsvm)
     }
 
     writeLine(s"Set breakpoint at $file:$line")

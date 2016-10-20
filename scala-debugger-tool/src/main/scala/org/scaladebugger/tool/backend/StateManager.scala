@@ -11,14 +11,14 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  * Represents a manager for the backend state of the REPL.
  */
 class StateManager {
-  @volatile private var _state: State = State.Default
+  @volatile private var _state: State = State.newDefault()
 
   /**
    * Clears the state held by the manager, handling all appropriate shutdowns.
    */
   def clear() = {
     clearActiveDebugger()
-    updateState(State.Default)
+    updateState(State.newDefault())
   }
 
   /**
