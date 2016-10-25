@@ -6,11 +6,14 @@ import org.scaladebugger.api.utils.{JDITools, Logging}
 import org.scaladebugger.tool.Repl
 import org.scaladebugger.tool.backend.StateManager
 import org.scaladebugger.tool.frontend.VirtualTerminal
+import org.scalatest.Matchers
+
+import scala.util.Try
 
 /**
  * Provides fixture methods to provide CLI tools connecting to remote JVMs.
  */
-trait ToolFixtures extends TestUtilities with Logging {
+trait ToolFixtures extends TestUtilities with Logging { this: Matchers =>
   /**
    * Creates a new JVM process with the specified class and arguments.
    *
@@ -35,8 +38,14 @@ trait ToolFixtures extends TestUtilities with Logging {
         className,
         p,
         args = arguments,
-        suspend = suspend
+        suspend = suspend,
+        options = Seq("-Xms32M", "-Xmx64M")
       ))
+
+      // If the process has already died, we know there is an issue
+      // exitValue() throws IllegalThreadStateException if process not dead
+      if (Try(process.get.exitValue()).isSuccess)
+        throw new IOException(s"DEAD: $className with ${arguments.mkString(",")}")
 
       port.foreach(testCode)
     } finally {
@@ -62,13 +71,19 @@ trait ToolFixtures extends TestUtilities with Logging {
       val (pid, proc) = JDITools.spawnAndGetPid(
         className = className,
         port = 0, // Assign ephemeral port
-        args = arguments
+        args = arguments,
+        options = Seq("-Xms32M", "-Xmx64M")
       )
 
       process = Some(proc)
 
       // If unable to retrieve the process PID, exit now
       if (pid <= 0) throw new IOException("Unable to retrieve process PID!")
+
+      // If the process has already died, we know there is an issue
+      // exitValue() throws IllegalThreadStateException if process not dead
+      if (Try(process.get.exitValue()).isSuccess)
+        throw new IOException(s"DEAD: $className with ${arguments.mkString(",")}")
 
       testCode(pid)
     } finally {
@@ -129,6 +144,7 @@ trait ToolFixtures extends TestUtilities with Logging {
     autoStart: Boolean = true
   )(testCode: (VirtualTerminal, StateManager, () => Unit) => Any): Unit = {
     withProcessPort(className, arguments) { (port) =>
+      println(s"CONNECTING WITH PORT $port")
       var repl: Option[Repl] = None
       try {
         repl = Some(Repl.newInstance(mainTerminal = virtualTerminal))

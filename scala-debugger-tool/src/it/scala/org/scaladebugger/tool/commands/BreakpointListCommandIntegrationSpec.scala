@@ -35,31 +35,29 @@ class BreakpointListCommandIntegrationSpec extends FunSpec with Matchers
         className = testClass,
         virtualTerminal = virtualTerminal
       ) { (vt, sm, start) =>
-        // Construct our "nextLine" method based on average timeout
-        val waitTime = Constants.NextOutputLineTimeout.millisPart
-        val nextLine = () => vt.nextOutputLine(waitTime = waitTime).get
-
         logTimeTaken({
           // Verify our breakpoints were set
-          nextLine() should be (s"Set breakpoint at $testFile:10\n")
-          nextLine() should be (s"Set breakpoint at $testFile:11\n")
-          nextLine() should be ("Set breakpoint at some/file.scala:999\n")
+          validateNextLine(vt, s"Set breakpoint at $testFile:10\n")
+          validateNextLine(vt, s"Set breakpoint at $testFile:11\n")
+          validateNextLine(vt, "Set breakpoint at some/file.scala:999\n")
 
           // Verify that we have attached to the JVM
-          nextLine() should startWith ("Attached with id")
+          validateNextLine(vt, "Attached with id",
+            success = (text, line) => line should startWith(text))
 
           // Assert that we hit the first breakpoint
-          nextLine() should be (s"Breakpoint hit at $testFileName:10\n")
+          validateNextLine(vt, s"Breakpoint hit at $testFileName:10\n")
 
           // List all available breakpoints
           vt.newInputLine("bplist")
 
           // First prints out JVM id
-          nextLine() should include ("JVM")
+          validateNextLine(vt, "JVM",
+            success = (text, line) => line should include(text))
 
           // Verify expected pending and active breakpoints show up
           // by collecting the three available and checking their content
-          val lines = Seq(nextLine(), nextLine(), nextLine())
+          val lines = Seq(nextLine(vt), nextLine(vt), nextLine(vt)).flatten
           lines should contain allOf(
             s"$testFile:10\n",
             s"$testFile:11\n",

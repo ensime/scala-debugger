@@ -47,8 +47,7 @@ class BreakpointCommandIntegrationSpec extends FunSpec with Matchers
 
           // Assert that we hit the first breakpoint
           eventually {
-            val line = vt.nextOutputLine()
-            line.get should be (s"Breakpoint hit at $testFileName:10\n")
+            validateNextLine(vt, s"Breakpoint hit at $testFileName:10\n")
           }
 
           // Continue on to the next breakpoint (resume main thread)
@@ -56,8 +55,7 @@ class BreakpointCommandIntegrationSpec extends FunSpec with Matchers
 
           // Assert that we hit the second breakpoint
           eventually {
-            val line = vt.nextOutputLine()
-            line.get should be (s"Breakpoint hit at $testFileName:11\n")
+            validateNextLine(vt, s"Breakpoint hit at $testFileName:11\n")
           }
         })
       }

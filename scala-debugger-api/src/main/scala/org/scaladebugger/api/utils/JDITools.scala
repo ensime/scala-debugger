@@ -1,6 +1,6 @@
 package org.scaladebugger.api.utils
 import acyclic.file
-import java.io.{BufferedReader, File, InputStreamReader}
+import java.io.{BufferedReader, File, IOException, InputStreamReader}
 import java.net.URLClassLoader
 
 /**
@@ -34,7 +34,27 @@ class JDITools private[utils] extends JDILoader with Logging {
   }
 
   /**
-   * Returns a random port that is currently open.
+   * Finds an open port and provides it to the specified function. This
+   * method is synchronized to prevent other threads within the same
+   * application from accidentally taking the same port when using this method;
+   * however, this does not prevent external applications from consuming the
+   * provided port.
+   *
+   * @throws IOException When no port is available
+   *
+   * @param f The function to evaluate, taking the open port as its argument
+   * @tparam T The return value from the function to evaluate
+   * @return The result of the evaluated function
+   */
+  @throws[IOException]
+  def usingOpenPort[T](f: Int => T): T = synchronized {
+    findOpenPort().map(f)
+      .getOrElse(throw new IOException("No port available!"))
+  }
+
+  /**
+   * Returns a random port that is currently open. Note that there is no
+   * safety condition preventing this port from being taken later.
    *
    * @return The number of the port
    */
@@ -45,6 +65,7 @@ class JDITools private[utils] extends JDILoader with Logging {
     // Open an available port, get the number, and close it
     try {
       val socket = new ServerSocket(0)
+      socket.setReuseAddress(true)
       val port = socket.getLocalPort
       socket.close()
       Some(port)
