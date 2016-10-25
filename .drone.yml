@@ -9,6 +9,7 @@ build:
   image: chipsenkbeil/scala-debugger:latest
   pull: true
   environment:
+    - SBT_TASK_LIMIT=4
     - CACHE_DIR="/drone"
     - SCALATEST_SPAN_SCALE_FACTOR=10
   commands:
