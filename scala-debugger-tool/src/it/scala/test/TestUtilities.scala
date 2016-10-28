@@ -60,7 +60,6 @@ trait TestUtilities { this: Logging with Matchers =>
       case Some(line) =>
         val l = Literal(Constant(line)).toString
         logger.debug(s"Checking '$l' against '$t'")
-        println(s"${this.getClass.getName}: Checking '$l' against '$t'")
         success(text, line)
       case None =>
         fail(s"Unable to find desired line in time: '$t'")

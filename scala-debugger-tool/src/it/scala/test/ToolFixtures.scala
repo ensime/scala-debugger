@@ -144,7 +144,6 @@ trait ToolFixtures extends TestUtilities with Logging { this: Matchers =>
     autoStart: Boolean = true
   )(testCode: (VirtualTerminal, StateManager, () => Unit) => Any): Unit = {
     withProcessPort(className, arguments) { (port) =>
-      println(s"CONNECTING WITH PORT $port")
       var repl: Option[Repl] = None
       try {
         repl = Some(Repl.newInstance(mainTerminal = virtualTerminal))
