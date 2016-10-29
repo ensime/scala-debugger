@@ -1,12 +1,11 @@
 package org.scaladebugger.tool.commands
 
 import org.scaladebugger.api.utils.JDITools
-import org.scaladebugger.tool.frontend.VirtualTerminal
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{Constants, TestUtilities, ToolFixtures}
 
-class CatchUncaughtCommandIntegrationSpec extends FunSpec with Matchers
+class CatchCaughtCommandIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with ToolFixtures
   with TestUtilities with Eventually
 {
@@ -15,16 +14,15 @@ class CatchUncaughtCommandIntegrationSpec extends FunSpec with Matchers
     interval = scaled(Constants.EventuallyInterval)
   )
 
-  describe("CatchUncaughtCommand") {
-    it("should catch all uncaught exceptions if no filter provided") {
-      val testClass = "org.scaladebugger.test.exceptions.OutsideTryException"
+  describe("CatchCaughtCommand") {
+    it("should catch all caught exceptions if no filter provided") {
+      val testClass = "org.scaladebugger.test.exceptions.InsideTryBlockException"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
-      val testExceptionName = "org.scaladebugger.test.exceptions.CustomException"
 
       // Create exception request before connecting to the JVM
       val q = "\""
       val virtualTerminal = newVirtualTerminal()
-      virtualTerminal.newInputLine("catchu")
+      virtualTerminal.newInputLine("catchc")
 
       withToolRunningUsingTerminal(
         className = testClass,
@@ -37,14 +35,14 @@ class CatchUncaughtCommandIntegrationSpec extends FunSpec with Matchers
             val ers = svm.exceptionRequests.map(er =>
               (er.isCatchall, er.notifyCaught, er.notifyUncaught, er.isPending))
             ers should contain theSameElementsAs Seq(
-              (true, false, true, false)
+              (true, true, false, false)
             )
           }
 
-          // Verify that we hit our custom exception
+          // Verify that we hit some exception (classloader exception)
           eventually {
             validateNextLine(
-              vt, s"Uncaught $testExceptionName detected",
+              vt, "Caught java.lang.ClassNotFoundException detected",
               success = (text, line) => line should startWith (text)
             )
           }
@@ -62,14 +60,14 @@ class CatchUncaughtCommandIntegrationSpec extends FunSpec with Matchers
     }
 
     it("should catch the specified exception (uncaught)") {
-      val testClass = "org.scaladebugger.test.exceptions.OutsideTryException"
+      val testClass = "org.scaladebugger.test.exceptions.InsideTryBlockException"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testExceptionName = "org.scaladebugger.test.exceptions.CustomException"
 
       // Create exception request before connecting to the JVM
       val q = "\""
       val virtualTerminal = newVirtualTerminal()
-      virtualTerminal.newInputLine(s"catchu $q$testExceptionName$q")
+      virtualTerminal.newInputLine(s"catchc $q$testExceptionName$q")
 
       withToolRunningUsingTerminal(
         className = testClass,
@@ -82,14 +80,14 @@ class CatchUncaughtCommandIntegrationSpec extends FunSpec with Matchers
             val ers = svm.exceptionRequests.map(er =>
               (er.className, er.notifyCaught, er.notifyUncaught, er.isPending))
             ers should contain theSameElementsAs Seq(
-              (testExceptionName, false, true, false)
+              (testExceptionName, true, false, false)
             )
           }
 
           // Verify that we hit the exception
           eventually {
             validateNextLine(
-              vt, s"Uncaught $testExceptionName detected",
+              vt, s"Caught $testExceptionName detected",
               success = (text, line) => line should startWith (text)
             )
           }
