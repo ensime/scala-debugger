@@ -25,7 +25,7 @@ class BreakpointFunctions(
     )
 
     // Set as pending if no JVM is available
-    var jvms = stateManager.state.scalaVirtualMachines
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
     if (jvms.isEmpty) {
       val dsvm = stateManager.state.dummyScalaVirtualMachine
       jvms = Seq(dsvm)
@@ -46,7 +46,7 @@ class BreakpointFunctions(
   /** Entrypoint for listing all breakpoints. */
   def listBreakpoints(m: Map[String, Any]) = {
     // Set as pending if no JVM is available
-    var jvms = stateManager.state.scalaVirtualMachines
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
     if (jvms.isEmpty) {
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }
@@ -67,7 +67,7 @@ class BreakpointFunctions(
       writeLine("Missing file or line argument!")
 
     // Set as pending if no JVM is available
-    var jvms = stateManager.state.scalaVirtualMachines
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
     if (jvms.isEmpty) {
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }

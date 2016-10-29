@@ -33,9 +33,11 @@ class ExceptionFunctions(
 
   /** Entrypoint for listing catch requests. */
   def listCatches(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      val dsvm = stateManager.state.dummyScalaVirtualMachine
+      jvms = Seq(dsvm)
+    }
 
     jvms.foreach(s => {
       writeLine(s"<= ${s.uniqueId} =>")
@@ -90,9 +92,11 @@ class ExceptionFunctions(
     notifyCaught: Boolean,
     notifyUncaught: Boolean
   ) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      val dsvm = stateManager.state.dummyScalaVirtualMachine
+      jvms = Seq(dsvm)
+    }
 
     // NOTE: Wildcards handled directly by class inclusion filter
     val exceptionName = m.get("filter").map(_.toString)
@@ -131,9 +135,11 @@ class ExceptionFunctions(
     notifyCaught: Boolean,
     notifyUncaught: Boolean
   ) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      val dsvm = stateManager.state.dummyScalaVirtualMachine
+      jvms = Seq(dsvm)
+    }
 
     // NOTE: Wildcards handled directly by class inclusion filter
     val exceptionName = m.get("filter").map(_.toString)

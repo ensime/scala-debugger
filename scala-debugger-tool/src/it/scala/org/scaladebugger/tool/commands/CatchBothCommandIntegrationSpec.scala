@@ -18,16 +18,52 @@ class CatchBothCommandIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("CatchBothCommand") {
-    it("should catch all exceptions (caught) if no filter provided") {
+    it("should catch all exceptions if no filter provided") {
+      val testClass = "org.scaladebugger.test.exceptions.InsideTryBlockException"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-    }
+      // Create exception request before connecting to the JVM
+      val q = "\""
+      val virtualTerminal = new VirtualTerminal()
+      virtualTerminal.newInputLine("catch")
 
-    it("should catch all exceptions (uncaught) if no filter provided") {
+      withToolRunningUsingTerminal(
+        className = testClass,
+        virtualTerminal = virtualTerminal
+      ) { (vt, sm, start) =>
+        logTimeTaken({
+          // Verify our exception request was made
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+            val ers = svm.exceptionRequests.map(er =>
+              (er.isCatchall, er.notifyCaught, er.notifyUncaught, er.isPending))
+            ers should contain theSameElementsAs Seq(
+              (true, true, true, false)
+            )
+          }
 
+          // Verify that we hit some exception (classloader exception)
+          eventually {
+            validateNextLine(
+              vt, "Caught java.lang.ClassNotFoundException detected",
+              success = (text, line) => line should startWith (text)
+            )
+          }
+
+          // Main thread should be suspended
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+
+            // NOTE: Using assert for better error message
+            assert(svm.thread("main").status.isSuspended,
+              "Main thread was not suspended!")
+          }
+        })
+      }
     }
 
     it("should catch the specified exception (caught)") {
-      val testClass = "org.scaladebugger.test.breakpoints.InsideTryBlockException"
+      val testClass = "org.scaladebugger.test.exceptions.InsideTryBlockException"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testExceptionName = "org.scaladebugger.test.exceptions.CustomException"
 
@@ -44,34 +80,73 @@ class CatchBothCommandIntegrationSpec extends FunSpec with Matchers
           // Verify our exception request was made
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
-            val ers = svm.exceptionRequests
+            val ers = svm.exceptionRequests.map(er =>
+              (er.className, er.notifyCaught, er.notifyUncaught, er.isPending))
             ers should contain theSameElementsAs Seq(
-
+              (testExceptionName, true, true, false)
             )
           }
 
-          // Verify our breakpoints were set
+          // Verify that we hit the exception
+          eventually {
+            validateNextLine(
+              vt, s"Caught $testExceptionName detected",
+              success = (text, line) => line should startWith (text)
+            )
+          }
+
+          // Main thread should be suspended
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
-            val brs = svm.breakpointRequests
-              .map(bri => (bri.fileName, bri.lineNumber, bri.isPending))
-            brs should contain theSameElementsAs Seq(
-              (testFile, 10, false),
-              (testFile, 11, false)
+
+            // NOTE: Using assert for better error message
+            assert(svm.thread("main").status.isSuspended,
+              "Main thread was not suspended!")
+          }
+        })
+      }
+    }
+
+    it("should catch the specified exception (uncaught)") {
+      val testClass = "org.scaladebugger.test.exceptions.OutsideTryException"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+      val testExceptionName = "org.scaladebugger.test.exceptions.CustomException"
+
+      // Create exception request before connecting to the JVM
+      val q = "\""
+      val virtualTerminal = new VirtualTerminal()
+      virtualTerminal.newInputLine(s"catch $q$testExceptionName$q")
+
+      withToolRunningUsingTerminal(
+        className = testClass,
+        virtualTerminal = virtualTerminal
+      ) { (vt, sm, start) =>
+        logTimeTaken({
+          // Verify our exception request was made
+          eventually {
+            val svm = sm.state.scalaVirtualMachines.head
+            val ers = svm.exceptionRequests.map(er =>
+              (er.className, er.notifyCaught, er.notifyUncaught, er.isPending))
+            ers should contain theSameElementsAs Seq(
+              (testExceptionName, true, true, false)
             )
           }
 
-          // Assert that we hit the first breakpoint
+          // Verify that we hit the exception
           eventually {
-            validateNextLine(vt, s"Breakpoint hit at $testFileName:10\n")
+            validateNextLine(
+              vt, s"Uncaught $testExceptionName detected",
+              success = (text, line) => line should startWith (text)
+            )
           }
 
-          // Continue on to the next breakpoint (resume main thread)
-          vt.newInputLine("resume \"main\"")
-
-          // Assert that we hit the second breakpoint
+          // Main thread should be suspended
           eventually {
-            validateNextLine(vt, s"Breakpoint hit at $testFileName:11\n")
+            val svm = sm.state.scalaVirtualMachines.head
+
+            // NOTE: Using assert for better error message
+            assert(svm.thread("main").status.isSuspended,
+              "Main thread was not suspended!")
           }
         })
       }

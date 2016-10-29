@@ -46,20 +46,23 @@ trait TestUtilities { this: Logging with Matchers =>
    * @param success Optional function used to evaluate a success, taking
    *                the text as the first argument and output line as second
    * @param fail Optional function used to report a failure
+   * @param lineLogger Optional function used to log each line as it is
+   *                   evaluated
    * @return Scalatest assertion result
    */
   def validateNextLine(
     vt: VirtualTerminal,
     text: String,
     success: (String, String) => Assertion = (text, line) => text should be (line),
-    fail: String => Assertion = fail(_: String)
+    fail: String => Assertion = fail(_: String),
+    lineLogger: String => Unit = logger.debug(_: String)
   ): Assertion = {
     import scala.reflect.runtime.universe._
     val t = Literal(Constant(text)).toString
     nextLine(vt) match {
       case Some(line) =>
         val l = Literal(Constant(line)).toString
-        logger.debug(s"Checking '$l' against '$t'")
+        lineLogger(l)
         success(text, line)
       case None =>
         fail(s"Unable to find desired line in time: '$t'")
