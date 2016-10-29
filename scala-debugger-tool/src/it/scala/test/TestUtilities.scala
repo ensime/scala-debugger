@@ -28,6 +28,15 @@ trait TestUtilities { this: Logging with Matchers =>
   }
 
   /**
+   * Creates a new virtual terminal for use in tests.
+   *
+   * @return The new virtual terminal instance
+   */
+  def newVirtualTerminal(): VirtualTerminal = new VirtualTerminal(
+    waitTime = Constants.NewInputLineTimeout.millisPart
+  )
+
+  /**
    * Retrieves the next line of output from the virtual terminal.
    *
    * @param vt The virtual terminal whose output to retrieve

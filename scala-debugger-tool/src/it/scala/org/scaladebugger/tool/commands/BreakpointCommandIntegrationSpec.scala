@@ -25,7 +25,7 @@ class BreakpointCommandIntegrationSpec extends FunSpec with Matchers
 
       // Create two breakpoints before connecting to the JVM
       val q = "\""
-      val virtualTerminal = new VirtualTerminal()
+      val virtualTerminal = newVirtualTerminal()
       virtualTerminal.newInputLine(s"bp $q$testFile$q 10")
       virtualTerminal.newInputLine(s"bp $q$testFile$q 11")
 

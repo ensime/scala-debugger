@@ -26,7 +26,7 @@ class BreakpointListCommandIntegrationSpec extends FunSpec with Matchers
       // Create two breakpoints before connecting to the JVM that are valid
       // and one breakpoint that is not (so always pending)
       val q = "\""
-      val virtualTerminal = new VirtualTerminal()
+      val virtualTerminal = newVirtualTerminal()
       virtualTerminal.newInputLine(s"bp $q$testFile$q 10")
       virtualTerminal.newInputLine(s"bp $q$testFile$q 11")
       virtualTerminal.newInputLine("bp \"some/file.scala\" 999")

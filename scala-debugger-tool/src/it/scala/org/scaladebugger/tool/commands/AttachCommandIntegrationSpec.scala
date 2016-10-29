@@ -22,7 +22,7 @@ class AttachCommandIntegrationSpec extends FunSpec with Matchers
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
       withProcessPort(testClass) { (port) =>
-        val terminal = new VirtualTerminal()
+        val terminal = newVirtualTerminal()
 
         val repl = Repl.newInstance(mainTerminal = terminal)
 

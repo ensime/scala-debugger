@@ -24,9 +24,7 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
       val testFileName = new File(testFile).getName
 
       // Create a virtual terminal that waits for new input
-      val virtualTerminal = new VirtualTerminal(
-        waitTime = Constants.NewInputLineTimeout.millisPart
-      )
+      val virtualTerminal = newVirtualTerminal()
 
       // Create two breakpoints before connecting to the JVM that are valid
       // and one breakpoint that is not (so always pending)
@@ -82,9 +80,7 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
       val testFileName = new File(testFile).getName
 
       // Create a virtual terminal that waits for new input
-      val virtualTerminal = new VirtualTerminal(
-        waitTime = Constants.NewInputLineTimeout.millisPart
-      )
+      val virtualTerminal = newVirtualTerminal()
 
       // Create two breakpoints before connecting to the JVM that are valid
       // and one breakpoint that is not (so always pending)
@@ -140,9 +136,7 @@ class BreakpointClearCommandIntegrationSpec extends FunSpec with Matchers
       val testFileName = new File(testFile).getName
 
       // Create a virtual terminal that waits for new input
-      val virtualTerminal = new VirtualTerminal(
-        waitTime = Constants.NewInputLineTimeout.millisPart
-      )
+      val virtualTerminal = newVirtualTerminal()
 
       // Create two breakpoints before connecting to the JVM that are valid
       // and one breakpoint that is not (so always pending)
