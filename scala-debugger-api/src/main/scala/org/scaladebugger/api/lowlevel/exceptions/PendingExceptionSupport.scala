@@ -100,7 +100,7 @@ trait PendingExceptionSupport extends PendingExceptionSupportLike {
           ExceptionRequestInfo(
             requestId,
             isPending = true,
-            null,
+            ExceptionRequestInfo.DefaultCatchallExceptionName,
             notifyCaught,
             notifyUncaught,
             extraArguments
