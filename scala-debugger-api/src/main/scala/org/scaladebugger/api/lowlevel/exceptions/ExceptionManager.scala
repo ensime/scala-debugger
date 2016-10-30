@@ -133,7 +133,7 @@ trait ExceptionManager {
   def createExceptionRequestFromInfo(
     exceptionRequestInfo: ExceptionRequestInfo
   ): Try[String] = {
-    if (exceptionRequestInfo.className != null) {
+    if (!exceptionRequestInfo.isCatchall) {
       createExceptionRequestWithId(
         exceptionRequestInfo.requestId,
         exceptionRequestInfo.className,

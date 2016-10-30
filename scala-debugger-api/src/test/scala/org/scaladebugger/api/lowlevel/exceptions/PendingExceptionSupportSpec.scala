@@ -165,7 +165,14 @@ class PendingExceptionSupportSpec extends FunSpec with Matchers
         // Pending exception should be set
         (mockPendingActionManager.addPendingActionWithId _).expects(
           TestRequestId,
-          ExceptionRequestInfo(TestRequestId, true, null, true, false, Nil),
+          ExceptionRequestInfo(
+            TestRequestId,
+            true,
+            ExceptionRequestInfo.DefaultCatchallExceptionName,
+            true,
+            false,
+            Nil
+          ),
           * // Don't care about checking action
         ).returning(TestRequestId).once()
 
