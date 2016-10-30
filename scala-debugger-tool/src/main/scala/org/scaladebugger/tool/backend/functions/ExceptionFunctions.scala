@@ -1,8 +1,7 @@
 package org.scaladebugger.tool.backend.functions
 import acyclic.file
-
+import org.scaladebugger.api.lowlevel.events.filters.WildcardPatternFilter
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
-import org.scaladebugger.api.lowlevel.requests.filters.ClassInclusionFilter
 import org.scaladebugger.tool.backend.StateManager
 import org.scaladebugger.tool.backend.utils.Regex
 
@@ -43,17 +42,17 @@ class ExceptionFunctions(
       writeLine(s"<= ${s.uniqueId} =>")
       s.exceptionRequests.foreach(eri => {
         val notifyText = newNotifyText(eri.notifyCaught, eri.notifyUncaught)
-        val classInclusionFilter = eri.extraArguments.collect {
-          case f: ClassInclusionFilter => f
+        val wildcardPatternFilter = eri.extraArguments.collect {
+          case f: WildcardPatternFilter => f
         }.lastOption
 
         // Global catchall (no class filter)
-        if (eri.isCatchall && classInclusionFilter.isEmpty) {
+        if (eri.isCatchall && wildcardPatternFilter.isEmpty) {
           writeLine(s"Globally catch all $notifyText exceptions")
 
         // Wildcard catch
-        } else if (eri.isCatchall && classInclusionFilter.nonEmpty) {
-          val pattern = classInclusionFilter.get.classPattern
+        } else if (eri.isCatchall && wildcardPatternFilter.nonEmpty) {
+          val pattern = wildcardPatternFilter.get.pattern
           writeLine(s"Catch all $notifyText exceptions with pattern $pattern")
 
         // Specific class catch
@@ -102,7 +101,7 @@ class ExceptionFunctions(
     val exceptionName = m.get("filter").map(_.toString)
     val extraArgs = exceptionName
       .filter(Regex.containsWildcards)
-      .map(ClassInclusionFilter.apply)
+      .map(WildcardPatternFilter.apply)
       .toSeq
 
     jvms.foreach(s => {
@@ -145,7 +144,7 @@ class ExceptionFunctions(
     val exceptionName = m.get("filter").map(_.toString)
     val extraArgs = exceptionName
       .filter(Regex.containsWildcards)
-      .map(ClassInclusionFilter.apply)
+      .map(WildcardPatternFilter.apply)
       .toSeq
 
     jvms.foreach(s => {
