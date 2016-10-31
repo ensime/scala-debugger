@@ -15,7 +15,7 @@ class CatchBothCommandIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("CatchBothCommand") {
-    ignore("should catch all exceptions if no filter provided") {
+    it("should catch all exceptions if no filter provided") {
       val testClass = "org.scaladebugger.test.exceptions.InsideTryBlockException"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
@@ -105,7 +105,7 @@ class CatchBothCommandIntegrationSpec extends FunSpec with Matchers
       }
     }
 
-    ignore("should catch the specified exception (caught)") {
+    it("should catch the specified exception (caught)") {
       val testClass = "org.scaladebugger.test.exceptions.InsideTryBlockException"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testExceptionName = "org.scaladebugger.test.exceptions.CustomException"
@@ -150,7 +150,7 @@ class CatchBothCommandIntegrationSpec extends FunSpec with Matchers
       }
     }
 
-    ignore("should catch the specified exception (uncaught)") {
+    it("should catch the specified exception (uncaught)") {
       val testClass = "org.scaladebugger.test.exceptions.OutsideTryException"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testExceptionName = "org.scaladebugger.test.exceptions.CustomException"
