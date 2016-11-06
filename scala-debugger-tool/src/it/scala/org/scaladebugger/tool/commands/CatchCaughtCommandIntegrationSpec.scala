@@ -3,11 +3,11 @@ package org.scaladebugger.tool.commands
 import org.scaladebugger.api.utils.JDITools
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, TestUtilities, ToolFixtures}
+import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
 
 class CatchCaughtCommandIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with ToolFixtures
-  with TestUtilities with Eventually
+  with TestUtilities with Eventually with FixedParallelSuite
 {
   implicit override val patienceConfig = PatienceConfig(
     timeout = scaled(Constants.EventuallyTimeout),
