@@ -13,15 +13,11 @@ object ControlledParallelSuite {
   lazy val EnvironmentPoolSize: Try[Int] =
     Try(System.getenv("SCALATEST_PARALLEL_TESTS").toInt)
   lazy val DefaultPoolSize: Int = Runtime.getRuntime.availableProcessors() * 2
-}
+  def calculatePoolSize(): Int = EnvironmentPoolSize.getOrElse(DefaultPoolSize)
 
-/**
- * Represents a test suite whose pool size can be overridden.
- */
-trait ControlledParallelSuite extends Suite {
   private val atomicThreadCounter: AtomicInteger = new AtomicInteger
 
-  protected val threadFactory: ThreadFactory = new ThreadFactory {
+  lazy val threadFactory: ThreadFactory = new ThreadFactory {
     val defaultThreadFactory = Executors.defaultThreadFactory
 
     def newThread(runnable: Runnable): Thread = {
@@ -30,8 +26,13 @@ trait ControlledParallelSuite extends Suite {
       thread
     }
   }
+}
 
-  protected def poolSize: Int = EnvironmentPoolSize.getOrElse(DefaultPoolSize)
+/**
+ * Represents a test suite whose pool size can be overridden.
+ */
+trait ControlledParallelSuite extends Suite {
+  protected def poolSize: Int = calculatePoolSize()
 
   protected def newExecutorService(
     poolSize: Int,
