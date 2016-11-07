@@ -10,8 +10,6 @@ object Tool {
     fork in Test := true,
     fork in IntegrationTest := true,
 
-    parallelExecution in IntegrationTest := false,
-
     libraryDependencies ++= Seq(
       "com.lihaoyi" % "ammonite" % "0.7.7" cross CrossVersion.full,
       "com.lihaoyi" % "ammonite-util" % "0.7.7" cross CrossVersion.full,
