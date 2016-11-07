@@ -42,6 +42,13 @@ trait ToolFixtures extends TestUtilities with Logging { this: Matchers =>
         options = Seq("-Xms32M", "-Xmx64M")
       ))
 
+      // NOTE: We need a delay to prevent the scenario where the process is
+      //       not fully ready to accept a condition
+      // TODO: Update our delay to either
+      //           a) check when the process is ready by polling the port
+      //           b) scale with the machine in some manner
+      Thread.sleep(2000)
+
       // If the process has already died, we know there is an issue
       // exitValue() throws IllegalThreadStateException if process not dead
       if (Try(process.get.exitValue()).isSuccess)
@@ -79,6 +86,13 @@ trait ToolFixtures extends TestUtilities with Logging { this: Matchers =>
 
       // If unable to retrieve the process PID, exit now
       if (pid <= 0) throw new IOException("Unable to retrieve process PID!")
+
+      // NOTE: We need a delay to prevent the scenario where the process is
+      //       not fully ready to accept a condition
+      // TODO: Update our delay to either
+      //           a) check when the process is ready by polling the port
+      //           b) scale with the machine in some manner
+      Thread.sleep(2000)
 
       // If the process has already died, we know there is an issue
       // exitValue() throws IllegalThreadStateException if process not dead
