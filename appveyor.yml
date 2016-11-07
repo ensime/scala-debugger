@@ -22,6 +22,7 @@ install:
   - cmd: SET SCALATEST_SPAN_SCALE_FACTOR=10
   - cmd: SET SBT_TASK_LIMIT=4
   - cmd: SET SCALATEST_PARALLEL_TESTS=4
+  - cmd: SET SCALATEST_SLEEP_SCALE_FACTOR=3.0
 build_script:
   - sbt compile test:compile it:compile
 test_script:

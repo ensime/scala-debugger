@@ -14,6 +14,9 @@ import scala.util.Try
  * Provides fixture methods to provide CLI tools connecting to remote JVMs.
  */
 trait ToolFixtures extends TestUtilities with Logging { this: Matchers =>
+  private lazy val sleepScaleFactor =
+    Try(System.getenv("SCALATEST_SLEEP_SCALE_FACTOR").toDouble).getOrElse(1.0)
+
   /**
    * Creates a new JVM process with the specified class and arguments.
    *
@@ -43,11 +46,11 @@ trait ToolFixtures extends TestUtilities with Logging { this: Matchers =>
       ))
 
       // NOTE: We need a delay to prevent the scenario where the process is
-      //       not fully ready to accept a condition
+      //       not fully ready to accept a connection
       // TODO: Update our delay to either
       //           a) check when the process is ready by polling the port
       //           b) scale with the machine in some manner
-      Thread.sleep(2000)
+      Thread.sleep((2000 * sleepScaleFactor).toInt)
 
       // If the process has already died, we know there is an issue
       // exitValue() throws IllegalThreadStateException if process not dead
@@ -88,11 +91,11 @@ trait ToolFixtures extends TestUtilities with Logging { this: Matchers =>
       if (pid <= 0) throw new IOException("Unable to retrieve process PID!")
 
       // NOTE: We need a delay to prevent the scenario where the process is
-      //       not fully ready to accept a condition
+      //       not fully ready to accept a connection
       // TODO: Update our delay to either
       //           a) check when the process is ready by polling the port
       //           b) scale with the machine in some manner
-      Thread.sleep(2000)
+      Thread.sleep((2000 * sleepScaleFactor).toInt)
 
       // If the process has already died, we know there is an issue
       // exitValue() throws IllegalThreadStateException if process not dead
