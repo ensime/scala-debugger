@@ -32,6 +32,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
         val methodExitManager = new StandardMethodExitManager(mockEventRequestManager, mockClassManager)
 
         methodExitRequests.foreach { case MethodExitRequestInfo(requestId, _, className, methodName, _) =>
+          (mockClassManager.hasMethodWithName _)
+            .expects(className, methodName)
+            .returning(true).once()
+
           (mockEventRequestManager.createMethodExitRequest _).expects()
             .returning(stub[MethodExitRequest]).once()
           methodExitManager.createMethodExitRequestWithId(requestId, className, methodName)
@@ -50,6 +54,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
         )
 
         methodExitRequests.foreach { case (requestId, className, methodName) =>
+          (mockClassManager.hasMethodWithName _)
+            .expects(className, methodName)
+            .returning(true).once()
+
           (mockEventRequestManager.createMethodExitRequest _).expects()
             .returning(stub[MethodExitRequest]).once()
           methodExitManager.createMethodExitRequestWithId(
@@ -69,6 +77,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
         val expected = Success(java.util.UUID.randomUUID().toString)
         val testClassName = "some class name"
         val testMethodName = "some method name"
+
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
 
         val mockMethodExitRequest = mock[MethodExitRequest]
         (mockEventRequestManager.createMethodExitRequest _).expects()
@@ -95,6 +107,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
         val testClassName = "some class name"
         val testMethodName = "some method name"
 
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
+
         val mockMethodExitRequest = mock[MethodExitRequest]
         (mockEventRequestManager.createMethodExitRequest _).expects()
           .returning(mockMethodExitRequest).once()
@@ -120,8 +136,30 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
         val testClassName = "some class name"
         val testMethodName = "some method name"
 
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
+
         (mockEventRequestManager.createMethodExitRequest _).expects()
           .throwing(expected.failed.get).once()
+
+        val actual = methodExitManager.createMethodExitRequestWithId(
+          TestRequestId,
+          testClassName,
+          testMethodName
+        )
+        actual should be (expected)
+      }
+
+      it("should fail if the class of the method or method itself does not exist") {
+        val testClassName = "some class name"
+        val testMethodName = "some method name"
+        val expected = Failure(NoClassMethodFound(testClassName, testMethodName))
+
+        // Does not exist
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(false).once()
 
         val actual = methodExitManager.createMethodExitRequestWithId(
           TestRequestId,
@@ -138,6 +176,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
 
         val testClassName = "some class name"
         val testMethodName = "some method name"
+
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
 
         (mockEventRequestManager.createMethodExitRequest _).expects()
           .returning(stub[MethodExitRequest]).once()
@@ -167,6 +209,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
         val testClassName = "some class name"
         val testMethodName = "some method name"
 
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
+
         (mockEventRequestManager.createMethodExitRequest _).expects()
           .returning(stub[MethodExitRequest]).once()
 
@@ -189,12 +235,18 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
 
     describe("#getMethodExitRequestInfoWithId") {
       it("should return Some(MethodExitRequestInfo(id, not pending, class name, method name)) if the id exists") {
+        val testClassName = "some.class.name"
+        val testMethodName = "someMethodName"
         val expected = Some(MethodExitRequestInfo(
           requestId = TestRequestId,
           isPending = false,
           className = "some.class.name",
           methodName = "someMethodName"
         ))
+
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
 
         // Stub out the call to create a breakpoint request
         (mockEventRequestManager.createMethodExitRequest _).expects()
@@ -231,6 +283,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
         val testClassName = "some class name"
         val testMethodName = "some method name"
 
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
+
         (mockEventRequestManager.createMethodExitRequest _).expects()
           .returning(expected).once()
 
@@ -258,6 +314,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
 
         val testClassName = "some class name"
         val testMethodName = "some method name"
+
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
 
         (mockEventRequestManager.createMethodExitRequest _).expects()
           .returning(expected.head).once()
@@ -288,6 +348,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
 
         val testClassName = "some class name"
         val testMethodName = "some method name"
+
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
 
         (mockEventRequestManager.createMethodExitRequest _).expects()
           .returning(stubRequest).once()
@@ -325,6 +389,10 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
 
         val testClassName = "some class name"
         val testMethodName = "some method name"
+
+        (mockClassManager.hasMethodWithName _)
+          .expects(testClassName, testMethodName)
+          .returning(true).once()
 
         (mockEventRequestManager.createMethodExitRequest _).expects()
           .returning(stubRequest).once()

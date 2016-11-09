@@ -58,7 +58,7 @@ class StandardMethodExitManager(
     extraArguments: JDIRequestArgument*
   ): Try[String] = {
     // Exit early if class or method not found
-    if (classManager.hasMethodWithName(className, methodName))
+    if (!classManager.hasMethodWithName(className, methodName))
       return Failure(NoClassMethodFound(className, methodName))
 
     val arguments = Seq(

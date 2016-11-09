@@ -19,8 +19,9 @@ class ClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
     loadClasses = false
   ) {
     @volatile var classMap: Map[String, Seq[ReferenceType]] = Map()
-    override def classesWithName(className: String): Seq[ReferenceType] =
-      classMap(className)
+    override def classesWithName(className: String): Seq[ReferenceType] = {
+      classMap.get(className).getOrElse(Nil)
+    }
   }
 
   /** Sets classes for the specified classname. */
@@ -30,7 +31,9 @@ class ClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
 
   /** Removes classes for the specified classname. */
   private val clearClassesWithName = (className: String) => {
-    classManager.classMap -= className
+    if (classManager.classMap.contains(className)) {
+      classManager.classMap -= className
+    }
   }
 
   /** Removes all classes from class manager classmap. */
@@ -114,6 +117,7 @@ class ClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
 
         // Mark methods for class
         (mockClass.allMethods _).expects().returning(Seq(mockMethod).asJava).once()
+        (mockMethod.name _).expects().returning(methodName).once()
 
         classManager.methodsWithName(className, methodName) should contain
           theSameElementsAs (Seq(mockMethod))
@@ -186,6 +190,7 @@ class ClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
 
         // Mark fields for class
         (mockClass.allFields _).expects().returning(Seq(mockField).asJava).once()
+        (mockField.name _).expects().returning(fieldName).once()
 
         classManager.fieldsWithName(className, fieldName) should contain
           theSameElementsAs (Seq(mockField))

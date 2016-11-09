@@ -77,6 +77,7 @@ trait ClassManager {
    */
   def methodsWithName(className: String, methodName: String): Seq[Method] =
     classesWithName(className).flatMap(_.allMethods().asScala)
+      .filter(_.name() == methodName)
 
   /**
    * Determines whether or not there is a field with the provided name.
@@ -101,6 +102,7 @@ trait ClassManager {
    */
   def fieldsWithName(className: String, fieldName: String): Seq[Field] =
     classesWithName(className).flatMap(_.allFields().asScala)
+      .filter(_.name() == fieldName)
 
   /**
    * Retrieves the list of underlying JVM classes for the specified file.

@@ -34,12 +34,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
 
         requestIds.foreach { case requestId =>
           val stubField = createFieldStub(testFieldName)
-          val mockReferenceType = mock[ReferenceType]
-          (mockClassManager.allClasses _).expects()
-            .returning(Seq(mockReferenceType)).once()
-          (mockReferenceType.name _).expects().returning(testClassName).once()
-          (mockReferenceType.allFields _).expects()
-            .returning(Seq(stubField).asJava).once()
+          (mockClassManager.fieldsWithName _)
+            .expects(testClassName, testFieldName)
+            .returning(Seq(stubField)).once()
 
           (mockEventRequestManager.createAccessWatchpointRequest _)
             .expects(stubField)
@@ -76,12 +73,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
 
         expected.foreach { case AccessWatchpointRequestInfo(requestId, _, className, fieldName, _) =>
           val stubField = createFieldStub(fieldName)
-          val mockReferenceType = mock[ReferenceType]
-          (mockClassManager.allClasses _).expects()
-            .returning(Seq(mockReferenceType)).once()
-          (mockReferenceType.name _).expects().returning(className).once()
-          (mockReferenceType.allFields _).expects()
-            .returning(Seq(stubField).asJava).once()
+          (mockClassManager.fieldsWithName _)
+            .expects(className, fieldName)
+            .returning(Seq(stubField)).once()
 
           (mockEventRequestManager.createAccessWatchpointRequest _)
             .expects(stubField)
@@ -105,12 +99,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         val testFieldName = "fieldName"
 
         val stubField = createFieldStub(testFieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         val mockAccessWatchpointRequest = mock[AccessWatchpointRequest]
         (mockEventRequestManager.createAccessWatchpointRequest _)
@@ -135,12 +126,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         val testFieldName = "fieldName"
 
         val stubField = createFieldStub(testFieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         val mockAccessWatchpointRequest = mock[AccessWatchpointRequest]
         (mockEventRequestManager.createAccessWatchpointRequest _)
@@ -165,12 +153,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         val testFieldName = "fieldName"
 
         val stubField = createFieldStub(testFieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         (mockEventRequestManager.createAccessWatchpointRequest _)
           .expects(stubField)
@@ -184,40 +169,14 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         actual should be (expected)
       }
 
-      it("should return a failure if the class of the field was not found") {
+      it("should return a failure if the class of the field or field itself was not found") {
         val testClassName = "full.class.name"
         val testFieldName = "fieldName"
         val expected = Failure(NoFieldFound(testClassName, testFieldName))
 
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-
-        // Provide reference types with different names so there is no match
-        (mockReferenceType.name _).expects().returning(testClassName + 1).once()
-
-        val actual = accessWatchpointManager.createAccessWatchpointRequestWithId(
-          TestRequestId,
-          testClassName,
-          testFieldName
-        )
-        actual should be (expected)
-      }
-
-      it("should return a failure if the field with the specified name was not found") {
-        val testClassName = "full.class.name"
-        val testFieldName = "fieldName"
-        val expected = Failure(NoFieldFound(testClassName, testFieldName))
-
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-
-        // Provide fields with different names so there is no match
-        val stubField = createFieldStub(testFieldName + 1)
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Nil).once()
 
         val actual = accessWatchpointManager.createAccessWatchpointRequestWithId(
           TestRequestId,
@@ -235,12 +194,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         val testFieldName = "fieldName"
 
         val stubField = createFieldStub(testFieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         (mockEventRequestManager.createAccessWatchpointRequest _)
           .expects(stubField)
@@ -271,12 +227,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         val testFieldName = "fieldName"
 
         val stubField = createFieldStub(testFieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         (mockEventRequestManager.createAccessWatchpointRequest _)
           .expects(stubField)
@@ -309,23 +262,21 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
 
     describe("#getAccessWatchpointRequestInfoWithId") {
       it("should return Some(AccessWatchpointRequestInfo(id, not pending, class name, field name)) if the id exists") {
+        val testClassName = "some.class.name"
+        val testFieldName = "someFieldName"
         val expected = Some(AccessWatchpointRequestInfo(
           requestId = TestRequestId,
           isPending = false,
-          className = "some.class.name",
-          fieldName = "someFieldName"
+          className = testClassName,
+          fieldName = testFieldName
         ))
 
         // Generate a fake field to be returned when searching for a field
         // with matching name
         val stubField = createFieldStub(expected.get.fieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects()
-          .returning(expected.get.className).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         // Stub out the call to create a breakpoint request
         (mockEventRequestManager.createAccessWatchpointRequest _)
@@ -363,12 +314,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         val testFieldName = "fieldName"
 
         val stubField = createFieldStub(testFieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         (mockEventRequestManager.createAccessWatchpointRequest _)
           .expects(stubField)
@@ -399,12 +347,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         val testFieldName = "fieldName"
 
         val stubField = createFieldStub(testFieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         (mockEventRequestManager.createAccessWatchpointRequest _)
           .expects(stubField)
@@ -443,12 +388,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         val stubRequest = stub[AccessWatchpointRequest]
 
         val stubField = createFieldStub(testFieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         (mockEventRequestManager.createAccessWatchpointRequest _)
           .expects(stubField)
@@ -483,12 +425,9 @@ class StandardAccessWatchpointManagerSpec extends FunSpec with Matchers
         val stubRequest = stub[AccessWatchpointRequest]
 
         val stubField = createFieldStub(testFieldName)
-        val mockReferenceType = mock[ReferenceType]
-        (mockClassManager.allClasses _).expects()
-          .returning(Seq(mockReferenceType)).once()
-        (mockReferenceType.name _).expects().returning(testClassName).once()
-        (mockReferenceType.allFields _).expects()
-          .returning(Seq(stubField).asJava).once()
+        (mockClassManager.fieldsWithName _)
+          .expects(testClassName, testFieldName)
+          .returning(Seq(stubField)).once()
 
         (mockEventRequestManager.createAccessWatchpointRequest _)
           .expects(stubField)
