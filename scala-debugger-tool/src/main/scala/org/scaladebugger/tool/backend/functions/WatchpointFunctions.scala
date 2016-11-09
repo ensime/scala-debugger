@@ -29,9 +29,11 @@ class WatchpointFunctions(
 
   /** Entrypoint for listing all current watchpoints. */
   def listWatches(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    // Set as pending if no JVM is available
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     jvms.foreach(s => {
       writeLine(s"<= ${s.uniqueId} =>")
@@ -75,10 +77,6 @@ class WatchpointFunctions(
     includeAccess: Boolean,
     includeModification: Boolean
   ) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-
-    if (jvms.isEmpty) writeLine("No VM connected!")
-
     val className = m.get("class").map(_.toString).getOrElse(
       throw new RuntimeException("Missing class argument!")
     )
@@ -86,6 +84,12 @@ class WatchpointFunctions(
     val fieldName = m.get("field").map(_.toString).getOrElse(
       throw new RuntimeException("Missing field argument!")
     )
+
+    // Set as pending if no JVM is available
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     jvms.foreach(s => {
       if (includeAccess) s.getOrCreateAccessWatchpointRequest(
@@ -120,10 +124,6 @@ class WatchpointFunctions(
     removeAccess: Boolean,
     removeModification: Boolean
   ) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-
-    if (jvms.isEmpty) writeLine("No VM connected!")
-
     val className = m.get("class").map(_.toString).getOrElse(
       throw new RuntimeException("Missing class argument!")
     )
@@ -131,6 +131,12 @@ class WatchpointFunctions(
     val fieldName = m.get("field").map(_.toString).getOrElse(
       throw new RuntimeException("Missing field argument!")
     )
+
+    // Set as pending if no JVM is available
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     jvms.foreach(s => {
       if (removeAccess)

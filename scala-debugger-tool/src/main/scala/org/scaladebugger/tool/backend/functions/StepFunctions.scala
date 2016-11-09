@@ -26,8 +26,11 @@ class StepFunctions(
 
   /** Entrypoint for stepping into a line. */
   def stepIntoLine(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    // Set as pending if no JVM is available
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) writeLine("No active thread!")
@@ -42,8 +45,11 @@ class StepFunctions(
 
   /** Entrypoint for stepping into using min size. */
   def stepIntoMin(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    // Set as pending if no JVM is available
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) writeLine("No active thread!")
@@ -58,8 +64,11 @@ class StepFunctions(
 
   /** Entrypoint for stepping over a line. */
   def stepOverLine(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    // Set as pending if no JVM is available
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) writeLine("No active thread!")
@@ -74,8 +83,11 @@ class StepFunctions(
 
   /** Entrypoint for stepping over using min size. */
   def stepOverMin(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    // Set as pending if no JVM is available
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) writeLine("No active thread!")
@@ -90,8 +102,11 @@ class StepFunctions(
 
   /** Entrypoint for stepping out of a line. */
   def stepOutLine(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    // Set as pending if no JVM is available
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) writeLine("No active thread!")
@@ -106,8 +121,11 @@ class StepFunctions(
 
   /** Entrypoint for stepping over using min size. */
   def stepOutMin(m: Map[String, Any]) = {
-    val jvms = stateManager.state.scalaVirtualMachines
-    if (jvms.isEmpty) writeLine("No VM connected!")
+    // Set as pending if no JVM is available
+    @volatile var jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) {
+      jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
+    }
 
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) writeLine("No active thread!")

@@ -59,15 +59,12 @@ class StandardModificationWatchpointManager(
     fieldName: String,
     extraArguments: JDIRequestArgument*
   ): Try[String] = {
-    val classReferenceType = classManager.allClasses.find(_.name() == className)
-    val field = classReferenceType.flatMap(
-      _.allFields().asScala.find(_.name() == fieldName)
-    )
+    val fields = classManager.fieldsWithName(className, fieldName)
 
-    if (field.isEmpty) return Failure(NoFieldFound(className, fieldName))
+    if (fields.isEmpty) return Failure(NoFieldFound(className, fieldName))
 
     val request = Try(eventRequestManager.createModificationWatchpointRequest(
-      field.get,
+      fields.head,
       Seq(
         EnabledProperty(value = true),
         SuspendPolicyProperty.EventThread

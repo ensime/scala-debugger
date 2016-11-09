@@ -1,7 +1,7 @@
 package org.scaladebugger.api.lowlevel.methods
 import acyclic.file
-
 import com.sun.jdi.request.{EventRequest, EventRequestManager, MethodEntryRequest}
+import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
@@ -12,8 +12,9 @@ class StandardMethodEntryManagerSpec extends FunSpec with Matchers with MockFact
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]
+  private val mockClassManager = mock[ClassManager]
 
-  private val methodEntryManager = new StandardMethodEntryManager(mockEventRequestManager) {
+  private val methodEntryManager = new StandardMethodEntryManager(mockEventRequestManager, mockClassManager) {
     override protected def newRequestId(): String = TestRequestId
   }
 
@@ -28,7 +29,7 @@ class StandardMethodEntryManagerSpec extends FunSpec with Matchers with MockFact
         // NOTE: Must create a new method entry manager that does NOT override
         //       the request id to always be the same since we do not allow
         //       duplicates of the test id when storing it
-        val methodEntryManager = new StandardMethodEntryManager(mockEventRequestManager)
+        val methodEntryManager = new StandardMethodEntryManager(mockEventRequestManager, mockClassManager)
 
         methodEntryRequests.foreach { case MethodEntryRequestInfo(requestId, _, className, methodName, _) =>
           (mockEventRequestManager.createMethodEntryRequest _).expects()

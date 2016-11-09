@@ -1,10 +1,8 @@
 package org.scaladebugger.tool.backend
 import acyclic.file
-import java.io.File
 import java.net.URI
 
 import ammonite.util.Bind
-import com.sun.jdi.{ThreadGroupReference, ThreadReference}
 import org.scaladebugger.api.debuggers.Debugger
 import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfoProfile, ThreadInfoProfile}
 import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine}
@@ -29,7 +27,10 @@ case class State(
     activeDebugger.foreach(d => m :+= Bind("debugger", d))
     activeThread.foreach(t => m :+= Bind("thread", t))
     activeThreadGroup.foreach(tg => m :+= Bind("threadGroup", tg))
+    m :+= Bind("sourcePaths", sourcePaths)
+
     if (scalaVirtualMachines.nonEmpty) m :+= Bind("jvms", scalaVirtualMachines)
+    else m :+= Bind("jvms", Seq(dummyScalaVirtualMachine))
 
     m
   }

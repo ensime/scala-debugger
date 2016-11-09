@@ -109,6 +109,22 @@ class StandardClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
       }
     }
 
+    describe("#classesWithName") {
+      it("should return all classes whose name matches the specified name") {
+        val expected = Seq(mock[ReferenceType], mock[ReferenceType])
+
+        val className = "some.class.name"
+
+        // Delegates to underlying virtual machine method to check classes
+        (stubVirtualMachine.classesByName _).when(className)
+          .returns(expected.asJava).once()
+
+        val actual = classManager.classesWithName(className)
+
+        actual should be (expected)
+      }
+    }
+
     describe("#underlyingReferencesFor") {
       it("should return Some(collection of reference types matching the filename found in the cache)") {
         val fileName = "test.scala"
@@ -284,7 +300,7 @@ class StandardClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
         // Verify that we have the classes grouped by file name
         val expected = arrayReferences
         val actual = classManager.underlyingReferencesForFile(
-          StandardClassManager.DefaultArrayGroupName
+          ClassManager.DefaultArrayGroupName
         ).get
 
         actual should contain theSameElementsAs expected
@@ -325,7 +341,7 @@ class StandardClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
         // Verify that we have the classes grouped by file name
         val expected = unknownReferences
         val actual = classManager.underlyingReferencesForFile(
-          StandardClassManager.DefaultUnknownGroupName
+          ClassManager.DefaultUnknownGroupName
         ).get
 
         actual should contain theSameElementsAs expected

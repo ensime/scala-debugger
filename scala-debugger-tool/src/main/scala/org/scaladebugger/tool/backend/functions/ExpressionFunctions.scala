@@ -61,6 +61,7 @@ class ExpressionFunctions(
     val jvms = stateManager.state.scalaVirtualMachines
     if (jvms.isEmpty) writeLine("No VM connected!")
 
+    // TODO: Support "thread" as argument
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) writeLine("No thread selected!")
 

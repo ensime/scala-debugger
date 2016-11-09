@@ -1,8 +1,19 @@
 package org.scaladebugger.api.lowlevel.classes
 import acyclic.file
+import com.sun.jdi.{Field, Location, Method, ReferenceType}
 
-import com.sun.jdi.{Location, ReferenceType}
+import collection.JavaConverters._
 
+/**
+ * Represents the container for constants used in the class manager.
+ */
+object ClassManager {
+  /** Used as the "file name" for classes with no 'file' that match arrays. */
+  val DefaultArrayGroupName = "ARRAY"
+
+  /** Used as the "file name" for classes with no 'file' that match nothing. */
+  val DefaultUnknownGroupName = "UNKNOWN"
+}
 
 /**
  * Represents a manager of classes available on the virtual machine and their
@@ -21,6 +32,75 @@ trait ClassManager {
   def linesAndLocationsForFile(
     fileName: String
   ): Option[Map[Int, Seq[Location]]]
+
+  /**
+   * Determines whether or not there is a class with the provided
+   * fully-qualified class name.
+   *
+   * @param className The fully-qualified class name
+   *
+   * @return True if a class exists, otherwise false
+   */
+  def hasClassWithName(className: String): Boolean =
+    classesWithName(className).nonEmpty
+
+  /**
+   * Retrieves all class references associated with the provided
+   * fully-qualified class name.
+   *
+   * @param className The fully-qualified class name
+   *
+   * @return The collection of reference types representing the class
+   */
+  def classesWithName(className: String): Seq[ReferenceType]
+
+  /**
+   * Determines whether or not there is a method with the provided name.
+   *
+   * @param className The fully-qualified class name of the class whose
+   *                  methods to inspect
+   * @param methodName The name of the method to check
+   *
+   * @return True if the method exists, otherwise false
+   */
+  def hasMethodWithName(className: String, methodName: String): Boolean =
+    methodsWithName(className: String, methodName: String).nonEmpty
+
+  /**
+   * Determines whether or not there is a method with the provided name.
+   *
+   * @param className The fully-qualified class name of the class whose
+   *                  methods to inspect
+   * @param methodName The name of the method to check
+   *
+   * @return True if the method exists, otherwise false
+   */
+  def methodsWithName(className: String, methodName: String): Seq[Method] =
+    classesWithName(className).flatMap(_.allMethods().asScala)
+
+  /**
+   * Determines whether or not there is a field with the provided name.
+   *
+   * @param className The fully-qualified class name of the class whose
+   *                  methods to inspect
+   * @param fieldName The name of the field to check
+   *
+   * @return True if the method exists, otherwise false
+   */
+  def hasFieldWithName(className: String, fieldName: String): Boolean =
+    fieldsWithName(className: String, fieldName: String).nonEmpty
+
+  /**
+   * Determines whether or not there is a field with the provided name.
+   *
+   * @param className The fully-qualified class name of the class whose
+   *                  methods to inspect
+   * @param fieldName The name of the field to check
+   *
+   * @return True if the method exists, otherwise false
+   */
+  def fieldsWithName(className: String, fieldName: String): Seq[Field] =
+    classesWithName(className).flatMap(_.allFields().asScala)
 
   /**
    * Retrieves the list of underlying JVM classes for the specified file.
@@ -63,14 +143,16 @@ trait ClassManager {
    *
    * @return The collection of file names
    */
-  def allScalaFileNames: Seq[String]
+  def allScalaFileNames: Seq[String] =
+    allFileNamesWithExtension("scala")
 
   /**
    * Retrieves a list of available (cached) Java file names.
    *
    * @return The collection of file names
    */
-  def allJavaFileNames: Seq[String]
+  def allJavaFileNames: Seq[String] =
+    allFileNamesWithExtension("java")
 
   /**
    * Retrieves a list of available (cached) file names with the provided
@@ -80,7 +162,8 @@ trait ClassManager {
    *
    * @return The collection of file names
    */
-  def allFileNamesWithExtension(extension: String): Seq[String]
+  def allFileNamesWithExtension(extension: String): Seq[String] =
+    allFileNames.filter(_.endsWith(extension))
 
   /**
    * Retrieves a list of all available (cached) file names.

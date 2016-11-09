@@ -1,22 +1,25 @@
 package org.scaladebugger.api.lowlevel.methods
 import acyclic.file
-
 import com.sun.jdi.request.{EventRequestManager, MethodEntryRequest}
+import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.lowlevel.requests.Implicits._
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.filters.ClassInclusionFilter
 import org.scaladebugger.api.lowlevel.requests.properties.{EnabledProperty, SuspendPolicyProperty}
-import org.scaladebugger.api.utils.{MultiMap, Logging}
+import org.scaladebugger.api.utils.{Logging, MultiMap}
 
-import scala.util.Try
+import scala.util.{Failure, Try}
 
 /**
  * Represents the manager for method entry requests.
  *
  * @param eventRequestManager The manager used to create method entry requests
+ * @param classManager The class manager associated with the virtual machine,
+ *                      used to retrieve class and method information
  */
 class StandardMethodEntryManager(
-  private val eventRequestManager: EventRequestManager
+  private val eventRequestManager: EventRequestManager,
+  private val classManager: ClassManager
 ) extends MethodEntryManager with Logging {
   private val methodEntryRequests =
     new MultiMap[MethodEntryRequestInfo, MethodEntryRequest]
@@ -54,12 +57,18 @@ class StandardMethodEntryManager(
     methodName: String,
     extraArguments: JDIRequestArgument*
   ): Try[String] = {
+    // Exit early if class or method not found
+    if (classManager.hasMethodWithName(className, methodName))
+      return Failure(NoClassMethodFound(className, methodName))
+
+    val arguments = Seq(
+      ClassInclusionFilter(classPattern = className),
+      SuspendPolicyProperty.EventThread,
+      EnabledProperty(value = true)
+    ) ++ extraArguments
+
     val request = Try(eventRequestManager.createMethodEntryRequest(
-      Seq(
-        ClassInclusionFilter(classPattern = className),
-        EnabledProperty(value = true),
-        SuspendPolicyProperty.EventThread
-      ) ++ extraArguments: _*
+      arguments: _*
     ))
 
     if (request.isSuccess) {

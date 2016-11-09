@@ -1,26 +1,14 @@
 package org.scaladebugger.api.lowlevel.classes
 import acyclic.file
-
 import org.scaladebugger.api.lowlevel.utils.JDIHelperMethods
 import org.scaladebugger.api.utils.Logging
-import com.sun.jdi.{Location, ReferenceType, VirtualMachine}
+import com.sun.jdi.{Location, Method, ReferenceType, VirtualMachine}
 
 import scala.collection.JavaConverters._
 import scala.util.Try
 
-import StandardClassManager._
 import collection.mutable
-
-/**
- * Represents the container for constants used in the class manager.
- */
-object StandardClassManager {
-  /** Used as the "file name" for classes with no 'file' that match arrays. */
-  val DefaultArrayGroupName = "ARRAY"
-
-  /** Used as the "file name" for classes with no 'file' that match nothing. */
-  val DefaultUnknownGroupName = "UNKNOWN"
-}
+import ClassManager._
 
 /**
  * Represents a manager of classes available on the virtual machine and their
@@ -65,11 +53,20 @@ class StandardClassManager(
   }
 
   /**
+   * Retrieves all class references associated with the provided
+   * fully-qualified class name.
+   *
+   * @param className The fully-qualified class name
+   * @return The collection of reference types representing the class
+   */
+  override def classesWithName(className: String): Seq[ReferenceType] =
+    _virtualMachine.classesByName(className).asScala
+
+  /**
    * Retrieves the list of underlying JVM classes for the specified file.
    *
    * @param fileName The name of the file whose underlying representations
    *                  to retrieve
-   *
    * @return Some list of underlying class references if the file name can
    *         be found, otherwise None
    */
@@ -114,33 +111,6 @@ class StandardClassManager(
       if (referenceType.name().endsWith("[]")) DefaultArrayGroupName
       else DefaultUnknownGroupName
     )
-
-  /**
-   * Retrieves a list of available (cached) Scala file names.
-   *
-   * @return The collection of file names
-   */
-  override def allScalaFileNames: Seq[String] =
-    allFileNamesWithExtension("scala")
-
-  /**
-   * Retrieves a list of available (cached) Java file names.
-   *
-   * @return The collection of file names
-   */
-  override def allJavaFileNames: Seq[String] =
-    allFileNamesWithExtension("java")
-
-  /**
-   * Retrieves a list of available (cached) file names with the provided
-   * extension.
-   *
-   * @param extension The extension of the file names (Scala/Java/etc)
-   *
-   * @return The collection of file names
-   */
-  override def allFileNamesWithExtension(extension: String): Seq[String] =
-      allFileNames.filter(_.endsWith(extension))
 
   /**
    * Retrieves a list of all available (cached) file names.

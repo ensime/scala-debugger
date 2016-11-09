@@ -427,10 +427,10 @@ object ManagerContainer {
       new StandardExceptionManager(virtualMachine, eventRequestManager)
         with StandardPendingExceptionSupport
     lazy val methodEntryManager =
-      new StandardMethodEntryManager(eventRequestManager)
+      new StandardMethodEntryManager(eventRequestManager, classManager)
         with StandardPendingMethodEntrySupport
     lazy val methodExitManager =
-      new StandardMethodExitManager(eventRequestManager)
+      new StandardMethodExitManager(eventRequestManager, classManager)
         with StandardPendingMethodExitSupport
     lazy val modificationWatchpointManager =
       new StandardModificationWatchpointManager(eventRequestManager, classManager)

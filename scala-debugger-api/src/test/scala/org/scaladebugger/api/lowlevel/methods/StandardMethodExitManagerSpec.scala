@@ -1,7 +1,7 @@
 package org.scaladebugger.api.lowlevel.methods
 import acyclic.file
-
 import com.sun.jdi.request.{EventRequest, EventRequestManager, MethodExitRequest}
+import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
@@ -12,8 +12,9 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]
+  private val mockClassManager = mock[ClassManager]
 
-  private val methodExitManager = new StandardMethodExitManager(mockEventRequestManager) {
+  private val methodExitManager = new StandardMethodExitManager(mockEventRequestManager, mockClassManager) {
     override protected def newRequestId(): String = TestRequestId
   }
 
@@ -28,7 +29,7 @@ class StandardMethodExitManagerSpec extends FunSpec with Matchers with MockFacto
         // NOTE: Must create a new method exit manager that does NOT override
         //       the request id to always be the same since we do not allow
         //       duplicates of the test id when storing it
-        val methodExitManager = new StandardMethodExitManager(mockEventRequestManager)
+        val methodExitManager = new StandardMethodExitManager(mockEventRequestManager, mockClassManager)
 
         methodExitRequests.foreach { case MethodExitRequestInfo(requestId, _, className, methodName, _) =>
           (mockEventRequestManager.createMethodExitRequest _).expects()
