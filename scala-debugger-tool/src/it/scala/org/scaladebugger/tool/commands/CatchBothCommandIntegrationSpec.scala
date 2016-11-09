@@ -43,7 +43,8 @@ class CatchBothCommandIntegrationSpec extends FunSpec with Matchers
           eventually {
             validateNextLine(
               vt, "Caught java.lang.ClassNotFoundException detected",
-              success = (text, line) => line should startWith (text)
+              success = (text, line) => line should startWith (text),
+              lineLogger = println(_)
             )
           }
 
