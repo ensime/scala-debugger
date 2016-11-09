@@ -59,9 +59,9 @@ class BreakpointListCommandIntegrationSpec extends FunSpec with Matchers
           // by collecting the three available and checking their content
           val lines = Seq(nextLine(vt), nextLine(vt), nextLine(vt)).flatten
           lines should contain allOf(
-            s"$testFile:10\n",
-            s"$testFile:11\n",
-            "some/file.scala:999\n"
+            s"$testFile:10 (Active)\n",
+            s"$testFile:11 (Active)\n",
+            "some/file.scala:999 (Pending)\n"
           )
         })
       }

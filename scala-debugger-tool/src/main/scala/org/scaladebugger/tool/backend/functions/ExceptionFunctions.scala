@@ -38,6 +38,8 @@ class ExceptionFunctions(
       jvms = Seq(dsvm)
     }
 
+    def pstr(p: Boolean): String = if (p) "Pending" else "Active"
+
     jvms.foreach(s => {
       writeLine(s"<= ${s.uniqueId} =>")
       s.exceptionRequests.foreach(eri => {
@@ -46,19 +48,21 @@ class ExceptionFunctions(
           case f: WildcardPatternFilter => f
         }.lastOption
 
+        val p = s"(${pstr(eri.isPending)})"
+
         // Global catchall (no class filter)
         if (eri.isCatchall && wildcardPatternFilter.isEmpty) {
-          writeLine(s"Globally catch all $notifyText exceptions")
+          writeLine(s"Globally catch all $notifyText exceptions $p")
 
         // Wildcard catch
         } else if (eri.isCatchall && wildcardPatternFilter.nonEmpty) {
           val pattern = wildcardPatternFilter.get.pattern
-          writeLine(s"Catch all $notifyText exceptions with pattern $pattern")
+          writeLine(s"Catch all $notifyText exceptions with pattern $pattern $p")
 
         // Specific class catch
         } else {
           val exceptionName = eri.className
-          writeLine(s"Catch all $notifyText for exception $exceptionName")
+          writeLine(s"Catch all $notifyText for exception $exceptionName $p")
         }
       })
     })

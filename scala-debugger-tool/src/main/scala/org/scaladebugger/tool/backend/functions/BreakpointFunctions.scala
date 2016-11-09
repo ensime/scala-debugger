@@ -51,10 +51,13 @@ class BreakpointFunctions(
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }
 
+    def pstr(p: Boolean): String = if (p) "Pending" else "Active"
+
     jvms.foreach(s => {
       writeLine(s"<= JVM ${s.uniqueId} =>")
-      s.breakpointRequests.map(b => s"${b.fileName}:${b.lineNumber}")
-          .foreach(writeLine)
+      s.breakpointRequests
+        .map(b => s"${b.fileName}:${b.lineNumber} (${pstr(b.isPending)})")
+        .foreach(writeLine)
     })
   }
 

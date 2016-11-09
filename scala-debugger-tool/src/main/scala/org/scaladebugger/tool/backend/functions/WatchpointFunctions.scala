@@ -35,17 +35,21 @@ class WatchpointFunctions(
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }
 
+    def pstr(p: Boolean): String = if (p) "Pending" else "Active"
+
     jvms.foreach(s => {
       writeLine(s"<= ${s.uniqueId} =>")
 
       if (s.accessWatchpointRequests.nonEmpty) writeLine("Access:")
       s.accessWatchpointRequests.zipWithIndex.foreach { case (awr, i) =>
-        writeLine(s"[${i+1}] ${awr.className}.${awr.fieldName}")
+        val p = s"(${pstr(awr.isPending)})"
+        writeLine(s"[${i+1}] ${awr.className}.${awr.fieldName} $p")
       }
 
       if (s.modificationWatchpointRequests.nonEmpty) writeLine("Modification:")
       s.modificationWatchpointRequests.zipWithIndex.foreach { case (mwr, i) =>
-        writeLine(s"[${i+1}] ${mwr.className}.${mwr.fieldName}")
+        val p = s"(${pstr(mwr.isPending)})"
+        writeLine(s"[${i+1}] ${mwr.className}.${mwr.fieldName} $p")
       }
     })
   }

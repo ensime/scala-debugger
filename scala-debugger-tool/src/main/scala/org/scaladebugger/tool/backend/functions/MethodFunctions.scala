@@ -67,10 +67,12 @@ class MethodFunctions(
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }
 
+    def pstr(p: Boolean): String = if (p) "Pending" else "Active"
+
     jvms.foreach(s => {
       writeLine(s"<= JVM ${s.uniqueId} =>")
       s.methodEntryRequests
-        .map(m => s"${m.className}.${m.methodName}")
+        .map(m => s"${m.className}.${m.methodName} (${pstr(m.isPending)})")
         .foreach(writeLine)
     })
   }
@@ -83,10 +85,12 @@ class MethodFunctions(
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }
 
+    def pstr(p: Boolean): String = if (p) "Pending" else "Active"
+
     jvms.foreach(s => {
       writeLine(s"<= JVM ${s.uniqueId} =>")
       s.methodExitRequests
-        .map(m => s"${m.className}.${m.methodName}")
+        .map(m => s"${m.className}.${m.methodName} (${pstr(m.isPending)})")
         .foreach(writeLine)
     })
   }
