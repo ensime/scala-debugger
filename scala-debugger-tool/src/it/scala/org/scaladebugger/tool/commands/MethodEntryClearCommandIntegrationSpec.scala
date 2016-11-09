@@ -154,15 +154,16 @@ class MethodEntryClearCommandIntegrationSpec extends FunSpec with Matchers
           // Verify our method entry requests were removed
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
-            svm.methodEntryRequests should be (empty)
+            val mers = svm.methodEntryRequests
+              .map(mei => (mei.className, mei.methodName, mei.isPending))
+            mers should contain theSameElementsAs Seq(
+              (testFakeClassName, testFakeMethodName, true)
+            )
           }
         })
       }
     }
 
-    // TODO: All method entry requests become active, none are staying pending
-    // This might have been intentional... maybe I don't get feedback about
-    // invalid method entry requests? How do I get feedback about breakpoints?
     it("should delete all method entry requests") {
       val testClass = "org.scaladebugger.test.methods.MethodEntry"
       val testClassName = "org.scaladebugger.test.methods.MethodEntryTestClass"

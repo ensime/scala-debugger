@@ -93,13 +93,12 @@ class MethodFunctions(
 
   /** Entrypoint for clearing a method entry request. */
   def clearEntry(m: Map[String, Any]) = {
-    val className = m.get("class").map(_.toString).getOrElse(
-      throw new RuntimeException("Missing class argument!")
-    )
+    val className = m.get("class").map(_.toString)
+    val methodName = m.get("method").map(_.toString)
 
-    val methodName = m.get("method").map(_.toString).getOrElse(
-      throw new RuntimeException("Missing method argument!")
-    )
+    // Require class name if method name provided
+    if (methodName.nonEmpty && className.isEmpty)
+      throw new RuntimeException("Missing class argument!")
 
     // Set as pending if no JVM is available
     @volatile var jvms = stateManager.state.scalaVirtualMachines
@@ -107,18 +106,27 @@ class MethodFunctions(
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }
 
-    jvms.foreach(_.removeMethodEntryRequests(className, methodName))
+    jvms.foreach(jvm => {
+      if (className.nonEmpty && methodName.nonEmpty)
+        jvm.removeMethodEntryRequests(className.get, methodName.get)
+      else if (className.nonEmpty)
+        jvm.methodEntryRequests.filter(_.className == className.get)
+          .foreach(r =>
+            jvm.removeMethodEntryRequests(r.className, r.methodName)
+          )
+      else
+        jvm.removeAllMethodEntryRequests()
+    })
   }
 
   /** Entrypoint for clearing a method exit request. */
   def clearExit(m: Map[String, Any]) = {
-    val className = m.get("class").map(_.toString).getOrElse(
-      throw new RuntimeException("Missing class argument!")
-    )
+    val className = m.get("class").map(_.toString)
+    val methodName = m.get("method").map(_.toString)
 
-    val methodName = m.get("method").map(_.toString).getOrElse(
-      throw new RuntimeException("Missing method argument!")
-    )
+    // Require class name if method name provided
+    if (methodName.nonEmpty && className.isEmpty)
+      throw new RuntimeException("Missing class argument!")
 
     // Set as pending if no JVM is available
     @volatile var jvms = stateManager.state.scalaVirtualMachines
@@ -126,6 +134,14 @@ class MethodFunctions(
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }
 
-    jvms.foreach(_.removeMethodExitRequests(className, methodName))
+    jvms.foreach(jvm => {
+      if (className.nonEmpty && methodName.nonEmpty)
+        jvm.removeMethodExitRequests(className.get, methodName.get)
+      else if (className.nonEmpty)
+        jvm.methodExitRequests.filter(_.className == className.get)
+          .foreach(r => jvm.removeMethodExitRequests(r.className, r.methodName))
+      else
+        jvm.removeAllMethodExitRequests()
+    })
   }
 }
