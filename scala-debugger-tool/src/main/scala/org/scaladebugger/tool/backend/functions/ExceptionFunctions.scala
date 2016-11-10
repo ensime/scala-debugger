@@ -87,8 +87,10 @@ class ExceptionFunctions(
    * Removes an exception request based on input.
    *
    * @param m The map of input to the command
-   * @param notifyCaught Used to match against an exception request
-   * @param notifyUncaught Used to match against an exception request
+   * @param notifyCaught If true, will ignore requests with notify caught
+   *                     enabled
+   * @param notifyUncaught If true, will ignore requests with notify uncaught
+   *                       enabled
    */
   private def handleIgnoreCommand(
     m: Map[String, Any],
