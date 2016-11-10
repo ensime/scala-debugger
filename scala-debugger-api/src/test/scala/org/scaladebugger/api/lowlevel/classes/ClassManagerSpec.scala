@@ -20,7 +20,7 @@ class ClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
   ) {
     @volatile var classMap: Map[String, Seq[ReferenceType]] = Map()
     override def classesWithName(className: String): Seq[ReferenceType] = {
-      classMap.get(className).getOrElse(Nil)
+      classMap.getOrElse(className, Nil)
     }
   }
 

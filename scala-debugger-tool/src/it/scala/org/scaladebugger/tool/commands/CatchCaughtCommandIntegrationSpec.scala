@@ -32,6 +32,7 @@ class CatchCaughtCommandIntegrationSpec extends FunSpec with Matchers
           // Verify our exception request was made
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
+            vt.nextOutputLine().foreach(println)
             val ers = svm.exceptionRequests.map(er =>
               (er.isCatchall, er.notifyCaught, er.notifyUncaught, er.isPending))
             ers should contain theSameElementsAs Seq(
