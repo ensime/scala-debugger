@@ -1,14 +1,10 @@
 package org.scaladebugger.tool.commands
 
-import java.io.File
-
-import org.scaladebugger.api.utils.JDITools
-import org.scaladebugger.tool.frontend.VirtualTerminal
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
 
-class MethodEntryListCommandIntegrationSpec extends FunSpec with Matchers
+class MethodExitListCommandIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with ToolFixtures
   with TestUtilities with Eventually with FixedParallelSuite
 {
@@ -17,43 +13,43 @@ class MethodEntryListCommandIntegrationSpec extends FunSpec with Matchers
     interval = scaled(Constants.EventuallyInterval)
   )
 
-  describe("MethodEntryListCommand") {
-    it("should list pending and active method entry requests") {
-      val testClass = "org.scaladebugger.test.methods.MethodEntry"
-      val testClassName = "org.scaladebugger.test.methods.MethodEntryTestClass"
+  describe("MethodExitListCommand") {
+    it("should list pending and active method exit requests") {
+      val testClass = "org.scaladebugger.test.methods.MethodExit"
+      val testClassName = "org.scaladebugger.test.methods.MethodExitTestClass"
       val testMethodName = "testMethod"
 
       val testFakeClassName = "invalid.class"
       val testFakeMethodName = "fakeMethod"
 
-      // Create method entry request before JVM starts
+      // Create method exit request before JVM starts
       val q = "\""
       val virtualTerminal = newVirtualTerminal()
 
       // Valid, so will be active
-      virtualTerminal.newInputLine(s"mentry $q$testClassName$q $q$testMethodName$q")
+      virtualTerminal.newInputLine(s"mexit $q$testClassName$q $q$testMethodName$q")
 
       // Invalid, so will be inactive
-      virtualTerminal.newInputLine(s"mentry $q$testFakeClassName$q $q$testFakeMethodName$q")
+      virtualTerminal.newInputLine(s"mexit $q$testFakeClassName$q $q$testFakeMethodName$q")
 
       withToolRunningUsingTerminal(
         className = testClass,
         virtualTerminal = virtualTerminal
       ) { (vt, sm, start) =>
         logTimeTaken({
-          // Verify our method entry requests were set
-          validateNextLine(vt, s"Set method entry for class $testClassName and method $testMethodName\n")
-          validateNextLine(vt, s"Set method entry for class $testFakeClassName and method $testFakeMethodName\n")
+          // Verify our method exit requests were set
+          validateNextLine(vt, s"Set method exit for class $testClassName and method $testMethodName\n")
+          validateNextLine(vt, s"Set method exit for class $testFakeClassName and method $testFakeMethodName\n")
 
           // Verify that we have attached to the JVM
           validateNextLine(vt, "Attached with id",
             success = (text, line) => line should startWith(text))
 
-          // Assert that we hit the first methodEntry
-          validateNextLine(vt, s"Method entry hit for $testClassName.$testMethodName\n")
+          // Assert that we hit the first methodExit
+          validateNextLine(vt, s"Method exit hit for $testClassName.$testMethodName\n")
 
-          // List all available method entry requests
-          vt.newInputLine("mentrylist")
+          // List all available method exit requests
+          vt.newInputLine("mexitlist")
 
           // First prints out JVM id
           validateNextLine(vt, "JVM",

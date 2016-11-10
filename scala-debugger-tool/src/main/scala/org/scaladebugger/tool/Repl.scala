@@ -214,7 +214,7 @@ object Repl {
     interpreter.bindFunction("mentrylist", Nil, methodFunctions.listEntries, "Lists all existing method entry requests.")
     interpreter.bindFunction("mentryclear", Seq("class", "method"), methodFunctions.clearEntry, "Clears (deletes) any method entry on the class and method.")
     interpreter.bindFunction("mexit", Seq("class", "method"), methodFunctions.createExit, "Creates a new method exit request.")
-    interpreter.bindFunction("mexitlist", Nil, methodFunctions.listEntries, "Lists all existing method exit requests.")
+    interpreter.bindFunction("mexitlist", Nil, methodFunctions.listExits, "Lists all existing method exit requests.")
     interpreter.bindFunction("mexitclear", Seq("class", "method"), methodFunctions.clearExit, "Clears (deletes) any method exit on the class and method.")
 
     interpreter.bindFunction("classes", Seq("filter"), classFunctions.classes, "Lists all classes by name, using an optional wildcard filter to list specific classes.")
