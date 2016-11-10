@@ -32,7 +32,6 @@ class CatchCaughtCommandIntegrationSpec extends FunSpec with Matchers
           // Verify our exception request was made
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
-            vt.nextOutputLine().foreach(println)
             val ers = svm.exceptionRequests.map(er =>
               (er.isCatchall, er.notifyCaught, er.notifyUncaught, er.isPending))
             ers should contain theSameElementsAs Seq(
@@ -43,9 +42,8 @@ class CatchCaughtCommandIntegrationSpec extends FunSpec with Matchers
           // Verify that we hit some exception (classloader exception)
           eventually {
             validateNextLine(
-              vt, "Caught java.lang.ClassNotFoundException detected",
-              success = (text, line) => line should startWith (text),
-              lineLogger = println(_)
+              vt, "Caught .*? detected",
+              success = (text, line) => line should startWith regex text
             )
           }
 
