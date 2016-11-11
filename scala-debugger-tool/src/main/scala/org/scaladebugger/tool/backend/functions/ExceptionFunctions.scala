@@ -2,6 +2,7 @@ package org.scaladebugger.tool.backend.functions
 import acyclic.file
 import org.scaladebugger.api.lowlevel.events.filters.WildcardPatternFilter
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
+import org.scaladebugger.api.lowlevel.exceptions.ExceptionRequestInfo
 import org.scaladebugger.tool.backend.StateManager
 import org.scaladebugger.tool.backend.utils.Regex
 
@@ -103,28 +104,29 @@ class ExceptionFunctions(
       jvms = Seq(dsvm)
     }
 
-    // NOTE: Wildcards handled directly by class inclusion filter
+    // Name is either exact, wildcard, or all exceptions
     val exceptionName = m.get("filter").map(_.toString)
-    val extraArgs = exceptionName
-      .filter(Regex.containsWildcards)
-      .map(WildcardPatternFilter.apply)
-      .toSeq
+      .getOrElse("*")
+
+    // Matches name based on exact match or wildcard expression
+    val nameMatch =
+      if (Regex.containsWildcards(exceptionName))
+        (name: String) => name.matches(Regex.wildcardString(exceptionName))
+      else
+        (name: String) => name == exceptionName
 
     jvms.foreach(s => {
-      if (exceptionName.isEmpty || extraArgs.nonEmpty) {
-        s.removeOnlyAllExceptionsRequestWithArgs(
-          notifyCaught = notifyCaught,
-          notifyUncaught = notifyUncaught,
-          extraArgs: _*
-        )
-      } else {
-        s.removeExceptionRequestWithArgs(
-          exceptionName = exceptionName.get,
-          notifyCaught = notifyCaught,
-          notifyUncaught = notifyUncaught,
-          extraArgs: _*
-        )
-      }
+      // Find and remove each match
+      s.exceptionRequests.filter(e => {
+        val nc = notifyCaught == e.notifyCaught
+        val nu = notifyUncaught == e.notifyUncaught
+        nameMatch(e.className) && (nc || notifyCaught) && (nu || notifyUncaught)
+      }).foreach(e => s.removeExceptionRequestWithArgs(
+        exceptionName = e.className,
+        notifyCaught = e.notifyCaught,
+        notifyUncaught = e.notifyUncaught,
+        e.extraArguments: _*
+      ))
     })
   }
 

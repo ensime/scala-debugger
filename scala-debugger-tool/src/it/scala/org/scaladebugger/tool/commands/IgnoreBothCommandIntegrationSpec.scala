@@ -61,18 +61,17 @@ class IgnoreBothCommandIntegrationSpec extends FunSpec with Matchers
             val svm = sm.state.scalaVirtualMachines.head
             val ers = svm.exceptionRequests.map(er =>
               (er.className, er.notifyCaught, er.notifyUncaught, er.isPending))
-            println(ers)
             ers should contain theSameElementsAs Seq(
-              (testFakeExceptionName, true, true, true),
-              (testFakeExceptionName, true, false, true),
-              (testFakeExceptionName, false, true, true)
+              (testExceptionName, true, true, false),
+              (testExceptionName, true, false, false),
+              (testExceptionName, false, true, false)
             )
           }
         })
       }
     }
 
-    ignore("should delete a specific active exception request by class name") {
+    it("should delete a specific active exception request by class name") {
       val testClass = "org.scaladebugger.test.exceptions.InsideTryBlockException"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testExceptionName = "org.scaladebugger.test.exceptions.CustomException"
@@ -126,7 +125,7 @@ class IgnoreBothCommandIntegrationSpec extends FunSpec with Matchers
       }
     }
 
-    ignore("should delete all pending and active exception requests matching a wildcard") {
+    it("should delete all pending and active exception requests matching a wildcard") {
       val testClass = "org.scaladebugger.test.exceptions.InsideTryBlockException"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testExceptionName = "org.scaladebugger.test.exceptions.CustomException"
@@ -176,7 +175,7 @@ class IgnoreBothCommandIntegrationSpec extends FunSpec with Matchers
       }
     }
 
-    ignore("should delete all pending and active exception requests if no class name given") {
+    it("should delete all pending and active exception requests if no class name given") {
       val testClass = "org.scaladebugger.test.exceptions.InsideTryBlockException"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testExceptionName = "org.scaladebugger.test.exceptions.CustomException"
