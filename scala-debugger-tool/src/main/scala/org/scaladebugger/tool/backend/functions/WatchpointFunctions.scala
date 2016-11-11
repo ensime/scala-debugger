@@ -102,7 +102,7 @@ class WatchpointFunctions(
         val loc = e.location()
         val sn = loc.sourceName()
         val ln = loc.lineNumber()
-        writeLine(s"$className.$fieldName accessed ($sn:$ln)")
+        writeLine(s"'$fieldName' of '$className' accessed ($sn:$ln)")
       })
 
       if (includeModification) s.getOrCreateModificationWatchpointRequest(
@@ -111,7 +111,7 @@ class WatchpointFunctions(
         val loc = e.location()
         val sn = loc.sourceName()
         val ln = loc.lineNumber()
-        writeLine(s"$className.$fieldName modified ($sn:$ln)")
+        writeLine(s"'$fieldName' of '$className' modified ($sn:$ln)")
       })
     })
   }
