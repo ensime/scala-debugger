@@ -31,7 +31,11 @@ class WatchListCommandIntegrationSpec extends FunSpec with Matchers
       val q = "\""
       val virtualTerminal = newVirtualTerminal()
       virtualTerminal.newInputLine(s"watch $q$className$q $q$fieldName$q")
+      virtualTerminal.newInputLine(s"watcha $q$className$q $q$fieldName$q")
+      virtualTerminal.newInputLine(s"watchm $q$className$q $q$fieldName$q")
       virtualTerminal.newInputLine(s"watch $q$fakeClassName$q $q$fakeFieldName$q")
+      virtualTerminal.newInputLine(s"watcha $q$fakeClassName$q $q$fakeFieldName$q")
+      virtualTerminal.newInputLine(s"watchm $q$fakeClassName$q $q$fakeFieldName$q")
 
       withToolRunningUsingTerminal(
         className = testClass,
@@ -46,6 +50,8 @@ class WatchListCommandIntegrationSpec extends FunSpec with Matchers
               (awr.className, awr.fieldName, awr.isPending))
             awrs should contain theSameElementsAs Seq(
               (className, fieldName, false),
+              (className, fieldName, false),
+              (fakeClassName, fakeFieldName, true),
               (fakeClassName, fakeFieldName, true)
             )
 
@@ -53,6 +59,8 @@ class WatchListCommandIntegrationSpec extends FunSpec with Matchers
               (awr.className, awr.fieldName, awr.isPending))
             mwrs should contain theSameElementsAs Seq(
               (className, fieldName, false),
+              (className, fieldName, false),
+              (fakeClassName, fakeFieldName, true),
               (fakeClassName, fakeFieldName, true)
             )
           }

@@ -2,6 +2,7 @@ package org.scaladebugger.tool.backend.functions
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.lowlevel.watchpoints.{AccessWatchpointRequestInfo, ModificationWatchpointRequestInfo}
 import org.scaladebugger.tool.backend.StateManager
+import org.scaladebugger.tool.backend.utils.Regex
 
 /**
  * Represents a collection of functions for managing watchpoints.
@@ -154,13 +155,11 @@ class WatchpointFunctions(
     removeAccess: Boolean,
     removeModification: Boolean
   ) = {
-    val className = m.get("class").map(_.toString).getOrElse(
-      throw new RuntimeException("Missing class argument!")
-    )
+    val className = m.get("class").map(_.toString)
+    val fieldName = m.get("field").map(_.toString)
 
-    val fieldName = m.get("field").map(_.toString).getOrElse(
-      throw new RuntimeException("Missing field argument!")
-    )
+    if (fieldName.nonEmpty && className.isEmpty)
+      throw new RuntimeException("Missing class argument!")
 
     // Set as pending if no JVM is available
     @volatile var jvms = stateManager.state.scalaVirtualMachines
@@ -168,12 +167,29 @@ class WatchpointFunctions(
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }
 
-    jvms.foreach(s => {
-      if (removeAccess)
-        s.removeAccessWatchpointRequests(className, fieldName)
+    val searchName = className.getOrElse("*")
+    val isMatch =
+      if (Regex.containsWildcards(searchName))
+        (cName: String, fName: String) =>
+          cName.matches(Regex.wildcardString(searchName))
+      else
+        (cName: String, fName: String) =>
+          cName == className.get && fName == fieldName.get
 
-      if (removeModification)
-        s.removeModificationWatchpointRequests(className, fieldName)
+    jvms.foreach(s => {
+      if (removeAccess) s.accessWatchpointRequests.filter(a => {
+        isMatch(a.className, a.fieldName)
+      }).foreach(a => s.removeAccessWatchpointRequests(
+        a.className,
+        a.fieldName
+      ))
+
+      if (removeModification) s.modificationWatchpointRequests.filter(m => {
+        isMatch(m.className, m.fieldName)
+      }).foreach(m => s.removeModificationWatchpointRequests(
+        m.className,
+        m.fieldName
+      ))
     })
   }
 }
