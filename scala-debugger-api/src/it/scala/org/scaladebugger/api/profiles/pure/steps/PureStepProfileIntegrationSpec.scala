@@ -1,19 +1,14 @@
 package org.scaladebugger.api.profiles.pure.steps
-import acyclic.file
-
 import java.util.concurrent.atomic.AtomicBoolean
 
-import com.sun.jdi.ThreadReference
-import com.sun.jdi.event.{BreakpointEvent, StepEvent}
+import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
 import org.scaladebugger.api.utils.JDITools
+import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.concurrent.PatienceConfiguration.{Interval, Timeout}
 import org.scalatest.time.{Milliseconds, Seconds, Span, Units}
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.events.EventType
-import org.scaladebugger.api.lowlevel.events.EventType._
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
-import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine, StandardScalaVirtualMachine}
 import test.Constants._
 import test.{TestUtilities, VirtualMachineFixtures}
 
@@ -46,7 +41,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
         )
 
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.lowlevel.stepManager.createStepOutLineRequest(_: ThreadReference))
+          verify(s, f, s.stepOutLine(_: ThreadInfoProfile))
         }
       }
 
@@ -68,7 +63,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
         )
 
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.lowlevel.stepManager.createStepOutLineRequest(_: ThreadReference))
+          verify(s, f, s.stepOutLine(_: ThreadInfoProfile))
         }
       }
     }
@@ -114,7 +109,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
         // NOTE: Have to up the maximum duration due to the delay caused by
         //       the for comprehension
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.lowlevel.stepManager.createStepOverLineRequest(_: ThreadReference))
+          verify(s, f, s.stepOverLine(_: ThreadInfoProfile))
         }
       }
 
@@ -135,7 +130,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
         )
 
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.lowlevel.stepManager.createStepOverLineRequest(_: ThreadReference))
+          verify(s, f, s.stepOverLine(_: ThreadInfoProfile))
         }
       }
 
@@ -157,7 +152,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
         )
 
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.lowlevel.stepManager.createStepOverLineRequest(_: ThreadReference))
+          verify(s, f, s.stepOverLine(_: ThreadInfoProfile))
         }
       }
 
@@ -178,7 +173,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
         )
 
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.lowlevel.stepManager.createStepOverLineRequest(_: ThreadReference))
+          verify(s, f, s.stepOverLine(_: ThreadInfoProfile))
         }
       }
     }
@@ -221,7 +216,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
         // NOTE: Have to up the maximum duration due to the delay caused by
         //       the for comprehension
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.lowlevel.stepManager.createStepIntoLineRequest(_: ThreadReference))
+          verify(s, f, s.stepIntoLine(_: ThreadInfoProfile))
         }
       }
 
@@ -243,7 +238,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
         )
 
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.lowlevel.stepManager.createStepIntoLineRequest(_: ThreadReference))
+          verify(s, f, s.stepIntoLine(_: ThreadInfoProfile))
         }
       }
 
@@ -262,7 +257,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
         )
 
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.lowlevel.stepManager.createStepIntoLineRequest(_: ThreadReference))
+          verify(s, f, s.stepIntoLine(_: ThreadInfoProfile))
         }
       }
     }
@@ -284,7 +279,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
     scalaVirtualMachine: ScalaVirtualMachine,
     startingLine: Int,
     expectedLine: Int
-  ): (ScalaVirtualMachine, () => Unit, (ThreadReference) => T) => Unit = {
+  ): (ScalaVirtualMachine, () => Unit, (ThreadInfoProfile) => T) => Unit = {
     val testFile = JDITools.scalaClassStringToFileString(testClass)
     // Flag that indicates we reached the expected line
     val success = new AtomicBoolean(false)
@@ -294,7 +289,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
       .getOrCreateBreakpointRequest(testFile, startingLine)
 
     // Return a function used to begin the verification
-    (s: ScalaVirtualMachine, start: () => Unit, stepMethod: (ThreadReference) => T) => {
+    (s: ScalaVirtualMachine, start: () => Unit, stepMethod: (ThreadInfoProfile) => T) => {
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, startingLine)
         .map(_.thread())
@@ -308,7 +303,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
             success.set(lineNumber == expectedLine)
           })
 
-          stepMethod(thread.toJdiInstance)
+          stepMethod(thread)
         })
 
       start()
@@ -341,7 +336,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
     expectedReachableLines: Seq[Int],
     failIfNotExact: Boolean = false,
     maxDuration: (Long, Units) = (EventuallyTimeout.toMillis, Milliseconds)
-  ): (ScalaVirtualMachine, () => Unit, (ThreadReference) => T) => Unit = {
+  ): (ScalaVirtualMachine, () => Unit, (ThreadInfoProfile) => T) => Unit = {
     val testFile = JDITools.scalaClassStringToFileString(testClass)
     val expectedLines = collection.mutable.Stack(expectedReachableLines: _*)
 
@@ -356,17 +351,18 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
       .getOrCreateBreakpointRequest(testFile, startingLine)
 
     // Return a function used to begin the verification
-    (s: ScalaVirtualMachine, start: () => Unit, stepMethod: (ThreadReference) => T) => {
+    (s: ScalaVirtualMachine, start: () => Unit, stepMethod: (ThreadInfoProfile) => T) => {
       // Add a breakpoint to get us in the right location for steps
       // On receiving a breakpoint, send a step request
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, startingLine)
         .map(_.thread())
+        .map(s.thread)
         .foreach(thread => {
           // On receiving a step request, verify that we are in the right
           // location
           s.withProfile(PureDebugProfile.Name)
-            .createStepListener(s.thread(thread))
+            .createStepListener(thread)
             .foreach(stepEvent => {
               val className = stepEvent.location().declaringType().name()
               val lineNumber = stepEvent.location().lineNumber()
@@ -388,8 +384,9 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
               }
 
               // Continue stepping if not reached all lines and not exiting early
-              if (expectedLines.nonEmpty && !failEarly.get())
-                stepMethod(stepEvent.thread())
+              if (expectedLines.nonEmpty && !failEarly.get()) {
+                stepMethod(s.thread(stepEvent.thread()))
+              }
             })
 
         stepMethod(thread)
