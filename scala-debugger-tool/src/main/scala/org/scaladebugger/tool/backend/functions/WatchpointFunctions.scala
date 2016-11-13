@@ -1,5 +1,6 @@
 package org.scaladebugger.tool.backend.functions
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
+import org.scaladebugger.api.lowlevel.watchpoints.{AccessWatchpointRequestInfo, ModificationWatchpointRequestInfo}
 import org.scaladebugger.tool.backend.StateManager
 
 /**
@@ -38,19 +39,38 @@ class WatchpointFunctions(
     def pstr(p: Boolean): String = if (p) "Pending" else "Active"
 
     jvms.foreach(s => {
-      writeLine(s"<= ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
 
-      if (s.accessWatchpointRequests.nonEmpty) writeLine("Access:")
-      s.accessWatchpointRequests.zipWithIndex.foreach { case (awr, i) =>
-        val p = s"(${pstr(awr.isPending)})"
-        writeLine(s"[${i+1}] ${awr.className}.${awr.fieldName} $p")
-      }
+      val aMap = s.accessWatchpointRequests.groupBy(_.className)
+      val mMap = s.modificationWatchpointRequests.groupBy(_.className)
+      val keys = aMap.keySet ++ mMap.keySet
 
-      if (s.modificationWatchpointRequests.nonEmpty) writeLine("Modification:")
-      s.modificationWatchpointRequests.zipWithIndex.foreach { case (mwr, i) =>
-        val p = s"(${pstr(mwr.isPending)})"
-        writeLine(s"[${i+1}] ${mwr.className}.${mwr.fieldName} $p")
-      }
+      // For each class, group the fields
+      keys.foreach(k => {
+        val className = k
+        val fieldRequests = aMap.getOrElse(k, Nil) ++ mMap.getOrElse(k, Nil)
+        val fMap = fieldRequests.groupBy {
+          case r: AccessWatchpointRequestInfo => r.fieldName
+          case r: ModificationWatchpointRequestInfo => r.fieldName
+        }
+
+        // For each field, print data
+        writeLine(s"{Class $className}")
+        fMap.keySet.foreach(k => {
+          val fieldName = k
+          val awr = fMap(k).find(_.isInstanceOf[AccessWatchpointRequestInfo])
+          val mwr = fMap(k).find(_.isInstanceOf[ModificationWatchpointRequestInfo])
+          val ap = awr.map(r =>
+            "[Access: " + (if (r.isPending) "Pending" else "Active") + "]"
+          ).getOrElse("")
+          val mp = mwr.map(r =>
+            "[Modification: " + (if (r.isPending) "Pending" else "Active") + "]"
+          ).getOrElse("")
+
+          val line = s"-> Field '$fieldName' $ap $mp".trim()
+          writeLine(line)
+        })
+      })
     })
   }
 
@@ -94,6 +114,12 @@ class WatchpointFunctions(
     if (jvms.isEmpty) {
       jvms = Seq(stateManager.state.dummyScalaVirtualMachine)
     }
+
+    val text =
+      (if (includeAccess) "access" else "") +
+      (if (includeAccess && includeModification) " and " else "") +
+      (if (includeModification) "modification" else "")
+    writeLine(s"Watching '$fieldName' of '$className' for " + text)
 
     jvms.foreach(s => {
       if (includeAccess) s.getOrCreateAccessWatchpointRequest(

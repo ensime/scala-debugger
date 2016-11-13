@@ -42,7 +42,7 @@ class ExceptionFunctions(
     def pstr(p: Boolean): String = if (p) "Pending" else "Active"
 
     jvms.foreach(s => {
-      writeLine(s"<= ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
       s.exceptionRequests.foreach(eri => {
         val notifyText = newNotifyText(eri.notifyCaught, eri.notifyUncaught)
         val wildcardPatternFilter = eri.extraArguments.collect {

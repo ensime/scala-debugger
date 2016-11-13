@@ -23,7 +23,7 @@ class ClassFunctions(
     val filter = m.get("filter").map(_.toString).getOrElse("*")
 
     jvms.foreach(s => {
-      writeLine(s"<= ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
 
       // Wildcard matching
       val r = Regex.wildcardString(filter)
@@ -43,7 +43,7 @@ class ClassFunctions(
     )
 
     jvms.foreach(s => {
-      writeLine(s"<= ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
 
       s.classOption(className)
         .map(_.allMethods)
@@ -64,7 +64,7 @@ class ClassFunctions(
     )
 
     jvms.foreach(s => {
-      writeLine(s"<= ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
 
       s.classOption(className)
         .map(_.allFields)
