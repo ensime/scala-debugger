@@ -78,7 +78,7 @@ class SourceFunctions(
     if (jvms.isEmpty) writeLine("No VM connected!")
 
     jvms.foreach(s => {
-      writeLine(s"<= ${s.uniqueId} =>")
+      writeLine(s"<= JVM ${s.uniqueId} =>")
 
       // TODO: Implement using expression evaluator
       writeLine("TODO: Implement using expression evaluator")

@@ -5,7 +5,7 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
 
-class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
+class UnwatchModificationCommandIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with ToolFixtures
   with TestUtilities with Eventually with FixedParallelSuite
 {
@@ -15,11 +15,11 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("UnwatchBothCommand") {
-    it("should delete a specific pending watchpoint request by class and field name") {
-      val testClass = "org.scaladebugger.test.watchpoints.AccessWatchpoint"
+    it("should delete a specific pending modification watchpoint request by class and field name") {
+      val testClass = "org.scaladebugger.test.watchpoints.ModificationWatchpoint"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      val className = "org.scaladebugger.test.watchpoints.SomeAccessClass"
+      val className = "org.scaladebugger.test.watchpoints.SomeModificationClass"
       val fieldName = "field"
 
       val fakeClassName = "org.invalid.class"
@@ -56,7 +56,7 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
           }
 
           // Remove the pending request
-          vt.newInputLine(s"unwatch $q$fakeClassName$q $q$fakeFieldName$q")
+          vt.newInputLine(s"unwatchm $q$fakeClassName$q $q$fakeFieldName$q")
 
           // Verify our pending watch request was removed
           eventually {
@@ -65,7 +65,8 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
             val awrs = svm.accessWatchpointRequests.map(awr =>
               (awr.className, awr.fieldName, awr.isPending))
             awrs should contain theSameElementsAs Seq(
-              (className, fieldName, false)
+              (className, fieldName, false),
+              (fakeClassName, fakeFieldName, true)
             )
 
             val mwrs = svm.modificationWatchpointRequests.map(awr =>
@@ -78,11 +79,11 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
       }
     }
 
-    it("should delete a specific active watchpoint request by class and field name") {
-      val testClass = "org.scaladebugger.test.watchpoints.AccessWatchpoint"
+    it("should delete a specific active modification watchpoint request by class and field name") {
+      val testClass = "org.scaladebugger.test.watchpoints.ModificationWatchpoint"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      val className = "org.scaladebugger.test.watchpoints.SomeAccessClass"
+      val className = "org.scaladebugger.test.watchpoints.SomeModificationClass"
       val fieldName = "field"
 
       val fakeClassName = "org.invalid.class"
@@ -119,7 +120,7 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
           }
 
           // Remove the active request
-          vt.newInputLine(s"unwatch $q$className$q $q$fieldName$q")
+          vt.newInputLine(s"unwatchm $q$className$q $q$fieldName$q")
 
           // Verify our active watch request was removed
           eventually {
@@ -128,6 +129,7 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
             val awrs = svm.accessWatchpointRequests.map(awr =>
               (awr.className, awr.fieldName, awr.isPending))
             awrs should contain theSameElementsAs Seq(
+              (className, fieldName, false),
               (fakeClassName, fakeFieldName, true)
             )
 
@@ -141,11 +143,11 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
       }
     }
 
-    it("should delete all pending and active watchpoint requests matching a class wildcard") {
-      val testClass = "org.scaladebugger.test.watchpoints.AccessWatchpoint"
+    it("should delete all pending and active modification watchpoint requests matching a class wildcard") {
+      val testClass = "org.scaladebugger.test.watchpoints.ModificationWatchpoint"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      val className = "org.scaladebugger.test.watchpoints.SomeAccessClass"
+      val className = "org.scaladebugger.test.watchpoints.SomeModificationClass"
       val fieldName = "field"
 
       val fakeClassName = "org.invalid.class"
@@ -182,7 +184,7 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
           }
 
           // Remove requests matching the wildcard
-          vt.newInputLine("unwatch \"org.*\"")
+          vt.newInputLine("unwatchm \"org.*\"")
 
           // Verify our watch requests were removed
           eventually {
@@ -190,7 +192,10 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
 
             val awrs = svm.accessWatchpointRequests.map(awr =>
               (awr.className, awr.fieldName, awr.isPending))
-            awrs should be (empty)
+            awrs should contain theSameElementsAs Seq(
+              (className, fieldName, false),
+              (fakeClassName, fakeFieldName, true)
+            )
 
             val mwrs = svm.modificationWatchpointRequests.map(awr =>
               (awr.className, awr.fieldName, awr.isPending))
@@ -200,11 +205,11 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
       }
     }
 
-    it("should delete all pending and active watchpoint requests if no args provided") {
-      val testClass = "org.scaladebugger.test.watchpoints.AccessWatchpoint"
+    it("should delete all pending and active modification watchpoint requests if no args provided") {
+      val testClass = "org.scaladebugger.test.watchpoints.ModificationWatchpoint"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      val className = "org.scaladebugger.test.watchpoints.SomeAccessClass"
+      val className = "org.scaladebugger.test.watchpoints.SomeModificationClass"
       val fieldName = "field"
 
       val fakeClassName = "org.invalid.class"
@@ -241,7 +246,7 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
           }
 
           // Remove all requests
-          vt.newInputLine("unwatch")
+          vt.newInputLine("unwatchm")
 
           // Verify our watch requests were removed
           eventually {
@@ -249,7 +254,10 @@ class UnwatchBothCommandIntegrationSpec extends FunSpec with Matchers
 
             val awrs = svm.accessWatchpointRequests.map(awr =>
               (awr.className, awr.fieldName, awr.isPending))
-            awrs should be (empty)
+            awrs should contain theSameElementsAs Seq(
+              (className, fieldName, false),
+              (fakeClassName, fakeFieldName, true)
+            )
 
             val mwrs = svm.modificationWatchpointRequests.map(awr =>
               (awr.className, awr.fieldName, awr.isPending))
