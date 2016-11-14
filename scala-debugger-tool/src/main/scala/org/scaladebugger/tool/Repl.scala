@@ -224,8 +224,9 @@ object Repl {
     interpreter.bindFunction("threadgroups", Nil, threadGroupFunctions.threadsGroups, "Lists all thread groups.")
     interpreter.bindFunction("threadgroup", Seq("threadGroup"), threadGroupFunctions.threadGroup, "Sets the active thrad group with the specified name. No name clears the active thread group.")
 
-    interpreter.bindFunction("list", Nil, sourceFunctions.list, "Lists the source code for the file position located at the actively-suspended thread.")
+    interpreter.bindFunction("list", Seq("size"), sourceFunctions.list, "Lists the source code for the file position located at the actively-suspended thread. Optional size indicates max lines to show on either side.")
     interpreter.bindFunction("sourcepath", Seq("sourcepath"), sourceFunctions.sourcepath, "Adds a new path to searched source paths or prints out current source paths.")
+    interpreter.bindFunction("sourcepathclear", Nil, sourceFunctions.sourcepathClear, "Clears all current source paths.")
     interpreter.bindFunction("classpath", Nil, sourceFunctions.classpath, "Lists the classpath for each connected JVM.")
 
     interpreter.bindFunction("stepin", Nil, stepFunctions.stepIntoLine, "Steps into the current line where suspended to the frame below.")

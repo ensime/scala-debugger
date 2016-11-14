@@ -21,7 +21,10 @@ class SourceFunctions(
     val thread = stateManager.state.activeThread
     if (thread.isEmpty) writeLine("No active thread!")
 
-    val sources = stateManager.state.sourcePaths
+    val size = m.getOrElse("size", 4).toString.toInt
+
+    // Get sources and add '.' as a source
+    val sources = stateManager.state.sourcePaths :+ new File(".").toURI
 
     thread.foreach(t => {
       t.suspend()
@@ -33,17 +36,19 @@ class SourceFunctions(
 
       t.resume()
 
-      // Display source code
+      // Look up potential source location
       val file = sources
         .map(s => Paths.get(s).resolve(filePath))
         .map(_.toFile)
         .find(f => f.exists() && f.isFile)
 
       if (file.isEmpty) writeLine(s"Source not found for $filePath!")
+
+      // Display source code
       file.foreach(f => {
         val lines = scala.io.Source.fromFile(f).getLines()
-        val startLine = Math.max(lineNumber - 4, 1)
-        val endLine = lineNumber + 4
+        val startLine = Math.max(lineNumber - size, 1)
+        val endLine = lineNumber + size
 
         // Skip up to five lines prior
         (1 until startLine).foreach(_ => if (lines.hasNext) lines.next())
@@ -67,8 +72,13 @@ class SourceFunctions(
         stateManager.addSourcePath(new File(source).toURI)
       case None =>
         val sourcePaths = stateManager.state.sourcePaths.map(_.getPath)
-        writeLine(s"Source paths: ${sourcePaths.mkString(",")}")
+        writeLine(s"Source paths: ${sourcePaths.mkString(java.io.File.pathSeparator)}")
     }
+  }
+
+  /** Entrypoint for clearing the source path. */
+  def sourcepathClear(m: Map[String, Any]) = {
+    stateManager.updateSourcePaths(Nil)
   }
 
   /** Entrypoint for printing classpath info from connected JVMs. */
