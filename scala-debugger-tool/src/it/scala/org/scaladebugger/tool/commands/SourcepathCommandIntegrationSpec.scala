@@ -22,19 +22,22 @@ class SourcepathCommandIntegrationSpec extends FunSpec with Matchers
       val repl = Repl.newInstance(mainTerminal = vt)
       repl.start()
 
+      val q = "\""
+      val s = java.io.File.separator
+
       // Set some paths to be displayed
       repl.stateManager.updateSourcePaths(Seq(
-        new URI("/a"),
-        new URI("/b"),
-        new URI("/c")
+        new URI(s"${s}a"),
+        new URI(s"${s}b"),
+        new URI(s"${s}c")
       ))
 
       // Add 'd' as sourcepath
-      vt.newInputLine("sourcepath \"/d\"")
+      vt.newInputLine(s"sourcepath $q${s}d$q")
 
       eventually {
         val state = repl.stateManager.state
-        state.sourcePaths.map(_.getPath) should contain ("/d")
+        state.sourcePaths.map(_.getPath) should contain (s"${s}d")
       }
     }
 
