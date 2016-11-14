@@ -9,8 +9,7 @@ import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
 import test.RequestInfoBuilder
 
-class SwappableMethodEntryProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class SwappableMethodEntryProfileSpec extends test.ParallelMockFunSpec
 {
   private val mockDebugProfile = mock[DebugProfile]
   private val mockProfileManager = mock[ProfileManager]

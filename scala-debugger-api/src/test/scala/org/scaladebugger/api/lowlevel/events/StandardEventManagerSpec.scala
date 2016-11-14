@@ -10,8 +10,7 @@ import org.scaladebugger.api.utils.LoopingTaskRunner
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class StandardEventManagerSpec extends FunSpec with Matchers with MockFactory
-  with ParallelTestExecution with org.scalamock.matchers.Matchers
+class StandardEventManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestHandlerId = java.util.UUID.randomUUID().toString
   private val mockEventQueue = mock[EventQueue]

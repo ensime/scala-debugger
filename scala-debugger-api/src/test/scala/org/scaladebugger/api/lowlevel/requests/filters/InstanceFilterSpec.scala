@@ -5,8 +5,7 @@ import com.sun.jdi.ObjectReference
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class InstanceFilterSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class InstanceFilterSpec extends test.ParallelMockFunSpec
 {
   private val mockObjectReference = mock[ObjectReference]
   private val instanceFilter = InstanceFilter(

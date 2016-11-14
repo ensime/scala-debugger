@@ -11,8 +11,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.collection.JavaConverters._
 
-class ProcessDebuggerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ProcessDebuggerSpec extends test.ParallelMockFunSpec
 {
   private def createConnectorArgumentMock(
     setter: Boolean = false,

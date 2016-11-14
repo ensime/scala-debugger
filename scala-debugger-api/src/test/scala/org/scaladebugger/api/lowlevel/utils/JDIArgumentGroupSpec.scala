@@ -7,8 +7,7 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.JDIEventArgument
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 
-class JDIArgumentGroupSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class JDIArgumentGroupSpec extends test.ParallelMockFunSpec
 {
   describe("JDIArgumentGroup") {
     describe("#apply") {

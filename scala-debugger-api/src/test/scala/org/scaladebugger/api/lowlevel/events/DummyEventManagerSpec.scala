@@ -6,8 +6,7 @@ import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
 import org.scaladebugger.api.lowlevel.events.EventManager.EventHandler
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 
-class DummyEventManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class DummyEventManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestHandlerId = java.util.UUID.randomUUID().toString
   private val eventManager = new DummyEventManager

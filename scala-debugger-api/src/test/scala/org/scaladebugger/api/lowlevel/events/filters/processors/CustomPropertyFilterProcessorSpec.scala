@@ -7,8 +7,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.filters.CustomPropertyFilter
 
-class CustomPropertyFilterProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class CustomPropertyFilterProcessorSpec extends test.ParallelMockFunSpec
 {
   private val testKey = "some key"
   private val testValue = "some value"

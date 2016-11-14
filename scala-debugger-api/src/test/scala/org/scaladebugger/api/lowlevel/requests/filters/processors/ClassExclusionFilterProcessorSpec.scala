@@ -6,8 +6,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.filters.ClassExclusionFilter
 
-class ClassExclusionFilterProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ClassExclusionFilterProcessorSpec extends test.ParallelMockFunSpec
 {
   private val testPattern = "some pattern"
   private val classExclusionFilter = ClassExclusionFilter(

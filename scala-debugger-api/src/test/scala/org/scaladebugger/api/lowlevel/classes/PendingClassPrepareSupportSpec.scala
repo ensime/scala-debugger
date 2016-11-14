@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestClassPrepareManager}
 
 import scala.util.{Failure, Success}
 
-class PendingClassPrepareSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingClassPrepareSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockClassPrepareManager = mock[ClassPrepareManager]

@@ -11,8 +11,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class StepDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class StepDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val mockStepProfile = mock[StepProfile]
 

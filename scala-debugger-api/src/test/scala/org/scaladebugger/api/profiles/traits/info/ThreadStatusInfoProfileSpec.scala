@@ -4,8 +4,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestThreadStatusInfoProfile
 
-class ThreadStatusInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ThreadStatusInfoProfileSpec extends test.ParallelMockFunSpec
 {
   private val StateMonitor = 0
   private val StateUnknown = 1

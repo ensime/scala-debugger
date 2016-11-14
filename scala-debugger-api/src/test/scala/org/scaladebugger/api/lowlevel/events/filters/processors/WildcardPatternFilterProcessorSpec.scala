@@ -6,8 +6,7 @@ import org.scaladebugger.api.lowlevel.events.filters.WildcardPatternFilter
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class WildcardPatternFilterProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class WildcardPatternFilterProcessorSpec extends test.ParallelMockFunSpec
 {
   private val testPattern = "some*pattern"
   private val wildcardPatternFilter = WildcardPatternFilter(

@@ -4,8 +4,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestPrimitiveInfoProfile
 
-class PrimitiveInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class PrimitiveInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("PrimitiveInfoProfile") {
     describe("#tryToLocalValue") {

@@ -6,8 +6,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.filters.{JDIEventFilter, JDIEventFilterProcessor, AndFilter}
 
-class AndFilterProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class AndFilterProcessorSpec extends test.ParallelMockFunSpec
 {
   describe("AndFilterProcessor") {
     describe("#process") {

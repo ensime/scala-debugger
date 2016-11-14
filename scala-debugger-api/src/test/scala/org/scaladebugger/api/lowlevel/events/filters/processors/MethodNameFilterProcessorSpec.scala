@@ -7,8 +7,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.filters.MethodNameFilter
 
-class MethodNameFilterProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MethodNameFilterProcessorSpec extends test.ParallelMockFunSpec
 {
   private val testName = "some name"
   private val methodNameFilter = MethodNameFilter(name = testName)

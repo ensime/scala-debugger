@@ -4,8 +4,7 @@ import acyclic.file
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class EnabledPropertySpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class EnabledPropertySpec extends test.ParallelMockFunSpec
 {
   private val testValue = false
   private val enabledProperty = EnabledProperty(value = testValue)

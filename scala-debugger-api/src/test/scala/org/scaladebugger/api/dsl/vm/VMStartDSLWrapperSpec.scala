@@ -10,8 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class VMStartDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class VMStartDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val mockVMStartProfile = mock[VMStartProfile]
 

@@ -6,8 +6,7 @@ import test.InfoTestClasses.{TestArrayInfoProfile, TestTypeInfoProfile}
 
 import scala.util.{Failure, Success, Try}
 
-class TypeInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class TypeInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("TypeInfoProfile") {
     describe("#isBooleanType") {

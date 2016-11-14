@@ -8,8 +8,7 @@ import test.TestAccessWatchpointManager
 
 import scala.util.Success
 
-class AccessWatchpointManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class AccessWatchpointManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockAccessWatchpointManager = mock[AccessWatchpointManager]

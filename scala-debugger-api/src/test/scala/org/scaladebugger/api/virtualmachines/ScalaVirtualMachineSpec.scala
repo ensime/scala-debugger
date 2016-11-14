@@ -8,8 +8,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.ProfileManager
 
-class ScalaVirtualMachineSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ScalaVirtualMachineSpec extends test.ParallelMockFunSpec
 {
   private class TestManagerContainer extends ManagerContainer(
     null, null, null, null, null, null, null, null, null, null, null, null,

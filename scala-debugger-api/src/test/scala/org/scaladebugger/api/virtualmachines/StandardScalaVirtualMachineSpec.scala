@@ -9,8 +9,7 @@ import org.scaladebugger.api.utils.LoopingTaskRunner
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class StandardScalaVirtualMachineSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class StandardScalaVirtualMachineSpec extends test.ParallelMockFunSpec
 {
   private val mockIsInitialized = mockFunction[Boolean]
   private val mockProcessOwnPendingRequests = mockFunction[Unit]

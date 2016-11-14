@@ -8,8 +8,7 @@ import test.TestBreakpointManager
 
 import scala.util.Success
 
-class BreakpointManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class BreakpointManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockBreakpointManager = mock[BreakpointManager]

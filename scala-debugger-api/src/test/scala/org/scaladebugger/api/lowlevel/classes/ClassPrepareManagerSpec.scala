@@ -8,8 +8,7 @@ import test.TestClassPrepareManager
 
 import scala.util.Success
 
-class ClassPrepareManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ClassPrepareManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockClassPrepareManager = mock[ClassPrepareManager]

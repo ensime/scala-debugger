@@ -6,8 +6,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class PureThreadStatusInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class PureThreadStatusInfoProfileSpec extends test.ParallelMockFunSpec
 {
   private val mockThreadReference = mock[ThreadReference]
   private val pureThreadStatusInfoProfile =

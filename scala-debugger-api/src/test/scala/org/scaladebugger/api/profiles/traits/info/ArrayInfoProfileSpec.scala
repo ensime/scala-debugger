@@ -6,8 +6,7 @@ import test.InfoTestClasses.TestArrayInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
-class ArrayInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ArrayInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("ArrayInfoProfile") {
     describe("#toPrettyString") {

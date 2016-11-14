@@ -4,8 +4,7 @@ import acyclic.file
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{ParallelTestExecution, FunSpec, Matchers}
 
-class SourceNameFilterSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class SourceNameFilterSpec extends test.ParallelMockFunSpec
 {
   private val testPattern = "some pattern"
   private val sourceNameFilter = SourceNameFilter(

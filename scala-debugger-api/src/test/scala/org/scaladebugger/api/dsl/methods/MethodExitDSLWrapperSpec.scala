@@ -10,8 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class MethodExitDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MethodExitDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val mockMethodExitProfile = mock[MethodExitProfile]
 

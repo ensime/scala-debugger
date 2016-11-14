@@ -10,8 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class MonitorContendedEnteredDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MonitorContendedEnteredDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val mockMonitorContendedEnteredProfile = mock[MonitorContendedEnteredProfile]
 

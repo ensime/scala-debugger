@@ -8,8 +8,7 @@ import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
 
-class SwappableVMDisconnectProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class SwappableVMDisconnectProfileSpec extends test.ParallelMockFunSpec
 {
   private val mockDebugProfile = mock[DebugProfile]
   private val mockProfileManager = mock[ProfileManager]

@@ -5,8 +5,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.DummyOperationException
 
-class DummyClassPrepareManagerSpec extends FunSpec with Matchers with MockFactory
-  with ParallelTestExecution with org.scalamock.matchers.Matchers
+class DummyClassPrepareManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val classPrepareManager = new DummyClassPrepareManager

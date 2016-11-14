@@ -11,8 +11,7 @@ import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.utils.LoopingTaskRunner
 import test.JDIMockHelpers
 
-class PureVMStartProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PureVMStartProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val mockEventManager = mock[EventManager]
 

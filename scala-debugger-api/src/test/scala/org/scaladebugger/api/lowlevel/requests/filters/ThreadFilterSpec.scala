@@ -5,8 +5,7 @@ import com.sun.jdi.ThreadReference
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class ThreadFilterSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ThreadFilterSpec extends test.ParallelMockFunSpec
 {
   private val mockThreadReference = mock[ThreadReference]
   private val threadFilter = ThreadFilter(threadReference = mockThreadReference)

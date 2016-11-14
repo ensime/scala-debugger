@@ -12,8 +12,7 @@ import test.JDIMockHelpers
 
 import scala.util.Success
 
-class PureEventProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PureEventProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestEventHandlerId = java.util.UUID.randomUUID().toString
   private val mockEventManager = mock[EventManager]

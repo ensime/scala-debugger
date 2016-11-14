@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestVMDeathManager}
 
 import scala.util.{Failure, Success}
 
-class PendingVMDeathSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingVMDeathSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockVMDeathManager = mock[VMDeathManager]

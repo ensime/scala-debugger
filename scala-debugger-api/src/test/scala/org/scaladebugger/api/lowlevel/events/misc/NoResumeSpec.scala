@@ -4,8 +4,7 @@ import acyclic.file
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
 
-class NoResumeSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class NoResumeSpec extends test.ParallelMockFunSpec
 {
   describe("NoResume") {
     describe("#value") {

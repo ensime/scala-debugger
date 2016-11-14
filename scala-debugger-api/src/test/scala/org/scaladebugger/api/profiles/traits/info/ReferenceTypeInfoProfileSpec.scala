@@ -6,8 +6,7 @@ import test.InfoTestClasses.TestReferenceTypeInfoProfile
 
 import scala.util.{Success, Try}
 
-class ReferenceTypeInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ReferenceTypeInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("ReferenceTypeInfoProfile") {
     describe("#toPrettyString") {

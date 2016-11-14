@@ -11,8 +11,7 @@ import test.JDIMockHelpers
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success}
 
-class StandardModificationWatchpointManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class StandardModificationWatchpointManagerSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

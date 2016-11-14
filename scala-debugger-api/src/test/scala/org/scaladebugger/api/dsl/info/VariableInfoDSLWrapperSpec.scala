@@ -9,8 +9,7 @@ import org.scaladebugger.api.virtualmachines.{ObjectCache, ScalaVirtualMachine}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class VariableInfoDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class VariableInfoDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val TestUniqueId = 1234L
   private val mockObjectInfoProfile = mock[ObjectInfoProfile]

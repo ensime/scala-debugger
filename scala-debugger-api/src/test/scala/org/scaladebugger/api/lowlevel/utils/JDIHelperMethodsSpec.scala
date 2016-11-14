@@ -8,8 +8,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
-class JDIHelperMethodsSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class JDIHelperMethodsSpec extends test.ParallelMockFunSpec
 {
   private val mockReferenceType = mock[ReferenceType]
   private val mockThreadReference = mock[ThreadReference]

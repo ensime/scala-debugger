@@ -6,8 +6,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.filters.CountFilter
 
-class CountFilterProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class CountFilterProcessorSpec extends test.ParallelMockFunSpec
 {
   private val testCount = 3
   private val countFilter = CountFilter(count = testCount)

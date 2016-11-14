@@ -10,8 +10,7 @@ import org.scaladebugger.api.lowlevel.DummyOperationException
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success}
 
-class DummyExceptionManagerSpec extends FunSpec with Matchers with MockFactory
-  with ParallelTestExecution with org.scalamock.matchers.Matchers
+class DummyExceptionManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val exceptionManager = new DummyExceptionManager

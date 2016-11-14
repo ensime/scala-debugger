@@ -10,8 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class ThreadStartDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ThreadStartDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val mockThreadStartProfile = mock[ThreadStartProfile]
 

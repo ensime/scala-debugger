@@ -6,8 +6,7 @@ import test.InfoTestClasses.{TestValueInfoProfile, TestVariableInfoProfile}
 
 import scala.util.{Failure, Success, Try}
 
-class VariableInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class VariableInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("VariableInfoProfile") {
     describe("#hasOffsetIndex") {

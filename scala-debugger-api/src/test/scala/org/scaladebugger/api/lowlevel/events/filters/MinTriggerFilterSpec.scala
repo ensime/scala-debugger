@@ -4,8 +4,7 @@ import acyclic.file
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class MinTriggerFilterSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MinTriggerFilterSpec extends test.ParallelMockFunSpec
 {
   private val testCount = 3
   private val minTriggerFilter = MinTriggerFilter(count = testCount)

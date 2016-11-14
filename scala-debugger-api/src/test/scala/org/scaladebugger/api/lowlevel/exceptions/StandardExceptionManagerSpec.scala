@@ -8,8 +8,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success}
 
-class StandardExceptionManagerSpec extends FunSpec with Matchers with MockFactory
-  with ParallelTestExecution with org.scalamock.matchers.Matchers
+class StandardExceptionManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockReferenceType = mock[ReferenceType]

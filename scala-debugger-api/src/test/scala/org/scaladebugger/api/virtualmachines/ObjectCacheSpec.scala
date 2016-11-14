@@ -5,8 +5,7 @@ import org.scaladebugger.api.profiles.traits.info.ObjectInfoProfile
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class ObjectCacheSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ObjectCacheSpec extends test.ParallelMockFunSpec
 {
   private val TestUniqueId = 1234L
   private val internalCache =

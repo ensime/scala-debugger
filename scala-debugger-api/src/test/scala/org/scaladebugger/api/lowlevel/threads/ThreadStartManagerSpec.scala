@@ -8,8 +8,7 @@ import test.TestThreadStartManager
 
 import scala.util.Success
 
-class ThreadStartManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ThreadStartManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockThreadStartManager = mock[ThreadStartManager]

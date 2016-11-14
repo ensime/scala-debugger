@@ -11,8 +11,7 @@ import org.scaladebugger.api.utils.LoopingTaskRunner
 import org.scaladebugger.api.lowlevel.events.EventType.VMDisconnectEventType
 import test.JDIMockHelpers
 
-class PureVMDisconnectProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PureVMDisconnectProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val mockEventManager = mock[EventManager]
 

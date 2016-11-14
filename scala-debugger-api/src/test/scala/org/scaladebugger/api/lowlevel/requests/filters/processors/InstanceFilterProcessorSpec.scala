@@ -7,8 +7,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.filters.InstanceFilter
 
-class InstanceFilterProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class InstanceFilterProcessorSpec extends test.ParallelMockFunSpec
 {
   private val mockObjectReference = mock[ObjectReference]
   private val instanceFilter = InstanceFilter(

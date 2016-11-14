@@ -10,8 +10,7 @@ import test.JDIMockHelpers
 
 import scala.util.{Failure, Success}
 
-class PureMiscInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PureMiscInfoProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockInfoProducerProfile = mock[InfoProducerProfile]

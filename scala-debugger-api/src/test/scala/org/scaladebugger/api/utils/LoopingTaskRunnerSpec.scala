@@ -9,8 +9,7 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Milliseconds, Span}
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class LoopingTaskRunnerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with Eventually
+class LoopingTaskRunnerSpec extends test.ParallelMockFunSpec with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
     timeout = scaled(Span(300, Milliseconds)),

@@ -6,8 +6,7 @@ import org.scaladebugger.api.lowlevel.events.misc.{NoResume, YesResume}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
 
-class ResumeProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ResumeProcessorSpec extends test.ParallelMockFunSpec
 {
   describe("ResumeProcessor") {
     describe("#process") {

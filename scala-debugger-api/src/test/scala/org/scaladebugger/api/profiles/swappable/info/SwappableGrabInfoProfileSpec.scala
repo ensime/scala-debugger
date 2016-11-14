@@ -9,8 +9,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import sun.reflect.FieldInfo
 
-class SwappableGrabInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class SwappableGrabInfoProfileSpec extends test.ParallelMockFunSpec
 {
   private val mockDebugProfile = mock[DebugProfile]
   private val mockProfileManager = mock[ProfileManager]

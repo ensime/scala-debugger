@@ -12,8 +12,7 @@ import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 
 import scala.util.{Failure, Success, Try}
 
-class ThreadDeathProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ThreadDeathProfileSpec extends test.ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

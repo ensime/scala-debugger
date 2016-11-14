@@ -4,8 +4,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestStringInfoProfile
 
-class StringInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class StringInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("StringInfoProfile") {
     describe("#toPrettyString") {

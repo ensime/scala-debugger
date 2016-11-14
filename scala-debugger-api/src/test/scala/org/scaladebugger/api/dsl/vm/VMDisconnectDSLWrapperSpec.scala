@@ -10,8 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class VMDisconnectDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val mockVMDisconnectProfile = mock[VMDisconnectProfile]
 

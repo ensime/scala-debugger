@@ -8,8 +8,7 @@ import test.TestExceptionManager
 
 import scala.util.Success
 
-class ExceptionManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ExceptionManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockExceptionManager = mock[ExceptionManager]

@@ -9,8 +9,7 @@ import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.{JDIEventDataResult, JDIEventDataRequest}
 import test.TestEventManager
 
-class EventManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class EventManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestHandlerId = java.util.UUID.randomUUID().toString
   private val mockEventManager = mock[EventManager]

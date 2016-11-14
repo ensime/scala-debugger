@@ -6,8 +6,7 @@ import test.InfoTestClasses.TestValueInfoProfile
 
 import scala.util.Failure
 
-class ValueInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ValueInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("ValueInfoProfile") {
     describe("#toPrettyString") {

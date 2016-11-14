@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestMethodExitManager}
 
 import scala.util.{Failure, Success}
 
-class PendingMethodExitSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingMethodExitSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMethodExitManager = mock[MethodExitManager]

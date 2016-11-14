@@ -17,8 +17,7 @@ import test.JDIMockHelpers
 
 import scala.util.{Failure, Success}
 
-class PureStepProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers with Futures
+class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers with Futures
   with ScalaFutures
 {
   implicit override val patienceConfig = PatienceConfig(

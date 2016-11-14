@@ -6,8 +6,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestObjectInfoProfile
 
-class ObjectInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ObjectInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("ObjectInfoProfile") {
     describe("#uniqueIdHexString") {

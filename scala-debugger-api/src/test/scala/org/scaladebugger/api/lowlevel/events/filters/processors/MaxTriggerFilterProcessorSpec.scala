@@ -6,8 +6,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.filters.MaxTriggerFilter
 
-class MaxTriggerFilterProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MaxTriggerFilterProcessorSpec extends test.ParallelMockFunSpec
 {
   private val testCount = 3
   private val maxTriggerFilter = MaxTriggerFilter(count = testCount)

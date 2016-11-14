@@ -16,8 +16,7 @@ import org.scaladebugger.api.lowlevel.vm.{PendingVMDeathSupport, DummyVMDeathMan
 import org.scaladebugger.api.lowlevel.watchpoints.{PendingModificationWatchpointSupport, DummyModificationWatchpointManager, PendingAccessWatchpointSupport, DummyAccessWatchpointManager}
 import org.scaladebugger.api.profiles.ProfileManager
 
-class DummyScalaVirtualMachineSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class DummyScalaVirtualMachineSpec extends test.ParallelMockFunSpec
 {
   private val mockProfileManager = mock[ProfileManager]
   private val dummyScalaVirtualMachine = new DummyScalaVirtualMachine(

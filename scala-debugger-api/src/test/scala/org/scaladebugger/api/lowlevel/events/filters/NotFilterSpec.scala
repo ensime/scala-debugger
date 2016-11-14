@@ -4,8 +4,7 @@ import acyclic.file
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class NotFilterSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class NotFilterSpec extends test.ParallelMockFunSpec
 {
   private val notFilter = NotFilter(mock[JDIEventFilter])
 

@@ -11,8 +11,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class ObjectInfoDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ObjectInfoDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val TestUniqueId = 1234L
   private val mockObjectInfoProfile = mock[ObjectInfoProfile]

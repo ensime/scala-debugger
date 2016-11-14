@@ -6,8 +6,7 @@ import test.InfoTestClasses.TestFrameInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
-class FrameInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class FrameInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("FrameInfoProfile") {
     describe("#toPrettyString") {

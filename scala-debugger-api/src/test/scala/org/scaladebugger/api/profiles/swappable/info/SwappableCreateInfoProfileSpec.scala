@@ -7,8 +7,7 @@ import org.scaladebugger.api.profiles.traits.info.ValueInfoProfile
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class SwappableCreateInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class SwappableCreateInfoProfileSpec extends test.ParallelMockFunSpec
 {
   private val mockDebugProfile = mock[DebugProfile]
   private val mockProfileManager = mock[ProfileManager]

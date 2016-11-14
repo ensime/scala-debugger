@@ -6,8 +6,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.properties.EnabledProperty
 
-class EnabledPropertyProcessorSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class EnabledPropertyProcessorSpec extends test.ParallelMockFunSpec
 {
   private val testValue = false
   private val enabledProperty = EnabledProperty(value = testValue)

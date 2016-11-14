@@ -9,8 +9,7 @@ import test.TestStepManager
 
 import scala.util.{Try, Success}
 
-class StepManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class StepManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockStepManager = mock[StepManager]

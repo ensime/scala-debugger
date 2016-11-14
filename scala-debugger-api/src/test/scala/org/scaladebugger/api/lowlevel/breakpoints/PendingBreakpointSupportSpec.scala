@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestBreakpointManager}
 
 import scala.util.{Failure, Success}
 
-class PendingBreakpointSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingBreakpointSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockBreakpointManager = mock[BreakpointManager]

@@ -8,8 +8,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class PureGrabInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class PureGrabInfoProfileSpec extends test.ParallelMockFunSpec
 {
   private val mockNewObjectProfile = mockFunction[ObjectReference, ObjectInfoProfile]
   private val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfoProfile]

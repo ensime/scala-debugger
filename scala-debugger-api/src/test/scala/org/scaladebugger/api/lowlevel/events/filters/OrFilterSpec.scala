@@ -4,8 +4,7 @@ import acyclic.file
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class OrFilterSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class OrFilterSpec extends test.ParallelMockFunSpec
 {
   private val orFilter = OrFilter()
 

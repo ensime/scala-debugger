@@ -7,8 +7,7 @@ import test.InfoTestClasses.TestGrabInfoProfile
 
 import scala.util.Success
 
-class GrabInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class GrabInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("GrabInfoProfile") {
     describe("#tryObject(objectReference)") {

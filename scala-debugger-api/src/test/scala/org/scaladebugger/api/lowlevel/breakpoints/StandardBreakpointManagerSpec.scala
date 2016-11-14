@@ -12,8 +12,7 @@ import test.JDIMockHelpers
 
 import scala.util.{Success, Failure}
 
-class StandardBreakpointManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class StandardBreakpointManagerSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

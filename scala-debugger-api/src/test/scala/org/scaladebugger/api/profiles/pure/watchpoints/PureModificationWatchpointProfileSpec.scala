@@ -18,8 +18,7 @@ import test.JDIMockHelpers
 
 import scala.util.{Failure, Success}
 
-class PureModificationWatchpointProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PureModificationWatchpointProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val stubClassManager = stub[ClassManager]

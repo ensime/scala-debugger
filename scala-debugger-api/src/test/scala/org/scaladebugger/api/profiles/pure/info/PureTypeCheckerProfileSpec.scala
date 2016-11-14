@@ -5,8 +5,7 @@ import org.scaladebugger.api.profiles.traits.info.{MethodInfoProfile, ValueInfoP
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class PureTypeCheckerProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class PureTypeCheckerProfileSpec extends test.ParallelMockFunSpec
 {
   private val pureTypeCheckerProfile = new PureTypeCheckerProfile
 

@@ -8,8 +8,7 @@ import test.TestMonitorWaitManager
 
 import scala.util.Success
 
-class MonitorWaitManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MonitorWaitManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMonitorWaitManager = mock[MonitorWaitManager]

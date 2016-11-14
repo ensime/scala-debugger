@@ -7,8 +7,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.utils.ActionInfo.ActionId
 
-class PendingActionManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class PendingActionManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestActionId = java.util.UUID.randomUUID().toString
 

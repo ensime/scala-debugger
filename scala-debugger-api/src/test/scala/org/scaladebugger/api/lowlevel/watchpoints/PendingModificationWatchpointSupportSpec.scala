@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestModificationWatchpointManager}
 
 import scala.util.{Failure, Success}
 
-class PendingModificationWatchpointSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingModificationWatchpointSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockModificationWatchpointManager = mock[ModificationWatchpointManager]

@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestMonitorWaitedManager}
 
 import scala.util.{Failure, Success}
 
-class PendingMonitorWaitedSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingMonitorWaitedSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMonitorWaitedManager = mock[MonitorWaitedManager]

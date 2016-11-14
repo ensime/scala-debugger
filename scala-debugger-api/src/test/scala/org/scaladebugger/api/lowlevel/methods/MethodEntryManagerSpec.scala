@@ -8,8 +8,7 @@ import test.TestMethodEntryManager
 
 import scala.util.Success
 
-class MethodEntryManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MethodEntryManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMethodEntryManager = mock[MethodEntryManager]

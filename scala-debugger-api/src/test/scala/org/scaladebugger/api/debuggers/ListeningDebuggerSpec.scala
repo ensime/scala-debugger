@@ -14,8 +14,7 @@ import org.scaladebugger.api.virtualmachines.StandardScalaVirtualMachine
 
 import scala.collection.JavaConverters._
 
-class ListeningDebuggerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ListeningDebuggerSpec extends test.ParallelMockFunSpec
 {
   private def createConnectorArgumentMock(
     setter: Boolean = false,

@@ -8,8 +8,7 @@ import test.TestMonitorContendedEnteredManager
 
 import scala.util.Success
 
-class MonitorContendedEnteredManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MonitorContendedEnteredManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMonitorContendedEnteredManager = mock[MonitorContendedEnteredManager]

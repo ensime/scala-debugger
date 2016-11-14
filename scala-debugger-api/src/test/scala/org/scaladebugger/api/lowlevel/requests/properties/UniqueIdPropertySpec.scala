@@ -5,8 +5,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.properties.processors.CustomPropertyProcessor
 
-class UniqueIdPropertySpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class UniqueIdPropertySpec extends test.ParallelMockFunSpec
 {
   private val testId = java.util.UUID.randomUUID().toString
   private val uniqueIdProperty = UniqueIdProperty(id = testId)

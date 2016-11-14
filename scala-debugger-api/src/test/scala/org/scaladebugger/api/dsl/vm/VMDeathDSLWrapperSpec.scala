@@ -10,8 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class VMDeathDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class VMDeathDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val mockVMDeathProfile = mock[VMDeathProfile]
 

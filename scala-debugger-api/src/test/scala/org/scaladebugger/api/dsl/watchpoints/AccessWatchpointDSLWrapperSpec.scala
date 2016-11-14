@@ -10,8 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class AccessWatchpointDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class AccessWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val mockAccessWatchpointProfile = mock[AccessWatchpointProfile]
 

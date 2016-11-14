@@ -6,8 +6,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.DummyOperationException
 import test.JDIMockHelpers
 
-class DummyModificationWatchpointManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class DummyModificationWatchpointManagerSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val modificationWatchpointManager = new DummyModificationWatchpointManager

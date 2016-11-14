@@ -4,8 +4,7 @@ import acyclic.file
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{ParallelTestExecution, FunSpec, Matchers}
 
-class MemoizationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MemoizationSpec extends test.ParallelMockFunSpec
 {
   describe("Memoization") {
     describe("#apply") {

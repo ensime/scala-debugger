@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestMonitorContendedEnteredManager}
 
 import scala.util.{Failure, Success}
 
-class PendingMonitorContendedEnteredSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingMonitorContendedEnteredSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMonitorContendedEnteredManager = mock[MonitorContendedEnteredManager]

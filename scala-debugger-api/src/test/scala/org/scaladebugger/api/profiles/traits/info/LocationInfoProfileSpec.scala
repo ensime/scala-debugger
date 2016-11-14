@@ -6,8 +6,7 @@ import test.InfoTestClasses.TestLocationInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
-class LocationInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class LocationInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("LocationInfoProfile") {
     describe("#toPrettyString") {

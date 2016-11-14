@@ -7,8 +7,7 @@ import test.InfoTestClasses.TestThreadInfoProfile
 
 import scala.util.{Success, Failure, Try}
 
-class ThreadInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ThreadInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("ThreadInfoProfile") {
     describe("#findVariableByName") {

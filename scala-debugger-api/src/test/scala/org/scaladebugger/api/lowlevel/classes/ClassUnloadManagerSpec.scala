@@ -8,8 +8,7 @@ import test.TestClassUnloadManager
 
 import scala.util.Success
 
-class ClassUnloadManagerSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ClassUnloadManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockClassUnloadManager = mock[ClassUnloadManager]

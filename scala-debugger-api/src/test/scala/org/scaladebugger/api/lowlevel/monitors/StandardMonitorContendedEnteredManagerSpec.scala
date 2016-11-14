@@ -10,8 +10,7 @@ import org.scaladebugger.api.lowlevel.requests.{JDIRequestArgument, JDIRequestPr
 
 import scala.util.{Failure, Success}
 
-class StandardMonitorContendedEnteredManagerSpec extends FunSpec with Matchers with MockFactory
-  with ParallelTestExecution with org.scalamock.matchers.Matchers
+class StandardMonitorContendedEnteredManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

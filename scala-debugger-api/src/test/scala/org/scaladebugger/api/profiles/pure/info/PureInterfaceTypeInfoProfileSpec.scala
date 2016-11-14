@@ -6,8 +6,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class PureInterfaceTypeInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class PureInterfaceTypeInfoProfileSpec extends test.ParallelMockFunSpec
 {
   private val mockNewInterfaceTypeProfile = mockFunction[InterfaceType, InterfaceTypeInfoProfile]
   private val mockNewClassTypeProfile = mockFunction[ClassType, ClassTypeInfoProfile]

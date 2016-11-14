@@ -8,8 +8,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.{Success, Try}
 
-class FrameInfoDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class FrameInfoDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   // NOTE: Cannot mock Function0 with no parentheses
   //private val mockFrameInfoProfile = mock[FrameInfoProfile]

@@ -5,8 +5,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.DummyOperationException
 
-class DummyMonitorContendedEnteredManagerSpec extends FunSpec with Matchers with MockFactory
-  with ParallelTestExecution with org.scalamock.matchers.Matchers
+class DummyMonitorContendedEnteredManagerSpec extends test.ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val monitorContendedEnteredManager = new DummyMonitorContendedEnteredManager

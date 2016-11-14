@@ -10,8 +10,7 @@ import test.{JDIMockHelpers, TestStepManager}
 
 import scala.util.{Try, Failure, Success}
 
-class PendingStepSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingStepSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockStepManager = mock[StepManager]

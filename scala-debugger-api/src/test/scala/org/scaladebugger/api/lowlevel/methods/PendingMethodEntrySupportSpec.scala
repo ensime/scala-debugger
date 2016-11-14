@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestMethodEntryManager}
 
 import scala.util.{Failure, Success}
 
-class PendingMethodEntrySupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingMethodEntrySupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMethodEntryManager = mock[MethodEntryManager]

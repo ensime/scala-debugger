@@ -4,8 +4,7 @@ import acyclic.file
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class CustomPropertyFilterSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class CustomPropertyFilterSpec extends test.ParallelMockFunSpec
 {
   private val testKey = "some key"
   private val testValue = "some value"

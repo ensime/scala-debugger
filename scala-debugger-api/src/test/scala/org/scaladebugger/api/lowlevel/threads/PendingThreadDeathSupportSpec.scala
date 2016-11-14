@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestThreadDeathManager}
 
 import scala.util.{Failure, Success}
 
-class PendingThreadDeathSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingThreadDeathSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockThreadDeathManager = mock[ThreadDeathManager]

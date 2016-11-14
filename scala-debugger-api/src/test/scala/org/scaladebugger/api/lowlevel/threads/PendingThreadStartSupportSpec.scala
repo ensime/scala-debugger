@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestThreadStartManager}
 
 import scala.util.{Failure, Success}
 
-class PendingThreadStartSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingThreadStartSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockThreadStartManager = mock[ThreadStartManager]

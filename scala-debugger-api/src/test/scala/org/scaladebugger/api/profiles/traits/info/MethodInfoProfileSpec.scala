@@ -6,8 +6,7 @@ import test.InfoTestClasses.TestMethodInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
-class MethodInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class MethodInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("MethodInfoProfile") {
     describe("#toPrettyString") {

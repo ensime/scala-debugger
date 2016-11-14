@@ -11,8 +11,7 @@ import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 
 import scala.util.{Failure, Success, Try}
 
-class VMDisconnectProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class VMDisconnectProfileSpec extends test.ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

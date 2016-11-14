@@ -10,8 +10,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class ExceptionDSLWrapperSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val mockExceptionProfile = mock[ExceptionProfile]
 

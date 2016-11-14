@@ -6,8 +6,7 @@ import test.InfoTestClasses.TestThreadGroupInfoProfile
 
 import scala.util.{Success, Try}
 
-class ThreadGroupInfoProfileSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory
+class ThreadGroupInfoProfileSpec extends test.ParallelMockFunSpec
 {
   describe("ThreadGroupInfoProfile") {
     describe("#toPrettyString") {

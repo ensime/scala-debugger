@@ -9,8 +9,7 @@ import test.{JDIMockHelpers, TestClassUnloadManager}
 
 import scala.util.{Failure, Success}
 
-class PendingClassUnloadSupportSpec extends FunSpec with Matchers
-  with ParallelTestExecution with MockFactory with JDIMockHelpers
+class PendingClassUnloadSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockClassUnloadManager = mock[ClassUnloadManager]
