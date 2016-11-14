@@ -27,17 +27,17 @@ class SourcepathCommandIntegrationSpec extends FunSpec with Matchers
 
       // Set some paths to be displayed
       repl.stateManager.updateSourcePaths(Seq(
-        new URI(s"${s}a"),
-        new URI(s"${s}b"),
-        new URI(s"${s}c")
+        new URI("a"),
+        new URI("b"),
+        new URI("c")
       ))
 
       // Add 'd' as sourcepath
-      vt.newInputLine(s"sourcepath $q${s}d$q")
+      vt.newInputLine("sourcepath \"d\"")
 
       eventually {
         val state = repl.stateManager.state
-        state.sourcePaths.map(_.getPath) should contain (s"${s}d")
+        state.sourcePaths.map(_.getPath.last) should contain ('d')
       }
     }
 
