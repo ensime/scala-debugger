@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, MethodInfoProfile, ReferenceTypeInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, LocationInfoProfile, MethodInfoProfile, ReferenceTypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -28,6 +28,35 @@ class PureLocationInfoProfileSpec extends test.ParallelMockFunSpec
   }
 
   describe("PureLocationInfoProfile") {
+    describe("#toJavaInfo") {
+      it("should return a new instance of the Java profile representation") {
+        val expected = mock[LocationInfoProfile]
+
+        // Get Java version of info producer
+        (mockInfoProducerProfile.toJavaInfo _).expects()
+          .returning(mockInfoProducerProfile).once()
+
+        // Create new info profile using Java version of info producer
+        (mockInfoProducerProfile.newLocationInfoProfile _)
+          .expects(mockScalaVirtualMachine, mockLocation)
+          .returning(expected).once()
+
+        val actual = pureLocationInfoProfile.toJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isJavaInfo") {
+      it("should return true") {
+        val expected = true
+
+        val actual = pureLocationInfoProfile.isJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
     describe("#toJdiInstance") {
       it("should return the JDI instance this profile instance represents") {
         val expected = mockLocation

@@ -10,6 +10,15 @@ import scala.util.Try
  */
 trait ClassTypeInfoProfile extends ReferenceTypeInfoProfile with TypeInfoProfile {
   /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: ClassTypeInfoProfile
+
+  /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance

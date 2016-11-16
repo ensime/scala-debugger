@@ -53,6 +53,35 @@ class PureReferenceTypeInfoProfileSpec extends test.ParallelMockFunSpec
   }
 
   describe("PureReferenceTypeInfoProfile") {
+    describe("#toJavaInfo") {
+      it("should return a new instance of the Java profile representation") {
+        val expected = mock[ReferenceTypeInfoProfile]
+
+        // Get Java version of info producer
+        (mockInfoProducerProfile.toJavaInfo _).expects()
+          .returning(mockInfoProducerProfile).once()
+
+        // Create new info profile using Java version of info producer
+        (mockInfoProducerProfile.newReferenceTypeInfoProfile _)
+          .expects(mockScalaVirtualMachine, mockReferenceType)
+          .returning(expected).once()
+
+        val actual = pureReferenceTypeInfoProfile.toJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isJavaInfo") {
+      it("should return true") {
+        val expected = true
+
+        val actual = pureReferenceTypeInfoProfile.isJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
     describe("#toJdiInstance") {
       it("should return the JDI instance this profile instance represents") {
         val expected = mockReferenceType

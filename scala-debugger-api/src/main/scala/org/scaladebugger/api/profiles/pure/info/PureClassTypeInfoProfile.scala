@@ -26,6 +26,30 @@ class PureClassTypeInfoProfile(
   _referenceType = _classType
 ) with ClassTypeInfoProfile {
   /**
+   * Returns whether or not this info profile represents the low-level Java
+   * implementation.
+   *
+   * @return If true, this profile represents the low-level Java information,
+   *         otherwise this profile represents something higher-level like
+   *         Scala, Jython, or JRuby
+   */
+  override def isJavaInfo: Boolean = true
+
+  /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: ClassTypeInfoProfile = {
+    infoProducer.toJavaInfo.newClassTypeInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      classType = _classType
+    )
+  }
+
+  /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance

@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.traits.info.{FrameInfoProfile, InfoProducerProfile, ThreadGroupInfoProfile, ThreadStatusInfoProfile}
+import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -39,6 +39,44 @@ class PureThreadInfoProfileSpec extends test.ParallelMockFunSpec
   }
 
   describe("PureThreadInfoProfile") {
+    describe("#toJavaInfo") {
+      it("should return a new instance of the Java profile representation") {
+        val expected = mock[ThreadInfoProfile]
+
+        // Get Java version of info producer
+        (mockInfoProducerProfile.toJavaInfo _).expects()
+          .returning(mockInfoProducerProfile).once()
+
+        // Create new info profile using Java version of info producer
+        (mockInfoProducerProfile.newThreadInfoProfile(
+          _: ScalaVirtualMachine,
+          _: ThreadReference
+        )(
+          _: VirtualMachine,
+          _: ReferenceType
+        )).expects(
+          mockScalaVirtualMachine,
+          mockThreadReference,
+          mockVirtualMachine,
+          mockReferenceType
+        ).returning(expected).once()
+
+        val actual = pureThreadInfoProfile.toJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isJavaInfo") {
+      it("should return true") {
+        val expected = true
+
+        val actual = pureThreadInfoProfile.isJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
     describe("#toJdiInstance") {
       it("should return the JDI instance this profile instance represents") {
         val expected = mockThreadReference

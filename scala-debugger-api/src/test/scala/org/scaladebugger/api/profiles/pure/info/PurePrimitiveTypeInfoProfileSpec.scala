@@ -3,8 +3,7 @@ package org.scaladebugger.api.profiles.pure.info
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.api.profiles.traits.info.PrimitiveTypeInfoProfile
 
 class PurePrimitiveTypeInfoProfileSpec extends test.ParallelMockFunSpec
 {
@@ -22,6 +21,52 @@ class PurePrimitiveTypeInfoProfileSpec extends test.ParallelMockFunSpec
   )
 
   describe("PurePrimitiveTypeInfoProfile") {
+    describe("#toJavaInfo") {
+      it("should return a new instance of the Java profile representation when wrapping primitive type") {
+        val expected = mock[PrimitiveTypeInfoProfile]
+
+        // Get Java version of info producer
+        (mockInfoProducerProfile.toJavaInfo _).expects()
+          .returning(mockInfoProducerProfile).once()
+
+        // Create new info profile using Java version of info producer
+        (mockInfoProducerProfile.newPrimitiveTypeInfoProfile(_: ScalaVirtualMachine, _: PrimitiveType))
+          .expects(mockScalaVirtualMachine, mockPrimitiveType)
+          .returning(expected).once()
+
+        val actual = leftPrimitiveTypeInfoProfile.toJavaInfo
+
+        actual should be (expected)
+      }
+
+      it("should return a new instance of the Java profile representation when wrapping void type") {
+        val expected = mock[PrimitiveTypeInfoProfile]
+
+        // Get Java version of info producer
+        (mockInfoProducerProfile.toJavaInfo _).expects()
+          .returning(mockInfoProducerProfile).once()
+
+        // Create new info profile using Java version of info producer
+        (mockInfoProducerProfile.newPrimitiveTypeInfoProfile(_: ScalaVirtualMachine, _: VoidType))
+          .expects(mockScalaVirtualMachine, mockVoidType)
+          .returning(expected).once()
+
+        val actual = rightPrimitiveTypeInfoProfile.toJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isJavaInfo") {
+      it("should return true") {
+        val expected = true
+
+        val actual = leftPrimitiveTypeInfoProfile.isJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
     describe("#toJdiInstance") {
       it("should return the JDI instance this profile instance represents") {
         leftPrimitiveTypeInfoProfile.toJdiInstance should be (mockPrimitiveType)

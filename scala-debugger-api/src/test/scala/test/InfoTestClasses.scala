@@ -30,6 +30,8 @@ object InfoTestClasses {
   }
 
   class TestThreadGroupInfoProfile extends TestObjectInfoProfile with ThreadGroupInfoProfile {
+    override def toJavaInfo: ThreadGroupInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def name: String = throwException()
     override def threadGroups: Seq[ThreadGroupInfoProfile] = throwException()
     override def threads: Seq[ThreadInfoProfile] = throwException()
@@ -40,6 +42,8 @@ object InfoTestClasses {
   }
 
   class TestThreadInfoProfile extends TestObjectInfoProfile with ThreadInfoProfile {
+    override def toJavaInfo: ThreadInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def status: ThreadStatusInfoProfile = throwException()
     override def suspend(): Unit = throwException()
     override def resume(): Unit = throwException()
@@ -70,6 +74,8 @@ object InfoTestClasses {
   }
 
   class TestLocationInfoProfile extends LocationInfoProfile {
+    override def toJavaInfo: LocationInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def toJdiInstance: Location = throwException()
     override def sourcePath: String = throwException()
@@ -81,6 +87,8 @@ object InfoTestClasses {
   }
 
   class TestValueInfoProfile extends ValueInfoProfile {
+    override def toJavaInfo: ValueInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def typeInfo: TypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def isObject: Boolean = throwException()
@@ -106,6 +114,8 @@ object InfoTestClasses {
   }
 
   class TestVariableInfoProfile extends VariableInfoProfile with TestCreateInfoProfileTrait {
+    override def toJavaInfo: VariableInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def offsetIndex: Int = throwException()
     override def typeName: String = throwException()
     override def typeInfo: TypeInfoProfile = throwException()
@@ -120,6 +130,8 @@ object InfoTestClasses {
   }
 
   class TestObjectInfoProfile extends TestValueInfoProfile with ObjectInfoProfile {
+    override def toJavaInfo: ObjectInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def indexedFieldOption(name: String): Option[FieldVariableInfoProfile] = throwException()
     override def methodOption(name: String, parameterTypeNames: String*): Option[MethodInfoProfile] = throwException()
     override def fieldOption(name: String): Option[FieldVariableInfoProfile] = throwException()
@@ -135,6 +147,8 @@ object InfoTestClasses {
   }
 
   class TestMethodInfoProfile extends MethodInfoProfile {
+    override def toJavaInfo: MethodInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def parameterTypeInfo: Seq[TypeInfoProfile] = throwException()
     override def returnTypeInfo: TypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
@@ -163,6 +177,8 @@ object InfoTestClasses {
   }
 
   class TestFrameInfoProfile extends FrameInfoProfile {
+    override def toJavaInfo: FrameInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def thisObjectOption: Option[ObjectInfoProfile] = throwException()
     override def variableOption(name: String): Option[VariableInfoProfile] = throwException()
     override def indexedVariableOption(name: String): Option[VariableInfoProfile] = throwException()
@@ -185,10 +201,14 @@ object InfoTestClasses {
   }
 
   class TestStringInfoProfile extends TestObjectInfoProfile with StringInfoProfile {
+    override def toJavaInfo: StringInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def toJdiInstance: StringReference = throwException()
   }
 
   class TestArrayInfoProfile extends TestObjectInfoProfile with ArrayInfoProfile with TestCreateInfoProfileTrait {
+    override def toJavaInfo: ArrayInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def indexedFields: Seq[FieldVariableInfoProfile] = throwException()
     override def indexedField(name: String): FieldVariableInfoProfile = throwException()
     override def typeInfo: ArrayTypeInfoProfile = throwException()
@@ -204,6 +224,8 @@ object InfoTestClasses {
   }
 
   class TestPrimitiveInfoProfile extends TestValueInfoProfile with PrimitiveInfoProfile {
+    override def toJavaInfo: PrimitiveInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def typeInfo: PrimitiveTypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def toLocalValue: AnyVal = throwException()
@@ -219,6 +241,8 @@ object InfoTestClasses {
   }
 
   class TestTypeInfoProfile extends TypeInfoProfile {
+    override def toJavaInfo: TypeInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def toPrimitiveType: PrimitiveTypeInfoProfile = throwException()
     override def toJdiInstance: Type = throwException()
     override def name: String = throwException()
@@ -237,6 +261,8 @@ object InfoTestClasses {
   }
 
   class TestReferenceTypeInfoProfile extends TestTypeInfoProfile with ReferenceTypeInfoProfile {
+    override def toJavaInfo: ReferenceTypeInfoProfile = throwException()
+    override def isJavaInfo: Boolean = throwException()
     override def indexedFieldOption(name: String): Option[FieldVariableInfoProfile] = throwException()
     override def fieldOption(name: String): Option[FieldVariableInfoProfile] = throwException()
     override def classLoaderOption: Option[ClassLoaderInfoProfile] = throwException()

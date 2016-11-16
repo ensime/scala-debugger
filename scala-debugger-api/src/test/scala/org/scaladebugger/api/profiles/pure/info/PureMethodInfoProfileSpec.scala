@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi.{Method, Type}
-import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, TypeInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, MethodInfoProfile, TypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -22,6 +22,35 @@ class PureMethodInfoProfileSpec extends test.ParallelMockFunSpec
   }
 
   describe("PureMethodInfoProfile") {
+    describe("#toJavaInfo") {
+      it("should return a new instance of the Java profile representation") {
+        val expected = mock[MethodInfoProfile]
+
+        // Get Java version of info producer
+        (mockInfoProducerProfile.toJavaInfo _).expects()
+          .returning(mockInfoProducerProfile).once()
+
+        // Create new info profile using Java version of info producer
+        (mockInfoProducerProfile.newMethodInfoProfile _)
+          .expects(mockScalaVirtualMachine, mockMethod)
+          .returning(expected).once()
+
+        val actual = pureMethodInfoProfile.toJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isJavaInfo") {
+      it("should return true") {
+        val expected = true
+
+        val actual = pureMethodInfoProfile.isJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
     describe("#toJdiInstance") {
       it("should return the JDI instance this profile instance represents") {
         val expected = mockMethod

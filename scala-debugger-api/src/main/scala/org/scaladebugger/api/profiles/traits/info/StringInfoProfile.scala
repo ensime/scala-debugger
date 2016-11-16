@@ -15,6 +15,15 @@ trait StringInfoProfile
   extends ObjectInfoProfile with CommonInfoProfile
 {
   /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: StringInfoProfile
+
+  /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance

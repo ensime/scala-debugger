@@ -40,6 +40,45 @@ class PureObjectInfoProfileSpec extends test.ParallelMockFunSpec
   }
 
   describe("PureObjectInfoProfile") {
+    describe("#toJavaInfo") {
+      it("should return a new instance of the Java profile representation") {
+        val expected = mock[ObjectInfoProfile]
+        val mockF = mockFunction[VirtualMachine, ReferenceType, ObjectInfoProfile]
+
+        // Get Java version of info producer
+        (mockInfoProducerProfile.toJavaInfo _).expects()
+          .returning(mockInfoProducerProfile).once()
+
+        // Create new info profile using Java version of info producer
+        (mockInfoProducerProfile.newObjectInfoProfile(
+          _: ScalaVirtualMachine,
+          _: ObjectReference
+        )(
+          _: VirtualMachine,
+          _: ReferenceType
+        )).expects(
+          mockScalaVirtualMachine,
+          mockObjectReference,
+          mockVirtualMachine,
+          mockReferenceType
+        ).returning(expected).once()
+
+        val actual = pureObjectInfoProfile.toJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isJavaInfo") {
+      it("should return true") {
+        val expected = true
+
+        val actual = pureObjectInfoProfile.isJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
     describe("#toJdiInstance") {
       it("should return the JDI instance this profile instance represents") {
         val expected = mockObjectReference

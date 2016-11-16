@@ -3,8 +3,6 @@ package org.scaladebugger.api.profiles.scala210.info
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 class Scala210FieldInfoProfileSpec extends test.ParallelMockFunSpec
 {
@@ -25,6 +23,16 @@ class Scala210FieldInfoProfileSpec extends test.ParallelMockFunSpec
   }
 
   describe("Scala210FieldInfoProfile") {
+    describe("#isJavaInfo") {
+      it("should return false") {
+        val expected = false
+
+        val actual = scala210FieldInfoProfile.isJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
     describe("#name") {
       it("should return the raw name if normal") {
         val expected = "someName"

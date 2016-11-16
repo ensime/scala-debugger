@@ -27,6 +27,37 @@ class PurePrimitiveInfoProfile(
   _value = eitherValue.merge
 ) with PrimitiveInfoProfile {
   /**
+   * Returns whether or not this info profile represents the low-level Java
+   * implementation.
+   *
+   * @return If true, this profile represents the low-level Java information,
+   *         otherwise this profile represents something higher-level like
+   *         Scala, Jython, or JRuby
+   */
+  override def isJavaInfo: Boolean = true
+
+  /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: PrimitiveInfoProfile = {
+    val producer = infoProducer.toJavaInfo
+    eitherValue match {
+      case Left(pv) => producer.newPrimitiveInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        primitiveValue = pv
+      )
+      case Right(vv) => producer.newPrimitiveInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        voidValue = vv
+      )
+    }
+  }
+
+  /**
    * Returns the type information for the primitive.
    *
    * @return The profile containing type information

@@ -26,6 +26,15 @@ trait ArrayInfoProfile
   import scala.reflect.runtime.universe.{TypeTag, typeOf}
 
   /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: ArrayInfoProfile
+
+  /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance

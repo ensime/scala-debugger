@@ -9,6 +9,14 @@ package org.scaladebugger.api.profiles.traits.info
 trait IndexedVariableInfoProfile
   extends VariableInfoProfile with CreateInfoProfile with CommonInfoProfile
 {
+  /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: IndexedVariableInfoProfile
 
   /**
    * Returns the frame containing this variable.

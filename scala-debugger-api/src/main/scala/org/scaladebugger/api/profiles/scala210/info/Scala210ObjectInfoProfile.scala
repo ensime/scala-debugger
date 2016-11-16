@@ -31,6 +31,16 @@ class Scala210ObjectInfoProfile(
   _referenceType = _referenceType
 ) {
   /**
+   * Returns whether or not this info profile represents the low-level Java
+   * implementation.
+   *
+   * @return If true, this profile represents the low-level Java information,
+   *         otherwise this profile represents something higher-level like
+   *         Scala, Jython, or JRuby
+   */
+  override def isJavaInfo: Boolean = false
+
+  /**
    * Returns the object's field with the specified name.
    *
    * @param name The name of the field

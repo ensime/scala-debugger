@@ -26,6 +26,93 @@ class PureFieldInfoProfileSpec extends test.ParallelMockFunSpec
   }
 
   describe("PureFieldInfoProfile") {
+    describe("#toJavaInfo") {
+      it("should return a new instance of the Java profile representation when wrapping an object reference") {
+        val expected = mock[FieldVariableInfoProfile]
+
+        val offsetIndex = 999
+        val pureFieldInfoProfile = new PureFieldInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          Left(mockObjectReference),
+          mockField,
+          offsetIndex
+        )(mockVirtualMachine)
+
+        // Get Java version of info producer
+        (mockInfoProducerProfile.toJavaInfo _).expects()
+          .returning(mockInfoProducerProfile).once()
+
+        // Create new info profile using Java version of info producer
+        (mockInfoProducerProfile.newFieldInfoProfile(
+          _: ScalaVirtualMachine,
+          _: Either[ObjectReference, ReferenceType],
+          _: Field,
+          _: Int
+        )(
+          _: VirtualMachine
+        )).expects(
+          mockScalaVirtualMachine,
+          Left(mockObjectReference),
+          mockField,
+          offsetIndex,
+          mockVirtualMachine
+        ).returning(expected).once()
+
+        val actual = pureFieldInfoProfile.toJavaInfo
+
+        actual should be (expected)
+      }
+
+      it("should return a new instance of the Java profile representation when wrapping a reference type") {
+        val expected = mock[FieldVariableInfoProfile]
+        val mockReferenceType = mock[ReferenceType]
+
+        val offsetIndex = 999
+        val pureFieldInfoProfile = new PureFieldInfoProfile(
+          mockScalaVirtualMachine,
+          mockInfoProducerProfile,
+          Right(mockReferenceType),
+          mockField,
+          offsetIndex
+        )(mockVirtualMachine)
+
+        // Get Java version of info producer
+        (mockInfoProducerProfile.toJavaInfo _).expects()
+          .returning(mockInfoProducerProfile).once()
+
+        // Create new info profile using Java version of info producer
+        (mockInfoProducerProfile.newFieldInfoProfile(
+          _: ScalaVirtualMachine,
+          _: Either[ObjectReference, ReferenceType],
+          _: Field,
+          _: Int
+        )(
+          _: VirtualMachine
+        )).expects(
+            mockScalaVirtualMachine,
+            Right(mockReferenceType),
+            mockField,
+            offsetIndex,
+            mockVirtualMachine
+          ).returning(expected).once()
+
+        val actual = pureFieldInfoProfile.toJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#isJavaInfo") {
+      it("should return true") {
+        val expected = true
+
+        val actual = pureFieldInfoProfile.isJavaInfo
+
+        actual should be (expected)
+      }
+    }
+
     describe("#toJdiInstance") {
       it("should return the JDI instance this profile instance represents") {
         val expected = mockField

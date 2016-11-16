@@ -6,7 +6,16 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 /**
  * Represents the generic interface used to produce info instances.
  */
-trait InfoProducerProfile {
+trait InfoProducerProfile extends JavaInfoProfile {
+  /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: InfoProducerProfile
+
   def newValueInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     value: Value

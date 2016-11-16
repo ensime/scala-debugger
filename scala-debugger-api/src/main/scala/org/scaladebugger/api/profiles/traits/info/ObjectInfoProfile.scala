@@ -11,6 +11,15 @@ import scala.util.Try
  */
 trait ObjectInfoProfile extends ValueInfoProfile with CommonInfoProfile {
   /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: ObjectInfoProfile
+
+  /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance

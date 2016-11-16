@@ -6,7 +6,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 /**
  * Represents common methods between information-gathering profiles.
  */
-trait CommonInfoProfile {
+trait CommonInfoProfile extends JavaInfoProfile {
   /**
    * Returns the Scala virtual machine containing this instance.
    *
@@ -28,4 +28,13 @@ trait CommonInfoProfile {
    * @return The human-readable description
    */
   def toPrettyString: String
+
+  /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: CommonInfoProfile
 }

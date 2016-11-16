@@ -5,6 +5,15 @@ package org.scaladebugger.api.profiles.traits.info
  */
 trait PrimitiveTypeInfoProfile extends TypeInfoProfile {
   /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: PrimitiveTypeInfoProfile
+
+  /**
    * Attempts to cast the provided primitive to this type, performing any
    * necessary data conversions.
    *
