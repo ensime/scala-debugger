@@ -29,13 +29,32 @@ class ExpressionFunctions(
       throw new RuntimeException("Missing expression argument!")
     )
 
+    // Support myObject.myObjField.myField notation
+    val variableChain = expression.split('.').map(_.trim)
+    if (variableChain.isEmpty)
+      throw new RuntimeException("Invalid expression provided!")
+
     thread.foreach(t => {
       t.suspend()
 
-      // TODO: Support expressions other than variable names
-      val variableName = expression
+      val firstVariable = variableChain.headOption.flatMap(t.findVariableByName)
+      val variable = variableChain.tail.foldLeft(firstVariable) { case (v, name) =>
+        v.map(_.toValueInfo)
+          .filter(_.isObject)
+          .map(_.toObjectInfo)
+          .flatMap(_.fieldOption(name))
+      }
 
-      t.findVariableByName(variableName).map(_.toPrettyString).foreach(writeLine)
+      // Generate "pretty string" of variable
+      // and then produce a list of its fields if it is an object
+      variable.map(_.toPrettyString).foreach(writeLine)
+      variable.map(_.toValueInfo)
+        .filter(_.isObject)
+        .filterNot(_.isString)
+        .map(_.toObjectInfo)
+        .map(_.fields)
+        .map(_.map("-> " + _.toPrettyString))
+        .foreach(_.foreach(writeLine))
 
       t.resume()
     })
