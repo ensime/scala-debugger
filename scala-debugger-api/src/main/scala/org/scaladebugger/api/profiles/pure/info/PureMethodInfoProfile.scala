@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.pure.info
 //import acyclic.file
 
-import com.sun.jdi.{Method, Type}
-import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, MethodInfoProfile, TypeInfoProfile}
+import com.sun.jdi.{Method, ReferenceType, Type}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, MethodInfoProfile, ReferenceTypeInfoProfile, TypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -84,6 +84,15 @@ class PureMethodInfoProfile(
    */
   override def returnTypeName: String = _method.returnTypeName()
 
+
+  /**
+   * Returns the type where this method was declared.
+   *
+   * @return The reference type information that declared this method
+   */
+  override def declaringTypeInfo: ReferenceTypeInfoProfile =
+    newReferenceTypeProfile(_method.declaringType())
+
   /**
    * Returns the fully-qualified class names of the types for the parameters
    * of this method.
@@ -94,6 +103,13 @@ class PureMethodInfoProfile(
     import scala.collection.JavaConverters._
     _method.argumentTypeNames().asScala
   }
+
+  protected def newReferenceTypeProfile(
+    referenceType: ReferenceType
+  ): ReferenceTypeInfoProfile = infoProducer.newReferenceTypeInfoProfile(
+    scalaVirtualMachine,
+    referenceType
+  )
 
   protected def newTypeProfile(_type: Type): TypeInfoProfile =
     infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)

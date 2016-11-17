@@ -13,7 +13,8 @@ case class State(
   dummyScalaVirtualMachine: DummyScalaVirtualMachine,
   activeThread: Option[ThreadInfoProfile],
   activeThreadGroup: Option[ThreadGroupInfoProfile],
-  sourcePaths: Seq[URI]
+  sourcePaths: Seq[URI],
+  activeProfileName: String
 ) {
   /**
    * Converts this object to a collection of bindings that only contains
@@ -54,6 +55,7 @@ object State {
     dummyScalaVirtualMachine = DummyScalaVirtualMachine.newInstance(),
     activeThread = None,
     activeThreadGroup = None,
-    sourcePaths = Nil
+    sourcePaths = Nil,
+    activeProfileName = Debugger.DefaultProfileName
   )
 }

@@ -203,6 +203,24 @@ class PureFieldInfoProfileSpec extends test.ParallelMockFunSpec
       }
     }
 
+    describe("#declaringTypeInfo") {
+      it("should return a new type info profile wrapping the type that declared this field") {
+        val expected = mock[ReferenceTypeInfoProfile]
+
+        val mockReferenceType = mock[ReferenceType]
+        (mockField.declaringType _).expects()
+          .returning(mockReferenceType).once()
+        (mockInfoProducerProfile.newReferenceTypeInfoProfile _)
+          .expects(mockScalaVirtualMachine, mockReferenceType)
+          .returning(expected)
+          .once()
+
+        val actual = pureFieldInfoProfile.declaringTypeInfo
+
+        actual should be (expected)
+      }
+    }
+
     describe("#isField") {
       it("should return true") {
         val expected = true

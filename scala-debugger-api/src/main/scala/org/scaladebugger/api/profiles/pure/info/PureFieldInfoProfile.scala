@@ -130,6 +130,14 @@ class PureFieldInfoProfile(
     _parent
 
   /**
+   * Returns the type where this field was declared.
+   *
+   * @return The reference type information that declared this field
+   */
+  override def declaringTypeInfo: ReferenceTypeInfoProfile =
+    newReferenceTypeProfile(_field.declaringType())
+
+  /**
    * Returns whether or not this variable represents a field.
    *
    * @return True if a field, otherwise false

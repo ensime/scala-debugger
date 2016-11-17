@@ -57,11 +57,15 @@ class StateManager {
 
   /**
    * Updates the collection of Scala virtual machines held by the state in this
-   * manager.
+   * manager. Syncs their profiles to the current active profile.
    *
    * @param scalaVirtualMachines The new collection of Scala virtual machines
    */
   def updateScalaVirtualMachines(scalaVirtualMachines: Seq[ScalaVirtualMachine]) = {
+    // Sync profiles
+    scalaVirtualMachines.foreach(_.use(state.activeProfileName))
+
+    // Update virtual machines
     updateState(state.copy(scalaVirtualMachines = scalaVirtualMachines))
   }
 
@@ -133,4 +137,36 @@ class StateManager {
    * Clears the collection of source paths.
    */
   def clearSourcePaths() = updateState(state.copy(sourcePaths = Nil))
+
+  /**
+   * Updates the active profile for the dummy and active virtual machines.
+   *
+   * @param name The name of the new profile
+   */
+  def updateActiveProfile(name: String) = {
+    // Sync all virtual machines
+    state.scalaVirtualMachines.foreach(_.use(name))
+    state.dummyScalaVirtualMachine.use(name)
+
+    // Sync active thread
+    state.activeThread.foreach(t => {
+      // Scala virtual machine's profile has been updated, so this
+      // should generate a thread under the correct profile
+      val at = t.scalaVirtualMachine.tryThread(t.uniqueId)
+      at.foreach(updateActiveThread)
+      at.failed.foreach(_ => clearActiveThread())
+    })
+
+    // Sync active thread group
+    state.activeThreadGroup.foreach(tg => {
+      // Scala virtual machine's profile has been updated, so this
+      // should generate a thread group under the correct profile
+      val atg = tg.scalaVirtualMachine.tryThreadGroup(tg.uniqueId)
+      atg.foreach(updateActiveThreadGroup)
+      atg.failed.foreach(_ => clearActiveThreadGroup())
+    })
+
+    // Update profile name
+    updateState(state.copy(activeProfileName = name))
+  }
 }

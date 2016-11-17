@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
 
-import com.sun.jdi.{Method, Type}
-import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, MethodInfoProfile, TypeInfoProfile}
+import com.sun.jdi.{Method, ReferenceType, Type}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, MethodInfoProfile, ReferenceTypeInfoProfile, TypeInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -95,6 +95,24 @@ class PureMethodInfoProfileSpec extends test.ParallelMockFunSpec
         (mockMethod.returnTypeName _).expects().returning(expected).once()
 
         val actual = pureMethodInfoProfile.returnTypeName
+
+        actual should be (expected)
+      }
+    }
+
+    describe("#declaringTypeInfo") {
+      it("should return a new type info profile wrapping the type that declared this method") {
+        val expected = mock[ReferenceTypeInfoProfile]
+
+        val mockReferenceType = mock[ReferenceType]
+        (mockMethod.declaringType _).expects()
+          .returning(mockReferenceType).once()
+        (mockInfoProducerProfile.newReferenceTypeInfoProfile _)
+          .expects(mockScalaVirtualMachine, mockReferenceType)
+          .returning(expected)
+          .once()
+
+        val actual = pureMethodInfoProfile.declaringTypeInfo
 
         actual should be (expected)
       }

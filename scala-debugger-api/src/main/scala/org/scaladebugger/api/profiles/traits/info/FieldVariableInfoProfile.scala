@@ -1,5 +1,7 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import scala.util.Try
+
 //import acyclic.file
 
 /**
@@ -25,4 +27,19 @@ trait FieldVariableInfoProfile
    *         information (if a non-static field)
    */
   def parent: Either[ObjectInfoProfile, ReferenceTypeInfoProfile]
+
+  /**
+   * Returns the type where this field was declared.
+   *
+   * @return The reference type information that declared this field
+   */
+  def declaringTypeInfo: ReferenceTypeInfoProfile
+
+  /**
+   * Returns the type where this field was declared.
+   *
+   * @return The reference type information that declared this field
+   */
+  def tryDeclaringTypeInfo: Try[ReferenceTypeInfoProfile] =
+    Try(declaringTypeInfo)
 }

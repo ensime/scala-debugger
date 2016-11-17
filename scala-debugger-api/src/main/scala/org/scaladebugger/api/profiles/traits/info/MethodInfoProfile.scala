@@ -95,6 +95,21 @@ trait MethodInfoProfile extends CommonInfoProfile {
   def tryReturnTypeInfo: Try[TypeInfoProfile] = Try(returnTypeInfo)
 
   /**
+   * Returns the type where this method was declared.
+   *
+   * @return The reference type information that declared this method
+   */
+  def declaringTypeInfo: ReferenceTypeInfoProfile
+
+  /**
+   * Returns the type where this method was declared.
+   *
+   * @return The reference type information that declared this method
+   */
+  def tryDeclaringTypeInfo: Try[ReferenceTypeInfoProfile] =
+    Try(declaringTypeInfo)
+
+  /**
    * Returns a string presenting a better human-readable description of
    * the JDI instance.
    *

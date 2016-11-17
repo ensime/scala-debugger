@@ -192,6 +192,8 @@ object Repl {
     interpreter.bindFunction("attachp", Seq("pid", "timeout"), debuggerFunctions.attachp, "Attaches to an already-running JVM process using its pid.")
     interpreter.bindFunction("launch", Seq("class", "suspend"), debuggerFunctions.launch, "Launches a new JVM process and attaches to it.")
     interpreter.bindFunction("listen", Seq("port", "hostname"), debuggerFunctions.listen, "Listens for incoming JVM connections.")
+    interpreter.bindFunction("profile", Seq("name"), debuggerFunctions.profile, "Sets the profile to the provided name or prints out the active profile if no name specified.")
+    interpreter.bindFunction("profiles", Nil, debuggerFunctions.profiles, "Displays all available profile names.")
     interpreter.bindFunction("stop", Nil, debuggerFunctions.stop, "Stops the current debugger and resets REPL state.")
 
     interpreter.bindFunction("threads", Seq("threadGroup"), threadFunctions.threads, "Lists threads, optionally for a specific thread group.")

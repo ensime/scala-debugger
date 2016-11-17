@@ -151,6 +151,7 @@ object InfoTestClasses {
     override def isJavaInfo: Boolean = throwException()
     override def parameterTypeInfo: Seq[TypeInfoProfile] = throwException()
     override def returnTypeInfo: TypeInfoProfile = throwException()
+    override def declaringTypeInfo: ReferenceTypeInfoProfile = throwException()
     override def scalaVirtualMachine: ScalaVirtualMachine = throwException()
     override def name: String = throwException()
     override def returnTypeName: String = throwException()
