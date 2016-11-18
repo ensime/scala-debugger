@@ -1,8 +1,8 @@
 package org.scaladebugger.tool.backend.functions
 import acyclic.file
-
 import org.scaladebugger.api.lowlevel.wrappers.Implicits._
 import org.scaladebugger.api.lowlevel.wrappers.ValueWrapper
+import org.scaladebugger.api.profiles.traits.info.{ThreadInfoProfile, VariableInfoProfile}
 import org.scaladebugger.tool.backend.StateManager
 
 import scala.collection.JavaConverters._
@@ -29,21 +29,12 @@ class ExpressionFunctions(
       throw new RuntimeException("Missing expression argument!")
     )
 
-    // Support myObject.myObjField.myField notation
-    val variableChain = expression.split('.').map(_.trim)
-    if (variableChain.isEmpty)
-      throw new RuntimeException("Invalid expression provided!")
-
     thread.foreach(t => {
+      // TODO: Bundle suspend and resume into single function
+      //       that executes a block and resumes regardless
       t.suspend()
 
-      val firstVariable = variableChain.headOption.flatMap(t.findVariableByName)
-      val variable = variableChain.tail.foldLeft(firstVariable) { case (v, name) =>
-        v.map(_.toValueInfo)
-          .filter(_.isObject)
-          .map(_.toObjectInfo)
-          .flatMap(_.fieldOption(name))
-      }
+      val variable = lookupVariable(t, expression)
 
       // Generate "pretty string" of variable
       // and then produce a list of its fields if it is an object
@@ -72,7 +63,43 @@ class ExpressionFunctions(
 
   /** Entrypoint for assigning a new value to a field/variable/array element. */
   def set(m: Map[String, Any]) = {
-    writeLine("Not implemented!")
+    val jvms = stateManager.state.scalaVirtualMachines
+    if (jvms.isEmpty) throw new RuntimeException("No VM connected!")
+
+    val thread = stateManager.state.activeThread
+    if (thread.isEmpty) throw new RuntimeException("No active thread!")
+    if (!thread.get.status.isSuspended)
+      throw new RuntimeException("Active thread not suspended!")
+
+    // Represents the expression in the form of obj.field
+    val l = m.get("l").map(_.toString).getOrElse(
+      throw new RuntimeException("Missing l argument!")
+    )
+
+    // Represents the value
+    val r = m.get("r").map(_.toString).getOrElse(
+      throw new RuntimeException("Missing r argument!")
+    )
+
+    thread.foreach(t => {
+      // TODO: Bundle suspend and resume into single function
+      //       that executes a block and resumes regardless
+      t.suspend()
+
+      val variable = lookupVariable(t, l)
+      variable.foreach(v => {
+        // TODO: Support assigning object or value that is
+        //       already remote
+        val i = v.typeInfo.castLocal(r) match {
+          case st: String => v.createRemotely(st)
+          case av         => v.createRemotely(av.asInstanceOf[AnyVal])
+        }
+
+        v.trySetValueFromInfo(i).failed.map(_.toString).foreach(writeLine)
+      })
+
+      t.resume()
+    })
   }
 
   /** Entrypoint for printing all local variables in the current stack frame. */
@@ -87,12 +114,34 @@ class ExpressionFunctions(
     thread.foreach(t => {
       if (!t.status.isSuspended) writeLine("Active thread is not suspended!")
       else {
-        writeLine("FIELDS:")
-        t.topFrame.fieldVariables.map(_.toPrettyString).foreach(writeLine)
+        val frame = t.topFrame
 
-        writeLine("LOCALS:")
-        t.topFrame.localVariables.map(_.toPrettyString).foreach(writeLine)
+        writeLine("[FIELDS]")
+        frame.fieldVariables.map("-> " + _.toPrettyString).foreach(writeLine)
+
+        writeLine("[LOCALS]")
+        frame.localVariables.map("-> " + _.toPrettyString).foreach(writeLine)
       }
     })
+  }
+
+  private def lookupVariable(
+    thread: ThreadInfoProfile,
+    expression: String
+  ): Option[VariableInfoProfile] = {
+    // Support myObject.myObjField.myField notation
+    val variableChain = expression.split('.').map(_.trim)
+    if (variableChain.isEmpty)
+      throw new RuntimeException("Invalid expression provided!")
+
+    val firstVariable = variableChain.headOption
+      .flatMap(thread.findVariableByName)
+
+    variableChain.tail.foldLeft(firstVariable) { case (v, name) =>
+      v.map(_.toValueInfo)
+        .filter(_.isObject)
+        .map(_.toObjectInfo)
+        .flatMap(_.fieldOption(name))
+    }
   }
 }
