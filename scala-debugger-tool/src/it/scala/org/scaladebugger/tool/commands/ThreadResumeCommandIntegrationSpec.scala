@@ -54,7 +54,11 @@ class ThreadResumeCommandIntegrationSpec extends FunSpec with Matchers
           // Verify main thread is resumed
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
+            println("Scala Virtual Machine: " + svm.uniqueId)
             val thread = svm.thread(threadName)
+            println("Thread: " + thread.name)
+            println("Suspended: " + thread.status.isSuspended)
+            println("At Breakpoint: " + thread.status.isAtBreakpoint)
             thread.status.isSuspended should be (false)
             thread.status.isAtBreakpoint should be (false)
           }
