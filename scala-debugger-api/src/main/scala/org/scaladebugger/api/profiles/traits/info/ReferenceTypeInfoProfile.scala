@@ -389,7 +389,7 @@ trait ReferenceTypeInfoProfile extends CommonInfoProfile with TypeInfoProfile {
 
   /**
    * Retrieves reference type information for all types declared inside this
-   * tupe.
+   * type.
    *
    * @return The collection of reference type information
    */
