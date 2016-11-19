@@ -22,7 +22,8 @@ class StepFunctions(
   private val stateManager: StateManager,
   private val writeLine: String => Unit
 ) {
-  private val MaxWaitDuration = 3.seconds
+  // TODO: Enable CLI configuration of this property
+  private val MaxWaitDuration = 15.seconds
 
   /** Entrypoint for stepping into a line. */
   def stepIntoLine(m: Map[String, Any]) = {
