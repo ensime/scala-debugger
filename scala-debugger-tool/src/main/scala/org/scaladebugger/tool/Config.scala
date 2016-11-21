@@ -37,6 +37,15 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some(historyFilePath)
   )
 
+  /** Represents the maximum number of lines to keep in history. */
+  val historyMaxLines = opt[Int](
+    descr = Seq(
+      "Represents the maximum number of lines to keep in history",
+      "with -1 being unlimited and 0 being none"
+    ).mkString(" "),
+    default = Some(-1)
+  )
+
   /** Represents whether or not to print undefined values in the terminal. */
   val printUndefined = opt[Boolean](
     descr = Seq(

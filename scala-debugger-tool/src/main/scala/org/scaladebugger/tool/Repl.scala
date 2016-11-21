@@ -159,7 +159,7 @@ object Repl {
   /** Represents the default method to create a new main terminal. */
   lazy val defaultNewTerminal: Config => Terminal = (config: Config) => {
     val historyUri = new File(config.historyFile()).toURI
-    FileHistoryManager.using(historyUri) match {
+    FileHistoryManager.using(historyUri, config.historyMaxLines()) match {
       case Success(historyManager)  => new FancyTerminal(historyManager)
       case Failure(throwable)       => throw throwable
     }
