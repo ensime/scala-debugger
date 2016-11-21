@@ -20,7 +20,7 @@ class SourcepathClearCommandIntegrationSpec extends FunSpec with Matchers
   describe("SourcepathCommand") {
     it("should list all current source paths if no argument provided") {
       val vt = newVirtualTerminal()
-      val repl = Repl.newInstance(mainTerminal = vt)
+      val repl = Repl.newInstance(newTerminal = _ => vt)
       repl.start()
 
       // Set some paths to be displayed

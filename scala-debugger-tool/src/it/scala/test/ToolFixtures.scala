@@ -163,7 +163,7 @@ trait ToolFixtures extends TestUtilities with Logging { this: Matchers =>
     withProcessPort(className, arguments) { (port) =>
       var repl: Option[Repl] = None
       try {
-        repl = Some(Repl.newInstance(mainTerminal = virtualTerminal))
+        repl = Some(Repl.newInstance(newTerminal = _ => virtualTerminal))
 
         // Queue up attach action
         virtualTerminal.newInputLine(s"attach $port")
