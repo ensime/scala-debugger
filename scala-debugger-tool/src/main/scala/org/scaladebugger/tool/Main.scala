@@ -5,14 +5,14 @@ import org.scaladebugger.api.utils.JDITools
 
 object Main {
   def main(args: Array[String]): Unit = {
+    // Parse CLI arguments
     val config = new Config(args)
 
     // Attempt to load the JDI into our system
     if (!JDITools.tryLoadJdi()) return
 
     // Create new repl instance and use provided settings
-    val repl = Repl.newInstance(forceUseFallback = config.forceUseFallback())
-    repl.stateManager.updateActiveProfile(config.defaultProfile())
+    val repl = Repl.newInstance(config = config)
 
     // Start REPL and wait for completion
     repl.start()

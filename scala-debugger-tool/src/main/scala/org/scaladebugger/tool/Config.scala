@@ -1,5 +1,7 @@
 package org.scaladebugger.tool
 
+import java.io.File
+
 import org.rogach.scallop.ScallopConf
 import org.scaladebugger.api.debuggers.Debugger
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
@@ -16,6 +18,8 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     PureDebugProfile.Name,
     Scala210DebugProfile.Name
   )
+  private val historyFilePath =
+    System.getProperty("user.home", ".") + File.separator + ".sdb_history"
 
   /** Represents the profile name that should be used by default. */
   val defaultProfile = opt[String](
@@ -27,11 +31,30 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some(Debugger.DefaultProfileName)
   )
 
+  /** Represents the history file location. */
+  val historyFile = opt[String](
+    descr = "Represents the location of the file to store history",
+    default = Some(historyFilePath)
+  )
+
+  /** Represents whether or not to print undefined values in the terminal. */
+  val printUndefined = opt[Boolean](
+    descr = Seq(
+      "If true, prints \"undefined\" for any undefined variable in terminal",
+      "; otherwise, nothing is printed"
+    ).mkString(" "),
+    default = Some(false)
+  )
+
   /** Represents the setting to force usage of the fallback terminal. */
   val forceUseFallback = opt[Boolean](
     descr = "If true, forces the use of the fallback terminal",
     default = Some(false)
   )
 
+  // Display our default values in our help menu
+  appendDefaultToDescription = true
+
+  // Process arguments
   verify()
 }

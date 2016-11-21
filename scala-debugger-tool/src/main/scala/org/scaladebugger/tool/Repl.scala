@@ -1,9 +1,12 @@
 package org.scaladebugger.tool
 
+import java.io.File
+
 import org.parboiled2.ParseError
 import org.scaladebugger.language.interpreters.{DebuggerInterpreter, Interpreter}
 import org.scaladebugger.language.models.Undefined
 import org.scaladebugger.tool.backend.StateManager
+import org.scaladebugger.tool.frontend.history.FileHistoryManager
 import org.scaladebugger.tool.frontend.{FallbackTerminal, FancyTerminal, Terminal, TerminalUtilities}
 
 import scala.annotation.tailrec
@@ -13,30 +16,29 @@ import scala.util.{Failure, Success, Try}
  * Represents a REPL available through the terminal.
  *
  * @param interpreter The interpreter to power the REPL
- * @param mainTerminal The main terminal to use with the REPL
- * @param forceUseFallback If true, skips the fancy terminal and uses the
- *                         fallback implementation instead
- * @param printUndefined If true, prints out undefined when received from
- *                       the interpreter as a result
+ * @param stateManager The manager for the state of the REPL
+ * @param config The configuration associated with the REPL from the CLI
+ * @param newTerminal Function to create a new terminal for use with the REPL
  */
 class Repl (
   val interpreter: Interpreter,
   val stateManager: StateManager,
-  private val mainTerminal: Terminal = new FancyTerminal,
-  private val forceUseFallback: Boolean = false,
-  private val printUndefined: Boolean = false
+  val config: Config = new Config(Nil),
+  private val newTerminal: Config => Terminal = Repl.defaultNewTerminal
 ) {
+  private val mainTerminal: Terminal = newTerminal(config)
+
   /** Main execution thread of the REPL. */
   private val executionThread = new Thread(new Runnable {
     override def run(): Unit = {
       try {
-        val result = Try(if (!forceUseFallback) mainImpl() else {})
+        val result = Try(if (!config.forceUseFallback()) mainImpl() else {})
 
         result.failed.foreach { _ =>
           Console.err.println("Main terminal failed! Trying fallback!")
         }
 
-        if (result.isFailure || forceUseFallback) {
+        if (result.isFailure || config.forceUseFallback()) {
           Console.out.println("Fallback REPL starting! Assuming 80 character width!")
           fallbackImpl()
         }
@@ -84,7 +86,8 @@ class Repl (
   def withTerminal(terminal: Terminal): Repl = new Repl(
     interpreter = interpreter,
     stateManager = stateManager,
-    mainTerminal = terminal
+    config = config,
+    newTerminal = _ => terminal
   )
 
   /**
@@ -143,7 +146,7 @@ class Repl (
     case line if !TerminalUtilities.isHelpRequest(line) =>
       interpreter.interpret(line) match {
         case Success(Undefined.Value) =>
-          if (printUndefined) println(Undefined.toScalaValue)
+          if (config.printUndefined()) println(Undefined.toScalaValue)
         case Success(v)               => println(v)
         case Failure(ex: ParseError)  => println(ex.format(line))
         case Failure(ex)              => println(ex)
@@ -153,26 +156,37 @@ class Repl (
 }
 
 object Repl {
+  /** Represents the default method to create a new main terminal. */
+  lazy val defaultNewTerminal: Config => Terminal = (config: Config) => {
+    val historyUri = new File(config.historyFile()).toURI
+    FileHistoryManager.using(historyUri) match {
+      case Success(historyManager)  => new FancyTerminal(historyManager)
+      case Failure(throwable)       => throw throwable
+    }
+  }
+
   /**
    * Creates a new instance of the REPL with custom functions.
    *
-   * @param mainTerminal The main terminal to use with the REPL
-   * @param forceUseFallback If true, forces the use of the fallback
-   *                         terminal instead of the fancy one
+   * @param config The configuration associated with the REPL from the CLI
+   * @param newTerminal Function to create a new terminal for use with the REPL
+   *
    * @return The new REPL instance
    */
   def newInstance(
-    mainTerminal: Terminal = new FancyTerminal,
-    forceUseFallback: Boolean = false
+    config: Config = new Config(Nil),
+    newTerminal: Config => Terminal = Repl.defaultNewTerminal
   ): Repl = {
     import org.scaladebugger.tool.backend.functions._
     val interpreter = new DebuggerInterpreter
     val stateManager = new StateManager
+    stateManager.updateActiveProfile(config.defaultProfile())
+
     val repl = new Repl(
-      interpreter,
-      stateManager,
-      mainTerminal = mainTerminal,
-      forceUseFallback = forceUseFallback
+      interpreter   = interpreter,
+      stateManager  = stateManager,
+      config        = config,
+      newTerminal   = newTerminal
     )
 
     val writeLine = (text: String) => repl.activeTerminal.writeLine(text)

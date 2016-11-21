@@ -1,19 +1,19 @@
 package org.scaladebugger.tool.frontend
 import acyclic.file
-
-import java.io.OutputStreamWriter
+import java.io.{File, OutputStreamWriter}
 
 import ammonite.terminal.{Terminal => TermCore, _}
 import ammonite.terminal.filters._
 import ammonite.terminal.LazyList.~:
 import org.scaladebugger.language.parsers.grammar.ReservedKeywords
+import org.scaladebugger.tool.frontend.history.{FileHistoryManager, HistoryManager}
 
 /**
  * Represents a fancy terminal that provides color and multi-line support.
+ *
+ * @param history The manager of history to associate with the terminal
  */
-class FancyTerminal extends Terminal {
-  @volatile private var history = List.empty[String]
-
+class FancyTerminal(private val history: HistoryManager) extends Terminal {
   val selection = GUILikeFilters.SelectionFilter(indent = 4)
   val reader = new java.io.InputStreamReader(System.in)
 
@@ -30,13 +30,13 @@ class FancyTerminal extends Terminal {
         GUILikeFilters.fnFilter,
         ReadlineFilters.navFilter,
         ReadlineFilters.CutPasteFilter(),
-        new HistoryFilter(() => history.toVector, fansi.Color.Blue),
+        new HistoryFilter(() => history.lines.toVector, fansi.Color.Blue),
         BasicFilters.all
       ),
       displayTransform = mainDisplayTransform(selection, _: Vector[Char], _: Int)
     )
 
-    line.map(_.trim).filter(_.nonEmpty).foreach(l => history = l :: history)
+    line.map(_.trim).filter(_.nonEmpty).foreach(history.writeLine)
 
     line
   }
