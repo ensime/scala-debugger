@@ -19,7 +19,7 @@ class ThreadResumeCommandIntegrationSpec extends FunSpec with Matchers
 
   describe("ThreadResumeCommand") {
     it("should resume the specific thread if given a name") {
-      val testClass = "org.scaladebugger.test.misc.MainUsingApp"
+      val testClass = "org.scaladebugger.test.misc.MainUsingMethod"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testFileName = new File(testFile).getName
 
@@ -28,7 +28,7 @@ class ThreadResumeCommandIntegrationSpec extends FunSpec with Matchers
       // Create a breakpoint before connecting to the JVM
       val q = "\""
       val virtualTerminal = newVirtualTerminal()
-      virtualTerminal.newInputLine(s"bp $q$testFile$q 11")
+      virtualTerminal.newInputLine(s"bp $q$testFile$q 13")
 
       withToolRunningUsingTerminal(
         className = testClass,
@@ -37,7 +37,7 @@ class ThreadResumeCommandIntegrationSpec extends FunSpec with Matchers
         logTimeTaken({
           // Assert that we hit the breakpoint
           eventually {
-            validateNextLine(vt, s"Breakpoint hit at $testFileName:11\n")
+            validateNextLine(vt, s"Breakpoint hit at $testFileName:13\n")
           }
 
           // Verify main thread is suspended
@@ -54,11 +54,7 @@ class ThreadResumeCommandIntegrationSpec extends FunSpec with Matchers
           // Verify main thread is resumed
           eventually {
             val svm = sm.state.scalaVirtualMachines.head
-            println("Scala Virtual Machine: " + svm.uniqueId)
             val thread = svm.thread(threadName)
-            println("Thread: " + thread.name)
-            println("Suspended: " + thread.status.isSuspended)
-            println("At Breakpoint: " + thread.status.isAtBreakpoint)
             thread.status.isSuspended should be (false)
             thread.status.isAtBreakpoint should be (false)
           }
@@ -67,14 +63,14 @@ class ThreadResumeCommandIntegrationSpec extends FunSpec with Matchers
     }
 
     it("should resume all threads if no thread name provided") {
-      val testClass = "org.scaladebugger.test.misc.MainUsingApp"
+      val testClass = "org.scaladebugger.test.misc.MainUsingMethod"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testFileName = new File(testFile).getName
 
       // Create a breakpoint before connecting to the JVM
       val q = "\""
       val virtualTerminal = newVirtualTerminal()
-      virtualTerminal.newInputLine(s"bp $q$testFile$q 11")
+      virtualTerminal.newInputLine(s"bp $q$testFile$q 13")
 
       withToolRunningUsingTerminal(
         className = testClass,
@@ -83,7 +79,7 @@ class ThreadResumeCommandIntegrationSpec extends FunSpec with Matchers
         logTimeTaken({
           // Assert that we hit the breakpoint
           eventually {
-            validateNextLine(vt, s"Breakpoint hit at $testFileName:11\n")
+            validateNextLine(vt, s"Breakpoint hit at $testFileName:13\n")
           }
 
           // Suspend the threads
