@@ -1,13 +1,25 @@
 package org.scaladebugger.tool.frontend
 import acyclic.file
-
 import ammonite.terminal.SpecialKeys.Ctrl
+import org.scaladebugger.tool.frontend.history.{HistoryManager, NoopHistoryManager}
 
 /**
  * Represents a fallback terminal that does not have color or multi-line
  * support.
  */
 class FallbackTerminal extends Terminal {
+  /**
+   * Returns the manager used to keep track of this terminal's history.
+   *
+   * @return
+   */
+  override def history: HistoryManager = NoopHistoryManager.Instance
+
+  /**
+   * Reads the next line from the terminal.
+   *
+   * @return Some line if found, otherwise None if EOF reached
+   */
   override def readLine(): Option[String] = {
     Console.print(prompt())
     Console.flush()

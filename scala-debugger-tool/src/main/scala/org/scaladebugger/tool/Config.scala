@@ -43,7 +43,7 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
       "Represents the maximum number of lines to keep in history",
       "with -1 being unlimited and 0 being none"
     ).mkString(" "),
-    default = Some(-1)
+    default = Some(1000)
   )
 
   /** Represents whether or not to print undefined values in the terminal. */

@@ -1,9 +1,7 @@
 package org.scaladebugger.tool.frontend.history
 import java.io.{File, FileWriter, PrintWriter}
 import java.net.URI
-import java.util.concurrent.ConcurrentLinkedQueue
 
-import scala.collection.mutable
 import scala.io.Source
 import scala.util.Try
 import scala.collection.JavaConverters._
@@ -19,7 +17,7 @@ object FileHistoryManager {
    * @return Some(FileHistoryManager) if successfully loaded a file,
    *         otherwise None
    */
-  def using(uri: URI, maxLines: Int = -1): Try[FileHistoryManager] = Try {
+  def newInstance(uri: URI, maxLines: Int = -1): Try[FileHistoryManager] = Try {
     val f = new File(uri) // Can throw IllegalArgumentException
 
     val rawLines = Try(Source.fromFile(f).getLines()).getOrElse(Nil)
@@ -44,46 +42,42 @@ object FileHistoryManager {
  */
 class FileHistoryManager private(
   private val f: File,
-  val maxLines: Int,
+  override val maxLines: Int,
   private val initialLines: Seq[String] = Nil
-) extends HistoryManager {
+) extends MemoryHistoryManager(maxLines, initialLines) {
   @volatile private var _writer: PrintWriter = newPrintWriter()
-
-  private type HistoryQueue = java.util.Queue[String]
-  private val _history: HistoryQueue =
-    new ConcurrentLinkedQueue[String](initialLines.asJava)
 
   /**
    * Adds a new line to the current history and updates the persistent history.
    *
    * @param line The line to add
    */
-  override def writeLine(line: String): Unit = withHistoryAndWriter { (h, w) =>
+  override def writeLine(line: String): Unit = {
+    // Write line in memory first
+    super.writeLine(line)
+
     // If no line should be stored, exit immediately
     if (maxLines == 0) return
 
-    // Add line to local history
-    h.add(line)
+    withWriter { w =>
+      // If over limit, rewrite history
+      if (maxLines > 0 && lines.size > maxLines) {
+        // Update file copy by clearing old file and writing new history
+        destroy()
 
-    // If over limit, remove the oldest line and rewrite history
-    if (maxLines > 0 && h.size > maxLines) {
-      h.poll() // Remove oldest element
+        // Batch all of the lines and then write
+        // NOTE: Need to use private _writer since the old writer is now closed
+        _writer.synchronized {
+          lines.foreach(l =>
+            _writer.write(l + System.getProperty("line.separator"))
+          )
+          _writer.flush()
+        }
 
-      // Update file copy by clearing old file and writing new history
-      destroy()
-
-      // Batch all of the lines and then write
-      // NOTE: Need to use private _writer since the old writer is now closed
-      _writer.synchronized {
-        lines.foreach(l =>
-          _writer.write(l + System.getProperty("line.separator"))
-        )
-        _writer.flush()
+        // Otherwise, write to file immediately
+      } else {
+        w.println(line.trim)
       }
-
-    // Otherwise, write to file immediately
-    } else {
-      w.println(line.trim)
     }
   }
 
@@ -117,18 +111,25 @@ class FileHistoryManager private(
     _writer = newPrintWriter()
   }
 
+  /**
+   * Creates a new print writer using the file associated with this manager.
+   *
+   * @return The new print writer with auto-flush enabled
+   */
   protected def newPrintWriter(): PrintWriter = {
     new PrintWriter(new FileWriter(f), true)
   }
 
-  private def withHistoryAndWriter[T](f: (HistoryQueue, PrintWriter) => T): T =
-    withHistory(h => withWriter(w => f(h, w)))
-
-  private def withHistory[T](f: HistoryQueue => T): T = _history.synchronized {
-    f(_history)
-  }
-
-  private def withWriter[T](f: PrintWriter => T): T = _writer.synchronized {
+  /**
+   * Evaluates a given function by passing in the current writer. Synchronizes
+   * against the current writer.
+   *
+   * @param f The function to evaluate
+   * @tparam T The return type from the function
+   *
+   * @return The result of evaluating the function
+   */
+  protected def withWriter[T](f: PrintWriter => T): T = _writer.synchronized {
     f(_writer)
   }
 }

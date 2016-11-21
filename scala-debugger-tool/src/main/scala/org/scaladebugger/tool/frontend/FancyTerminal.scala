@@ -13,10 +13,15 @@ import org.scaladebugger.tool.frontend.history.{FileHistoryManager, HistoryManag
  *
  * @param history The manager of history to associate with the terminal
  */
-class FancyTerminal(private val history: HistoryManager) extends Terminal {
+class FancyTerminal(val history: HistoryManager) extends Terminal {
   val selection = GUILikeFilters.SelectionFilter(indent = 4)
   val reader = new java.io.InputStreamReader(System.in)
 
+  /**
+   * Reads the next line from the terminal.
+   *
+   * @return Some line if found, otherwise None if EOF reached
+   */
   override def readLine(): Option[String] = {
     val line = TermCore.readLine(
       Console.MAGENTA + prompt() + Console.RESET,
@@ -65,6 +70,36 @@ class FancyTerminal(private val history: HistoryManager) extends Terminal {
 
     (fansi.Str(data._1), data._2)
   }
+
+  /**
+   * Represents a filter to process tab requests for auto-completion.
+   * Modified from ammonite-repl project.
+   *
+   * @return The filter for multi-line support
+   */
+  // TODO: Implement autocomplete filter for functions and variables
+  /*private def autocompleteFilter: Filter = Filter.action(SpecialKeys.Tab) {
+    case TermState(rest, b, c, _) =>
+      val newCursor = c
+      val (newCursor, completions, details) = compilerComplete(c, b.mkString)
+
+      lazy val common = FrontEndUtils.findPrefix(completions, 0)
+      val completions2 = for(comp <- completions) yield {
+
+        val (left, right) = comp.splitAt(common.length)
+        (colors.comment()(left) ++ right).render
+      }
+      val stdout =
+        FrontEndUtils.printCompletions(completions2, details2)
+          .mkString
+
+      if (details.nonEmpty || completions.isEmpty)
+        Printing(TermState(rest, b, c), stdout)
+      else{
+        val newBuffer = b.take(newCursor) ++ common ++ b.drop(c)
+        Printing(TermState(rest, newBuffer, newCursor + common.length), stdout)
+      }
+  }*/
 
   /**
    * Represents a filter to allow multi-line statements using various block

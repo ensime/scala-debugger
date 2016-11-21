@@ -3,6 +3,7 @@ package org.scaladebugger.tool.frontend
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue, TimeUnit}
 
 import org.scaladebugger.tool.frontend.VirtualTerminal._
+import org.scaladebugger.tool.frontend.history.{HistoryManager, NoopHistoryManager}
 
 object VirtualTerminal {
   /** Maximum queue size for input data. */
@@ -32,6 +33,13 @@ class VirtualTerminal(
     new ArrayBlockingQueue[String](DefaultMaxOutputQueueSize),
   private val waitTime: Long = DefaultWaitTime
 ) extends Terminal {
+  /**
+   * Returns the manager used to keep track of this terminal's history.
+   *
+   * @return
+   */
+  override def history: HistoryManager = NoopHistoryManager.Instance
+
   /**
    * Retrieves the next line of output from the terminal.
    *

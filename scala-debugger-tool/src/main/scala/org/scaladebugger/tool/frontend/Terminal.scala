@@ -1,5 +1,6 @@
 package org.scaladebugger.tool.frontend
 import acyclic.file
+import org.scaladebugger.tool.frontend.history.HistoryManager
 
 /**
  * Represents the interface for a terminal that can read and write.
@@ -11,6 +12,13 @@ trait Terminal {
    * @return Some line if found, otherwise None if EOF
    */
   def readLine(): Option[String]
+
+  /**
+   * Returns the manager used to keep track of this terminal's history.
+   *
+   * @return
+   */
+  def history: HistoryManager
 
   /**
    * Writes the provided text to the terminal.
