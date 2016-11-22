@@ -29,9 +29,9 @@ trait ValueGrammar extends Parser with WhiteSpaceGrammar {
   }
 
   def Identifier: Rule1[models.Identifier] = rule {
-    capture(CharPredicate.Alpha ~ zeroOrMore(CharPredicate.AlphaNum)) ~>
-      ((i: String) => test(!ReservedKeywords.All.contains(i)) ~
-      push(models.Identifier(i)))
+    capture(CharPredicate.Alpha ~ zeroOrMore(CharPredicate.AlphaNum)) ~
+      optional(ws(':') ~ Text) ~> ((i: String, d: Option[models.Text]) =>
+        test(!ReservedKeywords.All.contains(i)) ~ push(models.Identifier(i, d.map(_.value))))
   }
 
   def TextChar: Rule0 = rule { CharPredicate.Visible ++ WhiteSpaceChar -- '"' }

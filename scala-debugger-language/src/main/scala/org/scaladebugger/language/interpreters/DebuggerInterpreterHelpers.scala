@@ -4,9 +4,6 @@ package org.scaladebugger.language.interpreters
 import scala.annotation.tailrec
 import org.scaladebugger.language.models
 
-/**
- * Created by senkwich on 2/14/16.
- */
 trait DebuggerInterpreterHelpers { this: DebuggerInterpreter =>
    def fillInArgs(
     args: Seq[(models.Identifier, models.Expression)],

@@ -35,14 +35,14 @@ class DebuggerInterpreter(
     Try(getVariable(name, rootScope)).toOption
   }
 
-  def bindFunction(
+  def bindFunctionWithParamDocs(
     name: String,
-    parameters: Seq[String],
+    parameters: Seq[(String, String)],
     function: (Map[String, Any]) => Any,
     documentation: String = null
   ): Unit = {
     val functionExpression = models.NativeFunction(
-      parameters.map(models.Identifier.apply),
+      parameters.map(p => models.Identifier(p._1, Some(p._2))),
       (m: Map[models.Identifier, models.Expression], _) => toExpression(
         function(m.filter {
           // Filter undefined variables such that they do not naturally appear
@@ -116,14 +116,14 @@ class DebuggerInterpreter(
       models.InterpretedFunction(p, scope, b, d)
     case v: models.BaseValue => v
     case models.SkipEval(e) => e
-    case models.Identifier(name) =>
+    case models.Identifier(name, documentation) =>
       val e = eval(getVariable(name, scope), scope)
 
       // TODO: Avoid hack where parser treats function call as variable in
       //       "x:func(){};x"
       e match {
         case f: models.Function =>
-          eval(models.FunctionCall(models.Identifier(name), Nil), scope)
+          eval(models.FunctionCall(models.Identifier(name, documentation), Nil), scope)
         case _ => e
       }
     case models.ExpressionGroup(exprs) =>

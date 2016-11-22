@@ -5,7 +5,10 @@ trait Expression
 case class SkipEval(expression: Expression) extends Expression
 
 trait NamedExpression extends Expression { val name: String }
-case class Identifier(name: String) extends NamedExpression
+case class Identifier(
+  name: String,
+  documentation: Option[String] = None
+) extends NamedExpression
 case class ExpressionGroup(expressions: Seq[Expression]) extends Expression
 
 trait BaseValue extends Expression {

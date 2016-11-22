@@ -59,7 +59,24 @@ trait Interpreter {
    * Binds a function into the interpreter.
    *
    * @param name The name to associate with the function
-   * @param parameters The collection of parameter names used by the function
+   * @param parameters The collection of parameter names and documentation
+   *                   used by the function
+   * @param function The implementation of the function
+   * @param documentation Optional documentation for the function
+   */
+  def bindFunctionWithParamDocs(
+    name: String,
+    parameters: Seq[(String, String)],
+    function: (Map[String, Any]) => Any,
+    documentation: String = null
+  ): Unit
+
+  /**
+   * Binds a function into the interpreter.
+   *
+   * @param name The name to associate with the function
+   * @param parameters The collection of parameter names and documentation
+   *                   used by the function
    * @param function The implementation of the function
    * @param documentation Optional documentation for the function
    */
@@ -68,5 +85,10 @@ trait Interpreter {
     parameters: Seq[String],
     function: (Map[String, Any]) => Any,
     documentation: String = null
-  ): Unit
+  ): Unit = bindFunctionWithParamDocs(
+    name = name,
+    parameters = parameters.map(p => (p, "")),
+    function = function,
+    documentation = documentation
+  )
 }

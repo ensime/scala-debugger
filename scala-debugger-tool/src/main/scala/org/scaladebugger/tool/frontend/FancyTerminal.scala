@@ -54,6 +54,7 @@ class FancyTerminal(
       displayTransform = mainDisplayTransform(selection, _: Vector[Char], _: Int)
     )
 
+    // For each new line, add it to the history
     line.map(_.trim).filter(_.nonEmpty).foreach(history.writeLine)
 
     line

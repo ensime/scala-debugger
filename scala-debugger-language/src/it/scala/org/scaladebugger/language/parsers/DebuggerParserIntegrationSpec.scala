@@ -353,6 +353,14 @@ class DebuggerParserIntegrationSpec extends FunSpec with Matchers
         actual should be (expected)
       }
 
+      they("should support parsing names with documentation") {
+        parseFirstAsExpression("name:\"doc\"") should be (Identifier("name", Some("doc")))
+        parseFirstAsExpression("name :\"doc\"") should be (Identifier("name", Some("doc")))
+        parseFirstAsExpression("name: \"doc\"") should be (Identifier("name", Some("doc")))
+        parseFirstAsExpression("name : \"doc\"") should be (Identifier("name", Some("doc")))
+        parseFirstAsExpression("  name : \"doc\"  ") should be (Identifier("name", Some("doc")))
+      }
+
       they("should not use keywords as identifiers") {
         ReservedKeywords.All.foreach { keyword =>
           val result = parse(keyword)

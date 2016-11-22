@@ -210,49 +210,243 @@ object Repl {
     val exceptionFunctions = new ExceptionFunctions(stateManager, writeLine)
     val watchpointFunctions = new WatchpointFunctions(stateManager, writeLine)
 
-    interpreter.bindFunction("attach", Seq("port", "hostname", "timeout"), debuggerFunctions.attach, "Attaches to an already-running JVM process using a port.")
-    interpreter.bindFunction("attachp", Seq("pid", "timeout"), debuggerFunctions.attachp, "Attaches to an already-running JVM process using its pid.")
-    interpreter.bindFunction("launch", Seq("class", "suspend"), debuggerFunctions.launch, "Launches a new JVM process and attaches to it.")
-    interpreter.bindFunction("listen", Seq("port", "hostname"), debuggerFunctions.listen, "Listens for incoming JVM connections.")
-    interpreter.bindFunction("profile", Seq("name"), debuggerFunctions.profile, "Sets the profile to the provided name or prints out the active profile if no name specified.")
-    interpreter.bindFunction("profiles", Nil, debuggerFunctions.profiles, "Displays all available profile names.")
-    interpreter.bindFunction("stop", Nil, debuggerFunctions.stop, "Stops the current debugger and resets REPL state.")
+    /** Mark parameter as required. */
+    @inline def R(name: String, doc: String = "") =
+      (name, "Required" + (if (doc.nonEmpty) " ~ " + doc else ""))
 
-    interpreter.bindFunction("threads", Seq("threadGroup"), threadFunctions.threads, "Lists threads, optionally for a specific thread group.")
-    interpreter.bindFunction("thread", Seq("thread"), threadFunctions.thread, "Sets the active thread with the specified id. No id clears the active thread.")
-    interpreter.bindFunction("suspend", Seq("thread"), threadFunctions.suspend, "Suspends the specified threads or the entire JVM.")
-    interpreter.bindFunction("resume", Seq("thread"), threadFunctions.resume, "Resumes the specified threads or the entire JVM.")
-    interpreter.bindFunction("where", Seq("thread"), threadFunctions.where, "Dumps the stack of the specified threads or the active thread.")
+    /** Mark parameter as optional. */
+    @inline def O(name: String, doc: String = "") =
+      (name, "Optional" + (if (doc.nonEmpty) " ~ " + doc else ""))
 
-    interpreter.bindFunction("examine", Seq("expression"), expressionFunctions.examine, "Examines and prints the provided expression.")
-    interpreter.bindFunction("dump", Seq("expression"), expressionFunctions.dump, "Dumps the full object information for an expression.")
-    interpreter.bindFunction("eval", Seq("expression"), expressionFunctions.eval, "Evalues an expression (same as examine).")
-    interpreter.bindFunction("set", Seq("l", "r"), expressionFunctions.set, "Sets the left value to the expression on the right.")
-    interpreter.bindFunction("locals", Nil, expressionFunctions.locals, "Prints all local variables in the current stack frame.")
+    // === DEBUGGER METHODS
+    interpreter.bindFunctionWithParamDocs(
+      "attach",
+      Seq(R("port"), O("hostname"), O("timeout")),
+      debuggerFunctions.attach,
+      "Attaches to an already-running JVM process using a port."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "attachp",
+      Seq(R("pid"), O("timeout")),
+      debuggerFunctions.attachp,
+      "Attaches to an already-running JVM process using its pid."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "launch",
+      Seq(R("class"), O("suspend")),
+      debuggerFunctions.launch,
+      "Launches a new JVM process and attaches to it."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "listen",
+      Seq(R("port"), O("hostname")),
+      debuggerFunctions.listen,
+      "Listens for incoming JVM connections."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "profile",
+      Seq(O("name")),
+      debuggerFunctions.profile,
+      "Sets the profile to the provided name or prints out the active profile if no name specified."
+    )
+    interpreter.bindFunction(
+      "profiles",
+      Nil,
+      debuggerFunctions.profiles,
+      "Displays all available profile names."
+    )
+    interpreter.bindFunction(
+      "stop",
+      Nil,
+      debuggerFunctions.stop,
+      "Stops the current debugger and resets REPL state."
+    )
 
-    interpreter.bindFunction("bp", Seq("file", "line"), breakpointFunctions.createBreakpoint, "Creates a new breakpoint.")
-    interpreter.bindFunction("bplist", Nil, breakpointFunctions.listBreakpoints, "Lists current breakpoints.")
-    interpreter.bindFunction("bpclear", Seq("file", "line"), breakpointFunctions.clearBreakpoint, "Clears (deletes) the specified breakpoint or all breakpoints.")
+    // === THREAD METHODS
+    interpreter.bindFunctionWithParamDocs(
+      "threads",
+      Seq(O("threadGroup")),
+      threadFunctions.threads,
+      "Lists threads, optionally for a specific thread group."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "thread",
+      Seq(O("thread")),
+      threadFunctions.thread,
+      "Sets the active thread with the specified id. No id clears the active thread."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "suspend",
+      Seq(O("thread")),
+      threadFunctions.suspend,
+      "Suspends the specified threads or the entire JVM."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "resume",
+      Seq(O("thread")),
+      threadFunctions.resume,
+      "Resumes the specified threads or the entire JVM."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "where",
+      Seq(O("thread")),
+      threadFunctions.where,
+      "Dumps the stack of the specified threads or the active thread."
+    )
 
-    interpreter.bindFunction("mentry", Seq("class", "method"), methodFunctions.createEntry, "Creates a new method entry request.")
-    interpreter.bindFunction("mentrylist", Nil, methodFunctions.listEntries, "Lists all existing method entry requests.")
-    interpreter.bindFunction("mentryclear", Seq("class", "method"), methodFunctions.clearEntry, "Clears (deletes) any method entry on the class and method.")
-    interpreter.bindFunction("mexit", Seq("class", "method"), methodFunctions.createExit, "Creates a new method exit request.")
-    interpreter.bindFunction("mexitlist", Nil, methodFunctions.listExits, "Lists all existing method exit requests.")
-    interpreter.bindFunction("mexitclear", Seq("class", "method"), methodFunctions.clearExit, "Clears (deletes) any method exit on the class and method.")
+    // === EXPRESSION METHODS
+    interpreter.bindFunctionWithParamDocs(
+      "examine",
+      Seq(R("expression")),
+      expressionFunctions.examine,
+      "Examines and prints the provided expression."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "dump",
+      Seq(R("expression")),
+      expressionFunctions.dump,
+      "Dumps the full object information for an expression."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "eval",
+      Seq(R("expression")),
+      expressionFunctions.eval,
+      "Evalues an expression (same as examine)."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "set",
+      Seq(R("l"), R("r")),
+      expressionFunctions.set,
+      "Sets the left value to the expression on the right."
+    )
+    interpreter.bindFunction(
+      "locals",
+      Nil,
+      expressionFunctions.locals,
+      "Prints all local variables in the current stack frame."
+    )
 
-    interpreter.bindFunction("classes", Seq("filter"), classFunctions.classes, "Lists all classes by name, using an optional wildcard filter to list specific classes.")
-    interpreter.bindFunction("methods", Seq("class"), classFunctions.methods, "Lists all methods for the specified class.")
-    interpreter.bindFunction("fields", Seq("class"), classFunctions.fields, "Lists all fields for the specified class.")
+    // === BREAKPOINT METHODS
+    interpreter.bindFunctionWithParamDocs(
+      "bp",
+      Seq(R("file"), R("line")),
+      breakpointFunctions.createBreakpoint,
+      "Creates a new breakpoint."
+    )
+    interpreter.bindFunction(
+      "bplist",
+      Nil,
+      breakpointFunctions.listBreakpoints,
+      "Lists current breakpoints."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "bpclear",
+      Seq(O("file"), O("line")),
+      breakpointFunctions.clearBreakpoint,
+      "Clears (deletes) the specified breakpoint or all breakpoints."
+    )
 
+    // === BREAKPOINT METHODS
+    interpreter.bindFunctionWithParamDocs(
+      "mentry",
+      Seq(R("class"), R("method")),
+      methodFunctions.createEntry,
+      "Creates a new method entry request."
+    )
+    interpreter.bindFunction(
+      "mentrylist",
+      Nil,
+      methodFunctions.listEntries,
+      "Lists all existing method entry requests."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "mentryclear",
+      Seq(
+        O("class"),
+        O("method", "if not provided, removes all method entry requests for the specified class")
+      ),
+      methodFunctions.clearEntry,
+      "Clears (deletes) any method entry on the class and method."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "mexit",
+      Seq(R("class"), R("method")),
+      methodFunctions.createExit,
+      "Creates a new method exit request."
+    )
+    interpreter.bindFunction(
+      "mexitlist",
+      Nil,
+      methodFunctions.listExits,
+      "Lists all existing method exit requests."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "mexitclear",
+      Seq(
+        O("class"),
+        O("method", "if not provided, removes all method exit requests for the specified class")
+      ),
+      methodFunctions.clearExit,
+      "Clears (deletes) any method exit on the class and method."
+    )
+
+    // === LISTING METHODS
+    interpreter.bindFunctionWithParamDocs(
+      "classes",
+      Seq(
+        O("filter", "accepts wildcards, limits results to those matching filter"),
+        O("filternot", "accepts wildcards, limits results to those not matching filter")
+      ),
+      classFunctions.classes,
+      "Lists all classes by name, using an optional wildcard filter to list specific classes."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "methods",
+      Seq(
+        R("class"),
+        O("filter", "accepts wildcards, limits results to those matching filter"),
+        O("filternot", "accepts wildcards, limits results to those not matching filter")
+      ),
+      classFunctions.methods,
+      "Lists all methods for the specified class."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "fields",
+      Seq(
+        R("class"),
+        O("filter", "accepts wildcards, limits results to those matching filter"),
+        O("filternot", "accepts wildcards, limits results to those not matching filter")
+      ),
+      classFunctions.fields,
+      "Lists all fields for the specified class."
+    )
+
+    // === THREAD GROUPS METHODS
     interpreter.bindFunction("threadgroups", Nil, threadGroupFunctions.threadsGroups, "Lists all thread groups.")
-    interpreter.bindFunction("threadgroup", Seq("threadGroup"), threadGroupFunctions.threadGroup, "Sets the active thrad group with the specified name. No name clears the active thread group.")
+    interpreter.bindFunctionWithParamDocs(
+      "threadgroup",
+      Seq(O("threadGroup")),
+      threadGroupFunctions.threadGroup,
+      "Sets the active thrad group with the specified name. No name clears the active thread group."
+    )
 
-    interpreter.bindFunction("list", Seq("size"), sourceFunctions.list, "Lists the source code for the file position located at the actively-suspended thread. Optional size indicates max lines to show on either side.")
-    interpreter.bindFunction("sourcepath", Seq("sourcepath"), sourceFunctions.sourcepath, "Adds a new path to searched source paths or prints out current source paths.")
+    // === SOURCE METHODS
+    interpreter.bindFunctionWithParamDocs(
+      "list",
+      Seq(O("size")),
+      sourceFunctions.list,
+      "Lists the source code for the file position located at the actively-suspended thread. Optional size indicates max lines to show on either side."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "sourcepath",
+      Seq(O("sourcepath")),
+      sourceFunctions.sourcepath,
+      "Adds a new path to searched source paths or prints out current source paths."
+    )
     interpreter.bindFunction("sourcepathclear", Nil, sourceFunctions.sourcepathClear, "Clears all current source paths.")
     interpreter.bindFunction("classpath", Nil, sourceFunctions.classpath, "Lists the classpath for each connected JVM.")
 
+    // === STEP METHODS
     interpreter.bindFunction("stepin", Nil, stepFunctions.stepIntoLine, "Steps into the current line where suspended to the frame below.")
     interpreter.bindFunction("stepout", Nil, stepFunctions.stepOutLine, "Steps out of the current line where suspended to the frame above.")
     interpreter.bindFunction("stepover", Nil, stepFunctions.stepOverLine, "Steps over the current line where suspended.")
@@ -260,21 +454,93 @@ object Repl {
     interpreter.bindFunction("stepoutm", Nil, stepFunctions.stepOutMin, "Steps out using min size where suspended to the frame above.")
     interpreter.bindFunction("stepoverm", Nil, stepFunctions.stepOverMin, "Steps over using min size where suspended.")
 
-    interpreter.bindFunction("catch", Seq("filter"), exceptionFunctions.catchAll, "Detects the specified exception (or multiple using wildcards) or all exceptions if no filter provided.")
-    interpreter.bindFunction("catchc", Seq("filter"), exceptionFunctions.catchCaught, "Detects the specified exception (or multiple using wildcards) or all exceptions if no filter provided. Only caught exceptions are detected.")
-    interpreter.bindFunction("catchu", Seq("filter"), exceptionFunctions.catchUncaught, "Detects the specified exception (or multiple using wildcards) or all exceptions if no filter provided. Only uncaught exceptions are detected.")
-    interpreter.bindFunction("catchlist", Nil, exceptionFunctions.listCatches, "Lists all listeners for exceptions.")
-    interpreter.bindFunction("ignore", Seq("filter"), exceptionFunctions.ignoreAll, "Ignores (deletes) any listener for the specified exception or wildcard pattern or catchall if no filter specified. Only for caught and uncaught listeners.")
-    interpreter.bindFunction("ignorec", Seq("filter"), exceptionFunctions.ignoreCaught, "Ignores (deletes) any listener for the specified exception or wildcard pattern or catchall if no filter specified. Only for caught-only listeners.")
-    interpreter.bindFunction("ignoreu", Seq("filter"), exceptionFunctions.ignoreUncaught, "Ignores (deletes) any listener for the specified exception or wildcard pattern or catchall if no filter specified. Only for uncaught-only listeners.")
+    // === EXCEPTION METHODS
+    interpreter.bindFunctionWithParamDocs(
+      "catch",
+      Seq(O("filter", "accepts wildcards")),
+      exceptionFunctions.catchAll,
+      "Detects the specified exception (or multiple using wildcards) or all exceptions if no filter provided."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "catchc",
+      Seq(O("filter", "accepts wildcards")),
+      exceptionFunctions.catchCaught,
+      "Detects the specified exception (or multiple using wildcards) or all exceptions if no filter provided. Only caught exceptions are detected."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "catchu",
+      Seq(O("filter", "accepts wildcards")),
+      exceptionFunctions.catchUncaught,
+      "Detects the specified exception (or multiple using wildcards) or all exceptions if no filter provided. Only uncaught exceptions are detected."
+    )
+    interpreter.bindFunction(
+      "catchlist",
+      Nil,
+      exceptionFunctions.listCatches,
+      "Lists all listeners for exceptions."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "ignore",
+      Seq(O("filter", "accepts wildcards")),
+      exceptionFunctions.ignoreAll,
+      "Ignores (deletes) any listener for the specified exception or wildcard pattern or catchall if no filter specified. Only for caught and uncaught listeners."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "ignorec",
+      Seq(O("filter", "accepts wildcards")),
+      exceptionFunctions.ignoreCaught,
+      "Ignores (deletes) any listener for the specified exception or wildcard pattern or catchall if no filter specified. Only for caught-only listeners."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "ignoreu",
+      Seq(O("filter", "accepts wildcards")),
+      exceptionFunctions.ignoreUncaught,
+      "Ignores (deletes) any listener for the specified exception or wildcard pattern or catchall if no filter specified. Only for uncaught-only listeners."
+    )
 
-    interpreter.bindFunction("watch", Seq("class", "field"), watchpointFunctions.watchAll, "Watches access and modification for the specified class' field.")
-    interpreter.bindFunction("watcha", Seq("class", "field"), watchpointFunctions.watchAccess, "Watches only access for the specified class' field.")
-    interpreter.bindFunction("watchm", Seq("class", "field"), watchpointFunctions.watchModification, "Watches only modification for the specified class' field.")
-    interpreter.bindFunction("watchlist", Nil, watchpointFunctions.listWatches, "Lists all listeners for access and modification of fields.")
-    interpreter.bindFunction("unwatch", Seq("class", "field"), watchpointFunctions.unwatchAll, "Unwatches (deletes) access and modification watchpoints for the specified class' field.")
-    interpreter.bindFunction("unwatcha", Seq("class", "field"), watchpointFunctions.unwatchAccess, "Unwatches (deletes) only access watchpoints for the specified class' field.")
-    interpreter.bindFunction("unwatchm", Seq("class", "field"), watchpointFunctions.unwatchModification, "Unwatches (deletes) only modification watchpoints for the specified class' field.")
+    // === WATCH METHODS
+    interpreter.bindFunctionWithParamDocs(
+      "watch",
+      Seq(R("class"), R("field")),
+      watchpointFunctions.watchAll,
+      "Watches access and modification for the specified class' field."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "watcha",
+      Seq(R("class"), R("field")),
+      watchpointFunctions.watchAccess,
+      "Watches only access for the specified class' field."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "watchm",
+      Seq(R("class"), R("field")),
+      watchpointFunctions.watchModification,
+      "Watches only modification for the specified class' field."
+    )
+    interpreter.bindFunction(
+      "watchlist",
+      Nil,
+      watchpointFunctions.listWatches,
+      "Lists all listeners for access and modification of fields."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "unwatch",
+      Seq(O("class", "accepts wildcards if no field provided"), O("field")),
+      watchpointFunctions.unwatchAll,
+      "Unwatches (deletes) access and modification watchpoints for the specified class' field."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "unwatcha",
+      Seq(O("class", "accepts wildcards if no field provided"), O("field")),
+      watchpointFunctions.unwatchAccess,
+      "Unwatches (deletes) only access watchpoints for the specified class' field."
+    )
+    interpreter.bindFunctionWithParamDocs(
+      "unwatchm",
+      Seq(O("class", "accepts wildcards if no field provided"), O("field")),
+      watchpointFunctions.unwatchModification,
+      "Unwatches (deletes) only modification watchpoints for the specified class' field."
+    )
 
     // Set a dynamic prompt to use based on our state
     repl.activeTerminal.setPromptFunction(() => {

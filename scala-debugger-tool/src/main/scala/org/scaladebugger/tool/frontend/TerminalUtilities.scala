@@ -34,28 +34,55 @@ object TerminalUtilities {
     val topicMap = context.functions
       .map(t => t._1 -> t._2.documentation)
       .filter(_._2.nonEmpty)
-      .map(t => t._1 -> t._2.get)
+      .map(t => t._1.name -> t._2.get)
       .toMap
 
     // TODO: Enable help outside of functions (so we can display inline)
     if (arguments.nonEmpty) {
       arguments.foreach(topic => {
-        val documentation = topicMap.getOrElse(
-          Identifier(topic),
-          "No documentation found!"
-        )
+        val documentation =
+          topicMap.getOrElse(topic, "No function documentation found!")
 
         val formatString = "%s(%s):\n\n%s\n\n"
+
         val indentation = 4
-        val fArgString = context.functions.toMap.find(_._1.name == topic)
-            .map(_._2.parameters.map(_.name).mkString(",")).getOrElse("")
-        val formattedDoc = documentation.grouped(maxWidth - indentation)
-          .map(" " * indentation + _).mkString("\n")
-        Console.out.printf(formatString, topic, fArgString, formattedDoc)
+        @inline def indent(text: String) = " " * indentation + text
+        @inline def wrap(text: String) = {
+          val words = text.split(" ")
+          val lines = words.foldLeft(Seq[String]()) { case (acc, w) =>
+            // If no words added yet, add our first one as a line
+            if (acc.isEmpty)
+              Seq(w)
+            // If words exist, but the new word doesn't overstep our length,
+            // add it to the last line
+            else if (acc.last.length + w.length + 1 <= maxWidth - indentation)
+              acc.take(acc.size - 1) :+ acc.last + " " + w
+            // If the new word oversteps last line, add new line with word
+            else
+              acc :+ w
+          }
+
+          lines.map(indent).mkString("\n")
+        }
+
+        val func = context.functions.toMap.find(_._1.name == topic)
+        val funcArgString = func.map(
+          _._2.parameters.map(_.name).mkString(",")
+        ).getOrElse("")
+        val formattedArgDocs = func.map { case(i, f) =>
+          val s = f.parameters.filter(_.documentation.exists(_.nonEmpty))
+            .map(p => p.name + ": " + p.documentation.get)
+            .map(wrap).mkString("\n")
+          if (s.nonEmpty) s + "\n\n"
+          else ""
+        }.getOrElse("")
+        val formattedFuncDoc = wrap(documentation)
+        val formattedDoc = formattedArgDocs + formattedFuncDoc
+        Console.out.printf(formatString, topic, funcArgString, formattedDoc)
       })
     } else {
       val maxColumns = maxWidth / 20
-      val topics = topicMap.keySet.map(_.name).toSeq.sorted
+      val topics = topicMap.keySet.toSeq.sorted
 
       val title = "Available Topics"
       Console.out.println(title)
