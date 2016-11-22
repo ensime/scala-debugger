@@ -27,13 +27,7 @@ class NoopHistoryManager private extends HistoryManager {
   override def lines: Seq[String] = Nil
 
   /**
-   * Clears the internal history, but leaves the persistent copy.
-   */
-  override def reset(): Unit = {}
-
-  /**
-   * Destroys the persistent copy of the history, but leaves the internal
-   * history.
+   * Destroys the internal and persistent history.
    */
   override def destroy(): Unit = {}
 }

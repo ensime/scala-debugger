@@ -164,13 +164,12 @@ object Repl {
   /** Represents the default method to create a new main terminal. */
   lazy val defaultNewTerminal: (Config, CompletionContext) => Terminal = {
     (config: Config, completionContext: CompletionContext) => {
-      val historyUri = new File(config.historyFile()).toURI
-      FileHistoryManager.newInstance(historyUri, config.historyMaxLines()) match {
-        case Success(historyManager) =>
-          new FancyTerminal(historyManager, completionContext)
-        case Failure(throwable) =>
-          throw throwable
-      }
+      val historyFile = new File(config.historyFile())
+      val historyManager = FileHistoryManager.newInstance(
+        historyFile,
+        config.historyMaxLines()
+      )
+      new FancyTerminal(historyManager, completionContext)
     }
   }
 

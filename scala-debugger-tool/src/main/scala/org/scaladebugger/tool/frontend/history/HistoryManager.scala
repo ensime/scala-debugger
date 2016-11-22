@@ -17,7 +17,14 @@ trait HistoryManager {
    *
    * @param lines The lines to add
    */
-  def writeLines(lines: Seq[String]): Unit = lines.foreach(writeLine)
+  def writeLines(lines: String*): Unit = lines.foreach(writeLine)
+
+  /**
+   * Returns the current number of lines of history held by the manager.
+   *
+   * @return The total number of lines
+   */
+  def size: Int = lines.size
 
   /**
    * Returns the collection of lines stored in history.
@@ -34,21 +41,7 @@ trait HistoryManager {
   def maxLines: Int
 
   /**
-   * Clears the internal history, but leaves the persistent copy.
-   */
-  def reset(): Unit
-
-  /**
-   * Destroys the persistent copy of the history, but leaves the internal
-   * history.
+   * Destroys the internal and persistent history.
    */
   def destroy(): Unit
-
-  /**
-   * Clears both the internal history as well as the persistent copy.
-   */
-  def resetAndDestroy(): Unit = {
-    reset()
-    destroy()
-  }
 }

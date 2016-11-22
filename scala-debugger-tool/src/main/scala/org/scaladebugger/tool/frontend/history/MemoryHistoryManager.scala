@@ -30,8 +30,7 @@ class MemoryHistoryManager private[history](
   private val initialLines: Seq[String] = Nil
 ) extends HistoryManager {
   private type HistoryQueue = java.util.Queue[String]
-  private val _history: HistoryQueue =
-    new ConcurrentLinkedQueue[String](initialLines.asJava)
+  private val _history: HistoryQueue = newHistoryQueue()
 
   /**
    * Adds a new line to the current history and updates the persistent history.
@@ -50,14 +49,6 @@ class MemoryHistoryManager private[history](
   }
 
   /**
-   * Adds multiple lines to the current history and updates the persistent
-   * history.
-   *
-   * @param lines The lines to add
-   */
-  override def writeLines(lines: Seq[String]): Unit = lines.foreach(writeLine)
-
-  /**
    * Returns the collection of lines stored in history.
    *
    * @return The collection of lines
@@ -65,15 +56,17 @@ class MemoryHistoryManager private[history](
   override def lines: Seq[String] = withHistory(_.asScala.toSeq)
 
   /**
-   * Clears the internal history.
+   * Destroys the history in memory.
    */
-  override def reset(): Unit = withHistory(_.clear())
+  override def destroy(): Unit = withHistory(_.clear())
 
   /**
-   * Destroys the persistent copy of the history, but leaves the internal
-   * history.
+   * Creates a new queue used for internal history storage.
+   *
+   * @return The new queue instance
    */
-  override def destroy(): Unit = {}
+  protected def newHistoryQueue(): HistoryQueue =
+    new ConcurrentLinkedQueue[String](initialLines.asJava)
 
   /**
    * Evaluates a given function by passing in the current history. Synchronizes
@@ -81,7 +74,6 @@ class MemoryHistoryManager private[history](
    *
    * @param f The function to evaluate
    * @tparam T The return type from the function
-   *
    * @return The result of evaluating the function
    */
   protected def withHistory[T](f: HistoryQueue => T): T = _history.synchronized {
