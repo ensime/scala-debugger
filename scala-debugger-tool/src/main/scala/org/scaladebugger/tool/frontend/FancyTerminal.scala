@@ -28,6 +28,13 @@ class FancyTerminal(
    * @return Some line if found, otherwise None if EOF reached
    */
   override def readLine(): Option[String] = {
+    // Create history filter that uses the most recent line
+    // from history first
+    val historyFilter = new HistoryFilter(
+      () => history.lines.toVector,
+      fansi.Color.Blue
+    )
+
     val line = TermCore.readLine(
       Console.MAGENTA + prompt() + Console.RESET,
       reader,
@@ -41,7 +48,7 @@ class FancyTerminal(
         GUILikeFilters.fnFilter,
         ReadlineFilters.navFilter,
         ReadlineFilters.CutPasteFilter(),
-        new HistoryFilter(() => history.lines.toVector, fansi.Color.Blue),
+        historyFilter,
         BasicFilters.all
       ),
       displayTransform = mainDisplayTransform(selection, _: Vector[Char], _: Int)

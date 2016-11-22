@@ -28,7 +28,7 @@ class MemoryHistoryManagerSpec extends test.ParallelMockFunSpec {
 
         val actual = mhm.lines
 
-        actual should be (expected)
+        actual.reverse should be (expected)
       }
     }
 
@@ -36,7 +36,7 @@ class MemoryHistoryManagerSpec extends test.ParallelMockFunSpec {
       it("should add the line to the end of the collection of lines") {
         val initialLines = Seq("one", "two", "three")
         val newLine = "four"
-        val expected = initialLines :+ newLine
+        val expected = (initialLines :+ newLine).reverse
 
         val mhm = MemoryHistoryManager.newInstance(
           maxLines = -1,
@@ -52,7 +52,7 @@ class MemoryHistoryManagerSpec extends test.ParallelMockFunSpec {
       it("should do nothing if maxLines == 0") {
         val initialLines = Seq("one", "two", "three")
         val newLine = "four"
-        val expected = initialLines
+        val expected = initialLines.reverse
 
         val mhm = MemoryHistoryManager.newInstance(
           maxLines = 0,
@@ -68,7 +68,7 @@ class MemoryHistoryManagerSpec extends test.ParallelMockFunSpec {
       it("should remove the oldest line if total lines exceeds maxLines") {
         val initialLines = Seq("one", "two", "three")
         val newLine = "four"
-        val expected = initialLines.tail :+ newLine
+        val expected = (initialLines.tail :+ newLine).reverse
 
         val mhm = MemoryHistoryManager.newInstance(
           maxLines = expected.length,
@@ -83,7 +83,7 @@ class MemoryHistoryManagerSpec extends test.ParallelMockFunSpec {
     }
 
     describe("#lines") {
-      it("should return the lines of history held in memory") {
+      it("should return the lines of history held in memory (most recent first)") {
         val expected = Seq("one", "two", "three")
 
         val mhm = MemoryHistoryManager.newInstance()
@@ -91,7 +91,7 @@ class MemoryHistoryManagerSpec extends test.ParallelMockFunSpec {
 
         val actual = mhm.lines
 
-        actual should be (expected)
+        actual.reverse should be (expected)
       }
     }
 

@@ -27,7 +27,8 @@ trait HistoryManager {
   def size: Int = lines.size
 
   /**
-   * Returns the collection of lines stored in history.
+   * Returns the collection of lines stored in history in order of
+   * most to least recently added.
    *
    * @return The collection of lines
    */
