@@ -24,7 +24,7 @@ class AttachpCommandIntegrationSpec extends FunSpec with Matchers
       withProcessPid(testClass) { (pid) =>
         val terminal = newVirtualTerminal()
 
-        val repl = Repl.newInstance(newTerminal = _ => terminal)
+        val repl = Repl.newInstance(newTerminal = (_,_) => terminal)
 
         // Queue up attach action
         terminal.newInputLine(s"attachp $pid")

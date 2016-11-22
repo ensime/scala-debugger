@@ -97,15 +97,11 @@ class FileHistoryManager private(
   override def lines: Seq[String] = withHistory(_.asScala.toSeq)
 
   /**
-   * Clears the internal history.
-   */
-  override def reset(): Unit = withHistory(_.clear())
-
-  /**
    * Destroys the persistent copy of the history, but leaves the internal
    * history.
    */
   override def destroy(): Unit = withWriter { (w) =>
+    println("DESTROY: " + Try(throw new Throwable).failed.get.getStackTrace.mkString("\n"))
     w.close()
     f.delete()
     _writer = newPrintWriter()
@@ -114,10 +110,10 @@ class FileHistoryManager private(
   /**
    * Creates a new print writer using the file associated with this manager.
    *
-   * @return The new print writer with auto-flush enabled
+   * @return The new print writer with auto-flush enabled and appending
    */
   protected def newPrintWriter(): PrintWriter = {
-    new PrintWriter(new FileWriter(f), true)
+    new PrintWriter(new FileWriter(f, true), true)
   }
 
   /**

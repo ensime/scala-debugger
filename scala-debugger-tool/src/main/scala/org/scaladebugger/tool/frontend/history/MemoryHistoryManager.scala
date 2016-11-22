@@ -43,7 +43,7 @@ class MemoryHistoryManager private[history](
     if (maxLines == 0) return
 
     // Add line to local history
-    h.add(line)
+    h.add(line.trim)
 
     // If over limit, remove the oldest line
     if (maxLines > 0 && h.size > maxLines) h.poll()

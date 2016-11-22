@@ -10,6 +10,18 @@ case class Context(
   currentScope: Scope
 ) {
   /**
+   * Retrieves all available variables relative to this context.
+   *
+   * @return The collection of variables and their associated names
+   */
+  def variables: Seq[(Identifier, Expression)] = currentScope.variables.flatMap {
+    case (i: Identifier, e: Expression) if !e.isInstanceOf[Function] =>
+      Some((i, e))
+    case _ =>
+      None
+  }.toSeq ++ currentScope.parent.map(Context.apply).map(_.variables).toSeq.flatten
+
+  /**
    * Retrieves all available functions relative to this context.
    *
    * @return The collection of functions and their associated names

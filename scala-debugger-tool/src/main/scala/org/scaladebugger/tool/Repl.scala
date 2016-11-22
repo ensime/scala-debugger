@@ -6,6 +6,7 @@ import org.parboiled2.ParseError
 import org.scaladebugger.language.interpreters.{DebuggerInterpreter, Interpreter}
 import org.scaladebugger.language.models.Undefined
 import org.scaladebugger.tool.backend.StateManager
+import org.scaladebugger.tool.frontend.completion.CompletionContext
 import org.scaladebugger.tool.frontend.history.FileHistoryManager
 import org.scaladebugger.tool.frontend.{FallbackTerminal, FancyTerminal, Terminal, TerminalUtilities}
 
@@ -24,9 +25,13 @@ class Repl (
   val interpreter: Interpreter,
   val stateManager: StateManager,
   val config: Config = new Config(Nil),
-  private val newTerminal: Config => Terminal = Repl.defaultNewTerminal
+  private val newTerminal: (Config, CompletionContext) => Terminal =
+    Repl.defaultNewTerminal
 ) {
-  private val mainTerminal: Terminal = newTerminal(config)
+  private val completionContext = CompletionContext.fromLanguageContext(
+    interpreter.context
+  )
+  private val mainTerminal: Terminal = newTerminal(config, completionContext)
 
   /** Main execution thread of the REPL. */
   private val executionThread = new Thread(new Runnable {
@@ -87,7 +92,7 @@ class Repl (
     interpreter = interpreter,
     stateManager = stateManager,
     config = config,
-    newTerminal = _ => terminal
+    newTerminal = (_, _) => terminal
   )
 
   /**
@@ -157,11 +162,15 @@ class Repl (
 
 object Repl {
   /** Represents the default method to create a new main terminal. */
-  lazy val defaultNewTerminal: Config => Terminal = (config: Config) => {
-    val historyUri = new File(config.historyFile()).toURI
-    FileHistoryManager.newInstance(historyUri, config.historyMaxLines()) match {
-      case Success(historyManager)  => new FancyTerminal(historyManager)
-      case Failure(throwable)       => throw throwable
+  lazy val defaultNewTerminal: (Config, CompletionContext) => Terminal = {
+    (config: Config, completionContext: CompletionContext) => {
+      val historyUri = new File(config.historyFile()).toURI
+      FileHistoryManager.newInstance(historyUri, config.historyMaxLines()) match {
+        case Success(historyManager) =>
+          new FancyTerminal(historyManager, completionContext)
+        case Failure(throwable) =>
+          throw throwable
+      }
     }
   }
 
@@ -175,7 +184,7 @@ object Repl {
    */
   def newInstance(
     config: Config = new Config(Nil),
-    newTerminal: Config => Terminal = Repl.defaultNewTerminal
+    newTerminal: (Config, CompletionContext) => Terminal = Repl.defaultNewTerminal
   ): Repl = {
     import org.scaladebugger.tool.backend.functions._
     val interpreter = new DebuggerInterpreter

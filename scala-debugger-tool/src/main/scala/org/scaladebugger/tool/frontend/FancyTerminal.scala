@@ -1,19 +1,24 @@
 package org.scaladebugger.tool.frontend
 import acyclic.file
-import java.io.{File, OutputStreamWriter}
+import java.io.OutputStreamWriter
 
+import ammonite.repl.FrontEndUtils
 import ammonite.terminal.{Terminal => TermCore, _}
 import ammonite.terminal.filters._
 import ammonite.terminal.LazyList.~:
 import org.scaladebugger.language.parsers.grammar.ReservedKeywords
-import org.scaladebugger.tool.frontend.history.{FileHistoryManager, HistoryManager}
+import org.scaladebugger.tool.frontend.completion.CompletionContext
+import org.scaladebugger.tool.frontend.history.HistoryManager
 
 /**
  * Represents a fancy terminal that provides color and multi-line support.
  *
  * @param history The manager of history to associate with the terminal
  */
-class FancyTerminal(val history: HistoryManager) extends Terminal {
+class FancyTerminal(
+  val history: HistoryManager,
+  val completionContext: CompletionContext
+) extends Terminal {
   val selection = GUILikeFilters.SelectionFilter(indent = 4)
   val reader = new java.io.InputStreamReader(System.in)
 
@@ -30,6 +35,7 @@ class FancyTerminal(val history: HistoryManager) extends Terminal {
       Filter.merge(
         multilineFilter,
         selection,
+        autocompleteFilter,
         BasicFilters.tabFilter(4),
         GUILikeFilters.altFilter,
         GUILikeFilters.fnFilter,
@@ -77,29 +83,43 @@ class FancyTerminal(val history: HistoryManager) extends Terminal {
    *
    * @return The filter for multi-line support
    */
-  // TODO: Implement autocomplete filter for functions and variables
-  /*private def autocompleteFilter: Filter = Filter.action(SpecialKeys.Tab) {
+  private def autocompleteFilter: Filter = Filter.action(SpecialKeys.Tab) {
     case TermState(rest, b, c, _) =>
-      val newCursor = c
-      val (newCursor, completions, details) = compilerComplete(c, b.mkString)
+      // Use completion search via target word
+      val (leftCursor, rightCursor, word) = {
+        val reverseC = b.length - c
+        val left = b.reverse.drop(reverseC)
+          .takeWhile(c => !c.isWhitespace).reverse
+        val right = b.drop(c).takeWhile(c => !c.isWhitespace)
 
+        val word = (left ++ right).mkString
+        val leftCursor = c - left.length
+        val rightCursor = c + right.length
+        (leftCursor, rightCursor, word)
+      }
+      val completions = completionContext.findWithPrefix(word).sorted
+
+      // Find the common characters that all completion suggestions begin with
       lazy val common = FrontEndUtils.findPrefix(completions, 0)
-      val completions2 = for(comp <- completions) yield {
 
+      // Color the common part of all completions
+      val coloredCompletions = for(comp <- completions) yield {
         val (left, right) = comp.splitAt(common.length)
-        (colors.comment()(left) ++ right).render
+        (fansi.Color.Blue(left) ++ right).render
       }
-      val stdout =
-        FrontEndUtils.printCompletions(completions2, details2)
-          .mkString
 
-      if (details.nonEmpty || completions.isEmpty)
-        Printing(TermState(rest, b, c), stdout)
-      else{
-        val newBuffer = b.take(newCursor) ++ common ++ b.drop(c)
-        Printing(TermState(rest, newBuffer, newCursor + common.length), stdout)
+      // Generate the output
+      val stdout = FrontEndUtils.printCompletions(
+        coloredCompletions,
+        Nil // Not supporting detail
+      ).mkString
+
+      if (completions.isEmpty) Printing(TermState(rest, b, c), stdout)
+      else {
+        val newBuffer = b.take(leftCursor) ++ common ++ b.drop(rightCursor)
+        Printing(TermState(rest, newBuffer, leftCursor + common.length), stdout)
       }
-  }*/
+  }
 
   /**
    * Represents a filter to allow multi-line statements using various block
@@ -149,7 +169,7 @@ class FancyTerminal(val history: HistoryManager) extends Terminal {
         } else withinQuotes
       }
     })()
-    val updatedKeywords = keywords.map(k=> new String(k.asScala.toArray)).flatMap {
+    val updatedKeywords = keywords.map(k => new String(k.asScala.toArray)).flatMap {
       case k if checkQuotes(k) =>
         k.flatMap(Console.GREEN + _ + Console.RESET)
       case k if ReservedKeywords.Values.contains(k) =>
