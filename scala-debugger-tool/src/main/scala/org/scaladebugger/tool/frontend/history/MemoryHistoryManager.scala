@@ -53,7 +53,7 @@ class MemoryHistoryManager private[history](
    *
    * @return The collection of lines
    */
-  override def lines: Seq[String] = withHistory(_.asScala.toSeq.reverse)
+  override def lines: Seq[String] = withHistory(_.asScala.toSeq)
 
   /**
    * Destroys the history in memory.

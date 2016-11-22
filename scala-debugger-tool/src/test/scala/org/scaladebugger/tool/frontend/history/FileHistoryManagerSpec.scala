@@ -40,7 +40,7 @@ class FileHistoryManagerSpec extends test.ParallelMockFunSpec {
 
         val actual = fhm.lines
 
-        actual.reverse should be (expected)
+        actual should be (expected)
       }
     }
 
@@ -48,7 +48,7 @@ class FileHistoryManagerSpec extends test.ParallelMockFunSpec {
       it("should write the line to internal memory and the history file") {
         val initialLines = Seq("one", "two", "three")
         val newLine = "four"
-        val expected = (initialLines :+ newLine).reverse
+        val expected = initialLines :+ newLine
 
         val mockLoadLines = mockFunction[File, Seq[String]]
         mockLoadLines.expects(stubFile).returning(initialLines).once()
@@ -73,7 +73,7 @@ class FileHistoryManagerSpec extends test.ParallelMockFunSpec {
         val maxLines = 0
         val initialLines = Seq("one", "two", "three")
         val newLine = "four"
-        val expected = initialLines.reverse
+        val expected = initialLines
 
         val mockLoadLines = mockFunction[File, Seq[String]]
         mockLoadLines.expects(stubFile).returning(initialLines).once()
@@ -99,7 +99,7 @@ class FileHistoryManagerSpec extends test.ParallelMockFunSpec {
         val maxLines = 3
         val initialLines = Seq("one", "two", "three")
         val newLine = "four"
-        val expected = (initialLines :+ newLine).takeRight(maxLines).reverse
+        val expected = (initialLines :+ newLine).takeRight(maxLines)
 
         val ls = System.getProperty("line.separator")
 

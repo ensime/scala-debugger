@@ -31,7 +31,7 @@ class FancyTerminal(
     // Create history filter that uses the most recent line
     // from history first
     val historyFilter = new HistoryFilter(
-      () => history.lines.toVector,
+      () => history.linesByMostRecent.toVector,
       fansi.Color.Blue
     )
 

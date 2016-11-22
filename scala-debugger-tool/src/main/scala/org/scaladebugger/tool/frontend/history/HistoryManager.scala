@@ -28,11 +28,19 @@ trait HistoryManager {
 
   /**
    * Returns the collection of lines stored in history in order of
-   * most to least recently added.
+   * being added (oldest to newest).
    *
    * @return The collection of lines
    */
   def lines: Seq[String]
+
+  /**
+   * Returns the collection of lines stored in history in order of
+   * most to least recently added.
+   *
+   * @return The collection of lines
+   */
+  def linesByMostRecent: Seq[String] = lines.reverse
 
   /**
    * Returns the maximum number of lines that will be kept in history.

@@ -42,5 +42,17 @@ class HistoryManagerSpec extends test.ParallelMockFunSpec {
         historyManager.writeLines(lines: _*)
       }
     }
+
+    describe("#linesByMostRecent") {
+      it("should return the reverse order of lines") {
+        val expected = Seq("three", "two", "one")
+
+        mockLines.expects().returning(expected.reverse).once()
+
+        val actual = historyManager.linesByMostRecent
+
+        actual should be (expected)
+      }
+    }
   }
 }
