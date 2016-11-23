@@ -59,6 +59,24 @@ trait ThreadInfoProfile extends ObjectInfoProfile with CommonInfoProfile {
   def suspend(): Unit
 
   /**
+   * Executes the provided code block, suspending the thread prior to
+   * execution and resuming it after (regardless of success or failure).
+   *
+   * @param thunk The block of code to execute
+   * @tparam T The return type of the block of code
+   * @return Success containing the result of the thunk, or a failure
+   */
+  def suspendAndExecute[T](thunk: => T): Try[T] = {
+    suspend()
+
+    val result = Try(thunk)
+
+    resume()
+
+    result
+  }
+
+  /**
    * Retrieves profiles for all frames in the stack.
    *
    * @return Success of collection of frame profiles, otherwise a failure

@@ -29,11 +29,7 @@ class ExpressionFunctions(
       throw new RuntimeException("Missing expression argument!")
     )
 
-    thread.foreach(t => {
-      // TODO: Bundle suspend and resume into single function
-      //       that executes a block and resumes regardless
-      t.suspend()
-
+    thread.foreach(t => t.suspendAndExecute {
       val variable = lookupVariable(t, expression)
 
       // Generate "pretty string" of variable
@@ -47,7 +43,6 @@ class ExpressionFunctions(
         .map(_.map("-> " + _.toPrettyString))
         .foreach(_.foreach(writeLine))
 
-      t.resume()
     })
   }
 
@@ -81,11 +76,7 @@ class ExpressionFunctions(
       throw new RuntimeException("Missing r argument!")
     )
 
-    thread.foreach(t => {
-      // TODO: Bundle suspend and resume into single function
-      //       that executes a block and resumes regardless
-      t.suspend()
-
+    thread.foreach(t => t.suspendAndExecute {
       val variable = lookupVariable(t, l)
       variable.foreach(v => {
         // TODO: Support assigning object or value that is
@@ -97,8 +88,6 @@ class ExpressionFunctions(
 
         v.trySetValueFromInfo(i).failed.map(_.toString).foreach(writeLine)
       })
-
-      t.resume()
     })
   }
 
