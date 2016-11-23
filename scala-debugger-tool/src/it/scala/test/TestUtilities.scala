@@ -1,5 +1,7 @@
 package test
 
+import java.util.concurrent.ArrayBlockingQueue
+
 import org.scaladebugger.api.utils.Logging
 import org.scaladebugger.tool.frontend.VirtualTerminal
 import org.scalatest.{Assertion, Matchers}
@@ -33,6 +35,8 @@ trait TestUtilities { this: Logging with Matchers =>
    * @return The new virtual terminal instance
    */
   def newVirtualTerminal(): VirtualTerminal = new VirtualTerminal(
+    inputQueue = new ArrayBlockingQueue[String](Constants.DefaultMaxInputQueueSize),
+    outputQueue = new ArrayBlockingQueue[String](Constants.DefaultMaxOutputQueueSize),
     waitTime = Constants.NewInputLineTimeout.millisPart
   )
 

@@ -49,7 +49,8 @@ class ThreadWhereCommandIntegrationSpec extends FunSpec with Matchers
           vt.newInputLine("where")
 
           // Accumulate other text (delay to allow accumulation of all text)
-          val lines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val lines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).mkString("\n")
 
           // Verify current location is in stack trace
@@ -86,7 +87,8 @@ class ThreadWhereCommandIntegrationSpec extends FunSpec with Matchers
           vt.newInputLine(s"where $q$threadName$q")
 
           // Accumulate other text (delay to allow accumulation of all text)
-          val lines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val lines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).mkString("\n")
 
           // Verify current location is in stack trace

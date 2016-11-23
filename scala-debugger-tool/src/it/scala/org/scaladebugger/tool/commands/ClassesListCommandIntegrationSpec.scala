@@ -46,7 +46,8 @@ class ClassesListCommandIntegrationSpec extends FunSpec with Matchers
 
           // Gather all classes after (delay to allow accumulation of all text)
           val prefix = "-> "
-          val classLines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val classLines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).map(_.drop(prefix.length))
             .filter(_.contains("org.scaladebugger"))
 
@@ -88,7 +89,8 @@ class ClassesListCommandIntegrationSpec extends FunSpec with Matchers
 
           // Gather all classes after (delay to allow accumulation of all text)
           val prefix = "-> "
-          val classLines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val classLines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).map(_.drop(prefix.length))
             .filter(_.contains("org.scaladebugger"))
 
@@ -130,7 +132,8 @@ class ClassesListCommandIntegrationSpec extends FunSpec with Matchers
 
           // Gather all classes after (delay to allow accumulation of all text)
           val prefix = "-> "
-          val classLines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val classLines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).map(_.drop(prefix.length))
             .filter(_.contains("org.scaladebugger"))
 

@@ -47,7 +47,8 @@ class MethodsListCommandIntegrationSpec extends FunSpec with Matchers
 
           // Gather all methods after (delay to allow accumulation of all text)
           val prefix = "-> "
-          val methodLines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val methodLines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).map(_.drop(prefix.length))
 
           // Verify our expected classes show up
@@ -91,7 +92,8 @@ class MethodsListCommandIntegrationSpec extends FunSpec with Matchers
 
           // Gather all methods after (delay to allow accumulation of all text)
           val prefix = "-> "
-          val methodLines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val methodLines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).map(_.drop(prefix.length))
 
           // Verify our expected methods show up
@@ -135,7 +137,8 @@ class MethodsListCommandIntegrationSpec extends FunSpec with Matchers
 
           // Gather all methods after (delay to allow accumulation of all text)
           val prefix = "-> "
-          val methodLines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val methodLines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).map(_.drop(prefix.length))
 
           // Verify our expected methods show up

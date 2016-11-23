@@ -47,7 +47,8 @@ class ThreadListCommandIntegrationSpec extends FunSpec with Matchers
             success = (text, line) => line should include(text))
 
           // Accumulate other text (delay to allow accumulation of all text)
-          val lines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val lines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).mkString("\n")
 
           // Verify that we have various information included
@@ -86,7 +87,8 @@ class ThreadListCommandIntegrationSpec extends FunSpec with Matchers
             success = (text, line) => line should include(text))
 
           // Accumulate other text (delay to allow accumulation of all text)
-          val lines = Stream.continually(vt.nextOutputLine(waitTime = 500))
+          val waitTime = Constants.AccumulationTimeout.millisPart
+          val lines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).mkString("\n")
 
           // Verify that we have various information included
