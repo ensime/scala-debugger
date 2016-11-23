@@ -27,14 +27,15 @@ class SourceFunctions(
     val sources = stateManager.state.sourcePaths :+ new File(".").toURI
 
     thread.foreach(t => {
-      t.suspend()
+      val (filePath, lineNumber) = t.suspendAndExecute {
+        // Find current location
+        val location = t.topFrame.location
+        val filePath = location.sourcePath
+        val lineNumber = location.lineNumber
 
-      // Find current location
-      val location = t.topFrame.location
-      val filePath = location.sourcePath
-      val lineNumber = location.lineNumber
+        (filePath, lineNumber)
+      }.get
 
-      t.resume()
 
       // Look up potential source location
       val file = sources

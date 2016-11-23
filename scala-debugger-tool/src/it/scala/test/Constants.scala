@@ -7,6 +7,7 @@ import org.scalatest.time.{Milliseconds, Seconds, Span}
  * Constants for our tests.
  */
 object Constants {
+  val AccumulationTimeout = Span(500, Milliseconds)
   val EventuallyTimeout = Span(10, Seconds)
   val EventuallyInterval = Span(5, Milliseconds)
   val NewInputLineTimeout = Span(5, Seconds)

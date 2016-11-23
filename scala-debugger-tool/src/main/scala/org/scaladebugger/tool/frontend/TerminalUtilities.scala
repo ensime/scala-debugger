@@ -65,7 +65,6 @@ object TerminalUtilities {
           lines.map(l => indent(l, indentation)).mkString("\n")
         }
 
-        val indentation = 4
         val func = context.functions.toMap.find(_._1.name == topic)
         val funcArgString = func.map(
           _._2.parameters.map(_.name).mkString(",")
