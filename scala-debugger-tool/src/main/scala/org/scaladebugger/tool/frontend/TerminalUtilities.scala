@@ -45,9 +45,9 @@ object TerminalUtilities {
 
         val formatString = "%s(%s):\n\n%s\n\n"
 
-        val indentation = 4
-        @inline def indent(text: String) = " " * indentation + text
-        @inline def wrap(text: String) = {
+        @inline def indent(text: String, indentation: Int = 4) =
+          " " * indentation + text
+        @inline def wrap(text: String, indentation: Int = 4) = {
           val words = text.split(" ")
           val lines = words.foldLeft(Seq[String]()) { case (acc, w) =>
             // If no words added yet, add our first one as a line
@@ -62,17 +62,24 @@ object TerminalUtilities {
               acc :+ w
           }
 
-          lines.map(indent).mkString("\n")
+          lines.map(l => indent(l, indentation)).mkString("\n")
         }
 
+        val indentation = 4
         val func = context.functions.toMap.find(_._1.name == topic)
         val funcArgString = func.map(
           _._2.parameters.map(_.name).mkString(",")
         ).getOrElse("")
         val formattedArgDocs = func.map { case(i, f) =>
           val s = f.parameters.filter(_.documentation.exists(_.nonEmpty))
-            .map(p => p.name + ": " + p.documentation.get)
-            .map(wrap).mkString("\n")
+            .map(p => {
+              val prefix = indent(p.name + ": ")
+              prefix + wrap(
+                p.documentation.get,
+                indentation = prefix.length
+              ).dropWhile(_.isWhitespace)
+            })
+            .mkString("\n")
           if (s.nonEmpty) s + "\n\n"
           else ""
         }.getOrElse("")
