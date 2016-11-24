@@ -28,7 +28,7 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
       "Select from " + candidateProfiles.mkString(",")
     ).mkString("; "),
     validate = candidateProfiles.contains(_: String),
-    default = Some(Debugger.DefaultProfileName)
+    default = Some(Scala210DebugProfile.Name)
   )
 
   /** Represents the history file location. */
