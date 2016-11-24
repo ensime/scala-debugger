@@ -36,6 +36,7 @@ class AttachpCommandIntegrationSpec extends FunSpec with Matchers
         // Eventually, attach should complete
         logTimeTaken(eventually {
           repl.stateManager.state.activeDebugger should not be None
+          repl.stateManager.state.scalaVirtualMachines should not be (empty)
         })
 
         // Finished

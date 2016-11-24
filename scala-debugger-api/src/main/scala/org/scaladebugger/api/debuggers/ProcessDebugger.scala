@@ -84,7 +84,7 @@ class ProcessDebugger private[api] (
     defaultProfile: String,
     startProcessingEvents: Boolean,
     newVirtualMachineFunc: ScalaVirtualMachine => T
-  ): Unit = {
+  ): Unit = synchronized {
     assert(!isRunning, "Debugger already started!")
     assertJdiLoaded()
 
@@ -128,7 +128,7 @@ class ProcessDebugger private[api] (
   /**
    * Stops the process attached by the debugger.
    */
-  override def stop(): Unit = {
+  override def stop(): Unit = synchronized {
     assert(isRunning, "Debugger has not been started!")
 
     // Stop the looping task runner processing events

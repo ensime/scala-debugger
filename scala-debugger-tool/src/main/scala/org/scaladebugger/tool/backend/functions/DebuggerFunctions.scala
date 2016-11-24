@@ -68,6 +68,10 @@ class DebuggerFunctions(
     ).withPending(stateManager.state.dummyScalaVirtualMachine)
     stateManager.updateActiveDebugger(d)
 
+    writeLine(Seq(
+      s"Launching JVM using main entrypoint $className",
+      s"and suspend = $suspend"
+    ).mkString(" "))
     d.start(s => {
       writeLine("Attached with id " + s.uniqueId)
       stateManager.addScalaVirtualMachine(s)
@@ -86,6 +90,7 @@ class DebuggerFunctions(
       .withPending(stateManager.state.dummyScalaVirtualMachine)
     stateManager.updateActiveDebugger(d)
 
+    writeLine(s"Listening for JVMs on port $port")
     d.start(s => {
       writeLine("Received connection from JVM with id " + s.uniqueId)
       stateManager.addScalaVirtualMachine(s)

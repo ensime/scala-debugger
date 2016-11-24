@@ -117,7 +117,7 @@ class ListeningDebugger private[api] (
     defaultProfile: String,
     startProcessingEvents: Boolean,
     newVirtualMachineFunc: ScalaVirtualMachine => T
-  ): Unit = {
+  ): Unit = synchronized {
     assert(!isRunning, "Debugger already started!")
     assertJdiLoaded()
 
@@ -160,7 +160,7 @@ class ListeningDebugger private[api] (
   /**
    * Stops listening for incoming connections and shuts down the task runner.
    */
-  override def stop(): Unit = {
+  override def stop(): Unit = synchronized {
     assert(isRunning, "Debugger has not been started!")
 
     val (loopingTaskRunner, connector, arguments) = components.get
@@ -170,7 +170,9 @@ class ListeningDebugger private[api] (
     loopingTaskRunner.stop()
 
     // Dispose of any connected virtual machines
-    connectedVirtualMachines
+    // NOTE: Using toArray to create copy of collection to
+    //       avoid ConcurrentModificationException
+    connectedVirtualMachines.toArray
       .map(vm => Try(vm.dispose()))
       .filter(_.isFailure)
       .map(_.failed.get)
@@ -191,8 +193,8 @@ class ListeningDebugger private[api] (
    *
    * @return The collection of connected virtual machines
    */
-  def connectedVirtualMachines =
-    virtualMachineManager.connectedVirtualMachines().asScala.toSeq
+  def connectedVirtualMachines: Seq[VirtualMachine] =
+    virtualMachineManager.connectedVirtualMachines().asScala
 
   /**
    * Checks for an incoming connection, creates a new ScalaVirtualMachine for
