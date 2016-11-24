@@ -261,12 +261,14 @@ trait TypeInfoProfile extends CommonInfoProfile {
     def extractFromQuotes(s: String): String =
       "^\"(.*)\"$".r.findFirstMatchIn(s).map(_.group(1)).getOrElse(s)
 
+    // NOTE: Casting whole numbers (integer, long, etc) to double
+    //       first to avoid number format issues when given "2.0" as input
     if (isBooleanType)  return value.toBoolean
-    if (isByteType)     return value.toByte
+    if (isByteType)     return value.toDouble.toByte
     if (isCharType)     return value.charAt(0)
-    if (isShortType)    return value.toShort
-    if (isIntegerType)  return value.toInt
-    if (isLongType)     return value.toLong
+    if (isShortType)    return value.toDouble.toShort
+    if (isIntegerType)  return value.toDouble.toInt
+    if (isLongType)     return value.toDouble.toLong
     if (isFloatType)    return value.toFloat
     if (isDoubleType)   return value.toDouble
     if (isStringType)   return extractFromQuotes(value)

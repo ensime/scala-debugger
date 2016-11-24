@@ -6,6 +6,7 @@ import org.scaladebugger.api.profiles.traits.info.{ThreadInfoProfile, VariableIn
 import org.scaladebugger.tool.backend.StateManager
 
 import scala.collection.JavaConverters._
+import scala.util.{Failure, Success, Try}
 
 /**
  * Represents a collection of functions for examining the remote JVM.
@@ -81,12 +82,17 @@ class ExpressionFunctions(
       variable.foreach(v => {
         // TODO: Support assigning object or value that is
         //       already remote
-        val i = v.typeInfo.castLocal(r) match {
-          case st: String => v.createRemotely(st)
-          case av         => v.createRemotely(av.asInstanceOf[AnyVal])
+        val result = v.typeInfo.tryCastLocal(r) match {
+          case Success(st: String) =>
+            v.tryCreateRemotely(st)
+          case Success(av) =>
+            Try(av.asInstanceOf[AnyVal]).flatMap(v.tryCreateRemotely)
+          case Failure(ex) =>
+            Failure(ex)
         }
 
-        v.trySetValueFromInfo(i).failed.map(_.toString).foreach(writeLine)
+        result.flatMap(i => v.trySetValueFromInfo(i))
+          .failed.map(_.toString).foreach(writeLine)
       })
     })
   }

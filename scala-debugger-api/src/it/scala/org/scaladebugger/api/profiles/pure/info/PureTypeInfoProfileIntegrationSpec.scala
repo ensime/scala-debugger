@@ -79,12 +79,15 @@ class PureTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
           vt("b").castLocal("test") shouldBe a [java.lang.Character]
 
           vt("c").castLocal("33") should be (33)
+          vt("c").castLocal("33.0") should be (33)
           vt("c").castLocal("33") shouldBe a [java.lang.Short]
 
           vt("d").castLocal("33") should be (33)
+          vt("d").castLocal("33.0") should be (33)
           vt("d").castLocal("33") shouldBe an [java.lang.Integer]
 
           vt("e").castLocal("33") should be (33)
+          vt("e").castLocal("33.0") should be (33)
           vt("e").castLocal("33") shouldBe a [java.lang.Long]
 
           vt("f").castLocal("33.5") should be (33.5)
@@ -94,6 +97,7 @@ class PureTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
           vt("g").castLocal("33.5") shouldBe a [java.lang.Double]
 
           vt("z1").castLocal("33") should be (33)
+          vt("z1").castLocal("33.0") should be (33)
           vt("z1").castLocal("33") shouldBe a [java.lang.Byte]
 
           vt("z2").castLocal("33") should be ("33")
