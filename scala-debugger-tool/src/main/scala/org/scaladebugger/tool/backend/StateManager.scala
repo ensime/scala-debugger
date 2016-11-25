@@ -1,6 +1,7 @@
 package org.scaladebugger.tool.backend
 import acyclic.file
 import java.net.URI
+import java.nio.file.Path
 
 import com.sun.jdi.{ThreadGroupReference, ThreadReference}
 import org.scaladebugger.api.debuggers.Debugger
@@ -119,7 +120,7 @@ class StateManager {
    *
    * @param sourcePaths The new collection of source paths
    */
-  def updateSourcePaths(sourcePaths: Seq[URI]) = {
+  def updateSourcePaths(sourcePaths: Seq[Path]) = {
     updateState(state.copy(sourcePaths = sourcePaths))
   }
 
@@ -128,7 +129,7 @@ class StateManager {
    *
    * @param sourcePath The new Scala virtual machine to add
    */
-  def addSourcePath(sourcePath: URI) = {
+  def addSourcePath(sourcePath: Path) = {
     val sourcePaths = state.sourcePaths :+ sourcePath
     updateSourcePaths(sourcePaths)
   }

@@ -1,6 +1,7 @@
 package org.scaladebugger.tool.commands
 
 import java.net.URI
+import java.nio.file.Paths
 
 import org.scaladebugger.tool.Repl
 import org.scalamock.scalatest.MockFactory
@@ -25,9 +26,9 @@ class SourcepathClearCommandIntegrationSpec extends FunSpec with Matchers
 
       // Set some paths to be displayed
       repl.stateManager.updateSourcePaths(Seq(
-        new URI("a"),
-        new URI("b"),
-        new URI("c")
+        Paths.get("a"),
+        Paths.get("b"),
+        Paths.get("c")
       ))
 
       // Clear the source paths

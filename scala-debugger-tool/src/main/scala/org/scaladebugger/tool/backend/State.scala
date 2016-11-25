@@ -1,6 +1,7 @@
 package org.scaladebugger.tool.backend
 import acyclic.file
 import java.net.URI
+import java.nio.file.Path
 
 import ammonite.util.Bind
 import org.scaladebugger.api.debuggers.Debugger
@@ -13,7 +14,7 @@ case class State(
   dummyScalaVirtualMachine: DummyScalaVirtualMachine,
   activeThread: Option[ThreadInfoProfile],
   activeThreadGroup: Option[ThreadGroupInfoProfile],
-  sourcePaths: Seq[URI],
+  sourcePaths: Seq[Path],
   activeProfileName: String
 ) {
   /**

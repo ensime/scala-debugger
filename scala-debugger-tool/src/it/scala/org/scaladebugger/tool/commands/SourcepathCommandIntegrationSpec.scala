@@ -1,6 +1,7 @@
 package org.scaladebugger.tool.commands
 
-import java.net.URI
+import java.nio.file.Paths
+
 import org.scaladebugger.tool.Repl
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.Eventually
@@ -17,7 +18,7 @@ class SourcepathCommandIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("SourcepathCommand") {
-    it("should add the provided path to the current list") {
+    it("should add the provided path to the current list and load sources") {
       val vt = newVirtualTerminal()
       val repl = Repl.newInstance(newTerminal = (_,_) => vt)
       repl.start()
@@ -27,17 +28,23 @@ class SourcepathCommandIntegrationSpec extends FunSpec with Matchers
 
       // Set some paths to be displayed
       repl.stateManager.updateSourcePaths(Seq(
-        new URI("a"),
-        new URI("b"),
-        new URI("c")
+        Paths.get("a"),
+        Paths.get("b"),
+        Paths.get("c")
       ))
 
-      // Add 'd' as sourcepath
-      vt.newInputLine("sourcepath \"d\"")
+      // Add '.' as sourcepath
+      vt.newInputLine("sourcepath \".\"")
+
+      // Verify that we have finished loading our source files
+      eventually {
+        validateNextLine(vt, """Loaded \d+ source files""",
+          success = (text, line) => line should startWith regex text)
+      }
 
       eventually {
         val state = repl.stateManager.state
-        state.sourcePaths.map(_.getPath.last) should contain ('d')
+        state.sourcePaths.last.getFileName.toString should contain ('.')
       }
     }
 
@@ -48,9 +55,9 @@ class SourcepathCommandIntegrationSpec extends FunSpec with Matchers
 
       // Set some paths to be displayed
       repl.stateManager.updateSourcePaths(Seq(
-        new URI("a"),
-        new URI("b"),
-        new URI("c")
+        Paths.get("a"),
+        Paths.get("b"),
+        Paths.get("c")
       ))
 
       // Display the source paths
