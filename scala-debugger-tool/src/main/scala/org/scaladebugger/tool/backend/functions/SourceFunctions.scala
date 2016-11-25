@@ -1,4 +1,6 @@
 package org.scaladebugger.tool.backend.functions
+import java.io.File
+
 import acyclic.file
 import java.nio.file._
 
@@ -28,23 +30,30 @@ class SourceFunctions(
     sourceMap
   }
 
-  /** Loads source files for the provided source and adds to the cache. */
-  def loadAndAddSource(source: String): Unit = {
-    val sourcePath = Paths.get(source)
+  /** Loads source files for the provided sources and adds to the cache. */
+  def loadAndAddSources(sources: String*): Unit = {
+    val sourcePaths = sources.map(Paths.get(_: String))
 
-    // If the path already has been added, make a note and exit
+    // Filter source paths based on already added
     val existingSourcePaths = stateManager.state.sourcePaths
-    if (existingSourcePaths.map(_.toString).contains(sourcePath.toString)) {
-      writeLine("Source path already added!")
+    val newSourcePaths = sourcePaths.filterNot(sp => {
+      val exists = existingSourcePaths.map(_.toString).contains(sp.toString)
+      if (exists) writeLine(s"Source path '$sp' already added!")
+      exists
+    })
+
+    // If a path has already been added, make a note
+    if (newSourcePaths.length != sourcePaths.length)
       writeLine(Seq(
         "If you need to reload the sources on the path,",
         "clear and re-add the desired source path!"
       ).mkString(" "))
-      return
-    }
 
-    writeLine(s"Loading sources from ${sourcePath.toString}")
-    val sourceMap = generateSourceMap(sourcePath)
+    if (newSourcePaths.nonEmpty) {
+      val newSourcePathStrings = newSourcePaths.mkString(File.pathSeparator)
+      writeLine(s"Loading sources from '$newSourcePathStrings'")
+    }
+    val sourceMap = generateSourceMap(newSourcePaths: _*)
 
     val sourceFileIterator = sourceMap.values.flatten
     val totalSourceFiles = sourceFileIterator.size
@@ -57,7 +66,7 @@ class SourceFunctions(
       cache(fileName) = allFiles.distinct
     })
 
-    stateManager.addSourcePath(sourcePath)
+    newSourcePaths.foreach(stateManager.addSourcePath)
   }
 
   def clearSources(): Unit = cache.synchronized {
@@ -123,7 +132,7 @@ class SourceFunctions(
   /** Entrypoint for displaying or changing the source path. */
   def sourcepath(m: Map[String, Any]) = {
     m.get("sourcepath").map(_.toString) match {
-      case Some(source) => loadAndAddSource(source)
+      case Some(source) => loadAndAddSources(source)
       case None =>
         val sourcePaths = stateManager.state.sourcePaths
         writeLine(s"Source paths: ${sourcePaths.mkString(java.io.File.pathSeparator)}")
