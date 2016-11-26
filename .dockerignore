@@ -1,2 +1,10 @@
+Dockerfile
+*.md
+*/*.md
+*/*/*.md
+docs/
 *target/
+*/target/
+*/*/target/
+*.log
 
