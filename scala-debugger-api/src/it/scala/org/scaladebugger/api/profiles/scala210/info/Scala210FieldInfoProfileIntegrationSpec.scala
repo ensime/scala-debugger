@@ -54,5 +54,96 @@ class Scala210FieldInfoProfileIntegrationSpec extends FunSpec with Matchers
         })
       }
     }
+
+    // NOTE: field1 is a method that is invoked instead of a field that is
+    //       accessed ~ need to figure out what methods are referenced inside
+    //       a class, translate relevant ones to fields, and display
+    //       appropriately
+    //
+    //       Think I can use the MODULE$ as a flag to import any fields
+    //       (or field methods) hanging off of it
+    //
+    //       If not, parse to understand that it is an inner class and
+    //       get fields of parent class, since they will be in scope
+    //
+    //       See http://www.artima.com/pins1ed/combining-scala-and-java.html
+    //
+    ignore("should display fields brought into class closures") {
+      val testClass = "org.scaladebugger.test.info.Scope"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(Scala210DebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 22, NoResume)
+        .foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val variableNames = s.withProfile(Scala210DebugProfile.Name)
+            .thread(t.get).topFrame.allVariables.map(_.name)
+
+          variableNames should contain theSameElementsAs Seq(
+            "field1",
+            "a",
+            "aa"
+          )
+        })
+      }
+    }
+
+    it("should translate names like x$1 to x for function closures") {
+      val testClass = "org.scaladebugger.test.info.Scope"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(Scala210DebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 33, NoResume)
+        .foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val variableNames = s.withProfile(Scala210DebugProfile.Name)
+            .thread(t.get).topFrame.allVariables.map(_.name)
+
+          variableNames should contain theSameElementsAs Seq(
+            "x",
+            "y"
+          )
+        })
+      }
+    }
+
+    it("should translate names like x$1 to x for class closures") {
+      val testClass = "org.scaladebugger.test.info.Scope"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadReference] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(Scala210DebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 39, NoResume)
+        .foreach(e => t = Some(e.thread()))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val variableNames = s.withProfile(Scala210DebugProfile.Name)
+            .thread(t.get).topFrame.allVariables.map(_.name)
+
+          variableNames should contain theSameElementsAs Seq(
+            "x",
+            "y",
+            "z",
+            "zz"
+          )
+        })
+      }
+    }
   }
 }

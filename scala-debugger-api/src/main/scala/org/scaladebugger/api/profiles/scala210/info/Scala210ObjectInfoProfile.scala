@@ -54,7 +54,9 @@ class Scala210ObjectInfoProfile(
     val expandNames = Seq("$outer")
 
     // Will skip these fields
-    val ignoreNames = Seq("MODULE$")
+    // TODO: Provide better means of skipping executionStart
+    //       since this avoids it even if someone added it directly
+    val ignoreNames = Seq("MODULE$", "executionStart", "serialVersionUID")
 
     // Will skip fields whose names start with these prefixes
     val ignoreNamePrefix = Seq("scala$")

@@ -39,6 +39,16 @@ class Scala210FieldInfoProfile(
 )(
   _virtualMachine = _virtualMachine
 ) {
+  // Construct regex to handle different naming conventions
+  // where the first group matches the desired name
+  private lazy val ParsePatterns = Seq(
+    // Grab tail end of org$scaladebugger$class$$fieldName
+    // as well as org.scaladebugger.class.fieldName
+    """(?:\w+[\$|\.]+)*([^\$\d]\w*)""",
+
+    // Grab the start of variables like x$1 and y$1
+    """(\w+)\$(?:\d\w*)"""
+  ).map("(?:^" + _ + "$)").map(_.r)
 
   /**
    * Creates a new Scala 2.10 field information profile with no offset index.
@@ -82,15 +92,11 @@ class Scala210FieldInfoProfile(
    * @return The name of the variable
    */
   override def name: String = {
-    val rawName = super.name
+    val rawName = super.name.trim
 
-    // Grab tail end of org$scaladebugger$class$$fieldName
-    // as well as org.scaladebugger.class.fieldName
-    val parsePattern = """(\w+[\$|\.]+)*(\w+)""".r
-
-    rawName match {
-      case parsePattern(_, scalaName) => scalaName
-      case _                          => rawName
-    }
+    ParsePatterns
+      .flatMap(_.findFirstMatchIn(rawName))
+      .flatMap(m => Option(m.group(1)))
+      .headOption.getOrElse(rawName)
   }
 }

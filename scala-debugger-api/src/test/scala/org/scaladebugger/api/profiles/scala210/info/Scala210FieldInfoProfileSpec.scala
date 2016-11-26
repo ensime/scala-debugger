@@ -44,6 +44,17 @@ class Scala210FieldInfoProfileSpec extends test.ParallelMockFunSpec
         actual should be (expected)
       }
 
+      it("should return the name from the format name$number") {
+        val expected = "someName"
+        val rawName = expected + "$1"
+
+        (mockField.name _).expects().returning(rawName).once()
+
+        val actual = scala210FieldInfoProfile.name
+
+        actual should be (expected)
+      }
+
       it("should return the name from the format package$class$$name") {
         val expected = "someName"
         val rawName = "package$class$$" + expected
