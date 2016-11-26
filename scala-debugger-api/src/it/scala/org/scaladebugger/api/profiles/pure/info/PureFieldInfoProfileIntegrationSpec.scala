@@ -20,36 +20,6 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("PureFieldInfoProfile") {
-    it("should not expand $outer to its underlying fields") {
-      val testClass = "org.scaladebugger.test.info.OuterScope"
-      val testFile = JDITools.scalaClassStringToFileString(testClass)
-
-      @volatile var t: Option[ThreadReference] = None
-      val s = DummyScalaVirtualMachine.newInstance()
-
-      // NOTE: Do not resume so we can check the variables at the stack frame
-      s.withProfile(PureDebugProfile.Name)
-        .getOrCreateBreakpointRequest(testFile, 17, NoResume)
-        .foreach(e => t = Some(e.thread()))
-
-      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
-        logTimeTaken(eventually {
-          val variableNames = s.withProfile(PureDebugProfile.Name)
-            .tryThread(t.get)
-            .flatMap(_.tryTopFrame)
-            .map(_.allVariables)
-            .map(_.map(_.name))
-            .get
-
-          // Should expand $outer field of closure into outer fields
-          variableNames should contain theSameElementsAs Seq(
-            "$outer",
-            "newValue"
-          )
-        })
-      }
-    }
-
     it("should not fix Scala-specific field names like org$scaladebugger$test$bugs$BugFromGitter$$name") {
       val testClass = "org.scaladebugger.test.bugs.BugFromGitter"
       val testFile = JDITools.scalaClassStringToFileString(testClass)

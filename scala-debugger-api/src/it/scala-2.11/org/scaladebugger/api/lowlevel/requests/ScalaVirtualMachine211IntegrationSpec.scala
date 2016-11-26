@@ -1,4 +1,5 @@
-package org.scaladebugger.requests
+package org.scaladebugger.api.lowlevel.requests
+
 import acyclic.file
 
 import org.scaladebugger.api.utils.JDITools
