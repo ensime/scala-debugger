@@ -12,15 +12,15 @@ import test.JDIMockHelpers
 
 import scala.util.Success
 
-class PureEventProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PureEventListenerProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestEventHandlerId = java.util.UUID.randomUUID().toString
   private val mockEventManager = mock[EventManager]
-  private val pureEventProfile = new Object with PureEventProfile {
+  private val pureEventListenerProfile = new Object with PureEventListenerProfile {
     override protected val eventManager = mockEventManager
   }
 
-  describe("PureEventProfile") {
+  describe("PureEventListenerProfile") {
     describe("#eventHandlers") {
       it("should include all active requests") {
         val expected = Seq(
@@ -28,7 +28,7 @@ class PureEventProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
         )
 
         val mockEventManager = mock[PendingEventHandlerSupportLike]
-        val pureEventProfile = new Object with PureEventProfile {
+        val pureEventProfile = new Object with PureEventListenerProfile {
           override protected val eventManager: EventManager = mockEventManager
         }
 
@@ -49,7 +49,7 @@ class PureEventProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
         )
 
         val mockEventManager = mock[PendingEventHandlerSupportLike]
-        val pureEventProfile = new Object with PureEventProfile {
+        val pureEventProfile = new Object with PureEventListenerProfile {
           override protected val eventManager: EventManager = mockEventManager
         }
 
@@ -72,7 +72,7 @@ class PureEventProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
         (mockEventManager.getAllEventHandlerInfo _).expects()
           .returning(expected).once()
 
-        val actual = pureEventProfile.eventHandlers
+        val actual = pureEventListenerProfile.eventHandlers
 
         actual should be (expected)
       }
@@ -81,7 +81,7 @@ class PureEventProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
     describe("#tryCreateEventListenerWithData") {
       it("should set a low-level event and stream its events") {
         val expected = Success(Pipeline.newPipeline(
-          classOf[PureEventProfile#EventAndData]
+          classOf[PureEventListenerProfile#EventAndData]
         ))
         val eventType = stub[EventType] // Using mock throws stack overflow
         val requestArguments = Seq(mock[JDIRequestArgument])
@@ -92,7 +92,7 @@ class PureEventProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
           .expects(eventType, eventArguments)
           .returning(expected.get).once()
 
-        val actual = pureEventProfile.tryCreateEventListenerWithData(
+        val actual = pureEventListenerProfile.tryCreateEventListenerWithData(
           eventType,
           arguments: _*
         )

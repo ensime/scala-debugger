@@ -7,7 +7,7 @@ import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.events.EventProfile
+import org.scaladebugger.api.profiles.traits.events.EventListenerProfile
 
 import scala.util.Try
 
@@ -15,7 +15,7 @@ import scala.util.Try
  * Represents a pure profile for events that adds no extra logic on
  * top of the standard JDI.
  */
-trait PureEventProfile extends EventProfile {
+trait PureEventListenerProfile extends EventListenerProfile {
   protected val eventManager: EventManager
 
   /**

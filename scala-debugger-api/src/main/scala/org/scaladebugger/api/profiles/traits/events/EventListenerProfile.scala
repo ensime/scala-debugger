@@ -13,9 +13,9 @@ import scala.util.Try
 
 /**
  * Represents the interface that needs to be implemented to provide
- * event functionality for a specific debug profile.
+ * event listener functionality for a specific debug profile.
  */
-trait EventProfile {
+trait EventListenerProfile {
   /** Represents a breakpoint event and any associated data. */
   type EventAndData = (Event, Seq[JDIEventDataResult])
 

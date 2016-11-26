@@ -7,20 +7,20 @@ import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.events.EventProfile
+import org.scaladebugger.api.profiles.traits.events.EventListenerProfile
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class EventDSLWrapperSpec extends test.ParallelMockFunSpec
+class EventListenerDSLWrapperSpec extends test.ParallelMockFunSpec
 {
-  private val mockEventProfile = mock[EventProfile]
+  private val mockEventProfile = mock[EventListenerProfile]
 
-  describe("EventDSLWrapper") {
+  describe("EventListenerDSLWrapper") {
     describe("#onEvent") {
       it("should invoke the underlying profile method") {
-        import org.scaladebugger.api.dsl.Implicits.EventDSL
+        import org.scaladebugger.api.dsl.Implicits.EventListenerDSL
 
         // NOTE: Cannot mock EventType (get stack overflow error)
         val eventType = EventType.BreakpointEventType
@@ -41,7 +41,7 @@ class EventDSLWrapperSpec extends test.ParallelMockFunSpec
 
     describe("#onUnsafeEvent") {
       it("should invoke the underlying profile method") {
-        import org.scaladebugger.api.dsl.Implicits.EventDSL
+        import org.scaladebugger.api.dsl.Implicits.EventListenerDSL
 
         // NOTE: Cannot mock EventType (get stack overflow error)
         val eventType = EventType.BreakpointEventType
@@ -62,7 +62,7 @@ class EventDSLWrapperSpec extends test.ParallelMockFunSpec
 
     describe("#onEventWithData") {
       it("should invoke the underlying profile method") {
-        import org.scaladebugger.api.dsl.Implicits.EventDSL
+        import org.scaladebugger.api.dsl.Implicits.EventListenerDSL
 
         // NOTE: Cannot mock EventType (get stack overflow error)
         val eventType = EventType.BreakpointEventType
@@ -85,7 +85,7 @@ class EventDSLWrapperSpec extends test.ParallelMockFunSpec
 
     describe("#onUnsafeEventWithData") {
       it("should invoke the underlying profile method") {
-        import org.scaladebugger.api.dsl.Implicits.EventDSL
+        import org.scaladebugger.api.dsl.Implicits.EventListenerDSL
 
         // NOTE: Cannot mock EventType (get stack overflow error)
         val eventType = EventType.BreakpointEventType

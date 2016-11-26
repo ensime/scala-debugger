@@ -4,7 +4,7 @@ package org.scaladebugger.api.profiles.swappable
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.swappable.breakpoints.SwappableBreakpointProfile
 import org.scaladebugger.api.profiles.swappable.classes.{SwappableClassPrepareProfile, SwappableClassUnloadProfile}
-import org.scaladebugger.api.profiles.swappable.events.SwappableEventProfile
+import org.scaladebugger.api.profiles.swappable.events.SwappableEventListenerProfile
 import org.scaladebugger.api.profiles.swappable.exceptions.SwappableExceptionProfile
 import org.scaladebugger.api.profiles.swappable.info.{SwappableCreateInfoProfile, SwappableGrabInfoProfile, SwappableMiscInfoProfile}
 import org.scaladebugger.api.profiles.swappable.methods.{SwappableMethodEntryProfile, SwappableMethodExitProfile}
@@ -34,7 +34,7 @@ trait SwappableDebugProfile
   with SwappableClassPrepareProfile
   with SwappableClassUnloadProfile
   with SwappableCreateInfoProfile
-  with SwappableEventProfile
+  with SwappableEventListenerProfile
   with SwappableExceptionProfile
   with SwappableGrabInfoProfile
   with SwappableMethodEntryProfile

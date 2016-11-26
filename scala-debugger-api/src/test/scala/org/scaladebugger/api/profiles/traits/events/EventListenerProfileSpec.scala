@@ -13,16 +13,16 @@ import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 
 import scala.util.{Failure, Success, Try}
 
-class EventProfileSpec extends test.ParallelMockFunSpec
+class EventListenerProfileSpec extends test.ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 
   // Pipeline that is parent to the one that just streams the event
   private val TestPipelineWithData = Pipeline.newPipeline(
-    classOf[EventProfile#EventAndData]
+    classOf[EventListenerProfile#EventAndData]
   )
 
-  private val successEventProfile = new Object with EventProfile {
+  private val successEventListenerProfile = new Object with EventListenerProfile {
     override def tryCreateEventListenerWithData(
       eventType: EventType,
       extraArguments: JDIArgument*
@@ -33,7 +33,7 @@ class EventProfileSpec extends test.ParallelMockFunSpec
     override def eventHandlers: Seq[EventHandlerInfo] = ???
   }
 
-  private val failEventProfile = new Object with EventProfile {
+  private val failEventListenerProfile = new Object with EventListenerProfile {
     override def tryCreateEventListenerWithData(
       eventType: EventType,
       extraArguments: JDIArgument*
@@ -44,7 +44,7 @@ class EventProfileSpec extends test.ParallelMockFunSpec
     override def eventHandlers: Seq[EventHandlerInfo] = ???
   }
 
-  describe("EventProfile") {
+  describe("EventListenerProfile") {
     describe("#tryCreateEventListener") {
       it("should return a pipeline with the event data results filtered out") {
         val expected = mock[Event]
@@ -53,7 +53,7 @@ class EventProfileSpec extends test.ParallelMockFunSpec
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
         var actual: Event = null
-        successEventProfile.tryCreateEventListener(mock[EventType]).get.foreach(actual = _)
+        successEventListenerProfile.tryCreateEventListener(mock[EventType]).get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
         // demonstrate that the pipeline with just the event is merely a
@@ -70,7 +70,7 @@ class EventProfileSpec extends test.ParallelMockFunSpec
         val data = (mock[Event], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
-        failEventProfile.tryCreateEventListener(mock[EventType]).failed.foreach(actual = _)
+        failEventListenerProfile.tryCreateEventListener(mock[EventType]).failed.foreach(actual = _)
 
         actual should be (expected)
       }
@@ -84,7 +84,7 @@ class EventProfileSpec extends test.ParallelMockFunSpec
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
         var actual: Event = null
-        successEventProfile.createEventListener(mock[EventType]).foreach(actual = _)
+        successEventListenerProfile.createEventListener(mock[EventType]).foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
         // demonstrate that the pipeline with just the event is merely a
@@ -96,7 +96,7 @@ class EventProfileSpec extends test.ParallelMockFunSpec
 
       it("should throw the exception if unsuccessful") {
         intercept[Throwable] {
-          failEventProfile.createEventListener(mock[EventType])
+          failEventListenerProfile.createEventListener(mock[EventType])
         }
       }
     }
@@ -107,7 +107,7 @@ class EventProfileSpec extends test.ParallelMockFunSpec
         val expected = (mock[Event], Seq(mock[JDIEventDataResult]))
 
         var actual: (Event, Seq[JDIEventDataResult]) = null
-        successEventProfile
+        successEventListenerProfile
           .createEventListenerWithData(mock[EventType])
           .foreach(actual = _)
 
@@ -121,7 +121,7 @@ class EventProfileSpec extends test.ParallelMockFunSpec
 
       it("should throw the exception if unsuccessful") {
         intercept[Throwable] {
-          failEventProfile.createEventListenerWithData(mock[EventType])
+          failEventListenerProfile.createEventListenerWithData(mock[EventType])
         }
       }
     }

@@ -5,7 +5,7 @@ import com.sun.jdi.VirtualMachine
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.pure.breakpoints.PureBreakpointProfile
 import org.scaladebugger.api.profiles.pure.classes.{PureClassPrepareProfile, PureClassUnloadProfile}
-import org.scaladebugger.api.profiles.pure.events.PureEventProfile
+import org.scaladebugger.api.profiles.pure.events.PureEventListenerProfile
 import org.scaladebugger.api.profiles.pure.exceptions.PureExceptionProfile
 import org.scaladebugger.api.profiles.pure.info.{PureCreateInfoProfile, PureGrabInfoProfile, PureMiscInfoProfile}
 import org.scaladebugger.api.profiles.pure.methods.{PureMethodEntryProfile, PureMethodExitProfile}
@@ -50,7 +50,7 @@ class Scala210DebugProfile(
   with PureClassPrepareProfile
   with PureClassUnloadProfile
   with PureCreateInfoProfile
-  with PureEventProfile
+  with PureEventListenerProfile
   with PureExceptionProfile
   with PureGrabInfoProfile
   with PureMethodEntryProfile

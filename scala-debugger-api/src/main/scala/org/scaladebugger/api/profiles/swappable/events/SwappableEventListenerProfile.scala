@@ -6,7 +6,7 @@ import org.scaladebugger.api.lowlevel.events.EventHandlerInfo
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfileManagement
-import org.scaladebugger.api.profiles.traits.events.EventProfile
+import org.scaladebugger.api.profiles.traits.events.EventListenerProfile
 
 import scala.util.Try
 
@@ -14,7 +14,7 @@ import scala.util.Try
  * Represents a swappable profile for events that redirects the
  * invocation to another profile.
  */
-trait SwappableEventProfile extends EventProfile {
+trait SwappableEventListenerProfile extends EventListenerProfile {
   this: SwappableDebugProfileManagement =>
 
   override def tryCreateEventListenerWithData(

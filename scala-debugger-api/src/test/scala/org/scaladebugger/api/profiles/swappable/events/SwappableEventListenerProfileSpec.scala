@@ -9,7 +9,7 @@ import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
 
-class SwappableEventProfileSpec extends test.ParallelMockFunSpec
+class SwappableEventListenerProfileSpec extends test.ParallelMockFunSpec
 {
   private val mockDebugProfile = mock[DebugProfile]
   private val mockProfileManager = mock[ProfileManager]
@@ -18,7 +18,7 @@ class SwappableEventProfileSpec extends test.ParallelMockFunSpec
     override protected val profileManager: ProfileManager = mockProfileManager
   }
 
-  describe("SwappableEventProfile") {
+  describe("SwappableEventListenerProfile") {
     describe("#eventHandlers") {
       it("should invoke the method on the underlying profile") {
         (mockProfileManager.retrieve _).expects(*)

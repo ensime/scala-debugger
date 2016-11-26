@@ -5,46 +5,58 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.events.EventProfile
+import org.scaladebugger.api.profiles.traits.events.EventListenerProfile
 
 import scala.util.Try
 
 /**
  * Wraps a profile, providing DSL-like syntax.
  *
- * @param eventProfile The profile to wrap
+ * @param eventListenerProfile The profile to wrap
  */
-class EventDSLWrapper private[dsl] (
-  private val eventProfile: EventProfile
+class EventListenerDSLWrapper private[dsl] (
+  private val eventListenerProfile: EventListenerProfile
 ) {
   /** Represents a Event event and any associated data. */
   type EventEventAndData = (Event, Seq[JDIEventDataResult])
 
-  /** @see EventProfile#tryCreateEventListener(EventType, JDIArgument*) */
+  /** @see EventListenerProfile#tryCreateEventListener(EventType, JDIArgument*) */
   def onEvent(
     eventType: EventType,
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[Event]] =
-    eventProfile.tryCreateEventListener(eventType, extraArguments: _*)
+    eventListenerProfile.tryCreateEventListener(
+      eventType,
+      extraArguments: _*
+    )
 
-  /** @see EventProfile#createEventListener(EventType, JDIArgument*) */
+  /** @see EventListenerProfile#createEventListener(EventType, JDIArgument*) */
   def onUnsafeEvent(
     eventType: EventType,
     extraArguments: JDIArgument*
   ): IdentityPipeline[Event] =
-    eventProfile.createEventListener(eventType, extraArguments: _*)
+    eventListenerProfile.createEventListener(
+      eventType,
+      extraArguments: _*
+    )
 
-  /** @see EventProfile#createEventListenerWithData(EventType, JDIArgument*) */
+  /** @see EventListenerProfile#createEventListenerWithData(EventType, JDIArgument*) */
   def onUnsafeEventWithData(
     eventType: EventType,
     extraArguments: JDIArgument*
   ): IdentityPipeline[EventEventAndData] =
-    eventProfile.createEventListenerWithData(eventType, extraArguments: _*)
+    eventListenerProfile.createEventListenerWithData(
+      eventType,
+      extraArguments: _*
+    )
 
-  /** @see EventProfile#tryCreateEventListenerWithData(EventType, JDIArgument*) */
+  /** @see EventListenerProfile#tryCreateEventListenerWithData(EventType, JDIArgument*) */
   def onEventWithData(
     eventType: EventType,
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[EventEventAndData]] =
-    eventProfile.tryCreateEventListenerWithData(eventType, extraArguments: _*)
+    eventListenerProfile.tryCreateEventListenerWithData(
+      eventType,
+      extraArguments: _*
+    )
 }
