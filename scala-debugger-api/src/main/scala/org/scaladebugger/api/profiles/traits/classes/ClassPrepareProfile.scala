@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.classes
 //import acyclic.file
 
-import com.sun.jdi.event.ClassPrepareEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.classes.ClassPrepareRequestInfo
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ClassPrepareEventInfoProfile
 
 import scala.util.Try
 
@@ -16,7 +15,7 @@ import scala.util.Try
  */
 trait ClassPrepareProfile {
   /** Represents a class prepare event and any associated data. */
-  type ClassPrepareEventAndData = (ClassPrepareEvent, Seq[JDIEventDataResult])
+  type ClassPrepareEventAndData = (ClassPrepareEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending class prepare requests.
@@ -34,7 +33,7 @@ trait ClassPrepareProfile {
    */
   def tryGetOrCreateClassPrepareRequest(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ClassPrepareEvent]] = {
+  ): Try[IdentityPipeline[ClassPrepareEventInfoProfile]] = {
     tryGetOrCreateClassPrepareRequestWithData(extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -47,7 +46,7 @@ trait ClassPrepareProfile {
    */
   def getOrCreateClassPrepareRequest(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ClassPrepareEvent] = {
+  ): IdentityPipeline[ClassPrepareEventInfoProfile] = {
     tryGetOrCreateClassPrepareRequest(extraArguments: _*).get
   }
 

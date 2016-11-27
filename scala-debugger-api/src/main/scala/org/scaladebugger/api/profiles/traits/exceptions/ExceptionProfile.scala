@@ -1,11 +1,11 @@
 package org.scaladebugger.api.profiles.traits.exceptions
 //import acyclic.file
 
-import com.sun.jdi.event.ExceptionEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.exceptions.ExceptionRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ExceptionEventInfoProfile
 
 import scala.util.Try
 
@@ -15,7 +15,7 @@ import scala.util.Try
  */
 trait ExceptionProfile {
   /** Represents a exception event and any associated data. */
-  type ExceptionEventAndData = (ExceptionEvent, Seq[JDIEventDataResult])
+  type ExceptionEventAndData = (ExceptionEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending exception requests.
@@ -41,7 +41,7 @@ trait ExceptionProfile {
     notifyCaught: Boolean,
     notifyUncaught: Boolean,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ExceptionEvent]] = {
+  ): Try[IdentityPipeline[ExceptionEventInfoProfile]] = {
     tryGetOrCreateExceptionRequestWithData(
       exceptionName,
       notifyCaught,
@@ -67,7 +67,7 @@ trait ExceptionProfile {
     notifyCaught: Boolean,
     notifyUncaught: Boolean,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ExceptionEvent] = {
+  ): IdentityPipeline[ExceptionEventInfoProfile] = {
     tryGetOrCreateExceptionRequest(
       exceptionName,
       notifyCaught,
@@ -138,7 +138,7 @@ trait ExceptionProfile {
     notifyCaught: Boolean,
     notifyUncaught: Boolean,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ExceptionEvent]] = {
+  ): Try[IdentityPipeline[ExceptionEventInfoProfile]] = {
     tryGetOrCreateAllExceptionsRequestWithData(
       notifyCaught,
       notifyUncaught,
@@ -161,7 +161,7 @@ trait ExceptionProfile {
     notifyCaught: Boolean,
     notifyUncaught: Boolean,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ExceptionEvent] = {
+  ): IdentityPipeline[ExceptionEventInfoProfile] = {
     tryGetOrCreateAllExceptionsRequest(
       notifyCaught,
       notifyUncaught,

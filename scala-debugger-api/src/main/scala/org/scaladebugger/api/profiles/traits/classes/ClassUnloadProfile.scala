@@ -1,11 +1,11 @@
 package org.scaladebugger.api.profiles.traits.classes
 //import acyclic.file
 
-import com.sun.jdi.event.ClassUnloadEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.classes.ClassUnloadRequestInfo
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ClassUnloadEventInfoProfile
 
 import scala.util.Try
 
@@ -15,7 +15,7 @@ import scala.util.Try
  */
 trait ClassUnloadProfile {
   /** Represents a class unload event and any associated data. */
-  type ClassUnloadEventAndData = (ClassUnloadEvent, Seq[JDIEventDataResult])
+  type ClassUnloadEventAndData = (ClassUnloadEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending class unload requests.
@@ -33,7 +33,7 @@ trait ClassUnloadProfile {
    */
   def tryGetOrCreateClassUnloadRequest(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ClassUnloadEvent]] = {
+  ): Try[IdentityPipeline[ClassUnloadEventInfoProfile]] = {
     tryGetOrCreateClassUnloadRequestWithData(extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -46,7 +46,7 @@ trait ClassUnloadProfile {
    */
   def getOrCreateClassUnloadRequest(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ClassUnloadEvent] = {
+  ): IdentityPipeline[ClassUnloadEventInfoProfile] = {
     tryGetOrCreateClassUnloadRequest(extraArguments: _*).get
   }
 

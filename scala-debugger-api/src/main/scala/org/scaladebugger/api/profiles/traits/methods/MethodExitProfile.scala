@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.methods
 //import acyclic.file
 
-import com.sun.jdi.event.MethodExitEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.methods.MethodExitRequestInfo
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MethodExitEventInfoProfile
 
 import scala.util.Try
 
@@ -16,7 +15,7 @@ import scala.util.Try
  */
 trait MethodExitProfile {
   /** Represents a method exit event and any associated data. */
-  type MethodExitEventAndData = (MethodExitEvent, Seq[JDIEventDataResult])
+  type MethodExitEventAndData = (MethodExitEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending method exit requests.
@@ -40,7 +39,7 @@ trait MethodExitProfile {
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MethodExitEvent]] = {
+  ): Try[IdentityPipeline[MethodExitEventInfoProfile]] = {
     tryGetOrCreateMethodExitRequestWithData(
       className: String,
       methodName: String,
@@ -63,7 +62,7 @@ trait MethodExitProfile {
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MethodExitEvent] = {
+  ): IdentityPipeline[MethodExitEventInfoProfile] = {
     tryGetOrCreateMethodExitRequest(
       className,
       methodName,

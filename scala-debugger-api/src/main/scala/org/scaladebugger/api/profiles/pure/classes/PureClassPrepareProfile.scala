@@ -17,7 +17,9 @@ import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.Constants._
 import org.scaladebugger.api.profiles.traits.classes.ClassPrepareProfile
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.utils.{Memoization, MultiMap}
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -29,6 +31,11 @@ import scala.util.Try
 trait PureClassPrepareProfile extends ClassPrepareProfile {
   protected val classPrepareManager: ClassPrepareManager
   protected val eventManager: EventManager
+
+  protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
+
+  private lazy val eventProducer = infoProducer.eventProducer
 
   /**
    * Contains a mapping of request ids to associated event handler ids.
@@ -174,10 +181,19 @@ trait PureClassPrepareProfile extends ClassPrepareProfile {
     requestId: String,
     args: Seq[JDIEventArgument]
   ): IdentityPipeline[ClassPrepareEventAndData] = {
+    // Lookup final set of request arguments used when creating the request
+    val rArgs = classPrepareManager.getClassPrepareRequestInfo(requestId)
+      .map(_.extraArguments).getOrElse(Nil)
+
     val eArgsWithFilter = UniqueIdPropertyFilter(id = requestId) +: args
     val newPipeline = eventManager
       .addEventDataStream(ClassPrepareEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[ClassPrepareEvent], t._2))
+      .map(t => (eventProducer.newClassPrepareEventInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        t._1,
+        rArgs ++ eArgsWithFilter: _*
+      ), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

@@ -31,6 +31,8 @@ trait PureEventListenerProfile extends EventListenerProfile {
     eventType: EventType,
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[EventAndData]] = Try {
+    // TODO: Need to refactor PureEventInfoProfile to be a class
+    // so we can easily wrap this
     val JDIArgumentGroup(_, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
     eventManager.addEventDataStream(eventType, eArgs: _*)
   }

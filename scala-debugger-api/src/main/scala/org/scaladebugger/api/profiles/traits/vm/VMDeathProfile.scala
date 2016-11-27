@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.vm
 //import acyclic.file
 
-import com.sun.jdi.event.VMDeathEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.vm.VMDeathRequestInfo
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.VMDeathEventInfoProfile
 
 import scala.util.Try
 
@@ -16,7 +15,8 @@ import scala.util.Try
  */
 trait VMDeathProfile {
   /** Represents a vm death event and any associated data. */
-  type VMDeathEventAndData = (VMDeathEvent, Seq[JDIEventDataResult])
+  type VMDeathEventInfoProfileAndData =
+    (VMDeathEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending vm death requests.
@@ -34,7 +34,7 @@ trait VMDeathProfile {
    */
   def tryGetOrCreateVMDeathRequest(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMDeathEvent]] = {
+  ): Try[IdentityPipeline[VMDeathEventInfoProfile]] = {
     tryGetOrCreateVMDeathRequestWithData(extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -48,7 +48,7 @@ trait VMDeathProfile {
    */
   def tryGetOrCreateVMDeathRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMDeathEventAndData]]
+  ): Try[IdentityPipeline[VMDeathEventInfoProfileAndData]]
 
   /**
    * Constructs a stream of vm death events.
@@ -59,7 +59,7 @@ trait VMDeathProfile {
    */
   def getOrCreateVMDeathRequest(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[VMDeathEvent] = {
+  ): IdentityPipeline[VMDeathEventInfoProfile] = {
     tryGetOrCreateVMDeathRequest(extraArguments: _*).get
   }
 
@@ -73,7 +73,7 @@ trait VMDeathProfile {
    */
   def getOrCreateVMDeathRequestWithData(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[VMDeathEventAndData] = {
+  ): IdentityPipeline[VMDeathEventInfoProfileAndData] = {
     tryGetOrCreateVMDeathRequestWithData(extraArguments: _*).get
   }
 

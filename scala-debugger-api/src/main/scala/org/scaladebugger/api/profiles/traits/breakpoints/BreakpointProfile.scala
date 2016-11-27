@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.breakpoints
 //import acyclic.file
 
-import com.sun.jdi.event.BreakpointEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.breakpoints.BreakpointRequestInfo
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.BreakpointEventInfoProfile
 
 import scala.util.Try
 
@@ -16,7 +15,7 @@ import scala.util.Try
  */
 trait BreakpointProfile {
   /** Represents a breakpoint event and any associated data. */
-  type BreakpointEventAndData = (BreakpointEvent, Seq[JDIEventDataResult])
+  type BreakpointEventAndData = (BreakpointEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending breakpoints requests.
@@ -39,7 +38,7 @@ trait BreakpointProfile {
     fileName: String,
     lineNumber: Int,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[BreakpointEvent]] = {
+  ): Try[IdentityPipeline[BreakpointEventInfoProfile]] = {
     tryGetOrCreateBreakpointRequestWithData(
       fileName,
       lineNumber,
@@ -61,7 +60,7 @@ trait BreakpointProfile {
     fileName: String,
     lineNumber: Int,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[BreakpointEvent] = {
+  ): IdentityPipeline[BreakpointEventInfoProfile] = {
     tryGetOrCreateBreakpointRequest(
       fileName,
       lineNumber,

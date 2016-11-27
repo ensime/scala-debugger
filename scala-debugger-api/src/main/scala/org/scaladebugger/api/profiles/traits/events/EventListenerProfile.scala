@@ -1,13 +1,12 @@
 package org.scaladebugger.api.profiles.traits.events
 //import acyclic.file
 
-import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.EventHandlerInfo
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
 
 import scala.util.Try
 
@@ -16,8 +15,8 @@ import scala.util.Try
  * event listener functionality for a specific debug profile.
  */
 trait EventListenerProfile {
-  /** Represents a breakpoint event and any associated data. */
-  type EventAndData = (Event, Seq[JDIEventDataResult])
+  /** Represents an event and any associated data. */
+  type EventAndData = (EventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active event handlers.
@@ -37,7 +36,7 @@ trait EventListenerProfile {
   def tryCreateEventListener(
     eventType: EventType,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[Event]] = {
+  ): Try[IdentityPipeline[EventInfoProfile]] = {
     tryCreateEventListenerWithData(eventType, extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -52,7 +51,7 @@ trait EventListenerProfile {
   def createEventListener(
     eventType: EventType,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[Event] = {
+  ): IdentityPipeline[EventInfoProfile] = {
     tryCreateEventListener(eventType, extraArguments: _*).get
   }
 

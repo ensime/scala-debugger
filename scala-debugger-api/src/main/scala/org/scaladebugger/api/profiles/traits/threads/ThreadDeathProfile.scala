@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.threads
 //import acyclic.file
 
-import com.sun.jdi.event.ThreadDeathEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.threads.ThreadDeathRequestInfo
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ThreadDeathEventInfoProfile
 
 import scala.util.Try
 
@@ -16,7 +15,8 @@ import scala.util.Try
  */
 trait ThreadDeathProfile {
   /** Represents a thread death event and any associated data. */
-  type ThreadDeathEventAndData = (ThreadDeathEvent, Seq[JDIEventDataResult])
+  type ThreadDeathEventInfoProfileAndData =
+    (ThreadDeathEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending thread death requests.
@@ -34,7 +34,7 @@ trait ThreadDeathProfile {
    */
   def tryGetOrCreateThreadDeathRequest(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ThreadDeathEvent]] = {
+  ): Try[IdentityPipeline[ThreadDeathEventInfoProfile]] = {
     tryGetOrCreateThreadDeathRequestWithData(extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -48,7 +48,7 @@ trait ThreadDeathProfile {
    */
   def tryGetOrCreateThreadDeathRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ThreadDeathEventAndData]]
+  ): Try[IdentityPipeline[ThreadDeathEventInfoProfileAndData]]
 
   /**
    * Constructs a stream of thread death events.
@@ -59,7 +59,7 @@ trait ThreadDeathProfile {
    */
   def getOrCreateThreadDeathRequest(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ThreadDeathEvent] = {
+  ): IdentityPipeline[ThreadDeathEventInfoProfile] = {
     tryGetOrCreateThreadDeathRequest(extraArguments: _*).get
   }
 
@@ -73,7 +73,7 @@ trait ThreadDeathProfile {
    */
   def getOrCreateThreadDeathRequestWithData(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ThreadDeathEventAndData] = {
+  ): IdentityPipeline[ThreadDeathEventInfoProfileAndData] = {
     tryGetOrCreateThreadDeathRequestWithData(extraArguments: _*).get
   }
 

@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.monitors
 //import acyclic.file
 
-import com.sun.jdi.event.MonitorWaitEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.monitors.MonitorWaitRequestInfo
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitEventInfoProfile
 
 import scala.util.Try
 
@@ -17,7 +16,7 @@ import scala.util.Try
 trait MonitorWaitProfile {
   /** Represents a monitor wait event and any associated data. */
   type MonitorWaitEventAndData =
-    (MonitorWaitEvent, Seq[JDIEventDataResult])
+    (MonitorWaitEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending monitor wait requests.
@@ -35,7 +34,7 @@ trait MonitorWaitProfile {
    */
   def tryGetOrCreateMonitorWaitRequest(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MonitorWaitEvent]] = {
+  ): Try[IdentityPipeline[MonitorWaitEventInfoProfile]] = {
     tryGetOrCreateMonitorWaitRequestWithData(extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -60,7 +59,7 @@ trait MonitorWaitProfile {
    */
   def getOrCreateMonitorWaitRequest(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MonitorWaitEvent] = {
+  ): IdentityPipeline[MonitorWaitEventInfoProfile] = {
     tryGetOrCreateMonitorWaitRequest(extraArguments: _*).get
   }
 

@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.threads
 //import acyclic.file
 
-import com.sun.jdi.event.ThreadStartEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.threads.ThreadStartRequestInfo
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ThreadStartEventInfoProfile
 
 import scala.util.Try
 
@@ -16,7 +15,8 @@ import scala.util.Try
  */
 trait ThreadStartProfile {
   /** Represents a thread start event and any associated data. */
-  type ThreadStartEventAndData = (ThreadStartEvent, Seq[JDIEventDataResult])
+  type ThreadStartEventInfoProfileAndData =
+    (ThreadStartEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending thread start requests.
@@ -34,7 +34,7 @@ trait ThreadStartProfile {
    */
   def tryGetOrCreateThreadStartRequest(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ThreadStartEvent]] = {
+  ): Try[IdentityPipeline[ThreadStartEventInfoProfile]] = {
     tryGetOrCreateThreadStartRequestWithData(extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -48,7 +48,7 @@ trait ThreadStartProfile {
    */
   def tryGetOrCreateThreadStartRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ThreadStartEventAndData]]
+  ): Try[IdentityPipeline[ThreadStartEventInfoProfileAndData]]
 
   /**
    * Constructs a stream of thread start events.
@@ -59,7 +59,7 @@ trait ThreadStartProfile {
    */
   def getOrCreateThreadStartRequest(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ThreadStartEvent] = {
+  ): IdentityPipeline[ThreadStartEventInfoProfile] = {
     tryGetOrCreateThreadStartRequest(extraArguments: _*).get
   }
 
@@ -73,7 +73,7 @@ trait ThreadStartProfile {
    */
   def getOrCreateThreadStartRequestWithData(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ThreadStartEventAndData] = {
+  ): IdentityPipeline[ThreadStartEventInfoProfileAndData] = {
     tryGetOrCreateThreadStartRequestWithData(extraArguments: _*).get
   }
 

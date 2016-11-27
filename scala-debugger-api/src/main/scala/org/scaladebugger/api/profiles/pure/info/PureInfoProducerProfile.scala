@@ -1,7 +1,9 @@
 package org.scaladebugger.api.profiles.pure.info
 
 import com.sun.jdi._
+import org.scaladebugger.api.profiles.pure.info.events.PureEventInfoProducerProfile
 import org.scaladebugger.api.profiles.traits.info._
+import org.scaladebugger.api.profiles.traits.info.events.EventInfoProducerProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -26,6 +28,15 @@ class PureInfoProducerProfile extends InfoProducerProfile {
    *         to Java
    */
   override def toJavaInfo: InfoProducerProfile = new PureInfoProducerProfile
+
+  /**
+   * Retrieves the event info producer tied to this info producer.
+   *
+   * @return The information profile for the event producer
+   */
+  override lazy val eventProducer: EventInfoProducerProfile = {
+    new PureEventInfoProducerProfile(this)
+  }
 
   override def newValueInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,

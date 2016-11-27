@@ -1,0 +1,432 @@
+package org.scaladebugger.api.profiles.pure.info.events
+
+import com.sun.jdi.event._
+import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.api.lowlevel.events.JDIEventArgument
+import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events._
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+
+/**
+ * Represents a pure implementation of an event info profile that adds no
+ * custom logic on top of the standard JDI.
+ *
+ * @param scalaVirtualMachine The high-level virtual machine containing the
+ *                            array
+ * @param infoProducer The producer of info-based profile instances
+ * @param event The event to wrap in the profile
+ * @param jdiArguments The request and event arguments tied to the provided
+ *                     event
+ */
+class PureEventInfoProfile(
+  override val scalaVirtualMachine: ScalaVirtualMachine,
+  protected val infoProducer: InfoProducerProfile,
+  private val event: Event,
+  private val jdiArguments: Seq[JDIArgument] = Nil
+) extends EventInfoProfile {
+  /**
+   * Returns whether or not this info profile represents the low-level Java
+   * implementation.
+   *
+   * @return If true, this profile represents the low-level Java information,
+   *         otherwise this profile represents something higher-level like
+   *         Scala, Jython, or JRuby
+   */
+  override def isJavaInfo: Boolean = true
+
+  /**
+   * Converts the current profile instance to a representation of
+   * low-level Java instead of a higher-level abstraction.
+   *
+   * @return The profile instance providing an implementation corresponding
+   *         to Java
+   */
+  override def toJavaInfo: EventInfoProfile = {
+    val jep = infoProducer.eventProducer.toJavaInfo
+    jep.newEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      event = event,
+      jdiArguments: _*
+    )
+  }
+
+  /**
+   * Returns the JDI representation this profile instance wraps.
+   *
+   * @return The JDI instance
+   */
+  override def toJdiInstance: Event = event
+
+  /**
+   * Returns the request arguments provided to this event's request.
+   *
+   * @return The collection of request arguments
+   */
+  override lazy val requestArguments: Seq[JDIRequestArgument] = {
+    jdiArguments.filter(_.isInstanceOf[JDIRequestArgument])
+      .map(_.asInstanceOf[JDIRequestArgument])
+  }
+
+  /**
+   * Returns the event arguments provided to this event.
+   *
+   * @return The collection of event arguments
+   */
+  override lazy val eventArguments: Seq[JDIEventArgument] = {
+    jdiArguments.filter(_.isInstanceOf[JDIEventArgument])
+      .map(_.asInstanceOf[JDIEventArgument])
+  }
+
+  /**
+   * Returns the string representation of the underlying event.
+   *
+   * @return The event string representation
+   */
+  override def toString: String = event.toString
+
+  /**
+   * Returns whether or not this event represents an access watchpoint event.
+   *
+   * @return True if an access watchpoint event, otherwise false
+   */
+  override def isAccessWatchpointEvent: Boolean = {
+    event.isInstanceOf[AccessWatchpointEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a breakpoint event.
+   *
+   * @return True if a breakpoint event, otherwise false
+   */
+  override def isBreakpointEvent: Boolean = {
+    event.isInstanceOf[BreakpointEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a class prepare event.
+   *
+   * @return True if a class prepare event, otherwise false
+   */
+  override def isClassPrepareEvent: Boolean = {
+    event.isInstanceOf[ClassPrepareEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a class unload event.
+   *
+   * @return True if a class unload event, otherwise false
+   */
+  override def isClassUnloadEvent: Boolean = {
+    event.isInstanceOf[ClassUnloadEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents an exception event.
+   *
+   * @return True if an exception event, otherwise false
+   */
+  override def isExceptionEvent: Boolean = {
+    event.isInstanceOf[ExceptionEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a locatable event.
+   *
+   * @return True if a locatable event, otherwise false
+   */
+  override def isLocatableEvent: Boolean = {
+    event.isInstanceOf[LocatableEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a method entry event.
+   *
+   * @return True if a method entry event, otherwise false
+   */
+  override def isMethodEntryEvent: Boolean = {
+    event.isInstanceOf[MethodEntryEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a method exit event.
+   *
+   * @return True if a method exit event, otherwise false
+   */
+  override def isMethodExitEvent: Boolean = {
+    event.isInstanceOf[MethodExitEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a
+   * modification watchpoint event.
+   *
+   * @return True if a modification watchpoint event, otherwise false
+   */
+  override def isModificationWatchpointEvent: Boolean = {
+    event.isInstanceOf[ModificationWatchpointEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a
+   * monitor contended entered event.
+   *
+   * @return True if a monitor contended entered event, otherwise false
+   */
+  override def isMonitorContendedEnteredEvent: Boolean = {
+    event.isInstanceOf[MonitorContendedEnteredEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a
+   * monitor contended enter event.
+   *
+   * @return True if a monitor contended enter event, otherwise false
+   */
+  override def isMonitorContendedEnterEvent: Boolean = {
+    event.isInstanceOf[MonitorContendedEnterEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a
+   * monitor waited event.
+   *
+   * @return True if a monitor waited event, otherwise false
+   */
+  override def isMonitorWaitedEvent: Boolean = {
+    event.isInstanceOf[MonitorWaitedEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a
+   * monitor wait event.
+   *
+   * @return True if a monitor wait event, otherwise false
+   */
+  override def isMonitorWaitEvent: Boolean = {
+    event.isInstanceOf[MonitorWaitEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a step event.
+   *
+   * @return True if a step event, otherwise false
+   */
+  override def isStepEvent: Boolean = {
+    event.isInstanceOf[StepEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a thread death event.
+   *
+   * @return True if a thread death event, otherwise false
+   */
+  override def isThreadDeathEvent: Boolean = {
+    event.isInstanceOf[ThreadDeathEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a thread start event.
+   *
+   * @return True if a thread start event, otherwise false
+   */
+  override def isThreadStartEvent: Boolean = {
+    event.isInstanceOf[ThreadStartEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a vm death event.
+   *
+   * @return True if a vm death event, otherwise false
+   */
+  override def isVMDeathEvent: Boolean = {
+    event.isInstanceOf[VMDeathEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a vm disconnect event.
+   *
+   * @return True if a vm disconnect event, otherwise false
+   */
+  override def isVMDisconnectEvent: Boolean = {
+    event.isInstanceOf[VMDisconnectEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a vm start event.
+   *
+   * @return True if a vm start event, otherwise false
+   */
+  override def isVMStartEvent: Boolean = {
+    event.isInstanceOf[VMStartEvent]
+  }
+
+  /**
+   * Returns whether or not this event represents a watchpoint event.
+   *
+   * @return True if a watchpoint event, otherwise false
+   */
+  override def isWatchpointEvent: Boolean = {
+    event.isInstanceOf[WatchpointEvent]
+  }
+
+  /**
+   * Returns the event as an access watchpoint event.
+   *
+   * @return The access watchpoint event profile wrapping the event
+   * @throws AssertionError If not an access watchpoint event
+   */
+  override def toAccessWatchpointEvent: AccessWatchpointEventInfoProfile = ???
+
+  /**
+   * Returns the event as a breakpoint event.
+   *
+   * @return The breakpoint event profile wrapping the event
+   * @throws AssertionError If not a breakpoint event
+   */
+  override def toBreakpointEvent: BreakpointEventInfoProfile = ???
+
+  /**
+   * Returns the event as a class prepare event.
+   *
+   * @return The class prepare event profile wrapping the event
+   * @throws AssertionError If not a class prepare event
+   */
+  override def toClassPrepareEvent: ClassPrepareEventInfoProfile = ???
+
+  /** :w
+   * Returns the event as a class unload event.
+   *
+   * @return The class unload event profile wrapping the event
+   * @throws AssertionError If not a class unload event
+   */
+  override def toClassUnloadEvent: ClassUnloadEventInfoProfile = ???
+
+  /**
+   * Returns the event as an exception event.
+   *
+   * @return The exception event profile wrapping the event
+   * @throws AssertionError If not an exception event
+   */
+  override def toExceptionEvent: ExceptionEventInfoProfile = ???
+
+  /**
+   * Returns the event as a locatable event.
+   *
+   * @return The locatable event profile wrapping the event
+   * @throws AssertionError If not a locatable event
+   */
+  override def toLocatableEvent: LocatableEventInfoProfile = ???
+
+  /**
+   * Returns the event as a method entry event.
+   *
+   * @return The method entry event profile wrapping the event
+   * @throws AssertionError If not a method entry event
+   */
+  override def toMethodEntryEvent: MethodEntryEventInfoProfile = ???
+
+  /**
+   * Returns the event as a method exit event.
+   *
+   * @return The method exit event profile wrapping the event
+   * @throws AssertionError If not a method exit event
+   */
+  override def toMethodExitEvent: MethodExitEventInfoProfile = ???
+
+  /**
+   * Returns the event as an modification watchpoint event.
+   *
+   * @return The modification watchpoint event profile wrapping the event
+   * @throws AssertionError If not an modification watchpoint event
+   */
+  override def toModificationWatchpointEvent: ModificationWatchpointEventInfoProfile = ???
+
+  /**
+   * Returns the event as a monitor contended entered event.
+   *
+   * @return The monitor contended entered event profile wrapping the event
+   * @throws AssertionError If not a monitor contended entered event
+   */
+  override def toMonitorContendedEnteredEvent: MonitorContendedEnteredEventInfoProfile = ???
+
+  /**
+   * Returns the event as a monitor contended enter event.
+   *
+   * @return The monitor contended enter event profile wrapping the event
+   * @throws AssertionError If not a monitor contended enter event
+   */
+  override def toMonitorContendedEnterEvent: MonitorContendedEnterEventInfoProfile = ???
+
+  /**
+   * Returns the event as a monitor waited event.
+   *
+   * @return The monitor waited event profile wrapping the event
+   * @throws AssertionError If not a monitor waited event
+   */
+  override def toMonitorWaitedEvent: MonitorWaitedEventInfoProfile = ???
+
+  /**
+   * Returns the event as a monitor wait event.
+   *
+   * @return The monitor wait event profile wrapping the event
+   * @throws AssertionError If not a monitor wait event
+   */
+  override def toMonitorWaitEvent: MonitorWaitEventInfoProfile = ???
+
+  /**
+   * Returns the event as a step event.
+   *
+   * @return The step event profile wrapping the event
+   * @throws AssertionError If not a step event
+   */
+  override def toStepEvent: StepEventInfoProfile = ???
+
+  /**
+   * Returns the event as a thread death event.
+   *
+   * @return The thread death event profile wrapping the event
+   * @throws AssertionError If not a thread death event
+   */
+  override def toThreadDeathEvent: ThreadDeathEventInfoProfile = ???
+
+  /**
+   * Returns the event as a thread start event.
+   *
+   * @return The thread start event profile wrapping the event
+   * @throws AssertionError If not a thread start event
+   */
+  override def toThreadStartEvent: ThreadStartEventInfoProfile = ???
+
+  /**
+   * Returns the event as a vm death event.
+   *
+   * @return The vm death event profile wrapping the event
+   * @throws AssertionError If not a vm death event
+   */
+  override def toVMDeathEvent: VMDeathEventInfoProfile = ???
+
+  /**
+   * Returns the event as a vm disconnect event.
+   *
+   * @return The vm disconnect event profile wrapping the event
+   * @throws AssertionError If not a vm disconnect event
+   */
+  override def toVMDisconnectEvent: VMDisconnectEventInfoProfile = ???
+
+  /**
+   * Returns the event as a vm start event.
+   *
+   * @return The vm start event profile wrapping the event
+   * @throws AssertionError If not a vm start event
+   */
+  override def toVMStartEvent: VMStartEventInfoProfile = ???
+
+  /**
+   * Returns the event as a watchpoint event.
+   *
+   * @return The watchpoint event profile wrapping the event
+   * @throws AssertionError If not a watchpoint event
+   */
+  override def toWatchpointEvent: WatchpointEventInfoProfile = ???
+}

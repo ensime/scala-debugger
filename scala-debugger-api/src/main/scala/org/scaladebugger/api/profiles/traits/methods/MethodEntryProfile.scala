@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.methods
 //import acyclic.file
 
-import com.sun.jdi.event.MethodEntryEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.methods.MethodEntryRequestInfo
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MethodEntryEventInfoProfile
 
 import scala.util.Try
 
@@ -16,7 +15,7 @@ import scala.util.Try
  */
 trait MethodEntryProfile {
   /** Represents a method entry event and any associated data. */
-  type MethodEntryEventAndData = (MethodEntryEvent, Seq[JDIEventDataResult])
+  type MethodEntryEventAndData = (MethodEntryEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending method entry requests.
@@ -40,7 +39,7 @@ trait MethodEntryProfile {
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MethodEntryEvent]] = {
+  ): Try[IdentityPipeline[MethodEntryEventInfoProfile]] = {
     tryGetOrCreateMethodEntryRequestWithData(
       className: String,
       methodName: String,
@@ -63,7 +62,7 @@ trait MethodEntryProfile {
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MethodEntryEvent] = {
+  ): IdentityPipeline[MethodEntryEventInfoProfile] = {
     tryGetOrCreateMethodEntryRequest(
       className,
       methodName,

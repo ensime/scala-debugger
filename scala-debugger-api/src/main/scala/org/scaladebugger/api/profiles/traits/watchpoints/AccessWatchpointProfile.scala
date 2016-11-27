@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.watchpoints
 //import acyclic.file
 
-import com.sun.jdi.event.AccessWatchpointEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.watchpoints.AccessWatchpointRequestInfo
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.AccessWatchpointEventInfoProfile
 
 import scala.util.Try
 
@@ -16,8 +15,8 @@ import scala.util.Try
  */
 trait AccessWatchpointProfile {
   /** Represents a access watchpoint event and any associated data. */
-  type AccessWatchpointEventAndData =
-    (AccessWatchpointEvent, Seq[JDIEventDataResult])
+  type AccessWatchpointEventInfoProfileAndData =
+    (AccessWatchpointEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending access watchpoint requests.
@@ -40,7 +39,7 @@ trait AccessWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[AccessWatchpointEvent]] = {
+  ): Try[IdentityPipeline[AccessWatchpointEventInfoProfile]] = {
     tryGetOrCreateAccessWatchpointRequestWithData(
       className,
       fieldName,
@@ -63,7 +62,7 @@ trait AccessWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[AccessWatchpointEventAndData]]
+  ): Try[IdentityPipeline[AccessWatchpointEventInfoProfileAndData]]
 
   /**
    * Constructs a stream of access watchpoint events for field in the specified
@@ -79,7 +78,7 @@ trait AccessWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[AccessWatchpointEvent] = {
+  ): IdentityPipeline[AccessWatchpointEventInfoProfile] = {
     tryGetOrCreateAccessWatchpointRequest(
       className,
       fieldName,
@@ -102,7 +101,7 @@ trait AccessWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[AccessWatchpointEventAndData] = {
+  ): IdentityPipeline[AccessWatchpointEventInfoProfileAndData] = {
     tryGetOrCreateAccessWatchpointRequestWithData(
       className,
       fieldName,

@@ -1,11 +1,10 @@
 package org.scaladebugger.api.profiles.traits.vm
 //import acyclic.file
 
-import com.sun.jdi.event.VMDisconnectEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.VMDisconnectEventInfoProfile
 
 import scala.util.Try
 
@@ -14,8 +13,9 @@ import scala.util.Try
  * vm disconnect functionality for a specific debug profile.
  */
 trait VMDisconnectProfile {
-  /** Represents a vm death event and any associated data. */
-  type VMDisconnectEventAndData = (VMDisconnectEvent, Seq[JDIEventDataResult])
+  /** Represents a vm disconnect event and any associated data. */
+  type VMDisconnectEventInfoProfileAndData =
+    (VMDisconnectEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Constructs a stream of vm disconnect events.
@@ -26,7 +26,7 @@ trait VMDisconnectProfile {
    */
   def tryGetOrCreateVMDisconnectRequest(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMDisconnectEvent]] = {
+  ): Try[IdentityPipeline[VMDisconnectEventInfoProfile]] = {
     tryGetOrCreateVMDisconnectRequestWithData(extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -40,7 +40,7 @@ trait VMDisconnectProfile {
    */
   def tryGetOrCreateVMDisconnectRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMDisconnectEventAndData]]
+  ): Try[IdentityPipeline[VMDisconnectEventInfoProfileAndData]]
 
   /**
    * Constructs a stream of vm disconnect events.
@@ -51,7 +51,7 @@ trait VMDisconnectProfile {
    */
   def getOrCreateVMDisconnectRequest(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[VMDisconnectEvent] = {
+  ): IdentityPipeline[VMDisconnectEventInfoProfile] = {
     tryGetOrCreateVMDisconnectRequest(extraArguments: _*).get
   }
 
@@ -65,7 +65,7 @@ trait VMDisconnectProfile {
    */
   def getOrCreateVMDisconnectRequestWithData(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[VMDisconnectEventAndData] = {
+  ): IdentityPipeline[VMDisconnectEventInfoProfileAndData] = {
     tryGetOrCreateVMDisconnectRequestWithData(extraArguments: _*).get
   }
 }

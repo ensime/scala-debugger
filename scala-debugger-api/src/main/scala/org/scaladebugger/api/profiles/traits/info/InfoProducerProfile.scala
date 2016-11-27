@@ -1,6 +1,7 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi._
+import org.scaladebugger.api.profiles.traits.info.events.EventInfoProducerProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -15,6 +16,13 @@ trait InfoProducerProfile extends JavaInfoProfile {
    *         to Java
    */
   override def toJavaInfo: InfoProducerProfile
+
+  /**
+   * Retrieves the event info producer tied to this info producer.
+   *
+   * @return The information profile for the event producer
+   */
+  def eventProducer: EventInfoProducerProfile
 
   def newValueInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,

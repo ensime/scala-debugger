@@ -1,15 +1,14 @@
 package org.scaladebugger.api.profiles.traits.steps
 //import acyclic.file
 
-import com.sun.jdi.event.StepEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.steps.StepRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.events.StepEventInfoProfile
 
 import scala.concurrent.Future
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
 
@@ -19,7 +18,7 @@ import scala.util.Try
  */
 trait StepProfile {
   /** Represents a step event and any associated data. */
-  type StepEventAndData = (StepEvent, Seq[JDIEventDataResult])
+  type StepEventAndData = (StepEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending step requests.
@@ -38,7 +37,7 @@ trait StepProfile {
   def stepIntoLine(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Future[StepEvent] = {
+  ): Future[StepEventInfoProfile] = {
     stepIntoLineWithData(threadInfoProfile, extraArguments: _*).map(_._1)
   }
 
@@ -65,7 +64,7 @@ trait StepProfile {
   def stepOverLine(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Future[StepEvent] = {
+  ): Future[StepEventInfoProfile] = {
     stepOverLineWithData(threadInfoProfile, extraArguments: _*).map(_._1)
   }
 
@@ -92,7 +91,7 @@ trait StepProfile {
   def stepOutLine(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Future[StepEvent] = {
+  ): Future[StepEventInfoProfile] = {
     stepOutLineWithData(threadInfoProfile, extraArguments: _*).map(_._1)
   }
 
@@ -119,7 +118,7 @@ trait StepProfile {
   def stepIntoMin(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Future[StepEvent] = {
+  ): Future[StepEventInfoProfile] = {
     stepIntoMinWithData(threadInfoProfile, extraArguments: _*).map(_._1)
   }
 
@@ -146,7 +145,7 @@ trait StepProfile {
   def stepOverMin(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Future[StepEvent] = {
+  ): Future[StepEventInfoProfile] = {
     stepOverMinWithData(threadInfoProfile, extraArguments: _*).map(_._1)
   }
 
@@ -173,7 +172,7 @@ trait StepProfile {
   def stepOutMin(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Future[StepEvent] = {
+  ): Future[StepEventInfoProfile] = {
     stepOutMinWithData(threadInfoProfile, extraArguments: _*).map(_._1)
   }
 
@@ -200,7 +199,7 @@ trait StepProfile {
   def tryCreateStepListener(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[StepEvent]] = {
+  ): Try[IdentityPipeline[StepEventInfoProfile]] = {
     tryCreateStepListenerWithData(threadInfoProfile, extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -227,7 +226,7 @@ trait StepProfile {
   def createStepListener(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[StepEvent] = {
+  ): IdentityPipeline[StepEventInfoProfile] = {
     tryCreateStepListener(threadInfoProfile, extraArguments: _*).get
   }
 

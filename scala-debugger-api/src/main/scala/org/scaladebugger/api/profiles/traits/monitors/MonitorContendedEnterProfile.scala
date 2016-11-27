@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.monitors
 //import acyclic.file
 
-import com.sun.jdi.event.MonitorContendedEnterEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.monitors.MonitorContendedEnterRequestInfo
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnterEventInfoProfile
 
 import scala.util.Try
 
@@ -17,7 +16,7 @@ import scala.util.Try
 trait MonitorContendedEnterProfile {
   /** Represents a monitor contended enter event and any associated data. */
   type MonitorContendedEnterEventAndData =
-    (MonitorContendedEnterEvent, Seq[JDIEventDataResult])
+    (MonitorContendedEnterEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending monitor contended enter
@@ -36,7 +35,7 @@ trait MonitorContendedEnterProfile {
    */
   def tryGetOrCreateMonitorContendedEnterRequest(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MonitorContendedEnterEvent]] = {
+  ): Try[IdentityPipeline[MonitorContendedEnterEventInfoProfile]] = {
     tryGetOrCreateMonitorContendedEnterRequestWithData(extraArguments: _*).map(_.map(_._1).noop())
   }
 
@@ -61,7 +60,7 @@ trait MonitorContendedEnterProfile {
    */
   def getOrCreateMonitorContendedEnterRequest(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MonitorContendedEnterEvent] = {
+  ): IdentityPipeline[MonitorContendedEnterEventInfoProfile] = {
     tryGetOrCreateMonitorContendedEnterRequest(extraArguments: _*).get
   }
 

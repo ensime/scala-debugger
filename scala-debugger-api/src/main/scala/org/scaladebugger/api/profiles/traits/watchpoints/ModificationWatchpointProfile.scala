@@ -1,12 +1,11 @@
 package org.scaladebugger.api.profiles.traits.watchpoints
 //import acyclic.file
 
-import com.sun.jdi.event.ModificationWatchpointEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.watchpoints.ModificationWatchpointRequestInfo
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ModificationWatchpointEventInfoProfile
 
 import scala.util.Try
 
@@ -16,8 +15,8 @@ import scala.util.Try
  */
 trait ModificationWatchpointProfile {
   /** Represents a modification watchpoint event and any associated data. */
-  type ModificationWatchpointEventAndData =
-    (ModificationWatchpointEvent, Seq[JDIEventDataResult])
+  type ModificationWatchpointEventInfoProfileAndData =
+    (ModificationWatchpointEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
    * Retrieves the collection of active and pending modification watchpoint
@@ -41,7 +40,7 @@ trait ModificationWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ModificationWatchpointEvent]] = {
+  ): Try[IdentityPipeline[ModificationWatchpointEventInfoProfile]] = {
     tryGetOrCreateModificationWatchpointRequestWithData(
       className: String,
       fieldName: String,
@@ -64,7 +63,7 @@ trait ModificationWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ModificationWatchpointEventAndData]]
+  ): Try[IdentityPipeline[ModificationWatchpointEventInfoProfileAndData]]
 
   /**
    * Constructs a stream of modification watchpoint events for field in the
@@ -80,7 +79,7 @@ trait ModificationWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ModificationWatchpointEvent] = {
+  ): IdentityPipeline[ModificationWatchpointEventInfoProfile] = {
     tryGetOrCreateModificationWatchpointRequest(
       className,
       fieldName,
@@ -103,7 +102,7 @@ trait ModificationWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ModificationWatchpointEventAndData] = {
+  ): IdentityPipeline[ModificationWatchpointEventInfoProfileAndData] = {
     tryGetOrCreateModificationWatchpointRequestWithData(
       className,
       fieldName,
