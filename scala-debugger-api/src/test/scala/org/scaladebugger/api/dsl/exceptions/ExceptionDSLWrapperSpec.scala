@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.exceptions
 
-import com.sun.jdi.event.ExceptionEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.exceptions.ExceptionProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.api.profiles.traits.info.events.ExceptionEventInfoProfile
 
 import scala.util.Success
 
@@ -23,7 +21,7 @@ class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
         val notifyCaught = true
         val notifyUncaught = false
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[ExceptionEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[ExceptionEventInfoProfile]))
 
         (mockExceptionProfile.tryGetOrCreateExceptionRequest _).expects(
           exceptionName,
@@ -49,7 +47,7 @@ class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
         val notifyCaught = true
         val notifyUncaught = false
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[ExceptionEvent])
+        val returnValue = Pipeline.newPipeline(classOf[ExceptionEventInfoProfile])
 
         (mockExceptionProfile.getOrCreateExceptionRequest _).expects(
           exceptionName,
@@ -76,7 +74,7 @@ class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
         val notifyUncaught = false
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(ExceptionEvent, Seq[JDIEventDataResult])]
+          classOf[(ExceptionEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockExceptionProfile.tryGetOrCreateExceptionRequestWithData _).expects(
@@ -104,7 +102,7 @@ class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
         val notifyUncaught = false
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(ExceptionEvent, Seq[JDIEventDataResult])]
+          classOf[(ExceptionEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockExceptionProfile.getOrCreateExceptionRequestWithData _).expects(
@@ -130,7 +128,7 @@ class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
         val notifyCaught = true
         val notifyUncaught = false
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[ExceptionEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[ExceptionEventInfoProfile]))
 
         (mockExceptionProfile.tryGetOrCreateAllExceptionsRequest _).expects(
           notifyCaught,
@@ -153,7 +151,7 @@ class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
         val notifyCaught = true
         val notifyUncaught = false
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[ExceptionEvent])
+        val returnValue = Pipeline.newPipeline(classOf[ExceptionEventInfoProfile])
 
         (mockExceptionProfile.getOrCreateAllExceptionsRequest _).expects(
           notifyCaught,
@@ -177,7 +175,7 @@ class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
         val notifyUncaught = false
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(ExceptionEvent, Seq[JDIEventDataResult])]
+          classOf[(ExceptionEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData _).expects(
@@ -202,7 +200,7 @@ class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
         val notifyUncaught = false
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(ExceptionEvent, Seq[JDIEventDataResult])]
+          classOf[(ExceptionEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockExceptionProfile.getOrCreateAllExceptionsRequestWithData _).expects(

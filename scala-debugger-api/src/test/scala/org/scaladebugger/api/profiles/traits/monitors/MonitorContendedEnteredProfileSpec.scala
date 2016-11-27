@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.monitors
-import acyclic.file
-
-import com.sun.jdi.event.MonitorContendedEnteredEvent
-import org.scaladebugger.api.lowlevel.monitors.MonitorContendedEnteredRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.monitors.MonitorContendedEnteredRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnteredEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -60,12 +56,12 @@ class MonitorContendedEnteredProfileSpec extends test.ParallelMockFunSpec
   describe("MonitorContendedEnteredProfile") {
     describe("#tryGetOrCreateMonitorContendedEnteredRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[MonitorContendedEnteredEvent]
+        val expected = mock[MonitorContendedEnteredEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: MonitorContendedEnteredEvent = null
+        var actual: MonitorContendedEnteredEventInfoProfile = null
         successMonitorContendedEnteredProfile
           .tryGetOrCreateMonitorContendedEnteredRequest()
           .get
@@ -94,12 +90,12 @@ class MonitorContendedEnteredProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateMonitorContendedEnteredRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[MonitorContendedEnteredEvent]
+        val expected = mock[MonitorContendedEnteredEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: MonitorContendedEnteredEvent = null
+        var actual: MonitorContendedEnteredEventInfoProfile = null
         successMonitorContendedEnteredProfile
           .getOrCreateMonitorContendedEnteredRequest()
           .foreach(actual = _)
@@ -122,9 +118,9 @@ class MonitorContendedEnteredProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateMonitorContendedEnteredRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[MonitorContendedEnteredEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[MonitorContendedEnteredEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (MonitorContendedEnteredEvent, Seq[JDIEventDataResult]) = null
+        var actual: (MonitorContendedEnteredEventInfoProfile, Seq[JDIEventDataResult]) = null
         successMonitorContendedEnteredProfile
           .getOrCreateMonitorContendedEnteredRequestWithData()
           .foreach(actual = _)

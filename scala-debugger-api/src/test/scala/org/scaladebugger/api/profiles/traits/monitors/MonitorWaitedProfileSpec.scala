@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.monitors
-import acyclic.file
-
-import com.sun.jdi.event.MonitorWaitedEvent
-import org.scaladebugger.api.lowlevel.monitors.MonitorWaitedRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.monitors.MonitorWaitedRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitedEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -64,12 +60,12 @@ class MonitorWaitedProfileSpec extends test.ParallelMockFunSpec
   describe("MonitorWaitedProfile") {
     describe("#tryGetOrCreateMonitorWaitedRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[MonitorWaitedEvent]
+        val expected = mock[MonitorWaitedEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: MonitorWaitedEvent = null
+        var actual: MonitorWaitedEventInfoProfile = null
         successMonitorWaitedProfile
           .tryGetOrCreateMonitorWaitedRequest()
           .get
@@ -98,12 +94,12 @@ class MonitorWaitedProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateMonitorWaitedRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[MonitorWaitedEvent]
+        val expected = mock[MonitorWaitedEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: MonitorWaitedEvent = null
+        var actual: MonitorWaitedEventInfoProfile = null
         successMonitorWaitedProfile
           .getOrCreateMonitorWaitedRequest()
           .foreach(actual = _)
@@ -126,9 +122,9 @@ class MonitorWaitedProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateMonitorWaitedRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[MonitorWaitedEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[MonitorWaitedEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (MonitorWaitedEvent, Seq[JDIEventDataResult]) = null
+        var actual: (MonitorWaitedEventInfoProfile, Seq[JDIEventDataResult]) = null
         successMonitorWaitedProfile
           .getOrCreateMonitorWaitedRequestWithData()
           .foreach(actual = _)

@@ -1,38 +1,40 @@
 package org.scaladebugger.api.profiles.pure.vm
-import acyclic.file
-
-import com.sun.jdi.event.{EventQueue, Event, VMDisconnectEvent}
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.events.{JDIEventArgument, EventManager}
-import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.utils.LoopingTaskRunner
+import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.EventType.VMDisconnectEventType
+import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
+import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.VMDisconnectEventInfoProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import test.JDIMockHelpers
 
 class PureVMDisconnectProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
   private val mockEventManager = mock[EventManager]
+  private val mockInfoProducer = mock[InfoProducerProfile]
+  private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
 
   private val pureVMDisconnectProfile = new Object with PureVMDisconnectProfile {
     override protected val eventManager: EventManager = mockEventManager
+    override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+    override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
   describe("PureVMDisconnectProfile") {
     describe("#tryGetOrCreateVMDisconnectRequestWithData") {
       it("should create a stream of events with data for disconnections") {
-        val expected = (mock[VMDisconnectEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[VMDisconnectEventInfoProfile], Seq(mock[JDIEventDataResult]))
         val arguments = Seq(mock[JDIEventArgument])
 
+        val lowlevelPipeline = Pipeline.newPipeline(
+          classOf[(Event, Seq[JDIEventDataResult])]
+        )
         (mockEventManager.addEventDataStream _).expects(
           VMDisconnectEventType, arguments
-        ).returning(
-          Pipeline.newPipeline(classOf[(Event, Seq[JDIEventDataResult])])
-            .map(t => (expected._1, expected._2))
-        ).once()
+        ).returning(lowlevelPipeline).once()
 
-        var actual: (VMDisconnectEvent, Seq[JDIEventDataResult]) = null
+        var actual: (VMDisconnectEventInfoProfile, Seq[JDIEventDataResult]) = null
         val pipeline =
           pureVMDisconnectProfile.tryGetOrCreateVMDisconnectRequestWithData(arguments: _*)
         pipeline.get.foreach(actual = _)

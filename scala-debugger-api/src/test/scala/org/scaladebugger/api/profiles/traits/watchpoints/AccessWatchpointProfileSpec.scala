@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.watchpoints
-import acyclic.file
-
-import com.sun.jdi.event.AccessWatchpointEvent
-import org.scaladebugger.api.lowlevel.watchpoints.AccessWatchpointRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.watchpoints.AccessWatchpointRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.AccessWatchpointEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -86,12 +82,12 @@ class AccessWatchpointProfileSpec extends test.ParallelMockFunSpec
   describe("AccessWatchpointProfile") {
     describe("#tryGetOrCreateAccessWatchpointRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[AccessWatchpointEvent]
+        val expected = mock[AccessWatchpointEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: AccessWatchpointEvent = null
+        var actual: AccessWatchpointEventInfoProfile = null
         successAccessWatchpointProfile
           .tryGetOrCreateAccessWatchpointRequest("", "")
           .get
@@ -120,12 +116,12 @@ class AccessWatchpointProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateAccessWatchpointRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[AccessWatchpointEvent]
+        val expected = mock[AccessWatchpointEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: AccessWatchpointEvent = null
+        var actual: AccessWatchpointEventInfoProfile = null
         successAccessWatchpointProfile
           .getOrCreateAccessWatchpointRequest("", "")
           .foreach(actual = _)
@@ -148,9 +144,9 @@ class AccessWatchpointProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateAccessWatchpointRequestWithData") {
       it("should return a pipeline with the event data results") {
         // Data to be run through pipeline
-        val expected = (mock[AccessWatchpointEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[AccessWatchpointEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (AccessWatchpointEvent, Seq[JDIEventDataResult]) = null
+        var actual: (AccessWatchpointEventInfoProfile, Seq[JDIEventDataResult]) = null
         successAccessWatchpointProfile
           .getOrCreateAccessWatchpointRequestWithData("", "")
           .foreach(actual = _)

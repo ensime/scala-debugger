@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.threads
 
-import com.sun.jdi.event.ThreadDeathEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.profiles.traits.info.events.ThreadDeathEventInfoProfile
 import org.scaladebugger.api.profiles.traits.threads.ThreadDeathProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
@@ -20,7 +18,7 @@ class ThreadDeathDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.ThreadDeathDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[ThreadDeathEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[ThreadDeathEventInfoProfile]))
 
         (mockThreadDeathProfile.tryGetOrCreateThreadDeathRequest _).expects(
           extraArguments
@@ -37,7 +35,7 @@ class ThreadDeathDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.ThreadDeathDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[ThreadDeathEvent])
+        val returnValue = Pipeline.newPipeline(classOf[ThreadDeathEventInfoProfile])
 
         (mockThreadDeathProfile.getOrCreateThreadDeathRequest _).expects(
           extraArguments
@@ -55,7 +53,7 @@ class ThreadDeathDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(ThreadDeathEvent, Seq[JDIEventDataResult])]
+          classOf[(ThreadDeathEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockThreadDeathProfile.tryGetOrCreateThreadDeathRequestWithData _).expects(
@@ -74,7 +72,7 @@ class ThreadDeathDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(ThreadDeathEvent, Seq[JDIEventDataResult])]
+          classOf[(ThreadDeathEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockThreadDeathProfile.getOrCreateThreadDeathRequestWithData _).expects(

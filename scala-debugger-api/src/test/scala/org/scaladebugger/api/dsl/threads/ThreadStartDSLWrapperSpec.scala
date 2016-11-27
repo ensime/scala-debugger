@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.threads
 
-import com.sun.jdi.event.ThreadStartEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.profiles.traits.info.events.ThreadStartEventInfoProfile
 import org.scaladebugger.api.profiles.traits.threads.ThreadStartProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
@@ -20,7 +18,7 @@ class ThreadStartDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.ThreadStartDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[ThreadStartEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[ThreadStartEventInfoProfile]))
 
         (mockThreadStartProfile.tryGetOrCreateThreadStartRequest _).expects(
           extraArguments
@@ -37,7 +35,7 @@ class ThreadStartDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.ThreadStartDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[ThreadStartEvent])
+        val returnValue = Pipeline.newPipeline(classOf[ThreadStartEventInfoProfile])
 
         (mockThreadStartProfile.getOrCreateThreadStartRequest _).expects(
           extraArguments
@@ -55,7 +53,7 @@ class ThreadStartDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(ThreadStartEvent, Seq[JDIEventDataResult])]
+          classOf[(ThreadStartEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockThreadStartProfile.tryGetOrCreateThreadStartRequestWithData _).expects(
@@ -74,7 +72,7 @@ class ThreadStartDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(ThreadStartEvent, Seq[JDIEventDataResult])]
+          classOf[(ThreadStartEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockThreadStartProfile.getOrCreateThreadStartRequestWithData _).expects(

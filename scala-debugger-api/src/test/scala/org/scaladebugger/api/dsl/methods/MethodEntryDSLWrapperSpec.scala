@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.methods
 
-import com.sun.jdi.event.MethodEntryEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.profiles.traits.info.events.MethodEntryEventInfoProfile
 import org.scaladebugger.api.profiles.traits.methods.MethodEntryProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
@@ -22,7 +20,7 @@ class MethodEntryDSLWrapperSpec extends test.ParallelMockFunSpec
         val className = "some.class.name"
         val methodName = "someMethodName"
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[MethodEntryEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[MethodEntryEventInfoProfile]))
 
         (mockMethodEntryProfile.tryGetOrCreateMethodEntryRequest _).expects(
           className,
@@ -45,7 +43,7 @@ class MethodEntryDSLWrapperSpec extends test.ParallelMockFunSpec
         val className = "some.class.name"
         val methodName = "someMethodName"
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[MethodEntryEvent])
+        val returnValue = Pipeline.newPipeline(classOf[MethodEntryEventInfoProfile])
 
         (mockMethodEntryProfile.getOrCreateMethodEntryRequest _).expects(
           className,
@@ -69,7 +67,7 @@ class MethodEntryDSLWrapperSpec extends test.ParallelMockFunSpec
         val methodName = "someMethodName"
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(MethodEntryEvent, Seq[JDIEventDataResult])]
+          classOf[(MethodEntryEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockMethodEntryProfile.tryGetOrCreateMethodEntryRequestWithData _).expects(
@@ -94,7 +92,7 @@ class MethodEntryDSLWrapperSpec extends test.ParallelMockFunSpec
         val methodName = "someMethodName"
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(MethodEntryEvent, Seq[JDIEventDataResult])]
+          classOf[(MethodEntryEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockMethodEntryProfile.getOrCreateMethodEntryRequestWithData _).expects(

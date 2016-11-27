@@ -1,19 +1,11 @@
 package org.scaladebugger.api.profiles.pure.info
-import acyclic.file
-
-import com.sun.jdi.{ThreadReference, Value}
-import com.sun.jdi.event.BreakpointEvent
-import org.scaladebugger.api.lowlevel.events.EventType
-import org.scaladebugger.api.lowlevel.events.EventType.BreakpointEventType
-import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{TestUtilities, VirtualMachineFixtures}
-
-import scala.util.Try
 
 class PureGrabInfoProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
@@ -44,20 +36,20 @@ class PureGrabInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.misc.LaunchingMain"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
       s.withProfile(PureDebugProfile.Name)
-        .getOrCreateBreakpointRequest(testFile, 7).foreach(e => t = Some(e.thread()))
+        .getOrCreateBreakpointRequest(testFile, 7).foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val id = t.get.uniqueID()
+          val id = t.get.toJdiInstance.uniqueID()
 
           s.withProfile(PureDebugProfile.Name)
             .thread(id).uniqueId should be (id)
 
           s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).uniqueId should be (id)
+            .thread(t.get.toJdiInstance).uniqueId should be (id)
         })
       }
     }
@@ -145,21 +137,21 @@ class PureGrabInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.misc.LaunchingMain"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
       s.withProfile(PureDebugProfile.Name)
-        .getOrCreateBreakpointRequest(testFile, 7).foreach(e => t = Some(e.thread()))
+        .getOrCreateBreakpointRequest(testFile, 7).foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val tg = t.get.threadGroup()
-          val id = tg.uniqueID()
+          val tg = t.get.threadGroup
+          val id = tg.toJdiInstance.uniqueID()
 
           s.withProfile(PureDebugProfile.Name)
-            .threadGroup(id).uniqueId should be (id)
+            .threadGroup(tg.uniqueId).uniqueId should be (id)
 
           s.withProfile(PureDebugProfile.Name)
-            .threadGroup(tg).uniqueId should be (id)
+            .threadGroup(tg.toJdiInstance).uniqueId should be (id)
         })
       }
     }
@@ -168,15 +160,15 @@ class PureGrabInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.misc.LaunchingMain"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
       s.withProfile(PureDebugProfile.Name)
-        .getOrCreateBreakpointRequest(testFile, 7).foreach(e => t = Some(e.thread()))
+        .getOrCreateBreakpointRequest(testFile, 7).foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val tg = t.get.threadGroup()
-          val name = tg.name()
+          val tg = t.get.threadGroup
+          val name = tg.toJdiInstance.name()
 
           s.withProfile(PureDebugProfile.Name)
             .threadGroup(name).name should be (name)

@@ -383,7 +383,7 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
 
               // Continue stepping if not reached all lines and not exiting early
               if (expectedLines.nonEmpty && !failEarly.get()) {
-                stepMethod(s.thread(stepEvent.thread()))
+                stepMethod(stepEvent.thread)
               }
             })
 

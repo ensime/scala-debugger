@@ -1,16 +1,15 @@
 package org.scaladebugger.api.profiles.traits.steps
-import acyclic.file
-
 import com.sun.jdi.event.StepEvent
+import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.steps.StepRequestInfo
+import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.events.StepEventInfoProfile
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.JDIArgument
-import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 
 import scala.concurrent._
 import scala.util.{Failure, Success, Try}
@@ -152,7 +151,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
   describe("StepProfile") {
     describe("#stepIntoLine") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[StepEvent]
+        val expected = mock[StepEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
@@ -197,7 +196,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
           override def tryCreateStepListenerWithData(
             threadInfoProfile: ThreadInfoProfile,
             extraArguments: JDIArgument*
-          ): Try[IdentityPipeline[(StepEvent, Seq[JDIEventDataResult])]] = ???
+          ): Try[IdentityPipeline[(StepEventInfoProfile, Seq[JDIEventDataResult])]] = ???
 
           override def isStepRequestPending(
             threadInfoProfile: ThreadInfoProfile
@@ -236,7 +235,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
 
     describe("#stepOverLine") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[StepEvent]
+        val expected = mock[StepEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
@@ -281,7 +280,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
           override def tryCreateStepListenerWithData(
             threadInfoProfile: ThreadInfoProfile,
             extraArguments: JDIArgument*
-          ): Try[IdentityPipeline[(StepEvent, Seq[JDIEventDataResult])]] = ???
+          ): Try[IdentityPipeline[(StepEventInfoProfile, Seq[JDIEventDataResult])]] = ???
 
           override def isStepRequestPending(
             threadInfoProfile: ThreadInfoProfile
@@ -320,7 +319,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
 
     describe("#stepOutLine") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[StepEvent]
+        val expected = mock[StepEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
@@ -365,7 +364,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
           override def tryCreateStepListenerWithData(
             threadInfoProfile: ThreadInfoProfile,
             extraArguments: JDIArgument*
-          ): Try[IdentityPipeline[(StepEvent, Seq[JDIEventDataResult])]] = ???
+          ): Try[IdentityPipeline[(StepEventInfoProfile, Seq[JDIEventDataResult])]] = ???
 
           override def isStepRequestPending(
             threadInfoProfile: ThreadInfoProfile
@@ -404,7 +403,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
 
     describe("#stepIntoMin") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[StepEvent]
+        val expected = mock[StepEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
@@ -449,7 +448,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
           override def tryCreateStepListenerWithData(
             threadInfoProfile: ThreadInfoProfile,
             extraArguments: JDIArgument*
-          ): Try[IdentityPipeline[(StepEvent, Seq[JDIEventDataResult])]] = ???
+          ): Try[IdentityPipeline[(StepEventInfoProfile, Seq[JDIEventDataResult])]] = ???
 
           override def isStepRequestPending(
             threadInfoProfile: ThreadInfoProfile
@@ -488,7 +487,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
 
     describe("#stepOverMin") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[StepEvent]
+        val expected = mock[StepEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
@@ -533,7 +532,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
           override def tryCreateStepListenerWithData(
             threadInfoProfile: ThreadInfoProfile,
             extraArguments: JDIArgument*
-          ): Try[IdentityPipeline[(StepEvent, Seq[JDIEventDataResult])]] = ???
+          ): Try[IdentityPipeline[(StepEventInfoProfile, Seq[JDIEventDataResult])]] = ???
 
           override def isStepRequestPending(
             threadInfoProfile: ThreadInfoProfile
@@ -572,7 +571,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
 
     describe("#stepOutMin") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[StepEvent]
+        val expected = mock[StepEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
@@ -617,7 +616,7 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
           override def tryCreateStepListenerWithData(
             threadInfoProfile: ThreadInfoProfile,
             extraArguments: JDIArgument*
-          ): Try[IdentityPipeline[(StepEvent, Seq[JDIEventDataResult])]] = ???
+          ): Try[IdentityPipeline[(StepEventInfoProfile, Seq[JDIEventDataResult])]] = ???
 
           override def isStepRequestPending(
             threadInfoProfile: ThreadInfoProfile
@@ -656,12 +655,12 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
 
     describe("#tryCreateStepListener") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[StepEvent]
+        val expected = mock[StepEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: StepEvent = null
+        var actual: StepEventInfoProfile = null
         successStepProfile
           .tryCreateStepListener(mockThreadInfoProfile)
           .get
@@ -690,12 +689,12 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
 
     describe("#createStepListener") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[StepEvent]
+        val expected = mock[StepEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: StepEvent = null
+        var actual: StepEventInfoProfile = null
         successStepProfile
           .createStepListener(mockThreadInfoProfile)
           .foreach(actual = _)
@@ -718,9 +717,9 @@ class StepProfileSpec extends FunSpec with Matchers with ParallelTestExecution
     describe("#createStepListenerWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[StepEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[StepEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (StepEvent, Seq[JDIEventDataResult]) = null
+        var actual: (StepEventInfoProfile, Seq[JDIEventDataResult]) = null
         successStepProfile
           .createStepListenerWithData(mockThreadInfoProfile)
           .foreach(actual = _)

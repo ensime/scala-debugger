@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.pure.info
 
-import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
 import org.scalatest.concurrent.Eventually
@@ -23,18 +23,17 @@ class PureInterfaceTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.ClassType"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 68, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val frame = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame
+          val frame = t.get.topFrame
 
           val classes = s.classes
           val baseInterfaceType = classes.find(_.name == "org.scaladebugger.test.info.ClassType$BaseInterface").get.toInterfaceType

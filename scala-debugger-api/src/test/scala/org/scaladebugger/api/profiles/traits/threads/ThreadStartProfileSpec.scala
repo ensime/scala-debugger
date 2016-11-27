@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.threads
-import acyclic.file
-
-import com.sun.jdi.event.ThreadStartEvent
-import org.scaladebugger.api.lowlevel.threads.ThreadStartRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.threads.ThreadStartRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ThreadStartEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -64,12 +60,12 @@ class ThreadStartProfileSpec extends test.ParallelMockFunSpec
   describe("ThreadStartProfile") {
     describe("#tryGetOrCreateThreadStartRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ThreadStartEvent]
+        val expected = mock[ThreadStartEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ThreadStartEvent = null
+        var actual: ThreadStartEventInfoProfile = null
         successThreadStartProfile.tryGetOrCreateThreadStartRequest().get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -84,7 +80,7 @@ class ThreadStartProfileSpec extends test.ParallelMockFunSpec
         val expected = TestThrowable
 
         // Data to be run through pipeline
-        val data = (mock[ThreadStartEvent], Seq(mock[JDIEventDataResult]))
+        val data = (mock[ThreadStartEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
         failThreadStartProfile.tryGetOrCreateThreadStartRequest().failed.foreach(actual = _)
@@ -95,12 +91,12 @@ class ThreadStartProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateThreadStartRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[ThreadStartEvent]
+        val expected = mock[ThreadStartEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ThreadStartEvent = null
+        var actual: ThreadStartEventInfoProfile = null
         successThreadStartProfile.getOrCreateThreadStartRequest().foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -121,9 +117,9 @@ class ThreadStartProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateThreadStartRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[ThreadStartEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[ThreadStartEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (ThreadStartEvent, Seq[JDIEventDataResult]) = null
+        var actual: (ThreadStartEventInfoProfile, Seq[JDIEventDataResult]) = null
         successThreadStartProfile
           .getOrCreateThreadStartRequestWithData()
           .foreach(actual = _)

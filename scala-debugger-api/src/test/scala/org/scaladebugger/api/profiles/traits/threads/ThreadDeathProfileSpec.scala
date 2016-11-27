@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.threads
-import acyclic.file
-
-import com.sun.jdi.event.ThreadDeathEvent
-import org.scaladebugger.api.lowlevel.threads.ThreadDeathRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.threads.ThreadDeathRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ThreadDeathEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -64,12 +60,12 @@ class ThreadDeathProfileSpec extends test.ParallelMockFunSpec
   describe("ThreadDeathProfile") {
     describe("#tryGetOrCreateThreadDeathRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ThreadDeathEvent]
+        val expected = mock[ThreadDeathEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ThreadDeathEvent = null
+        var actual: ThreadDeathEventInfoProfile = null
         successThreadDeathProfile.tryGetOrCreateThreadDeathRequest().get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -84,7 +80,7 @@ class ThreadDeathProfileSpec extends test.ParallelMockFunSpec
         val expected = TestThrowable
 
         // Data to be run through pipeline
-        val data = (mock[ThreadDeathEvent], Seq(mock[JDIEventDataResult]))
+        val data = (mock[ThreadDeathEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
         failThreadDeathProfile.tryGetOrCreateThreadDeathRequest().failed.foreach(actual = _)
@@ -95,12 +91,12 @@ class ThreadDeathProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateThreadDeathRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[ThreadDeathEvent]
+        val expected = mock[ThreadDeathEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ThreadDeathEvent = null
+        var actual: ThreadDeathEventInfoProfile = null
         successThreadDeathProfile.getOrCreateThreadDeathRequest().foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -121,9 +117,9 @@ class ThreadDeathProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateThreadDeathRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[ThreadDeathEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[ThreadDeathEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (ThreadDeathEvent, Seq[JDIEventDataResult]) = null
+        var actual: (ThreadDeathEventInfoProfile, Seq[JDIEventDataResult]) = null
         successThreadDeathProfile
           .getOrCreateThreadDeathRequestWithData()
           .foreach(actual = _)

@@ -1,13 +1,9 @@
 package org.scaladebugger.api.profiles.traits.vm
-import acyclic.file
-
-import com.sun.jdi.event.VMDisconnectEvent
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.VMDisconnectEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -39,12 +35,12 @@ class VMDisconnectProfileSpec extends test.ParallelMockFunSpec
   describe("VMDisconnectProfile") {
     describe("#tryGetOrCreateVMDisconnectRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[VMDisconnectEvent]
+        val expected = mock[VMDisconnectEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: VMDisconnectEvent = null
+        var actual: VMDisconnectEventInfoProfile = null
         successVMDisconnectProfile.tryGetOrCreateVMDisconnectRequest().get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -59,7 +55,7 @@ class VMDisconnectProfileSpec extends test.ParallelMockFunSpec
         val expected = TestThrowable
 
         // Data to be run through pipeline
-        val data = (mock[VMDisconnectEvent], Seq(mock[JDIEventDataResult]))
+        val data = (mock[VMDisconnectEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
         failVMDisconnectProfile.tryGetOrCreateVMDisconnectRequest().failed.foreach(actual = _)
@@ -70,12 +66,12 @@ class VMDisconnectProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateVMDisconnectRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[VMDisconnectEvent]
+        val expected = mock[VMDisconnectEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: VMDisconnectEvent = null
+        var actual: VMDisconnectEventInfoProfile = null
         successVMDisconnectProfile.getOrCreateVMDisconnectRequest().foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -96,9 +92,9 @@ class VMDisconnectProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateVMDisconnectRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[VMDisconnectEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[VMDisconnectEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (VMDisconnectEvent, Seq[JDIEventDataResult]) = null
+        var actual: (VMDisconnectEventInfoProfile, Seq[JDIEventDataResult]) = null
         successVMDisconnectProfile
           .getOrCreateVMDisconnectRequestWithData()
           .foreach(actual = _)

@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.classes
 
-import com.sun.jdi.event.ClassUnloadEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.classes.ClassUnloadProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.api.profiles.traits.info.events.ClassUnloadEventInfoProfile
 
 import scala.util.Success
 
@@ -20,7 +18,7 @@ class ClassUnloadDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.ClassUnloadDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[ClassUnloadEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[ClassUnloadEventInfoProfile]))
 
         (mockClassUnloadProfile.tryGetOrCreateClassUnloadRequest _).expects(
           extraArguments
@@ -37,7 +35,7 @@ class ClassUnloadDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.ClassUnloadDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[ClassUnloadEvent])
+        val returnValue = Pipeline.newPipeline(classOf[ClassUnloadEventInfoProfile])
 
         (mockClassUnloadProfile.getOrCreateClassUnloadRequest _).expects(
           extraArguments
@@ -55,7 +53,7 @@ class ClassUnloadDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(ClassUnloadEvent, Seq[JDIEventDataResult])]
+          classOf[(ClassUnloadEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockClassUnloadProfile.tryGetOrCreateClassUnloadRequestWithData _).expects(
@@ -74,7 +72,7 @@ class ClassUnloadDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(ClassUnloadEvent, Seq[JDIEventDataResult])]
+          classOf[(ClassUnloadEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockClassUnloadProfile.getOrCreateClassUnloadRequestWithData _).expects(

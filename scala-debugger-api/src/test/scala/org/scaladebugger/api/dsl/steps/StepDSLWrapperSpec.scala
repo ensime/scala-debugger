@@ -1,13 +1,11 @@
 package org.scaladebugger.api.dsl.steps
 
-import com.sun.jdi.event.StepEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.events.StepEventInfoProfile
 import org.scaladebugger.api.profiles.traits.steps.StepProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
@@ -22,7 +20,7 @@ class StepDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val threadInfoProfile = mock[ThreadInfoProfile]
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[StepEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[StepEventInfoProfile]))
 
         (mockStepProfile.tryCreateStepListener _).expects(
           threadInfoProfile,
@@ -42,7 +40,7 @@ class StepDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val threadInfoProfile = mock[ThreadInfoProfile]
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[StepEvent])
+        val returnValue = Pipeline.newPipeline(classOf[StepEventInfoProfile])
 
         (mockStepProfile.createStepListener _).expects(
           threadInfoProfile,
@@ -63,7 +61,7 @@ class StepDSLWrapperSpec extends test.ParallelMockFunSpec
         val threadInfoProfile = mock[ThreadInfoProfile]
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(StepEvent, Seq[JDIEventDataResult])]
+          classOf[(StepEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockStepProfile.tryCreateStepListenerWithData _).expects(
@@ -85,7 +83,7 @@ class StepDSLWrapperSpec extends test.ParallelMockFunSpec
         val threadInfoProfile = mock[ThreadInfoProfile]
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(StepEvent, Seq[JDIEventDataResult])]
+          classOf[(StepEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockStepProfile.createStepListenerWithData _).expects(

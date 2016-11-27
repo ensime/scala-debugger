@@ -1,8 +1,5 @@
 package org.scaladebugger.api.profiles.pure.breakpoints
-import acyclic.file
-
 import com.sun.jdi.event.Event
-import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.breakpoints.{BreakpointManager, BreakpointRequestInfo, PendingBreakpointSupportLike}
 import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.lowlevel.events.EventManager
@@ -13,8 +10,8 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.Constants
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import test.JDIMockHelpers
 
 import scala.util.{Failure, Success}
@@ -23,6 +20,8 @@ class PureBreakpointProfileSpec extends test.ParallelMockFunSpec with JDIMockHel
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val stubClassManager = stub[ClassManager]
+  private val mockInfoProducer = mock[InfoProducerProfile]
+  private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockBreakpointManager = mock[BreakpointManager]
   private val mockEventManager = mock[EventManager]
 
@@ -37,6 +36,8 @@ class PureBreakpointProfileSpec extends test.ParallelMockFunSpec with JDIMockHel
 
     override protected val breakpointManager = mockBreakpointManager
     override protected val eventManager: EventManager = mockEventManager
+    override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+    override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
   describe("PureBreakpointProfile") {
@@ -50,6 +51,8 @@ class PureBreakpointProfileSpec extends test.ParallelMockFunSpec with JDIMockHel
         val pureBreakpointProfile = new Object with PureBreakpointProfile {
           override protected val breakpointManager = mockBreakpointManager
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockBreakpointManager.breakpointRequestList _).expects()
@@ -72,6 +75,8 @@ class PureBreakpointProfileSpec extends test.ParallelMockFunSpec with JDIMockHel
         val pureBreakpointProfile = new Object with PureBreakpointProfile {
           override protected val breakpointManager = mockBreakpointManager
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockBreakpointManager.breakpointRequestList _).expects()

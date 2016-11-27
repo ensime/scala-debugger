@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.classes
-import acyclic.file
-
-import com.sun.jdi.event.ClassUnloadEvent
-import org.scaladebugger.api.lowlevel.classes.ClassUnloadRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.api.lowlevel.classes.ClassUnloadRequestInfo
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ClassUnloadEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -64,12 +60,12 @@ class ClassUnloadProfileSpec extends test.ParallelMockFunSpec
   describe("ClassUnloadProfile") {
     describe("#tryGetOrCreateClassUnloadRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ClassUnloadEvent]
+        val expected = mock[ClassUnloadEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ClassUnloadEvent = null
+        var actual: ClassUnloadEventInfoProfile = null
         successClassUnloadProfile.tryGetOrCreateClassUnloadRequest().get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -84,7 +80,7 @@ class ClassUnloadProfileSpec extends test.ParallelMockFunSpec
         val expected = TestThrowable
 
         // Data to be run through pipeline
-        val data = (mock[ClassUnloadEvent], Seq(mock[JDIEventDataResult]))
+        val data = (mock[ClassUnloadEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
         failClassUnloadProfile.tryGetOrCreateClassUnloadRequest().failed.foreach(actual = _)
@@ -95,12 +91,12 @@ class ClassUnloadProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateClassUnloadRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[ClassUnloadEvent]
+        val expected = mock[ClassUnloadEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ClassUnloadEvent = null
+        var actual: ClassUnloadEventInfoProfile = null
         successClassUnloadProfile.getOrCreateClassUnloadRequest().foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -121,9 +117,9 @@ class ClassUnloadProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateClassUnloadRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[ClassUnloadEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[ClassUnloadEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (ClassUnloadEvent, Seq[JDIEventDataResult]) = null
+        var actual: (ClassUnloadEventInfoProfile, Seq[JDIEventDataResult]) = null
         successClassUnloadProfile
           .getOrCreateClassUnloadRequestWithData()
           .foreach(actual = _)

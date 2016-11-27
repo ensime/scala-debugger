@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.methods
-import acyclic.file
-
-import com.sun.jdi.event.MethodExitEvent
-import org.scaladebugger.api.lowlevel.methods.MethodExitRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.methods.MethodExitRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MethodExitEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -86,12 +82,12 @@ class MethodExitProfileSpec extends test.ParallelMockFunSpec
   describe("MethodExitProfile") {
     describe("#tryGetOrCreateMethodExitRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[MethodExitEvent]
+        val expected = mock[MethodExitEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: MethodExitEvent = null
+        var actual: MethodExitEventInfoProfile = null
         successMethodExitProfile.tryGetOrCreateMethodExitRequest("", "").get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -106,7 +102,7 @@ class MethodExitProfileSpec extends test.ParallelMockFunSpec
         val expected = TestThrowable
 
         // Data to be run through pipeline
-        val data = (mock[MethodExitEvent], Seq(mock[JDIEventDataResult]))
+        val data = (mock[MethodExitEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
         failMethodExitProfile.tryGetOrCreateMethodExitRequest("", "").failed.foreach(actual = _)
@@ -117,12 +113,12 @@ class MethodExitProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateMethodExitRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[MethodExitEvent]
+        val expected = mock[MethodExitEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: MethodExitEvent = null
+        var actual: MethodExitEventInfoProfile = null
         successMethodExitProfile
           .getOrCreateMethodExitRequest("", "")
           .foreach(actual = _)
@@ -145,9 +141,9 @@ class MethodExitProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateMethodExitRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[MethodExitEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[MethodExitEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (MethodExitEvent, Seq[JDIEventDataResult]) = null
+        var actual: (MethodExitEventInfoProfile, Seq[JDIEventDataResult]) = null
         successMethodExitProfile
           .getOrCreateMethodExitRequestWithData("", "")
           .foreach(actual = _)

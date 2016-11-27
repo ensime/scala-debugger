@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.methods
-import acyclic.file
-
-import com.sun.jdi.event.MethodEntryEvent
-import org.scaladebugger.api.lowlevel.methods.MethodEntryRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.methods.MethodEntryRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MethodEntryEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -86,12 +82,12 @@ class MethodEntryProfileSpec extends test.ParallelMockFunSpec
   describe("MethodEntryProfile") {
     describe("#tryGetOrCreateMethodEntryRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[MethodEntryEvent]
+        val expected = mock[MethodEntryEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: MethodEntryEvent = null
+        var actual: MethodEntryEventInfoProfile = null
         successMethodEntryProfile.tryGetOrCreateMethodEntryRequest("", "").get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -106,7 +102,7 @@ class MethodEntryProfileSpec extends test.ParallelMockFunSpec
         val expected = TestThrowable
 
         // Data to be run through pipeline
-        val data = (mock[MethodEntryEvent], Seq(mock[JDIEventDataResult]))
+        val data = (mock[MethodEntryEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
         failMethodEntryProfile.tryGetOrCreateMethodEntryRequest("", "").failed.foreach(actual = _)
@@ -117,12 +113,12 @@ class MethodEntryProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateMethodEntryRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[MethodEntryEvent]
+        val expected = mock[MethodEntryEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: MethodEntryEvent = null
+        var actual: MethodEntryEventInfoProfile = null
         successMethodEntryProfile
           .getOrCreateMethodEntryRequest("", "")
           .foreach(actual = _)
@@ -145,9 +141,9 @@ class MethodEntryProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateMethodEntryRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[MethodEntryEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[MethodEntryEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (MethodEntryEvent, Seq[JDIEventDataResult]) = null
+        var actual: (MethodEntryEventInfoProfile, Seq[JDIEventDataResult]) = null
         successMethodEntryProfile
           .getOrCreateMethodEntryRequestWithData("", "")
           .foreach(actual = _)

@@ -1,13 +1,16 @@
 package org.scaladebugger.api.profiles.pure.events
 import acyclic.file
-
+import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.EventManager.EventHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
-import org.scaladebugger.api.lowlevel.events.{PendingEventHandlerSupportLike, EventHandlerInfo, EventManager, JDIEventArgument}
+import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.events.{EventHandlerInfo, EventManager, JDIEventArgument, PendingEventHandlerSupportLike}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import test.JDIMockHelpers
 
 import scala.util.Success
@@ -16,8 +19,12 @@ class PureEventListenerProfileSpec extends test.ParallelMockFunSpec with JDIMock
 {
   private val TestEventHandlerId = java.util.UUID.randomUUID().toString
   private val mockEventManager = mock[EventManager]
+  private val mockInfoProducer = mock[InfoProducerProfile]
+  private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val pureEventListenerProfile = new Object with PureEventListenerProfile {
     override protected val eventManager = mockEventManager
+    override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+    override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
   describe("PureEventListenerProfile") {
@@ -30,6 +37,8 @@ class PureEventListenerProfileSpec extends test.ParallelMockFunSpec with JDIMock
         val mockEventManager = mock[PendingEventHandlerSupportLike]
         val pureEventProfile = new Object with PureEventListenerProfile {
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockEventManager.getAllEventHandlerInfo _).expects()
@@ -51,6 +60,8 @@ class PureEventListenerProfileSpec extends test.ParallelMockFunSpec with JDIMock
         val mockEventManager = mock[PendingEventHandlerSupportLike]
         val pureEventProfile = new Object with PureEventListenerProfile {
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockEventManager.getAllEventHandlerInfo _).expects()
@@ -88,9 +99,12 @@ class PureEventListenerProfileSpec extends test.ParallelMockFunSpec with JDIMock
         val eventArguments = Seq(mock[JDIEventArgument])
         val arguments = requestArguments ++ eventArguments
 
+        val lowlevelPipeline = Pipeline.newPipeline(
+          classOf[(Event, Seq[JDIEventDataResult])]
+        )
         (mockEventManager.addEventDataStream _)
           .expects(eventType, eventArguments)
-          .returning(expected.get).once()
+          .returning(lowlevelPipeline).once()
 
         val actual = pureEventListenerProfile.tryCreateEventListenerWithData(
           eventType,

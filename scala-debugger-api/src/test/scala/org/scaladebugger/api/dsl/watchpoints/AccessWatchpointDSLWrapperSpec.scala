@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.watchpoints
 
-import com.sun.jdi.event.AccessWatchpointEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.profiles.traits.info.events.AccessWatchpointEventInfoProfile
 import org.scaladebugger.api.profiles.traits.watchpoints.AccessWatchpointProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
@@ -22,7 +20,7 @@ class AccessWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val className = "some.class.name"
         val fieldName = "someFieldName"
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[AccessWatchpointEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[AccessWatchpointEventInfoProfile]))
 
         (mockAccessWatchpointProfile.tryGetOrCreateAccessWatchpointRequest _).expects(
           className,
@@ -45,7 +43,7 @@ class AccessWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val className = "some.class.name"
         val fieldName = "someFieldName"
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[AccessWatchpointEvent])
+        val returnValue = Pipeline.newPipeline(classOf[AccessWatchpointEventInfoProfile])
 
         (mockAccessWatchpointProfile.getOrCreateAccessWatchpointRequest _).expects(
           className,
@@ -69,7 +67,7 @@ class AccessWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val fieldName = "someFieldName"
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(AccessWatchpointEvent, Seq[JDIEventDataResult])]
+          classOf[(AccessWatchpointEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockAccessWatchpointProfile.tryGetOrCreateAccessWatchpointRequestWithData _).expects(
@@ -94,7 +92,7 @@ class AccessWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val fieldName = "someFieldName"
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(AccessWatchpointEvent, Seq[JDIEventDataResult])]
+          classOf[(AccessWatchpointEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockAccessWatchpointProfile.getOrCreateAccessWatchpointRequestWithData _).expects(

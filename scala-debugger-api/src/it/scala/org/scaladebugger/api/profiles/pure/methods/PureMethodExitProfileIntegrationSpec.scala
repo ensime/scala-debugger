@@ -41,7 +41,7 @@ class PureMethodExitProfileIntegrationSpec extends FunSpec with Matchers
       val methodPipeline = s.withProfile(PureDebugProfile.Name)
         .getOrCreateMethodExitRequest(expectedClassName, expectedMethodName)
         .map(_.method)
-        .map(m => (m.declaringType.name, m.name))
+        .map(m => (m.declaringTypeInfo.name, m.name))
 
       methodPipeline
         .filter(_._1 == expectedClassName)

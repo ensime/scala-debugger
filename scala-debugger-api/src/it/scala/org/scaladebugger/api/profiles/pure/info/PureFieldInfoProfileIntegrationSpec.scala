@@ -1,9 +1,7 @@
 package org.scaladebugger.api.profiles.pure.info
-import acyclic.file
-
-import com.sun.jdi.{InvalidTypeException, ThreadReference}
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
 import org.scalatest.concurrent.Eventually
@@ -24,18 +22,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.bugs.BugFromGitter"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 20, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val fieldNames = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.allVariables.map(_.name)
+          val fieldNames = t.get.topFrame.allVariables.map(_.name)
 
           fieldNames should contain theSameElementsAs Seq(
             "actualTimes",
@@ -50,18 +47,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Fields"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 21, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val fieldNames = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.fieldVariables.map(_.name)
+          val fieldNames = t.get.topFrame.fieldVariables.map(_.name)
 
           fieldNames should contain theSameElementsAs Seq(
             "publicBaseFinalPrimitiveField",
@@ -77,18 +73,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Fields"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 47, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val fieldNames = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.fieldVariables.map(_.name)
+          val fieldNames = t.get.topFrame.fieldVariables.map(_.name)
 
           fieldNames should contain theSameElementsAs Seq(
             "publicFinalPrimitiveField",
@@ -112,18 +107,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Fields"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 56, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val fieldNames = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.fieldVariables.map(_.name)
+          val fieldNames = t.get.topFrame.fieldVariables.map(_.name)
 
           fieldNames should contain theSameElementsAs Seq(
             "primitive",
@@ -137,19 +131,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 32, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val field = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame
-            .variable("z1")
+          val field = t.get.topFrame.variable("z1")
 
           field.name should be ("z1")
         })
@@ -160,19 +152,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 32, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val field = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame
-            .variable("z1")
+          val field = t.get.topFrame.variable("z1")
 
           field.isField should be (true)
         })
@@ -183,19 +173,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 32, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val field = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame
-            .variable("z1")
+          val field = t.get.topFrame.variable("z1")
 
           field.isLocal should be (false)
         })
@@ -206,19 +194,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 32, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val field = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame
-            .variable("z1")
+          val field = t.get.topFrame.variable("z1")
 
           field.isArgument should be (false)
         })
@@ -229,19 +215,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 32, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val field = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame
-            .variable("z1")
+          val field = t.get.topFrame.variable("z1")
 
           field.setValue(33).toLocalValue should be (33)
         })
@@ -252,19 +236,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 32, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val field = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame
-            .variable("z2")
+          val field = t.get.topFrame.variable("z2")
 
           field.setValue("some value").toLocalValue should be ("some value")
         })
@@ -275,18 +257,17 @@ class PureFieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 32, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val fieldsAndIndicies = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.indexedFieldVariables.zipWithIndex
+          val fieldsAndIndicies = t.get.topFrame.indexedFieldVariables.zipWithIndex
 
           fieldsAndIndicies should not be (empty)
           fieldsAndIndicies.foreach { case (v, i) =>

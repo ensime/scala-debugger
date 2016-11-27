@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.monitors
 
-import com.sun.jdi.event.MonitorWaitEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitEventInfoProfile
 import org.scaladebugger.api.profiles.traits.monitors.MonitorWaitProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
@@ -20,7 +18,7 @@ class MonitorWaitDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.MonitorWaitDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[MonitorWaitEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[MonitorWaitEventInfoProfile]))
 
         (mockMonitorWaitProfile.tryGetOrCreateMonitorWaitRequest _).expects(
           extraArguments
@@ -37,7 +35,7 @@ class MonitorWaitDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.MonitorWaitDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[MonitorWaitEvent])
+        val returnValue = Pipeline.newPipeline(classOf[MonitorWaitEventInfoProfile])
 
         (mockMonitorWaitProfile.getOrCreateMonitorWaitRequest _).expects(
           extraArguments
@@ -55,7 +53,7 @@ class MonitorWaitDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(MonitorWaitEvent, Seq[JDIEventDataResult])]
+          classOf[(MonitorWaitEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockMonitorWaitProfile.tryGetOrCreateMonitorWaitRequestWithData _).expects(
@@ -74,7 +72,7 @@ class MonitorWaitDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(MonitorWaitEvent, Seq[JDIEventDataResult])]
+          classOf[(MonitorWaitEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockMonitorWaitProfile.getOrCreateMonitorWaitRequestWithData _).expects(

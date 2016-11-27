@@ -1,15 +1,11 @@
 package org.scaladebugger.api.profiles.traits.events
-import acyclic.file
-
-import com.sun.jdi.event.Event
-import org.scaladebugger.api.lowlevel.events.EventHandlerInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.api.lowlevel.events.EventHandlerInfo
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -47,12 +43,12 @@ class EventListenerProfileSpec extends test.ParallelMockFunSpec
   describe("EventListenerProfile") {
     describe("#tryCreateEventListener") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[Event]
+        val expected = mock[EventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: Event = null
+        var actual: EventInfoProfile = null
         successEventListenerProfile.tryCreateEventListener(mock[EventType]).get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -67,7 +63,7 @@ class EventListenerProfileSpec extends test.ParallelMockFunSpec
         val expected = TestThrowable
 
         // Data to be run through pipeline
-        val data = (mock[Event], Seq(mock[JDIEventDataResult]))
+        val data = (mock[EventInfoProfile], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
         failEventListenerProfile.tryCreateEventListener(mock[EventType]).failed.foreach(actual = _)
@@ -78,12 +74,12 @@ class EventListenerProfileSpec extends test.ParallelMockFunSpec
 
     describe("#createEventListener") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[Event]
+        val expected = mock[EventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: Event = null
+        var actual: EventInfoProfile = null
         successEventListenerProfile.createEventListener(mock[EventType]).foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -104,9 +100,9 @@ class EventListenerProfileSpec extends test.ParallelMockFunSpec
     describe("#createEventListenerWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[Event], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[EventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (Event, Seq[JDIEventDataResult]) = null
+        var actual: (EventInfoProfile, Seq[JDIEventDataResult]) = null
         successEventListenerProfile
           .createEventListenerWithData(mock[EventType])
           .foreach(actual = _)

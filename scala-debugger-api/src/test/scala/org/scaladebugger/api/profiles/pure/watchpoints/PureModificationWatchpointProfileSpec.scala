@@ -1,6 +1,5 @@
 package org.scaladebugger.api.profiles.pure.watchpoints
 import acyclic.file
-
 import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.lowlevel.events.EventManager
@@ -12,6 +11,8 @@ import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.lowlevel.watchpoints.{ModificationWatchpointManager, ModificationWatchpointRequestInfo, PendingModificationWatchpointSupportLike}
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.Constants
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.JDIMockHelpers
@@ -24,6 +25,8 @@ class PureModificationWatchpointProfileSpec extends test.ParallelMockFunSpec wit
   private val stubClassManager = stub[ClassManager]
   private val mockModificationWatchpointManager = mock[ModificationWatchpointManager]
   private val mockEventManager = mock[EventManager]
+  private val mockInfoProducer = mock[InfoProducerProfile]
+  private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
 
   private val pureModificationWatchpointProfile = new Object with PureModificationWatchpointProfile {
     private var requestId: String = _
@@ -36,6 +39,8 @@ class PureModificationWatchpointProfileSpec extends test.ParallelMockFunSpec wit
 
     override protected val modificationWatchpointManager = mockModificationWatchpointManager
     override protected val eventManager: EventManager = mockEventManager
+    override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+    override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
   describe("PureModificationWatchpointProfile") {
@@ -54,6 +59,8 @@ class PureModificationWatchpointProfileSpec extends test.ParallelMockFunSpec wit
         val pureModificationWatchpointProfile = new Object with PureModificationWatchpointProfile {
           override protected val modificationWatchpointManager = mockModificationWatchpointManager
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockModificationWatchpointManager.modificationWatchpointRequestList _).expects()
@@ -81,6 +88,8 @@ class PureModificationWatchpointProfileSpec extends test.ParallelMockFunSpec wit
         val pureModificationWatchpointProfile = new Object with PureModificationWatchpointProfile {
           override protected val modificationWatchpointManager = mockModificationWatchpointManager
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockModificationWatchpointManager.modificationWatchpointRequestList _).expects()

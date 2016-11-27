@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.breakpoints
-import acyclic.file
-
-import com.sun.jdi.event.BreakpointEvent
-import org.scaladebugger.api.lowlevel.breakpoints.BreakpointRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.api.lowlevel.breakpoints.BreakpointRequestInfo
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.BreakpointEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -58,12 +54,12 @@ class BreakpointProfileSpec extends test.ParallelMockFunSpec
   describe("BreakpointProfile") {
     describe("#tryGetOrCreateBreakpointRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[BreakpointEvent]
+        val expected = mock[BreakpointEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: BreakpointEvent = null
+        var actual: BreakpointEventInfoProfile = null
         successBreakpointProfile.tryGetOrCreateBreakpointRequest("", 0).get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -78,7 +74,7 @@ class BreakpointProfileSpec extends test.ParallelMockFunSpec
         val expected = TestThrowable
 
         // Data to be run through pipeline
-        val data = (mock[BreakpointEvent], Seq(mock[JDIEventDataResult]))
+        val data = (mock[BreakpointEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
         failBreakpointProfile.tryGetOrCreateBreakpointRequest("", 0).failed.foreach(actual = _)
@@ -89,12 +85,12 @@ class BreakpointProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateBreakpointRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[BreakpointEvent]
+        val expected = mock[BreakpointEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: BreakpointEvent = null
+        var actual: BreakpointEventInfoProfile = null
         successBreakpointProfile.getOrCreateBreakpointRequest("", 0).foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -115,9 +111,9 @@ class BreakpointProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateBreakpointRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[BreakpointEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[BreakpointEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (BreakpointEvent, Seq[JDIEventDataResult]) = null
+        var actual: (BreakpointEventInfoProfile, Seq[JDIEventDataResult]) = null
         successBreakpointProfile
           .getOrCreateBreakpointRequestWithData("", 0)
           .foreach(actual = _)

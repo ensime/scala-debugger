@@ -1,15 +1,11 @@
 package org.scaladebugger.api.dsl.events
 
-import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.EventType
-import org.scaladebugger.api.lowlevel.events.EventType.EventType
-import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.events.EventListenerProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
 
 import scala.util.Success
 
@@ -25,7 +21,7 @@ class EventListenerDSLWrapperSpec extends test.ParallelMockFunSpec
         // NOTE: Cannot mock EventType (get stack overflow error)
         val eventType = EventType.BreakpointEventType
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[Event]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[EventInfoProfile]))
 
         (mockEventProfile.tryCreateEventListener _).expects(
           eventType,
@@ -46,7 +42,7 @@ class EventListenerDSLWrapperSpec extends test.ParallelMockFunSpec
         // NOTE: Cannot mock EventType (get stack overflow error)
         val eventType = EventType.BreakpointEventType
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[Event])
+        val returnValue = Pipeline.newPipeline(classOf[EventInfoProfile])
 
         (mockEventProfile.createEventListener _).expects(
           eventType,
@@ -68,7 +64,7 @@ class EventListenerDSLWrapperSpec extends test.ParallelMockFunSpec
         val eventType = EventType.BreakpointEventType
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(Event, Seq[JDIEventDataResult])]
+          classOf[(EventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockEventProfile.tryCreateEventListenerWithData _).expects(
@@ -91,7 +87,7 @@ class EventListenerDSLWrapperSpec extends test.ParallelMockFunSpec
         val eventType = EventType.BreakpointEventType
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(Event, Seq[JDIEventDataResult])]
+          classOf[(EventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockEventProfile.createEventListenerWithData _).expects(

@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.watchpoints
-import acyclic.file
-
-import com.sun.jdi.event.ModificationWatchpointEvent
-import org.scaladebugger.api.lowlevel.watchpoints.ModificationWatchpointRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.watchpoints.ModificationWatchpointRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ModificationWatchpointEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -86,12 +82,12 @@ class ModificationWatchpointProfileSpec extends test.ParallelMockFunSpec
   describe("ModificationWatchpointProfile") {
     describe("#tryGetOrCreateModificationWatchpointRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ModificationWatchpointEvent]
+        val expected = mock[ModificationWatchpointEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ModificationWatchpointEvent = null
+        var actual: ModificationWatchpointEventInfoProfile = null
         successModificationWatchpointProfile
           .tryGetOrCreateModificationWatchpointRequest("", "")
           .get
@@ -120,12 +116,12 @@ class ModificationWatchpointProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateModificationWatchpointRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ModificationWatchpointEvent]
+        val expected = mock[ModificationWatchpointEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ModificationWatchpointEvent = null
+        var actual: ModificationWatchpointEventInfoProfile = null
         successModificationWatchpointProfile
           .getOrCreateModificationWatchpointRequest("", "")
           .foreach(actual = _)
@@ -148,9 +144,9 @@ class ModificationWatchpointProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateModificationWatchpointRequestWithData") {
       it("should return a pipeline with the event data results") {
         // Data to be run through pipeline
-        val expected = (mock[ModificationWatchpointEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[ModificationWatchpointEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (ModificationWatchpointEvent, Seq[JDIEventDataResult]) = null
+        var actual: (ModificationWatchpointEventInfoProfile, Seq[JDIEventDataResult]) = null
         successModificationWatchpointProfile
           .getOrCreateModificationWatchpointRequestWithData("", "")
           .foreach(actual = _)

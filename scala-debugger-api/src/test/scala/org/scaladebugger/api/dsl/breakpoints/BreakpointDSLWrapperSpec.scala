@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.breakpoints
 
-import com.sun.jdi.event.BreakpointEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.breakpoints.BreakpointProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.api.profiles.traits.info.events.BreakpointEventInfoProfile
 
 import scala.util.Success
 
@@ -22,7 +20,7 @@ class BreakpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val fileName = "someFile.scala"
         val lineNumber = 999
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[BreakpointEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[BreakpointEventInfoProfile]))
 
         (mockBreakpointProfile.tryGetOrCreateBreakpointRequest _).expects(
           fileName,
@@ -45,7 +43,7 @@ class BreakpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val fileName = "someFile.scala"
         val lineNumber = 999
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[BreakpointEvent])
+        val returnValue = Pipeline.newPipeline(classOf[BreakpointEventInfoProfile])
 
         (mockBreakpointProfile.getOrCreateBreakpointRequest _).expects(
           fileName,
@@ -69,7 +67,7 @@ class BreakpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val lineNumber = 999
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(BreakpointEvent, Seq[JDIEventDataResult])]
+          classOf[(BreakpointEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockBreakpointProfile.tryGetOrCreateBreakpointRequestWithData _).expects(
@@ -94,7 +92,7 @@ class BreakpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val lineNumber = 999
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(BreakpointEvent, Seq[JDIEventDataResult])]
+          classOf[(BreakpointEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockBreakpointProfile.getOrCreateBreakpointRequestWithData _).expects(

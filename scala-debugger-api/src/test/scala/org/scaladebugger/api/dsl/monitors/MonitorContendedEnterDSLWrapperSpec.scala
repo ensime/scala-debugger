@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.monitors
 
-import com.sun.jdi.event.MonitorContendedEnterEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnterEventInfoProfile
 import org.scaladebugger.api.profiles.traits.monitors.MonitorContendedEnterProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
@@ -20,7 +18,7 @@ class MonitorContendedEnterDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.MonitorContendedEnterDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[MonitorContendedEnterEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[MonitorContendedEnterEventInfoProfile]))
 
         (mockMonitorContendedEnterProfile.tryGetOrCreateMonitorContendedEnterRequest _).expects(
           extraArguments
@@ -37,7 +35,7 @@ class MonitorContendedEnterDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.MonitorContendedEnterDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[MonitorContendedEnterEvent])
+        val returnValue = Pipeline.newPipeline(classOf[MonitorContendedEnterEventInfoProfile])
 
         (mockMonitorContendedEnterProfile.getOrCreateMonitorContendedEnterRequest _).expects(
           extraArguments
@@ -55,7 +53,7 @@ class MonitorContendedEnterDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(MonitorContendedEnterEvent, Seq[JDIEventDataResult])]
+          classOf[(MonitorContendedEnterEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockMonitorContendedEnterProfile.tryGetOrCreateMonitorContendedEnterRequestWithData _).expects(
@@ -74,7 +72,7 @@ class MonitorContendedEnterDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(MonitorContendedEnterEvent, Seq[JDIEventDataResult])]
+          classOf[(MonitorContendedEnterEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockMonitorContendedEnterProfile.getOrCreateMonitorContendedEnterRequestWithData _).expects(

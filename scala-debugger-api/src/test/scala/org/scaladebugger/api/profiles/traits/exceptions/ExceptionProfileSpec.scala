@@ -1,14 +1,13 @@
 package org.scaladebugger.api.profiles.traits.exceptions
-import acyclic.file
-
 import com.sun.jdi.event.ExceptionEvent
-import org.scaladebugger.api.lowlevel.exceptions.ExceptionRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.exceptions.ExceptionRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ExceptionEventInfoProfile
+import org.scalamock.scalatest.MockFactory
+import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.{Failure, Success, Try}
 
@@ -125,12 +124,12 @@ class ExceptionProfileSpec extends FunSpec with Matchers with ParallelTestExecut
   describe("ExceptionProfile") {
     describe("#tryGetOrCreateExceptionRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ExceptionEvent]
+        val expected = mock[ExceptionEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ExceptionEvent = null
+        var actual: ExceptionEventInfoProfile = null
         successExceptionProfile
           .tryGetOrCreateExceptionRequest("", true, true)
           .get
@@ -159,12 +158,12 @@ class ExceptionProfileSpec extends FunSpec with Matchers with ParallelTestExecut
 
     describe("#getOrCreateExceptionRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ExceptionEvent]
+        val expected = mock[ExceptionEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ExceptionEvent = null
+        var actual: ExceptionEventInfoProfile = null
         successExceptionProfile
           .getOrCreateExceptionRequest("", true, true)
           .foreach(actual = _)
@@ -187,9 +186,9 @@ class ExceptionProfileSpec extends FunSpec with Matchers with ParallelTestExecut
     describe("#getOrCreateExceptionRequestWithData") {
       it("should return a pipeline with the event data results") {
         // Data to be run through pipeline
-        val expected = (mock[ExceptionEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[ExceptionEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (ExceptionEvent, Seq[JDIEventDataResult]) = null
+        var actual: (ExceptionEventInfoProfile, Seq[JDIEventDataResult]) = null
         successExceptionProfile
           .getOrCreateExceptionRequestWithData("", true, true)
           .foreach(actual = _)
@@ -211,12 +210,12 @@ class ExceptionProfileSpec extends FunSpec with Matchers with ParallelTestExecut
 
     describe("#tryGetOrCreateAllExceptionsRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ExceptionEvent]
+        val expected = mock[ExceptionEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ExceptionEvent = null
+        var actual: ExceptionEventInfoProfile = null
         successExceptionProfile
           .tryGetOrCreateAllExceptionsRequest(true, true)
           .get
@@ -245,12 +244,12 @@ class ExceptionProfileSpec extends FunSpec with Matchers with ParallelTestExecut
 
     describe("#getOrCreateAllExceptionsRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ExceptionEvent]
+        val expected = mock[ExceptionEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ExceptionEvent = null
+        var actual: ExceptionEventInfoProfile = null
         successExceptionProfile
           .getOrCreateAllExceptionsRequest(true, true)
           .foreach(actual = _)
@@ -273,9 +272,9 @@ class ExceptionProfileSpec extends FunSpec with Matchers with ParallelTestExecut
     describe("#getOrCreateAllExceptionsRequestWithData") {
       it("should return a pipeline with the event data results") {
         // Data to be run through pipeline
-        val expected = (mock[ExceptionEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[ExceptionEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (ExceptionEvent, Seq[JDIEventDataResult]) = null
+        var actual: (ExceptionEventInfoProfile, Seq[JDIEventDataResult]) = null
         successExceptionProfile
           .getOrCreateAllExceptionsRequestWithData(true, true)
           .foreach(actual = _)

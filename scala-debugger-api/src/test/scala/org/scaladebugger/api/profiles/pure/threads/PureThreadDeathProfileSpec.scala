@@ -1,6 +1,5 @@
 package org.scaladebugger.api.profiles.pure.threads
 import acyclic.file
-
 import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.EventManager
 import org.scaladebugger.api.lowlevel.events.EventType.ThreadDeathEventType
@@ -11,6 +10,8 @@ import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.lowlevel.threads.{PendingThreadDeathSupportLike, ThreadDeathManager, ThreadDeathRequestInfo}
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.Constants
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.JDIMockHelpers
@@ -23,6 +24,8 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockThreadDeathManager = mock[ThreadDeathManager]
   private val mockEventManager = mock[EventManager]
+  private val mockInfoProducer = mock[InfoProducerProfile]
+  private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
 
   private val pureThreadDeathProfile = new Object with PureThreadDeathProfile {
     private var requestId: String = _
@@ -35,6 +38,8 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
     override protected val threadDeathManager = mockThreadDeathManager
     override protected val eventManager: EventManager = mockEventManager
+    override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+    override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
   describe("PureThreadDeathProfile") {
@@ -48,6 +53,8 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
         val pureThreadDeathProfile = new Object with PureThreadDeathProfile {
           override protected val threadDeathManager = mockThreadDeathManager
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockThreadDeathManager.threadDeathRequestList _).expects()
@@ -72,6 +79,8 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
         val pureThreadDeathProfile = new Object with PureThreadDeathProfile {
           override protected val threadDeathManager = mockThreadDeathManager
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockThreadDeathManager.threadDeathRequestList _).expects()

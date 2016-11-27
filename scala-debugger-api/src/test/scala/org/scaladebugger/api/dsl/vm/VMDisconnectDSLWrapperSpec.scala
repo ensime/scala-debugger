@@ -1,12 +1,10 @@
 package org.scaladebugger.api.dsl.vm
 
-import com.sun.jdi.event.VMDisconnectEvent
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.profiles.traits.info.events.VMDisconnectEventInfoProfile
 import org.scaladebugger.api.profiles.traits.vm.VMDisconnectProfile
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
@@ -20,7 +18,7 @@ class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.VMDisconnectDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[VMDisconnectEvent]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[VMDisconnectEventInfoProfile]))
 
         (mockVMDisconnectProfile.tryGetOrCreateVMDisconnectRequest _).expects(
           extraArguments
@@ -37,7 +35,7 @@ class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.VMDisconnectDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[VMDisconnectEvent])
+        val returnValue = Pipeline.newPipeline(classOf[VMDisconnectEventInfoProfile])
 
         (mockVMDisconnectProfile.getOrCreateVMDisconnectRequest _).expects(
           extraArguments
@@ -55,7 +53,7 @@ class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(VMDisconnectEvent, Seq[JDIEventDataResult])]
+          classOf[(VMDisconnectEventInfoProfile, Seq[JDIEventDataResult])]
         ))
 
         (mockVMDisconnectProfile.tryGetOrCreateVMDisconnectRequestWithData _).expects(
@@ -74,7 +72,7 @@ class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(VMDisconnectEvent, Seq[JDIEventDataResult])]
+          classOf[(VMDisconnectEventInfoProfile, Seq[JDIEventDataResult])]
         )
 
         (mockVMDisconnectProfile.getOrCreateVMDisconnectRequestWithData _).expects(

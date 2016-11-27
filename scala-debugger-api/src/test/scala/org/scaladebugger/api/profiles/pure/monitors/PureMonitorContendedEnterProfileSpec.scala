@@ -1,6 +1,5 @@
 package org.scaladebugger.api.profiles.pure.monitors
 import acyclic.file
-
 import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.EventManager
 import org.scaladebugger.api.lowlevel.events.EventType.MonitorContendedEnterEventType
@@ -11,6 +10,8 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.Constants
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.JDIMockHelpers
@@ -22,6 +23,8 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMonitorContendedEnterManager = mock[MonitorContendedEnterManager]
   private val mockEventManager = mock[EventManager]
+  private val mockInfoProducer = mock[InfoProducerProfile]
+  private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
 
   private val pureMonitorContendedEnterProfile = new Object with PureMonitorContendedEnterProfile {
     private var requestId: String = _
@@ -35,6 +38,8 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers {
 
     override protected val monitorContendedEnterManager = mockMonitorContendedEnterManager
     override protected val eventManager: EventManager = mockEventManager
+    override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+    override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
   describe("PureMonitorContendedEnterProfile") {
@@ -48,6 +53,8 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers {
         val pureMonitorContendedEnterProfile = new Object with PureMonitorContendedEnterProfile {
           override protected val monitorContendedEnterManager = mockMonitorContendedEnterManager
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockMonitorContendedEnterManager.monitorContendedEnterRequestList _).expects()
@@ -72,6 +79,8 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers {
         val pureMonitorContendedEnterProfile = new Object with PureMonitorContendedEnterProfile {
           override protected val monitorContendedEnterManager = mockMonitorContendedEnterManager
           override protected val eventManager: EventManager = mockEventManager
+          override protected val infoProducer: InfoProducerProfile = mockInfoProducer
+          override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
         }
 
         (mockMonitorContendedEnterManager.monitorContendedEnterRequestList _).expects()

@@ -1,14 +1,10 @@
 package org.scaladebugger.api.profiles.traits.classes
-import acyclic.file
-
-import com.sun.jdi.event.ClassPrepareEvent
-import org.scaladebugger.api.lowlevel.classes.ClassPrepareRequestInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.api.lowlevel.classes.ClassPrepareRequestInfo
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ClassPrepareEventInfoProfile
 
 import scala.util.{Failure, Success, Try}
 
@@ -64,12 +60,12 @@ class ClassPrepareProfileSpec extends test.ParallelMockFunSpec
   describe("ClassPrepareProfile") {
     describe("#tryGetOrCreateClassPrepareRequest") {
       it("should return a pipeline with the event data results filtered out") {
-        val expected = mock[ClassPrepareEvent]
+        val expected = mock[ClassPrepareEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ClassPrepareEvent = null
+        var actual: ClassPrepareEventInfoProfile = null
         successClassPrepareProfile.tryGetOrCreateClassPrepareRequest().get.foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -84,7 +80,7 @@ class ClassPrepareProfileSpec extends test.ParallelMockFunSpec
         val expected = TestThrowable
 
         // Data to be run through pipeline
-        val data = (mock[ClassPrepareEvent], Seq(mock[JDIEventDataResult]))
+        val data = (mock[ClassPrepareEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
         var actual: Throwable = null
         failClassPrepareProfile.tryGetOrCreateClassPrepareRequest().failed.foreach(actual = _)
@@ -95,12 +91,12 @@ class ClassPrepareProfileSpec extends test.ParallelMockFunSpec
 
     describe("#getOrCreateClassPrepareRequest") {
       it("should return a pipeline of events if successful") {
-        val expected = mock[ClassPrepareEvent]
+        val expected = mock[ClassPrepareEventInfoProfile]
 
         // Data to be run through pipeline
         val data = (expected, Seq(mock[JDIEventDataResult]))
 
-        var actual: ClassPrepareEvent = null
+        var actual: ClassPrepareEventInfoProfile = null
         successClassPrepareProfile.getOrCreateClassPrepareRequest().foreach(actual = _)
 
         // Funnel the data through the parent pipeline that contains data to
@@ -121,9 +117,9 @@ class ClassPrepareProfileSpec extends test.ParallelMockFunSpec
     describe("#getOrCreateClassPrepareRequestWithData") {
       it("should return a pipeline of events and data if successful") {
         // Data to be run through pipeline
-        val expected = (mock[ClassPrepareEvent], Seq(mock[JDIEventDataResult]))
+        val expected = (mock[ClassPrepareEventInfoProfile], Seq(mock[JDIEventDataResult]))
 
-        var actual: (ClassPrepareEvent, Seq[JDIEventDataResult]) = null
+        var actual: (ClassPrepareEventInfoProfile, Seq[JDIEventDataResult]) = null
         successClassPrepareProfile
           .getOrCreateClassPrepareRequestWithData()
           .foreach(actual = _)

@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.pure.info
 
-import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
 import org.scalatest.concurrent.Eventually
@@ -23,17 +23,17 @@ class PureObjectInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Methods"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 22, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val thread = s.withProfile(PureDebugProfile.Name).thread(t.get)
+          val thread = t.get
           val result = thread.topFrame.thisObject
             .invoke(thread, "publicMethod", Seq(3, "test")).toLocalValue
 
@@ -46,19 +46,17 @@ class PureObjectInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 32, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val fieldName = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.thisObject
-            .field("z1").name
+          val fieldName = t.get.topFrame.thisObject.field("z1").name
 
           fieldName should be ("z1")
         })
@@ -69,19 +67,17 @@ class PureObjectInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 32, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val fieldNames = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.thisObject
-            .fields.map(_.name)
+          val fieldNames = t.get.topFrame.thisObject.fields.map(_.name)
 
           fieldNames should contain theSameElementsAs Seq(
             "MODULE$", "z1", "z2", "z3"
@@ -94,19 +90,17 @@ class PureObjectInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Methods"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 22, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val methodName = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.thisObject
-            .method("publicMethod").name
+          val methodName = t.get.topFrame.thisObject.method("publicMethod").name
 
           methodName should be ("publicMethod")
         })
@@ -117,19 +111,17 @@ class PureObjectInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Methods"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 22, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val methodNames = s.withProfile(PureDebugProfile.Name)
-            .thread(t.get).topFrame.thisObject
-            .methods.map(_.name)
+          val methodNames = t.get.topFrame.thisObject.methods.map(_.name)
 
           methodNames should contain theSameElementsAs Seq(
             // Defined methods
