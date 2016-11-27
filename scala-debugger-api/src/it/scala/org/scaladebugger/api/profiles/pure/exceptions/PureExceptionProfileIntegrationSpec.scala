@@ -40,7 +40,7 @@ class PureExceptionProfileIntegrationSpec extends FunSpec with Matchers
         exceptionName = expectedExceptionName,
         notifyCaught = true,
         notifyUncaught = false
-      ).map(_.exception().referenceType().name())
+      ).map(_.exception.referenceType.name)
         .filter(_ == expectedExceptionName)
         .foreach(_ => detectedException.set(true))
 
@@ -68,7 +68,7 @@ class PureExceptionProfileIntegrationSpec extends FunSpec with Matchers
         exceptionName = expectedExceptionName,
         notifyCaught = true,
         notifyUncaught = false
-      ).map(_.exception().referenceType().name())
+      ).map(_.exception.referenceType.name)
         .filter(_ == expectedExceptionName)
         .foreach(_ => detectedException.set(true))
 
@@ -96,7 +96,7 @@ class PureExceptionProfileIntegrationSpec extends FunSpec with Matchers
         exceptionName = expectedExceptionName,
         notifyCaught = false,
         notifyUncaught = true
-      ).map(_.exception().referenceType().name())
+      ).map(_.exception.referenceType.name)
         .filter(_ == expectedExceptionName)
         .foreach(_ => detectedException.set(true))
 

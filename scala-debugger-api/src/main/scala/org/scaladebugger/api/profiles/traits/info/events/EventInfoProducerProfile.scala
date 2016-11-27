@@ -30,10 +30,10 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     locatableEvent: LocatableEvent,
     jdiArguments: JDIArgument*
   )(
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    virtualMachine: => VirtualMachine = locatableEvent.virtualMachine(),
+    thread: => ThreadReference = locatableEvent.thread(),
+    threadReferenceType: => ReferenceType = locatableEvent.thread().referenceType(),
+    location: => Location = locatableEvent.location()
   ): LocatableEventInfoProfile
 
   def newWatchpointEventInfoProfile(
@@ -41,10 +41,10 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     watchpointEvent: WatchpointEvent,
     jdiArguments: JDIArgument*
   )(
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    virtualMachine: => VirtualMachine = watchpointEvent.virtualMachine(),
+    thread: => ThreadReference = watchpointEvent.thread(),
+    threadReferenceType: => ReferenceType = watchpointEvent.thread().referenceType(),
+    location: => Location = watchpointEvent.location()
   ): WatchpointEventInfoProfile
 
   def newAccessWatchpointEventInfoProfile(
@@ -52,12 +52,15 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     accessWatchpointEvent: AccessWatchpointEvent,
     jdiArguments: JDIArgument*
   )(
-    container: => Either[ObjectReference, ReferenceType],
-    field: => Field,
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    container: => Either[ObjectReference, ReferenceType] =
+      Option(accessWatchpointEvent.`object`())
+        .map(Left.apply)
+        .getOrElse(Right(accessWatchpointEvent.field().declaringType())),
+    field: => Field = accessWatchpointEvent.field(),
+    virtualMachine: => VirtualMachine = accessWatchpointEvent.virtualMachine(),
+    thread: => ThreadReference = accessWatchpointEvent.thread(),
+    threadReferenceType: => ReferenceType = accessWatchpointEvent.thread().referenceType(),
+    location: => Location = accessWatchpointEvent.location()
   ): AccessWatchpointEventInfoProfile
 
   def newBreakpointEventInfoProfile(
@@ -65,10 +68,10 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     breakpointEvent: BreakpointEvent,
     jdiArguments: JDIArgument*
   )(
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    virtualMachine: => VirtualMachine = breakpointEvent.virtualMachine(),
+    thread: => ThreadReference = breakpointEvent.thread(),
+    threadReferenceType: => ReferenceType = breakpointEvent.thread().referenceType(),
+    location: => Location = breakpointEvent.location()
   ): BreakpointEventInfoProfile
 
   def newClassPrepareEventInfoProfile(
@@ -76,10 +79,10 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     classPrepareEvent: ClassPrepareEvent,
     jdiArguments: JDIArgument*
   )(
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    referenceType: => ReferenceType
+    virtualMachine: => VirtualMachine = classPrepareEvent.virtualMachine(),
+    thread: => ThreadReference = classPrepareEvent.thread(),
+    threadReferenceType: => ReferenceType = classPrepareEvent.thread().referenceType(),
+    referenceType: => ReferenceType = classPrepareEvent.referenceType()
   ): ClassPrepareEventInfoProfile
 
   def newClassUnloadEventInfoProfile(
@@ -93,13 +96,13 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     exceptionEvent: ExceptionEvent,
     jdiArguments: JDIArgument*
   )(
-    catchLocation: => Option[Location],
-    exception: => ObjectReference,
-    exceptionReferenceType: => ReferenceType,
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    catchLocation: => Option[Location] = Option(exceptionEvent.catchLocation()),
+    exception: => ObjectReference = exceptionEvent.exception(),
+    exceptionReferenceType: => ReferenceType =exceptionEvent.exception().referenceType(),
+    virtualMachine: => VirtualMachine = exceptionEvent.virtualMachine(),
+    thread: => ThreadReference = exceptionEvent.thread(),
+    threadReferenceType: => ReferenceType = exceptionEvent.thread().referenceType(),
+    location: => Location = exceptionEvent.location()
   ): ExceptionEventInfoProfile
 
   def newMethodEntryEventInfoProfile(
@@ -107,11 +110,11 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     methodEntryEvent: MethodEntryEvent,
     jdiArguments: JDIArgument*
   )(
-    method: => Method,
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    method: => Method = methodEntryEvent.method(),
+    virtualMachine: => VirtualMachine = methodEntryEvent.virtualMachine(),
+    thread: => ThreadReference = methodEntryEvent.thread(),
+    threadReferenceType: => ReferenceType = methodEntryEvent.thread().referenceType(),
+    location: => Location = methodEntryEvent.location()
   ): MethodEntryEventInfoProfile
 
   def newMethodExitEventInfoProfile(
@@ -119,12 +122,12 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     methodExitEvent: MethodExitEvent,
     jdiArguments: JDIArgument*
   )(
-    method: => Method,
-    returnValue: => Value,
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    method: => Method = methodExitEvent.method(),
+    returnValue: => Value = methodExitEvent.returnValue(),
+    virtualMachine: => VirtualMachine = methodExitEvent.virtualMachine(),
+    thread: => ThreadReference = methodExitEvent.thread(),
+    threadReferenceType: => ReferenceType = methodExitEvent.thread().referenceType(),
+    location: => Location = methodExitEvent.location()
   ): MethodExitEventInfoProfile
 
   def newModificationWatchpointEventInfoProfile(
@@ -132,12 +135,15 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     modificationWatchpointEvent: ModificationWatchpointEvent,
     jdiArguments: JDIArgument*
   )(
-    container: => Either[ObjectReference, ReferenceType],
-    field: => Field,
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    container: => Either[ObjectReference, ReferenceType] =
+      Option(modificationWatchpointEvent.`object`())
+        .map(Left.apply)
+        .getOrElse(Right(modificationWatchpointEvent.field().declaringType())),
+    field: => Field = modificationWatchpointEvent.field(),
+    virtualMachine: => VirtualMachine = modificationWatchpointEvent.virtualMachine(),
+    thread: => ThreadReference = modificationWatchpointEvent.thread(),
+    threadReferenceType: => ReferenceType = modificationWatchpointEvent.thread().referenceType(),
+    location: => Location = modificationWatchpointEvent.location()
   ): ModificationWatchpointEventInfoProfile
 
   def newMonitorContendedEnteredEventInfoProfile(
@@ -145,12 +151,12 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     monitorContendedEnteredEvent: MonitorContendedEnteredEvent,
     jdiArguments: JDIArgument*
   )(
-    monitor: => ObjectReference,
-    monitorReferenceType: => ReferenceType,
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    monitor: => ObjectReference = monitorContendedEnteredEvent.monitor(),
+    monitorReferenceType: => ReferenceType = monitorContendedEnteredEvent.monitor().referenceType(),
+    virtualMachine: => VirtualMachine = monitorContendedEnteredEvent.virtualMachine(),
+    thread: => ThreadReference = monitorContendedEnteredEvent.thread(),
+    threadReferenceType: => ReferenceType = monitorContendedEnteredEvent.thread().referenceType(),
+    location: => Location = monitorContendedEnteredEvent.location()
   ): MonitorContendedEnteredEventInfoProfile
 
   def newMonitorContendedEnterEventInfoProfile(
@@ -158,12 +164,12 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     monitorContendedEnterEvent: MonitorContendedEnterEvent,
     jdiArguments: JDIArgument*
   )(
-    monitor: => ObjectReference,
-    monitorReferenceType: => ReferenceType,
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    monitor: => ObjectReference = monitorContendedEnterEvent.monitor(),
+    monitorReferenceType: => ReferenceType = monitorContendedEnterEvent.monitor().referenceType(),
+    virtualMachine: => VirtualMachine = monitorContendedEnterEvent.virtualMachine(),
+    thread: => ThreadReference = monitorContendedEnterEvent.thread(),
+    threadReferenceType: => ReferenceType = monitorContendedEnterEvent.thread().referenceType(),
+    location: => Location = monitorContendedEnterEvent.location()
   ): MonitorContendedEnterEventInfoProfile
 
   def newMonitorWaitedEventInfoProfile(
@@ -171,12 +177,12 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     monitorWaitedEvent: MonitorWaitedEvent,
     jdiArguments: JDIArgument*
   )(
-    monitor: => ObjectReference,
-    monitorReferenceType: => ReferenceType,
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    monitor: => ObjectReference = monitorWaitedEvent.monitor(),
+    monitorReferenceType: => ReferenceType = monitorWaitedEvent.monitor().referenceType(),
+    virtualMachine: => VirtualMachine = monitorWaitedEvent.virtualMachine(),
+    thread: => ThreadReference = monitorWaitedEvent.thread(),
+    threadReferenceType: => ReferenceType = monitorWaitedEvent.thread().referenceType(),
+    location: => Location = monitorWaitedEvent.location()
   ): MonitorWaitedEventInfoProfile
 
   def newMonitorWaitEventInfoProfile(
@@ -184,12 +190,12 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     monitorWaitEvent: MonitorWaitEvent,
     jdiArguments: JDIArgument*
   )(
-    monitor: => ObjectReference,
-    monitorReferenceType: => ReferenceType,
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    monitor: => ObjectReference = monitorWaitEvent.monitor(),
+    monitorReferenceType: => ReferenceType = monitorWaitEvent.monitor().referenceType(),
+    virtualMachine: => VirtualMachine = monitorWaitEvent.virtualMachine(),
+    thread: => ThreadReference = monitorWaitEvent.thread(),
+    threadReferenceType: => ReferenceType = monitorWaitEvent.thread().referenceType(),
+    location: => Location = monitorWaitEvent.location()
   ): MonitorWaitEventInfoProfile
 
   def newStepEventInfoProfile(
@@ -197,10 +203,10 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     stepEvent: StepEvent,
     jdiArguments: JDIArgument*
   )(
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType,
-    location: => Location
+    virtualMachine: => VirtualMachine = stepEvent.virtualMachine(),
+    thread: => ThreadReference = stepEvent.thread(),
+    threadReferenceType: => ReferenceType = stepEvent.thread().referenceType(),
+    location: => Location = stepEvent.location()
   ): StepEventInfoProfile
 
   def newThreadDeathEventInfoProfile(
@@ -208,9 +214,9 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     threadDeathEvent: ThreadDeathEvent,
     jdiArguments: JDIArgument*
   )(
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType
+    virtualMachine: => VirtualMachine = threadDeathEvent.virtualMachine(),
+    thread: => ThreadReference = threadDeathEvent.thread(),
+    threadReferenceType: => ReferenceType = threadDeathEvent.thread().referenceType()
   ): ThreadDeathEventInfoProfile
 
   def newThreadStartEventInfoProfile(
@@ -218,9 +224,9 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     threadStartEvent: ThreadStartEvent,
     jdiArguments: JDIArgument*
   )(
-    virtualMachine: => VirtualMachine,
-    thread: => ThreadReference,
-    threadReferenceType: => ReferenceType
+    virtualMachine: => VirtualMachine = threadStartEvent.virtualMachine(),
+    thread: => ThreadReference = threadStartEvent.thread(),
+    threadReferenceType: => ReferenceType = threadStartEvent.thread().referenceType()
   ): ThreadStartEventInfoProfile
 
   def newVMDeathEventInfoProfile(
@@ -239,5 +245,9 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     scalaVirtualMachine: ScalaVirtualMachine,
     vmStartEvent: VMStartEvent,
     jdiArguments: JDIArgument*
+  )(
+    virtualMachine: => VirtualMachine = vmStartEvent.virtualMachine(),
+    thread: => ThreadReference = vmStartEvent.thread(),
+    threadReferenceType: => ReferenceType = vmStartEvent.thread().referenceType()
   ): VMStartEventInfoProfile
 }

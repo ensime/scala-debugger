@@ -292,12 +292,11 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
     (s: ScalaVirtualMachine, start: () => Unit, stepMethod: (ThreadInfoProfile) => T) => {
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, startingLine)
-        .map(_.thread())
-        .map(s.thread)
+        .map(_.thread)
         .foreach(thread => {
           s.withProfile(PureDebugProfile.Name).createStepListener(thread).foreach(stepEvent => {
-            val className = stepEvent.location().declaringType().name()
-            val lineNumber = stepEvent.location().lineNumber()
+            val className = stepEvent.location.declaringType.name
+            val lineNumber = stepEvent.location.lineNumber
 
             logger.debug(s"Stepped onto $className:$lineNumber")
             success.set(lineNumber == expectedLine)
@@ -356,16 +355,15 @@ class PureStepProfileIntegrationSpec extends FunSpec with Matchers
       // On receiving a breakpoint, send a step request
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, startingLine)
-        .map(_.thread())
-        .map(s.thread)
+        .map(_.thread)
         .foreach(thread => {
           // On receiving a step request, verify that we are in the right
           // location
           s.withProfile(PureDebugProfile.Name)
             .createStepListener(thread)
             .foreach(stepEvent => {
-              val className = stepEvent.location().declaringType().name()
-              val lineNumber = stepEvent.location().lineNumber()
+              val className = stepEvent.location.declaringType.name
+              val lineNumber = stepEvent.location.lineNumber
 
               logger.debug(s"Stepped onto $className:$lineNumber")
 

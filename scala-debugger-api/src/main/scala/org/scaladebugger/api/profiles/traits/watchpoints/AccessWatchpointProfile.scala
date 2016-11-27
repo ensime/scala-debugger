@@ -15,7 +15,7 @@ import scala.util.Try
  */
 trait AccessWatchpointProfile {
   /** Represents a access watchpoint event and any associated data. */
-  type AccessWatchpointEventInfoProfileAndData =
+  type AccessWatchpointEventAndData =
     (AccessWatchpointEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
@@ -62,7 +62,7 @@ trait AccessWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[AccessWatchpointEventInfoProfileAndData]]
+  ): Try[IdentityPipeline[AccessWatchpointEventAndData]]
 
   /**
    * Constructs a stream of access watchpoint events for field in the specified
@@ -101,7 +101,7 @@ trait AccessWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[AccessWatchpointEventInfoProfileAndData] = {
+  ): IdentityPipeline[AccessWatchpointEventAndData] = {
     tryGetOrCreateAccessWatchpointRequestWithData(
       className,
       fieldName,

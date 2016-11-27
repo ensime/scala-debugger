@@ -16,8 +16,10 @@ import org.scaladebugger.api.lowlevel.watchpoints._
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.Constants._
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.profiles.traits.watchpoints.AccessWatchpointProfile
 import org.scaladebugger.api.utils.{Memoization, MultiMap}
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -29,6 +31,11 @@ import scala.util.Try
 trait PureAccessWatchpointProfile extends AccessWatchpointProfile {
   protected val accessWatchpointManager: AccessWatchpointManager
   protected val eventManager: EventManager
+
+  protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
+
+  private lazy val eventProducer = infoProducer.eventProducer
 
   /**
    * Retrieves the collection of active and pending access watchpoint requests.
@@ -229,10 +236,19 @@ trait PureAccessWatchpointProfile extends AccessWatchpointProfile {
     requestId: String,
     args: (String, String, Seq[JDIEventArgument])
     ): IdentityPipeline[AccessWatchpointEventAndData] = {
+    // Lookup final set of request arguments used when creating the request
+    val rArgs = accessWatchpointManager.getAccessWatchpointRequestInfoWithId(requestId)
+      .map(_.extraArguments).getOrElse(Nil)
+
     val eArgsWithFilter = UniqueIdPropertyFilter(id = requestId) +: args._3
     val newPipeline = eventManager
       .addEventDataStream(AccessWatchpointEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[AccessWatchpointEvent], t._2))
+      .map(t => (eventProducer.newAccessWatchpointEventInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        t._1,
+        rArgs ++ eArgsWithFilter: _*
+      )(), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

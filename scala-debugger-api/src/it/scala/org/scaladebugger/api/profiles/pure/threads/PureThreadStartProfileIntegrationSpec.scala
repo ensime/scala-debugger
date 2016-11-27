@@ -32,7 +32,7 @@ class PureThreadStartProfileIntegrationSpec extends FunSpec with Matchers
       // Mark that we want to receive thread start events
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateThreadStartRequest()
-        .map(_.thread().name())
+        .map(_.thread.name)
         .filter(_.startsWith("test thread"))
         .foreach(_ => threadStartCount.incrementAndGet())
 

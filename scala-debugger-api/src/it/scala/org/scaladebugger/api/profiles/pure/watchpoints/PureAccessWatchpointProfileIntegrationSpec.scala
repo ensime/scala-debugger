@@ -36,8 +36,8 @@ class PureAccessWatchpointProfileIntegrationSpec extends FunSpec with Matchers
       // Listen for access watchpoint events for specific variable
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateAccessWatchpointRequest(className, fieldName)
-        .filter(_.field().declaringType().name() == className)
-        .filter(_.field().name() == fieldName)
+        .filter(_.field.declaringTypeInfo.name == className)
+        .filter(_.field.name == fieldName)
         .foreach(_ => detectedAccessWatchpoint.set(true))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>

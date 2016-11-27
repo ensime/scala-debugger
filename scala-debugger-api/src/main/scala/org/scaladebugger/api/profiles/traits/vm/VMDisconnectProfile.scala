@@ -14,7 +14,7 @@ import scala.util.Try
  */
 trait VMDisconnectProfile {
   /** Represents a vm disconnect event and any associated data. */
-  type VMDisconnectEventInfoProfileAndData =
+  type VMDisconnectEventAndData =
     (VMDisconnectEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
@@ -40,7 +40,7 @@ trait VMDisconnectProfile {
    */
   def tryGetOrCreateVMDisconnectRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMDisconnectEventInfoProfileAndData]]
+  ): Try[IdentityPipeline[VMDisconnectEventAndData]]
 
   /**
    * Constructs a stream of vm disconnect events.
@@ -65,7 +65,7 @@ trait VMDisconnectProfile {
    */
   def getOrCreateVMDisconnectRequestWithData(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[VMDisconnectEventInfoProfileAndData] = {
+  ): IdentityPipeline[VMDisconnectEventAndData] = {
     tryGetOrCreateVMDisconnectRequestWithData(extraArguments: _*).get
   }
 }

@@ -287,5 +287,9 @@ class PureEventInfoProducerProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     vmStartEvent: VMStartEvent,
     jdiArguments: JDIArgument*
+  )(
+    virtualMachine: => VirtualMachine,
+    thread: => ThreadReference,
+    threadReferenceType: => ReferenceType
   ): VMStartEventInfoProfile = ???
 }

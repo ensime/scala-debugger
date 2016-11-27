@@ -15,7 +15,7 @@ import scala.util.Try
  */
 trait ModificationWatchpointProfile {
   /** Represents a modification watchpoint event and any associated data. */
-  type ModificationWatchpointEventInfoProfileAndData =
+  type ModificationWatchpointEventAndData =
     (ModificationWatchpointEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
@@ -63,7 +63,7 @@ trait ModificationWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ModificationWatchpointEventInfoProfileAndData]]
+  ): Try[IdentityPipeline[ModificationWatchpointEventAndData]]
 
   /**
    * Constructs a stream of modification watchpoint events for field in the
@@ -102,7 +102,7 @@ trait ModificationWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ModificationWatchpointEventInfoProfileAndData] = {
+  ): IdentityPipeline[ModificationWatchpointEventAndData] = {
     tryGetOrCreateModificationWatchpointRequestWithData(
       className,
       fieldName,

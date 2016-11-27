@@ -119,10 +119,11 @@ class StandardScalaVirtualMachine(
 
     // Mark class prepare events to signal refreshing our classes
     this.withProfile(defaultProfile).getOrCreateClassPrepareRequest().foreach(classPrepareEvent => {
-      val referenceType = classPrepareEvent.referenceType()
-      val referenceTypeName = referenceType.name()
-      val fileName =
-        lowlevel.classManager.fileNameForReferenceType(referenceType)
+      val referenceType = classPrepareEvent.referenceType
+      val referenceTypeName = referenceType.name
+      val fileName = lowlevel.classManager.fileNameForReferenceType(
+        referenceType.toJdiInstance
+      )
 
       // TODO: Extract these checks out to helper methods (perhaps in the
       // lowlevel class manager)
@@ -135,7 +136,7 @@ class StandardScalaVirtualMachine(
       } else {
         logger.trace(vmString(s"Received new non-core class: $referenceTypeName"))
       }
-      lowlevel.classManager.refreshClass(referenceType)
+      lowlevel.classManager.refreshClass(referenceType.toJdiInstance)
 
       processPendingForFile(fileName)
       processPendingForClass(referenceTypeName)

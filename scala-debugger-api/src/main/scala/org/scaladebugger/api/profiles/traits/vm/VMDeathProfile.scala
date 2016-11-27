@@ -15,7 +15,7 @@ import scala.util.Try
  */
 trait VMDeathProfile {
   /** Represents a vm death event and any associated data. */
-  type VMDeathEventInfoProfileAndData =
+  type VMDeathEventAndData =
     (VMDeathEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
@@ -48,7 +48,7 @@ trait VMDeathProfile {
    */
   def tryGetOrCreateVMDeathRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMDeathEventInfoProfileAndData]]
+  ): Try[IdentityPipeline[VMDeathEventAndData]]
 
   /**
    * Constructs a stream of vm death events.
@@ -73,7 +73,7 @@ trait VMDeathProfile {
    */
   def getOrCreateVMDeathRequestWithData(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[VMDeathEventInfoProfileAndData] = {
+  ): IdentityPipeline[VMDeathEventAndData] = {
     tryGetOrCreateVMDeathRequestWithData(extraArguments: _*).get
   }
 

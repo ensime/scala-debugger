@@ -14,7 +14,7 @@ import scala.util.Try
  */
 trait VMStartProfile {
   /** Represents a vm start event and any associated data. */
-  type VMStartEventInfoProfileAndData =
+  type VMStartEventAndData =
     (VMStartEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
@@ -40,7 +40,7 @@ trait VMStartProfile {
    */
   def tryGetOrCreateVMStartRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMStartEventInfoProfileAndData]]
+  ): Try[IdentityPipeline[VMStartEventAndData]]
 
   /**
    * Constructs a stream of vm start events.
@@ -65,7 +65,7 @@ trait VMStartProfile {
    */
   def getOrCreateVMStartRequestWithData(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[VMStartEventInfoProfileAndData] = {
+  ): IdentityPipeline[VMStartEventAndData] = {
     tryGetOrCreateVMStartRequestWithData(extraArguments: _*).get
   }
 }

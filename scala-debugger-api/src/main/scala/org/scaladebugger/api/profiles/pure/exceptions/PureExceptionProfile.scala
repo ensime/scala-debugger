@@ -8,16 +8,18 @@ import com.sun.jdi.event.ExceptionEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
-import org.scaladebugger.api.lowlevel.exceptions.{PendingExceptionSupportLike, PendingExceptionSupport, ExceptionRequestInfo, ExceptionManager}
+import org.scaladebugger.api.lowlevel.exceptions.{ExceptionManager, ExceptionRequestInfo, PendingExceptionSupport, PendingExceptionSupportLike}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.exceptions.ExceptionProfile
-import org.scaladebugger.api.utils.{MultiMap, Memoization}
+import org.scaladebugger.api.utils.{Memoization, MultiMap}
 import org.scaladebugger.api.lowlevel.events.EventType._
 import org.scaladebugger.api.profiles.Constants._
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -29,6 +31,11 @@ import scala.util.Try
 trait PureExceptionProfile extends ExceptionProfile {
   protected val exceptionManager: ExceptionManager
   protected val eventManager: EventManager
+
+  protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
+
+  private lazy val eventProducer = infoProducer.eventProducer
 
   /**
    * Contains a mapping of request ids to associated event handler ids.
@@ -375,10 +382,19 @@ trait PureExceptionProfile extends ExceptionProfile {
     requestId: String,
     args: (String, Boolean, Boolean, Seq[JDIEventArgument])
   ): IdentityPipeline[ExceptionEventAndData] = {
+    // Lookup final set of request arguments used when creating the request
+    val rArgs = exceptionManager.getExceptionRequestInfoWithId(requestId)
+      .map(_.extraArguments).getOrElse(Nil)
+
     val eArgsWithFilter = UniqueIdPropertyFilter(id = requestId) +: args._4
     val newPipeline = eventManager
       .addEventDataStream(ExceptionEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[ExceptionEvent], t._2))
+      .map(t => (eventProducer.newExceptionEventInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        t._1,
+        rArgs ++ eArgsWithFilter: _*
+      )(), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

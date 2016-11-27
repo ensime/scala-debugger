@@ -577,6 +577,71 @@ trait EventInfoProfile extends CommonInfoProfile {
   def toWatchpointEvent: WatchpointEventInfoProfile
 
   /**
+   * Returns the event converted to its most specific event profile.
+   * For example, if the current profile is of type 'EventInfoProfile'
+   * and the most specific possible was 'BreakpointEventProfile', a
+   * new instance of 'BreakpointEventProfile' would be returned.
+   *
+   * @return The new, specific event profile instance
+   */
+  def toMostSpecificEvent: EventInfoProfile = {
+    if (this.isAccessWatchpointEvent)
+      this.toAccessWatchpointEvent
+    else if (this.isBreakpointEvent)
+      this.toBreakpointEvent
+    else if (this.isClassPrepareEvent)
+      this.toClassPrepareEvent
+    else if (this.isClassUnloadEvent)
+      this.toClassUnloadEvent
+    else if (this.isExceptionEvent)
+      this.toExceptionEvent
+    else if (this.isMethodEntryEvent)
+      this.toMethodEntryEvent
+    else if (this.isMethodExitEvent)
+      this.toMethodExitEvent
+    else if (this.isModificationWatchpointEvent)
+      this.toModificationWatchpointEvent
+    else if (this.isMonitorContendedEnteredEvent)
+      this.toMonitorContendedEnteredEvent
+    else if (this.isMonitorContendedEnterEvent)
+      this.toMonitorContendedEnterEvent
+    else if (this.isMonitorWaitedEvent)
+      this.toMonitorWaitedEvent
+    else if (this.isMonitorWaitEvent)
+      this.toMonitorWaitEvent
+    else if (this.isStepEvent)
+      this.toStepEvent
+    else if (this.isThreadDeathEvent)
+      this.toThreadDeathEvent
+    else if (this.isThreadStartEvent)
+      this.toThreadStartEvent
+    else if (this.isVMDeathEvent)
+      this.toVMDeathEvent
+    else if (this.isVMDisconnectEvent)
+      this.toVMDisconnectEvent
+    else if (this.isVMStartEvent)
+      this.toVMStartEvent
+    else if (this.isWatchpointEvent)
+      this.toWatchpointEvent
+    else if (this.isLocatableEvent)
+      this.toLocatableEvent
+    else
+      this
+  }
+
+  /**
+   * Returns whether or not this event is a plain event. By plain, this means
+   * that the underlying event does not extend any more specific interface than
+   * the low-level event interface.
+   *
+   * For example, a breakpoint event would return false. Likewise, a locatable
+   * event would return false. A raw event would return true.
+   *
+   * @return True if plain, otherwise false
+   */
+  def isPlainEvent: Boolean
+
+  /**
    * Returns a string presenting a better human-readable description of
    * the JDI instance.
    *
@@ -584,53 +649,10 @@ trait EventInfoProfile extends CommonInfoProfile {
    */
   override def toPrettyString: String = {
     Try {
-      if (this.isAccessWatchpointEvent)
-        this.toAccessWatchpointEvent.toPrettyString
-      else if (this.isBreakpointEvent)
-        this.toBreakpointEvent.toPrettyString
-      else if (this.isClassPrepareEvent)
-        this.toClassPrepareEvent.toPrettyString
-      else if (this.isClassUnloadEvent)
-        this.toClassUnloadEvent.toPrettyString
-      else if (this.isExceptionEvent)
-        this.toExceptionEvent.toPrettyString
-      else if (this.isMethodEntryEvent)
-        this.toMethodEntryEvent.toPrettyString
-      else if (this.isMethodExitEvent)
-        this.toMethodExitEvent.toPrettyString
-      else if (this.isModificationWatchpointEvent)
-        this.toModificationWatchpointEvent.toPrettyString
-      else if (this.isMonitorContendedEnteredEvent)
-        this.toMonitorContendedEnteredEvent.toPrettyString
-      else if (this.isMonitorContendedEnterEvent)
-        this.toMonitorContendedEnterEvent.toPrettyString
-      else if (this.isMonitorWaitedEvent)
-        this.toMonitorWaitedEvent.toPrettyString
-      else if (this.isMonitorWaitEvent)
-        this.toMonitorWaitEvent.toPrettyString
-      else if (this.isStepEvent)
-        this.toStepEvent.toPrettyString
-      else if (this.isThreadDeathEvent)
-        this.toThreadDeathEvent.toPrettyString
-      else if (this.isThreadStartEvent)
-        this.toThreadStartEvent.toPrettyString
-      else if (this.isVMDeathEvent)
-        this.toVMDeathEvent.toPrettyString
-      else if (this.isVMDisconnectEvent)
-        this.toVMDisconnectEvent.toPrettyString
-      else if (this.isVMStartEvent)
-        this.toVMStartEvent.toPrettyString
+      val specificEvent = this.toMostSpecificEvent
 
-      // Print unknown watchpoint event
-      else if (this.isWatchpointEvent)
-        this.toWatchpointEvent.toPrettyString
-
-      // Print unknown locatable event
-      else if (this.isLocatableEvent)
-        this.toLocatableEvent.toPrettyString
-
-      // Nothing else available, so just print the event itself
-      else this.toString
+      if (specificEvent.isPlainEvent) specificEvent.toString
+      else specificEvent.toPrettyString
     }.getOrElse("<ERROR>")
   }
 }

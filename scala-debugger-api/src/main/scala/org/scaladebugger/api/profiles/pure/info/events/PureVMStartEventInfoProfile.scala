@@ -60,6 +60,10 @@ class PureVMStartEventInfoProfile(
     jep.newVMStartEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
       vmStartEvent = vmStartEvent
+    )(
+      virtualMachine = _virtualMachine,
+      thread = _thread,
+      threadReferenceType = _threadReferenceType
     )
   }
 

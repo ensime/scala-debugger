@@ -9,6 +9,8 @@ import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.vm.VMDisconnectProfile
 import org.scaladebugger.api.lowlevel.events.EventType.VMDisconnectEventType
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.util.Try
 
@@ -18,6 +20,11 @@ import scala.util.Try
  */
 trait PureVMDisconnectProfile extends VMDisconnectProfile {
   protected val eventManager: EventManager
+
+  protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
+
+  private lazy val eventProducer = infoProducer.eventProducer
 
   /**
    * Constructs a stream of vm disconnect events.
@@ -30,11 +37,16 @@ trait PureVMDisconnectProfile extends VMDisconnectProfile {
   override def tryGetOrCreateVMDisconnectRequestWithData(
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[VMDisconnectEventAndData]] = Try {
-    val JDIArgumentGroup(_, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
+    val JDIArgumentGroup(rArgs, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
 
     eventManager
       .addEventDataStream(VMDisconnectEventType, eArgs: _*)
       .map(t => (t._1.asInstanceOf[VMDisconnectEvent], t._2))
+      .map(t => (eventProducer.newVMDisconnectEventInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        t._1,
+        rArgs ++ eArgs: _*
+      ), t._2))
       .noop()
   }
 }

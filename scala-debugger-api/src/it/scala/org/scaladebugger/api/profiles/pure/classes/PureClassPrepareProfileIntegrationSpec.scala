@@ -32,7 +32,7 @@ class PureClassPrepareProfileIntegrationSpec extends FunSpec with Matchers
       // NOTE: This is already set within the ScalaVirtualMachine class
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateClassPrepareRequest()
-        .map(_.referenceType().name())
+        .map(_.referenceType.name)
         .filter(_ == expectedClassName)
         .foreach(_ => classPrepareHit.incrementAndGet())
 

@@ -15,7 +15,7 @@ import scala.util.Try
  */
 trait ThreadDeathProfile {
   /** Represents a thread death event and any associated data. */
-  type ThreadDeathEventInfoProfileAndData =
+  type ThreadDeathEventAndData =
     (ThreadDeathEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
@@ -48,7 +48,7 @@ trait ThreadDeathProfile {
    */
   def tryGetOrCreateThreadDeathRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ThreadDeathEventInfoProfileAndData]]
+  ): Try[IdentityPipeline[ThreadDeathEventAndData]]
 
   /**
    * Constructs a stream of thread death events.
@@ -73,7 +73,7 @@ trait ThreadDeathProfile {
    */
   def getOrCreateThreadDeathRequestWithData(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ThreadDeathEventInfoProfileAndData] = {
+  ): IdentityPipeline[ThreadDeathEventAndData] = {
     tryGetOrCreateThreadDeathRequestWithData(extraArguments: _*).get
   }
 

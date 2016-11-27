@@ -42,8 +42,8 @@ class PureEventProfileIntegrationSpec extends FunSpec with Matchers
       // Set a separate event pipeline to receive events
       s.withProfile(PureDebugProfile.Name)
         .createEventListener(BreakpointEventType)
-        .map(_.asInstanceOf[BreakpointEvent])
-        .map(_.location().lineNumber())
+        .map(_.toBreakpointEvent)
+        .map(_.location.lineNumber)
         .foreach(lineNumber => {
           hitLines += lineNumber
           eventCount.incrementAndGet()
@@ -83,8 +83,8 @@ class PureEventProfileIntegrationSpec extends FunSpec with Matchers
 
         // Receive events
         eventPipeline
-          .map(_.asInstanceOf[BreakpointEvent])
-          .map(_.location().lineNumber())
+          .map(_.toBreakpointEvent)
+          .map(_.location.lineNumber)
           .foreach(lineNumber => {
             hitLines += lineNumber
             eventCount.incrementAndGet()

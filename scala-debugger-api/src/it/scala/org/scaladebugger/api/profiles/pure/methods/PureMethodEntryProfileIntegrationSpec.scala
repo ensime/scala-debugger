@@ -40,8 +40,8 @@ class PureMethodEntryProfileIntegrationSpec extends FunSpec with Matchers
 
       val methodPipeline = s.withProfile(PureDebugProfile.Name)
         .getOrCreateMethodEntryRequest(expectedClassName, expectedMethodName)
-        .map(_.method())
-        .map(m => (m.declaringType().name(), m.name()))
+        .map(_.method)
+        .map(m => (m.declaringType.name, m.name))
 
       methodPipeline
         .filter(_._1 == expectedClassName)
@@ -58,8 +58,8 @@ class PureMethodEntryProfileIntegrationSpec extends FunSpec with Matchers
 
       // First line in test method
       s.getOrCreateBreakpointRequest(testFile, 26)
-        .map(_.location())
-        .map(l => (l.sourcePath(), l.lineNumber()))
+        .map(_.location)
+        .map(l => (l.sourcePath, l.lineNumber))
         .foreach(t => {
         val methodEntryHit = reachedExpectedMethod.get()
         reachedMethodBeforeFirstLine.set(methodEntryHit)

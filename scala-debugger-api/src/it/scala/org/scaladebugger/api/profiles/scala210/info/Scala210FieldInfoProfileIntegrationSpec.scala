@@ -3,6 +3,7 @@ package org.scaladebugger.api.profiles.scala210.info
 import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.scala210.Scala210DebugProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
 import org.scalatest.concurrent.Eventually
@@ -23,18 +24,17 @@ class Scala210FieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.bugs.BugFromGitter"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(Scala210DebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 20, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val fieldNames = s.withProfile(Scala210DebugProfile.Name)
-            .thread(t.get).topFrame.allVariables.map(_.name)
+          val fieldNames = t.get.topFrame.allVariables.map(_.name)
 
           fieldNames should contain theSameElementsAs Seq(
             "actualTimes",
@@ -43,8 +43,7 @@ class Scala210FieldInfoProfileIntegrationSpec extends FunSpec with Matchers
           )
 
           // Can also retrieve field with fixed name
-          val fieldValue = s.withProfile(Scala210DebugProfile.Name)
-            .thread(t.get)
+          val fieldValue = t.get
             .findVariableByName("name")
             .get
             .toValueInfo
@@ -72,18 +71,17 @@ class Scala210FieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Scope"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(Scala210DebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 22, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val variableNames = s.withProfile(Scala210DebugProfile.Name)
-            .thread(t.get).topFrame.allVariables.map(_.name)
+          val variableNames = t.get.topFrame.allVariables.map(_.name)
 
           variableNames should contain theSameElementsAs Seq(
             "field1",
@@ -98,18 +96,17 @@ class Scala210FieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Scope"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(Scala210DebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 33, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val variableNames = s.withProfile(Scala210DebugProfile.Name)
-            .thread(t.get).topFrame.allVariables.map(_.name)
+          val variableNames = t.get.topFrame.allVariables.map(_.name)
 
           variableNames should contain theSameElementsAs Seq(
             "x",
@@ -123,18 +120,17 @@ class Scala210FieldInfoProfileIntegrationSpec extends FunSpec with Matchers
       val testClass = "org.scaladebugger.test.info.Scope"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
-      @volatile var t: Option[ThreadReference] = None
+      @volatile var t: Option[ThreadInfoProfile] = None
       val s = DummyScalaVirtualMachine.newInstance()
 
       // NOTE: Do not resume so we can check the variables at the stack frame
       s.withProfile(Scala210DebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, 39, NoResume)
-        .foreach(e => t = Some(e.thread()))
+        .foreach(e => t = Some(e.thread))
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val variableNames = s.withProfile(Scala210DebugProfile.Name)
-            .thread(t.get).topFrame.allVariables.map(_.name)
+          val variableNames = t.get.topFrame.allVariables.map(_.name)
 
           variableNames should contain theSameElementsAs Seq(
             "x",

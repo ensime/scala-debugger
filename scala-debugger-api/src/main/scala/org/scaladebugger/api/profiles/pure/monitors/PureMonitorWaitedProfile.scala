@@ -16,8 +16,10 @@ import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.Constants._
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.profiles.traits.monitors.MonitorWaitedProfile
 import org.scaladebugger.api.utils.{Memoization, MultiMap}
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -29,6 +31,11 @@ import scala.util.Try
 trait PureMonitorWaitedProfile extends MonitorWaitedProfile {
   protected val monitorWaitedManager: MonitorWaitedManager
   protected val eventManager: EventManager
+
+  protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
+
+  private lazy val eventProducer = infoProducer.eventProducer
 
   /**
    * Contains a mapping of request ids to associated event handler ids.
@@ -183,10 +190,19 @@ trait PureMonitorWaitedProfile extends MonitorWaitedProfile {
     requestId: String,
     args: Seq[JDIEventArgument]
   ): IdentityPipeline[MonitorWaitedEventAndData] = {
+    // Lookup final set of request arguments used when creating the request
+    val rArgs = monitorWaitedManager.getMonitorWaitedRequestInfo(requestId)
+      .map(_.extraArguments).getOrElse(Nil)
+
     val eArgsWithFilter = UniqueIdPropertyFilter(id = requestId) +: args
     val newPipeline = eventManager
       .addEventDataStream(MonitorWaitedEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[MonitorWaitedEvent], t._2))
+      .map(t => (eventProducer.newMonitorWaitedEventInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        t._1,
+        rArgs ++ eArgsWithFilter: _*
+      )(), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

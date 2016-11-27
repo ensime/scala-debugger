@@ -15,7 +15,7 @@ import scala.util.Try
  */
 trait ThreadStartProfile {
   /** Represents a thread start event and any associated data. */
-  type ThreadStartEventInfoProfileAndData =
+  type ThreadStartEventAndData =
     (ThreadStartEventInfoProfile, Seq[JDIEventDataResult])
 
   /**
@@ -48,7 +48,7 @@ trait ThreadStartProfile {
    */
   def tryGetOrCreateThreadStartRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ThreadStartEventInfoProfileAndData]]
+  ): Try[IdentityPipeline[ThreadStartEventAndData]]
 
   /**
    * Constructs a stream of thread start events.
@@ -73,7 +73,7 @@ trait ThreadStartProfile {
    */
   def getOrCreateThreadStartRequestWithData(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ThreadStartEventInfoProfileAndData] = {
+  ): IdentityPipeline[ThreadStartEventAndData] = {
     tryGetOrCreateThreadStartRequestWithData(extraArguments: _*).get
   }
 

@@ -12,8 +12,9 @@ import org.scaladebugger.api.lowlevel.requests.filters.ThreadFilter
 import org.scaladebugger.api.lowlevel.steps._
 import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, ThreadInfoProfile}
 import org.scaladebugger.api.profiles.traits.steps.StepProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
@@ -25,6 +26,11 @@ import scala.util.{Failure, Success, Try}
 trait PureStepProfile extends StepProfile {
   protected val stepManager: StepManager
   protected val eventManager: EventManager
+
+  protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
+
+  private lazy val eventProducer = infoProducer.eventProducer
 
   /**
    * Retrieves the collection of active and pending step requests.
@@ -153,9 +159,9 @@ trait PureStepProfile extends StepProfile {
   override def tryCreateStepListenerWithData(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[(StepEvent, Seq[JDIEventDataResult])]] = Try {
+  ): Try[IdentityPipeline[StepEventAndData]] = Try {
     val JDIArgumentGroup(_, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
-    newStepPipeline((threadInfoProfile, eArgs))
+    newStepPipeline("", (threadInfoProfile, eArgs))
   }
 
   /**
@@ -263,7 +269,7 @@ trait PureStepProfile extends StepProfile {
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = {
-    val tryPipeline = Try({
+    val tryPipeline = {
       val JDIArgumentGroup(rArgs, eArgs, _) =
         JDIArgumentGroup(extraArguments: _*)
 
@@ -271,10 +277,10 @@ trait PureStepProfile extends StepProfile {
       newStepRequestFunc(
         threadReference,
         rArgs :+ ThreadFilter(threadReference)
-      ).get
-
-      (threadInfoProfile, eArgs)
-    }).map(newStepPipeline)
+      ).map(requestId => (requestId, threadInfoProfile, eArgs))
+    }.map { case (requestId, thread, eArgs) =>
+      newStepPipeline(requestId, (thread, eArgs))
+    }
 
     tryPipelineToFuture(tryPipeline)
   }
@@ -283,16 +289,28 @@ trait PureStepProfile extends StepProfile {
    * Creates a new pipeline of step events. This is not memoized as step events
    * are one-per-thread and are closed after the pipeline's future is completed.
    *
+   * @param requestId The id of the step request
    * @param args The additional event arguments to provide to the event handler
    *             feeding the new pipeline
    * @return The new step event and data pipeline
    */
   protected def newStepPipeline(
+    requestId: String,
     args: (ThreadInfoProfile, Seq[JDIEventArgument])
   ): IdentityPipeline[StepEventAndData] = {
+    // Lookup final set of request arguments used when creating the request
+    val rArgs = stepManager.getStepRequestInfoWithId(requestId)
+      .map(_.extraArguments).getOrElse(Nil)
+    val eArgs = args._2
+
     val newPipeline = eventManager
       .addEventDataStream(StepEventType, args._2: _*)
       .map(t => (t._1.asInstanceOf[StepEvent], t._2))
+      .map(t => (eventProducer.newStepEventInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        t._1,
+        rArgs ++ eArgs: _*
+      )(), t._2))
       .noop()
 
     newPipeline

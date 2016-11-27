@@ -32,7 +32,7 @@ class PureThreadDeathProfileIntegrationSpec extends FunSpec with Matchers
       // Mark that we want to receive thread death events
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateThreadDeathRequest()
-        .map(_.thread().name())
+        .map(_.thread.name)
         .filter(_.startsWith("test thread"))
         .foreach(_ => threadDeathCount.incrementAndGet())
 

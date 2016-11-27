@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.sun.jdi.event.ThreadDeathEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
-import org.scaladebugger.api.lowlevel.events.{JDIEventArgument, EventManager}
+import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.lowlevel.threads._
@@ -15,9 +15,11 @@ import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.threads.ThreadDeathProfile
-import org.scaladebugger.api.utils.{MultiMap, Memoization}
+import org.scaladebugger.api.utils.{Memoization, MultiMap}
 import org.scaladebugger.api.lowlevel.events.EventType.ThreadDeathEventType
 import org.scaladebugger.api.profiles.Constants._
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -29,6 +31,11 @@ import scala.util.Try
 trait PureThreadDeathProfile extends ThreadDeathProfile {
   protected val threadDeathManager: ThreadDeathManager
   protected val eventManager: EventManager
+
+  protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
+
+  private lazy val eventProducer = infoProducer.eventProducer
 
   /**
    * Contains a mapping of request ids to associated event handler ids.
@@ -175,10 +182,19 @@ trait PureThreadDeathProfile extends ThreadDeathProfile {
     requestId: String,
     args: Seq[JDIEventArgument]
   ): IdentityPipeline[ThreadDeathEventAndData] = {
+    // Lookup final set of request arguments used when creating the request
+    val rArgs = threadDeathManager.getThreadDeathRequestInfo(requestId)
+      .map(_.extraArguments).getOrElse(Nil)
+
     val eArgsWithFilter = UniqueIdPropertyFilter(id = requestId) +: args
     val newPipeline = eventManager
       .addEventDataStream(ThreadDeathEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[ThreadDeathEvent], t._2))
+      .map(t => (eventProducer.newThreadDeathEventInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        t._1,
+        rArgs ++ eArgsWithFilter: _*
+      )(), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

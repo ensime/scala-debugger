@@ -86,6 +86,18 @@ class PureEventInfoProfile(
   override def toString: String = event.toString
 
   /**
+   * Returns whether or not this event is a plain event. By plain, this means
+   * that the underlying event does not extend any more specific interface than
+   * the low-level event interface.
+   *
+   * For example, a breakpoint event would return false. Likewise, a locatable
+   * event would return false. A raw event would return true.
+   *
+   * @return True if plain, otherwise false
+   */
+  override def isPlainEvent: Boolean = event.getClass.equals(classOf[Event])
+
+  /**
    * Returns whether or not this event represents an access watchpoint event.
    *
    * @return True if an access watchpoint event, otherwise false
@@ -276,7 +288,13 @@ class PureEventInfoProfile(
    * @return The access watchpoint event profile wrapping the event
    * @throws AssertionError If not an access watchpoint event
    */
-  override def toAccessWatchpointEvent: AccessWatchpointEventInfoProfile = ???
+  override def toAccessWatchpointEvent: AccessWatchpointEventInfoProfile = {
+    assert(isAccessWatchpointEvent, "Event must be an access watchpoint event!")
+    infoProducer.eventProducer.newAccessWatchpointEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      accessWatchpointEvent = event.asInstanceOf[AccessWatchpointEvent]
+    )()
+  }
 
   /**
    * Returns the event as a breakpoint event.
@@ -284,7 +302,13 @@ class PureEventInfoProfile(
    * @return The breakpoint event profile wrapping the event
    * @throws AssertionError If not a breakpoint event
    */
-  override def toBreakpointEvent: BreakpointEventInfoProfile = ???
+  override def toBreakpointEvent: BreakpointEventInfoProfile = {
+    assert(isBreakpointEvent, "Event must be a breakpoint event!")
+    infoProducer.eventProducer.newBreakpointEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      breakpointEvent = event.asInstanceOf[BreakpointEvent]
+    )()
+  }
 
   /**
    * Returns the event as a class prepare event.
@@ -292,7 +316,13 @@ class PureEventInfoProfile(
    * @return The class prepare event profile wrapping the event
    * @throws AssertionError If not a class prepare event
    */
-  override def toClassPrepareEvent: ClassPrepareEventInfoProfile = ???
+  override def toClassPrepareEvent: ClassPrepareEventInfoProfile = {
+    assert(isClassPrepareEvent, "Event must be a class prepare event!")
+    infoProducer.eventProducer.newClassPrepareEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      classPrepareEvent = event.asInstanceOf[ClassPrepareEvent]
+    )()
+  }
 
   /** :w
    * Returns the event as a class unload event.
@@ -300,7 +330,13 @@ class PureEventInfoProfile(
    * @return The class unload event profile wrapping the event
    * @throws AssertionError If not a class unload event
    */
-  override def toClassUnloadEvent: ClassUnloadEventInfoProfile = ???
+  override def toClassUnloadEvent: ClassUnloadEventInfoProfile = {
+    assert(isClassUnloadEvent, "Event must be a class unload event!")
+    infoProducer.eventProducer.newClassUnloadEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      classUnloadEvent = event.asInstanceOf[ClassUnloadEvent]
+    )
+  }
 
   /**
    * Returns the event as an exception event.
@@ -308,7 +344,13 @@ class PureEventInfoProfile(
    * @return The exception event profile wrapping the event
    * @throws AssertionError If not an exception event
    */
-  override def toExceptionEvent: ExceptionEventInfoProfile = ???
+  override def toExceptionEvent: ExceptionEventInfoProfile = {
+    assert(isExceptionEvent, "Event must be an exception event!")
+    infoProducer.eventProducer.newExceptionEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      exceptionEvent = event.asInstanceOf[ExceptionEvent]
+    )()
+  }
 
   /**
    * Returns the event as a locatable event.
@@ -316,7 +358,13 @@ class PureEventInfoProfile(
    * @return The locatable event profile wrapping the event
    * @throws AssertionError If not a locatable event
    */
-  override def toLocatableEvent: LocatableEventInfoProfile = ???
+  override def toLocatableEvent: LocatableEventInfoProfile = {
+    assert(isLocatableEvent, "Event must be a locatable event!")
+    infoProducer.eventProducer.newLocatableEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      locatableEvent = event.asInstanceOf[LocatableEvent]
+    )()
+  }
 
   /**
    * Returns the event as a method entry event.
@@ -324,7 +372,13 @@ class PureEventInfoProfile(
    * @return The method entry event profile wrapping the event
    * @throws AssertionError If not a method entry event
    */
-  override def toMethodEntryEvent: MethodEntryEventInfoProfile = ???
+  override def toMethodEntryEvent: MethodEntryEventInfoProfile = {
+    assert(isMethodEntryEvent, "Event must be a method entry event!")
+    infoProducer.eventProducer.newMethodEntryEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      methodEntryEvent = event.asInstanceOf[MethodEntryEvent]
+    )()
+  }
 
   /**
    * Returns the event as a method exit event.
@@ -332,7 +386,13 @@ class PureEventInfoProfile(
    * @return The method exit event profile wrapping the event
    * @throws AssertionError If not a method exit event
    */
-  override def toMethodExitEvent: MethodExitEventInfoProfile = ???
+  override def toMethodExitEvent: MethodExitEventInfoProfile = {
+    assert(isMethodExitEvent, "Event must be a method exit event!")
+    infoProducer.eventProducer.newMethodExitEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      methodExitEvent = event.asInstanceOf[MethodExitEvent]
+    )()
+  }
 
   /**
    * Returns the event as an modification watchpoint event.
@@ -340,7 +400,13 @@ class PureEventInfoProfile(
    * @return The modification watchpoint event profile wrapping the event
    * @throws AssertionError If not an modification watchpoint event
    */
-  override def toModificationWatchpointEvent: ModificationWatchpointEventInfoProfile = ???
+  override def toModificationWatchpointEvent: ModificationWatchpointEventInfoProfile = {
+    assert(isModificationWatchpointEvent, "Event must be a modification watchpoint event!")
+    infoProducer.eventProducer.newModificationWatchpointEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      modificationWatchpointEvent = event.asInstanceOf[ModificationWatchpointEvent]
+    )()
+  }
 
   /**
    * Returns the event as a monitor contended entered event.
@@ -348,7 +414,13 @@ class PureEventInfoProfile(
    * @return The monitor contended entered event profile wrapping the event
    * @throws AssertionError If not a monitor contended entered event
    */
-  override def toMonitorContendedEnteredEvent: MonitorContendedEnteredEventInfoProfile = ???
+  override def toMonitorContendedEnteredEvent: MonitorContendedEnteredEventInfoProfile = {
+    assert(isMonitorContendedEnteredEvent, "Event must be a monitor contended entered event!")
+    infoProducer.eventProducer.newMonitorContendedEnteredEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      monitorContendedEnteredEvent = event.asInstanceOf[MonitorContendedEnteredEvent]
+    )()
+  }
 
   /**
    * Returns the event as a monitor contended enter event.
@@ -356,7 +428,13 @@ class PureEventInfoProfile(
    * @return The monitor contended enter event profile wrapping the event
    * @throws AssertionError If not a monitor contended enter event
    */
-  override def toMonitorContendedEnterEvent: MonitorContendedEnterEventInfoProfile = ???
+  override def toMonitorContendedEnterEvent: MonitorContendedEnterEventInfoProfile = {
+    assert(isMonitorContendedEnterEvent, "Event must be a monitor contended enter event!")
+    infoProducer.eventProducer.newMonitorContendedEnterEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      monitorContendedEnterEvent = event.asInstanceOf[MonitorContendedEnterEvent]
+    )()
+  }
 
   /**
    * Returns the event as a monitor waited event.
@@ -364,7 +442,13 @@ class PureEventInfoProfile(
    * @return The monitor waited event profile wrapping the event
    * @throws AssertionError If not a monitor waited event
    */
-  override def toMonitorWaitedEvent: MonitorWaitedEventInfoProfile = ???
+  override def toMonitorWaitedEvent: MonitorWaitedEventInfoProfile = {
+    assert(isMonitorWaitedEvent, "Event must be a monitor waited event!")
+    infoProducer.eventProducer.newMonitorWaitedEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      monitorWaitedEvent = event.asInstanceOf[MonitorWaitedEvent]
+    )()
+  }
 
   /**
    * Returns the event as a monitor wait event.
@@ -372,7 +456,13 @@ class PureEventInfoProfile(
    * @return The monitor wait event profile wrapping the event
    * @throws AssertionError If not a monitor wait event
    */
-  override def toMonitorWaitEvent: MonitorWaitEventInfoProfile = ???
+  override def toMonitorWaitEvent: MonitorWaitEventInfoProfile = {
+    assert(isMonitorWaitEvent, "Event must be a monitor wait event!")
+    infoProducer.eventProducer.newMonitorWaitEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      monitorWaitEvent = event.asInstanceOf[MonitorWaitEvent]
+    )()
+  }
 
   /**
    * Returns the event as a step event.
@@ -380,7 +470,13 @@ class PureEventInfoProfile(
    * @return The step event profile wrapping the event
    * @throws AssertionError If not a step event
    */
-  override def toStepEvent: StepEventInfoProfile = ???
+  override def toStepEvent: StepEventInfoProfile = {
+    assert(isStepEvent, "Event must be a step event!")
+    infoProducer.eventProducer.newStepEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      stepEvent = event.asInstanceOf[StepEvent]
+    )()
+  }
 
   /**
    * Returns the event as a thread death event.
@@ -388,7 +484,13 @@ class PureEventInfoProfile(
    * @return The thread death event profile wrapping the event
    * @throws AssertionError If not a thread death event
    */
-  override def toThreadDeathEvent: ThreadDeathEventInfoProfile = ???
+  override def toThreadDeathEvent: ThreadDeathEventInfoProfile = {
+    assert(isThreadDeathEvent, "Event must be a thread death event!")
+    infoProducer.eventProducer.newThreadDeathEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      threadDeathEvent = event.asInstanceOf[ThreadDeathEvent]
+    )()
+  }
 
   /**
    * Returns the event as a thread start event.
@@ -396,7 +498,13 @@ class PureEventInfoProfile(
    * @return The thread start event profile wrapping the event
    * @throws AssertionError If not a thread start event
    */
-  override def toThreadStartEvent: ThreadStartEventInfoProfile = ???
+  override def toThreadStartEvent: ThreadStartEventInfoProfile = {
+    assert(isThreadStartEvent, "Event must be a thread start event!")
+    infoProducer.eventProducer.newThreadStartEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      threadStartEvent = event.asInstanceOf[ThreadStartEvent]
+    )()
+  }
 
   /**
    * Returns the event as a vm death event.
@@ -404,7 +512,13 @@ class PureEventInfoProfile(
    * @return The vm death event profile wrapping the event
    * @throws AssertionError If not a vm death event
    */
-  override def toVMDeathEvent: VMDeathEventInfoProfile = ???
+  override def toVMDeathEvent: VMDeathEventInfoProfile = {
+    assert(isVMDeathEvent, "Event must be a vm death event!")
+    infoProducer.eventProducer.newVMDeathEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      vmDeathEvent = event.asInstanceOf[VMDeathEvent]
+    )
+  }
 
   /**
    * Returns the event as a vm disconnect event.
@@ -412,7 +526,13 @@ class PureEventInfoProfile(
    * @return The vm disconnect event profile wrapping the event
    * @throws AssertionError If not a vm disconnect event
    */
-  override def toVMDisconnectEvent: VMDisconnectEventInfoProfile = ???
+  override def toVMDisconnectEvent: VMDisconnectEventInfoProfile = {
+    assert(isVMDisconnectEvent, "Event must be a vm disconnect event!")
+    infoProducer.eventProducer.newVMDisconnectEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      vmDisconnectEvent = event.asInstanceOf[VMDisconnectEvent]
+    )
+  }
 
   /**
    * Returns the event as a vm start event.
@@ -420,7 +540,13 @@ class PureEventInfoProfile(
    * @return The vm start event profile wrapping the event
    * @throws AssertionError If not a vm start event
    */
-  override def toVMStartEvent: VMStartEventInfoProfile = ???
+  override def toVMStartEvent: VMStartEventInfoProfile = {
+    assert(isVMStartEvent, "Event must be a vm start event!")
+    infoProducer.eventProducer.newVMStartEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      vmStartEvent = event.asInstanceOf[VMStartEvent]
+    )()
+  }
 
   /**
    * Returns the event as a watchpoint event.
@@ -428,5 +554,11 @@ class PureEventInfoProfile(
    * @return The watchpoint event profile wrapping the event
    * @throws AssertionError If not a watchpoint event
    */
-  override def toWatchpointEvent: WatchpointEventInfoProfile = ???
+  override def toWatchpointEvent: WatchpointEventInfoProfile = {
+    assert(isWatchpointEvent, "Event must be a watchpoint event!")
+    infoProducer.eventProducer.newWatchpointEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      watchpointEvent = event.asInstanceOf[WatchpointEvent]
+    )()
+  }
 }

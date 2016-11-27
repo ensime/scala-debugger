@@ -40,8 +40,8 @@ class PureMethodExitProfileIntegrationSpec extends FunSpec with Matchers
 
       val methodPipeline = s.withProfile(PureDebugProfile.Name)
         .getOrCreateMethodExitRequest(expectedClassName, expectedMethodName)
-        .map(_.method())
-        .map(m => (m.declaringType().name(), m.name()))
+        .map(_.method)
+        .map(m => (m.declaringType.name, m.name))
 
       methodPipeline
         .filter(_._1 == expectedClassName)
@@ -58,8 +58,8 @@ class PureMethodExitProfileIntegrationSpec extends FunSpec with Matchers
 
       // Last line in test method
       s.getOrCreateBreakpointRequest(testFile, 28)
-        .map(_.location())
-        .map(l => (l.sourcePath(), l.lineNumber()))
+        .map(_.location)
+        .map(l => (l.sourcePath, l.lineNumber))
         .foreach(t => {
         val methodExitHit = leftExpectedMethod.get()
         leftMethodAfterLastLine.set(!methodExitHit)

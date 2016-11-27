@@ -9,15 +9,17 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.EventType._
 import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
 import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
-import org.scaladebugger.api.lowlevel.monitors.{PendingMonitorContendedEnteredSupportLike, PendingMonitorContendedEnteredSupport, MonitorContendedEnteredRequestInfo, MonitorContendedEnteredManager}
+import org.scaladebugger.api.lowlevel.monitors.{MonitorContendedEnteredManager, MonitorContendedEnteredRequestInfo, PendingMonitorContendedEnteredSupport, PendingMonitorContendedEnteredSupportLike}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.Constants._
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.profiles.traits.monitors.MonitorContendedEnteredProfile
 import org.scaladebugger.api.utils.{Memoization, MultiMap}
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -29,6 +31,11 @@ import scala.util.Try
 trait PureMonitorContendedEnteredProfile extends MonitorContendedEnteredProfile {
   protected val monitorContendedEnteredManager: MonitorContendedEnteredManager
   protected val eventManager: EventManager
+
+  protected val scalaVirtualMachine: ScalaVirtualMachine
+  protected val infoProducer: InfoProducerProfile
+
+  private lazy val eventProducer = infoProducer.eventProducer
 
   /**
    * Contains a mapping of request ids to associated event handler ids.
@@ -183,10 +190,19 @@ trait PureMonitorContendedEnteredProfile extends MonitorContendedEnteredProfile 
     requestId: String,
     args: Seq[JDIEventArgument]
   ): IdentityPipeline[MonitorContendedEnteredEventAndData] = {
+    // Lookup final set of request arguments used when creating the request
+    val rArgs = monitorContendedEnteredManager.getMonitorContendedEnteredRequestInfo(requestId)
+      .map(_.extraArguments).getOrElse(Nil)
+
     val eArgsWithFilter = UniqueIdPropertyFilter(id = requestId) +: args
     val newPipeline = eventManager
       .addEventDataStream(MonitorContendedEnteredEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[MonitorContendedEnteredEvent], t._2))
+      .map(t => (eventProducer.newMonitorContendedEnteredEventInfoProfile(
+        scalaVirtualMachine = scalaVirtualMachine,
+        t._1,
+        rArgs ++ eArgsWithFilter: _*
+      )(), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there
