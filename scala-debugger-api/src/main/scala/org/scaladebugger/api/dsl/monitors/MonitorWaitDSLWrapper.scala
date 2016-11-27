@@ -1,9 +1,9 @@
 package org.scaladebugger.api.dsl.monitors
 
-import com.sun.jdi.event.MonitorWaitEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitEventInfoProfile
 import org.scaladebugger.api.profiles.traits.monitors.MonitorWaitProfile
 
 import scala.util.Try
@@ -17,18 +17,18 @@ class MonitorWaitDSLWrapper private[dsl] (
   private val monitorWaitProfile: MonitorWaitProfile
 ) {
   /** Represents a MonitorWait event and any associated data. */
-  type MonitorWaitEventAndData = (MonitorWaitEvent, Seq[JDIEventDataResult])
+  type MonitorWaitEventAndData = (MonitorWaitEventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see MonitorWaitProfile#tryGetOrCreateMonitorWaitRequest(JDIArgument*) */
   def onMonitorWait(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MonitorWaitEvent]] =
+  ): Try[IdentityPipeline[MonitorWaitEventInfoProfile]] =
     monitorWaitProfile.tryGetOrCreateMonitorWaitRequest(extraArguments: _*)
 
   /** @see MonitorWaitProfile#getOrCreateMonitorWaitRequest(JDIArgument*) */
   def onUnsafeMonitorWait(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MonitorWaitEvent] =
+  ): IdentityPipeline[MonitorWaitEventInfoProfile] =
     monitorWaitProfile.getOrCreateMonitorWaitRequest(extraArguments: _*)
 
   /** @see MonitorWaitProfile#getOrCreateMonitorWaitRequestWithData(JDIArgument*) */

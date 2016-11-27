@@ -1,9 +1,9 @@
 package org.scaladebugger.api.dsl.methods
 
-import com.sun.jdi.event.MethodExitEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MethodExitEventInfoProfile
 import org.scaladebugger.api.profiles.traits.methods.MethodExitProfile
 
 import scala.util.Try
@@ -17,14 +17,14 @@ class MethodExitDSLWrapper private[dsl] (
   private val methodExitProfile: MethodExitProfile
 ) {
   /** Represents a MethodExit event and any associated data. */
-  type MethodExitEventAndData = (MethodExitEvent, Seq[JDIEventDataResult])
+  type MethodExitEventAndData = (MethodExitEventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see MethodExitProfile#tryGetOrCreateMethodExitRequest(String, String, JDIArgument*) */
   def onMethodExit(
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MethodExitEvent]] =
+  ): Try[IdentityPipeline[MethodExitEventInfoProfile]] =
     methodExitProfile.tryGetOrCreateMethodExitRequest(
       className,
       methodName,
@@ -36,7 +36,7 @@ class MethodExitDSLWrapper private[dsl] (
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MethodExitEvent] =
+  ): IdentityPipeline[MethodExitEventInfoProfile] =
     methodExitProfile.getOrCreateMethodExitRequest(
       className,
       methodName,

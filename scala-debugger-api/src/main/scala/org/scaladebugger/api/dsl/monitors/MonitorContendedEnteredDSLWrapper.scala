@@ -1,9 +1,9 @@
 package org.scaladebugger.api.dsl.monitors
 
-import com.sun.jdi.event.MonitorContendedEnteredEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnteredEventInfoProfile
 import org.scaladebugger.api.profiles.traits.monitors.MonitorContendedEnteredProfile
 
 import scala.util.Try
@@ -17,18 +17,19 @@ class MonitorContendedEnteredDSLWrapper private[dsl] (
   private val monitorContendedEnteredProfile: MonitorContendedEnteredProfile
 ) {
   /** Represents a MonitorContendedEntered event and any associated data. */
-  type MonitorContendedEnteredEventAndData = (MonitorContendedEnteredEvent, Seq[JDIEventDataResult])
+  type MonitorContendedEnteredEventAndData =
+    (MonitorContendedEnteredEventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see MonitorContendedEnteredProfile#tryGetOrCreateMonitorContendedEnteredRequest(JDIArgument*) */
   def onMonitorContendedEntered(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MonitorContendedEnteredEvent]] =
+  ): Try[IdentityPipeline[MonitorContendedEnteredEventInfoProfile]] =
     monitorContendedEnteredProfile.tryGetOrCreateMonitorContendedEnteredRequest(extraArguments: _*)
 
   /** @see MonitorContendedEnteredProfile#getOrCreateMonitorContendedEnteredRequest(JDIArgument*) */
   def onUnsafeMonitorContendedEntered(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MonitorContendedEnteredEvent] =
+  ): IdentityPipeline[MonitorContendedEnteredEventInfoProfile] =
     monitorContendedEnteredProfile.getOrCreateMonitorContendedEnteredRequest(extraArguments: _*)
 
   /** @see MonitorContendedEnteredProfile#getOrCreateMonitorContendedEnteredRequestWithData(JDIArgument*) */

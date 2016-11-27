@@ -8,6 +8,7 @@ import org.scaladebugger.api.lowlevel.steps.StepRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfileManagement
 import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.events.StepEventInfoProfile
 import org.scaladebugger.api.profiles.traits.steps.StepProfile
 
 import scala.concurrent.Future
@@ -65,7 +66,7 @@ trait SwappableStepProfile extends StepProfile {
   override def tryCreateStepListenerWithData(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[(StepEvent, Seq[JDIEventDataResult])]] = {
+  ): Try[IdentityPipeline[(StepEventInfoProfile, Seq[JDIEventDataResult])]] = {
     withCurrentProfile.tryCreateStepListenerWithData(threadInfoProfile, extraArguments: _*)
   }
 

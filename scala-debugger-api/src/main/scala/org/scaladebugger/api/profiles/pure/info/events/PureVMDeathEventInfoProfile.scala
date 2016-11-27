@@ -1,10 +1,9 @@
 package org.scaladebugger.api.profiles.pure.info.events
 
 import com.sun.jdi.event.VMDeathEvent
-import com.sun.jdi.{ReferenceType, VMReference, VirtualMachine}
 import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.profiles.traits.info.events.VMDeathEventInfoProfile
-import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, VMInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**

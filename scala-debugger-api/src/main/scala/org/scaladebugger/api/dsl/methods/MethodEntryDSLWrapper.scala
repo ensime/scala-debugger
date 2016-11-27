@@ -1,9 +1,9 @@
 package org.scaladebugger.api.dsl.methods
 
-import com.sun.jdi.event.MethodEntryEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.MethodEntryEventInfoProfile
 import org.scaladebugger.api.profiles.traits.methods.MethodEntryProfile
 
 import scala.util.Try
@@ -17,14 +17,14 @@ class MethodEntryDSLWrapper private[dsl] (
   private val methodEntryProfile: MethodEntryProfile
 ) {
   /** Represents a MethodEntry event and any associated data. */
-  type MethodEntryEventAndData = (MethodEntryEvent, Seq[JDIEventDataResult])
+  type MethodEntryEventAndData = (MethodEntryEventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see MethodEntryProfile#tryGetOrCreateMethodEntryRequest(String, String, JDIArgument*) */
   def onMethodEntry(
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MethodEntryEvent]] =
+  ): Try[IdentityPipeline[MethodEntryEventInfoProfile]] =
     methodEntryProfile.tryGetOrCreateMethodEntryRequest(
       className,
       methodName,
@@ -36,7 +36,7 @@ class MethodEntryDSLWrapper private[dsl] (
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MethodEntryEvent] =
+  ): IdentityPipeline[MethodEntryEventInfoProfile] =
     methodEntryProfile.getOrCreateMethodEntryRequest(
       className,
       methodName,

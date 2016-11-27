@@ -34,9 +34,9 @@ class BreakpointFunctions(
     writeLine(s"Set breakpoint at $file:$line")
     jvms.foreach(s => {
       s.getOrCreateBreakpointRequest(file, line, NoResume).foreach(e => {
-        val t = e.thread()
-        val loc = e.location()
-        val locString = s"${loc.sourceName()}:${loc.lineNumber()}"
+        val t = e.thread
+        val loc = e.location
+        val locString = s"${loc.sourceName}:${loc.lineNumber}"
 
         writeLine(s"Breakpoint hit at $locString")
       })

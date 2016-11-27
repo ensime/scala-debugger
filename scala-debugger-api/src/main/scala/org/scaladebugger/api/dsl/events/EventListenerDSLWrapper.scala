@@ -6,6 +6,7 @@ import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.events.EventListenerProfile
+import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
 
 import scala.util.Try
 
@@ -18,13 +19,13 @@ class EventListenerDSLWrapper private[dsl] (
   private val eventListenerProfile: EventListenerProfile
 ) {
   /** Represents a Event event and any associated data. */
-  type EventEventAndData = (Event, Seq[JDIEventDataResult])
+  type EventEventAndData = (EventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see EventListenerProfile#tryCreateEventListener(EventType, JDIArgument*) */
   def onEvent(
     eventType: EventType,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[Event]] =
+  ): Try[IdentityPipeline[EventInfoProfile]] =
     eventListenerProfile.tryCreateEventListener(
       eventType,
       extraArguments: _*
@@ -34,7 +35,7 @@ class EventListenerDSLWrapper private[dsl] (
   def onUnsafeEvent(
     eventType: EventType,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[Event] =
+  ): IdentityPipeline[EventInfoProfile] =
     eventListenerProfile.createEventListener(
       eventType,
       extraArguments: _*

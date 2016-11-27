@@ -1,9 +1,9 @@
 package org.scaladebugger.api.dsl.threads
 
-import com.sun.jdi.event.ThreadStartEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.ThreadStartEventInfoProfile
 import org.scaladebugger.api.profiles.traits.threads.ThreadStartProfile
 
 import scala.util.Try
@@ -17,18 +17,18 @@ class ThreadStartDSLWrapper private[dsl] (
   private val threadStartProfile: ThreadStartProfile
 ) {
   /** Represents a ThreadStart event and any associated data. */
-  type ThreadStartEventAndData = (ThreadStartEvent, Seq[JDIEventDataResult])
+  type ThreadStartEventAndData = (ThreadStartEventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see ThreadStartProfile#tryGetOrCreateThreadStartRequest(JDIArgument*) */
   def onThreadStart(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ThreadStartEvent]] =
+  ): Try[IdentityPipeline[ThreadStartEventInfoProfile]] =
     threadStartProfile.tryGetOrCreateThreadStartRequest(extraArguments: _*)
 
   /** @see ThreadStartProfile#getOrCreateThreadStartRequest(JDIArgument*) */
   def onUnsafeThreadStart(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ThreadStartEvent] =
+  ): IdentityPipeline[ThreadStartEventInfoProfile] =
     threadStartProfile.getOrCreateThreadStartRequest(extraArguments: _*)
 
   /** @see ThreadStartProfile#getOrCreateThreadStartRequestWithData(JDIArgument*) */

@@ -126,18 +126,18 @@ class WatchpointFunctions(
       if (includeAccess) s.getOrCreateAccessWatchpointRequest(
         className, fieldName, NoResume
       ).foreach(e => {
-        val loc = e.location()
-        val sn = loc.sourceName()
-        val ln = loc.lineNumber()
+        val loc = e.location
+        val sn = loc.sourceName
+        val ln = loc.lineNumber
         writeLine(s"'$fieldName' of '$className' accessed ($sn:$ln)")
       })
 
       if (includeModification) s.getOrCreateModificationWatchpointRequest(
         className, fieldName, NoResume
       ).foreach(e => {
-        val loc = e.location()
-        val sn = loc.sourceName()
-        val ln = loc.lineNumber()
+        val loc = e.location
+        val sn = loc.sourceName
+        val ln = loc.lineNumber
         writeLine(s"'$fieldName' of '$className' modified ($sn:$ln)")
       })
     })

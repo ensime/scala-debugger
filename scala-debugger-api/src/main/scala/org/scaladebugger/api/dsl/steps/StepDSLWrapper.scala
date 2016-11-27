@@ -1,10 +1,10 @@
 package org.scaladebugger.api.dsl.steps
 
-import com.sun.jdi.event.StepEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.events.StepEventInfoProfile
 import org.scaladebugger.api.profiles.traits.steps.StepProfile
 
 import scala.util.Try
@@ -18,20 +18,20 @@ class StepDSLWrapper private[dsl] (
   private val stepProfile: StepProfile
 ) {
   /** Represents a Step event and any associated data. */
-  type StepStepAndData = (StepEvent, Seq[JDIEventDataResult])
+  type StepStepAndData = (StepEventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see StepProfile#tryCreateStepListener(ThreadInfoProfile, JDIArgument*) */
   def onStep(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[StepEvent]] =
+  ): Try[IdentityPipeline[StepEventInfoProfile]] =
     stepProfile.tryCreateStepListener(threadInfoProfile, extraArguments: _*)
 
   /** @see StepProfile#createStepListener(ThreadInfoProfile, JDIArgument*) */
   def onUnsafeStep(
     threadInfoProfile: ThreadInfoProfile,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[StepEvent] =
+  ): IdentityPipeline[StepEventInfoProfile] =
     stepProfile.createStepListener(threadInfoProfile, extraArguments: _*)
 
   /** @see StepProfile#createStepListenerWithData(ThreadInfoProfile, JDIArgument*) */

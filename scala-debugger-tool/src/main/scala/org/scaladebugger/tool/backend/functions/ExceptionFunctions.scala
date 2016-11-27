@@ -3,6 +3,7 @@ import acyclic.file
 import org.scaladebugger.api.lowlevel.events.filters.WildcardPatternFilter
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.lowlevel.exceptions.ExceptionRequestInfo
+import org.scaladebugger.api.profiles.traits.info.LocationInfoProfile
 import org.scaladebugger.tool.backend.StateManager
 import org.scaladebugger.tool.backend.utils.Regex
 
@@ -183,13 +184,13 @@ class ExceptionFunctions(
       }
 
       exceptionPipeline.foreach(e => {
-        val cloc = Option(e.catchLocation())
-        val loc = cloc.getOrElse(e.location())
-        val fn = loc.sourceName()
-        val ln = loc.lineNumber()
+        val cloc = e.catchLocation
+        val loc = cloc.getOrElse(e.location)
+        val fn = loc.sourceName
+        val ln = loc.lineNumber
 
-        val ex = e.exception()
-        val exName = ex.referenceType().name()
+        val ex = e.exception
+        val exName = ex.referenceType.name
         val ctext = if (cloc.nonEmpty) "Caught" else "Uncaught"
 
         writeLine(s"$ctext $exName detected ($fn:$ln)")

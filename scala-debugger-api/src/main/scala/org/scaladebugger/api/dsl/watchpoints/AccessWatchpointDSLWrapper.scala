@@ -1,9 +1,9 @@
 package org.scaladebugger.api.dsl.watchpoints
 
-import com.sun.jdi.event.AccessWatchpointEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.traits.info.events.AccessWatchpointEventInfoProfile
 import org.scaladebugger.api.profiles.traits.watchpoints.AccessWatchpointProfile
 
 import scala.util.Try
@@ -17,14 +17,15 @@ class AccessWatchpointDSLWrapper private[dsl] (
   private val accessWatchpointProfile: AccessWatchpointProfile
 ) {
   /** Represents a AccessWatchpoint event and any associated data. */
-  type AccessWatchpointEventAndData = (AccessWatchpointEvent, Seq[JDIEventDataResult])
+  type AccessWatchpointEventAndData =
+    (AccessWatchpointEventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see AccessWatchpointProfile#tryGetOrCreateAccessWatchpointRequest(String, String, JDIArgument*) */
   def onAccessWatchpoint(
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[AccessWatchpointEvent]] =
+  ): Try[IdentityPipeline[AccessWatchpointEventInfoProfile]] =
     accessWatchpointProfile.tryGetOrCreateAccessWatchpointRequest(
       className,
       fieldName,
@@ -36,7 +37,7 @@ class AccessWatchpointDSLWrapper private[dsl] (
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[AccessWatchpointEvent] =
+  ): IdentityPipeline[AccessWatchpointEventInfoProfile] =
     accessWatchpointProfile.getOrCreateAccessWatchpointRequest(
       className,
       fieldName,

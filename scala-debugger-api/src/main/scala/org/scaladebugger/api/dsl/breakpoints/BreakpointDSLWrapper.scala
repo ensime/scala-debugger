@@ -1,12 +1,11 @@
 package org.scaladebugger.api.dsl.breakpoints
 
 import acyclic.file
-
-import com.sun.jdi.event.BreakpointEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.breakpoints.BreakpointProfile
+import org.scaladebugger.api.profiles.traits.info.events.BreakpointEventInfoProfile
 
 import scala.util.Try
 
@@ -19,12 +18,12 @@ class BreakpointDSLWrapper private[dsl] (
   private val breakpointProfile: BreakpointProfile
 ) {
   /** Represents a breakpoint event and any associated data. */
-  type BreakpointEventAndData = (BreakpointEvent, Seq[JDIEventDataResult])
+  type BreakpointEventAndData = (BreakpointEventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see BreakpointProfile#tryGetOrCreateBreakpointRequest(String, Int, JDIArgument*) */
   def onBreakpoint(
     fileName: String, lineNumber: Int, extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[BreakpointEvent]] =
+  ): Try[IdentityPipeline[BreakpointEventInfoProfile]] =
     breakpointProfile.tryGetOrCreateBreakpointRequest(
       fileName, lineNumber, extraArguments: _*
     )
@@ -34,7 +33,7 @@ class BreakpointDSLWrapper private[dsl] (
     fileName: String,
     lineNumber: Int,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[BreakpointEvent] =
+  ): IdentityPipeline[BreakpointEventInfoProfile] =
     breakpointProfile.getOrCreateBreakpointRequest(
       fileName, lineNumber, extraArguments: _*
     )

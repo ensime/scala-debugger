@@ -5,6 +5,7 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.classes.ClassUnloadProfile
+import org.scaladebugger.api.profiles.traits.info.events.ClassUnloadEventInfoProfile
 
 import scala.util.Try
 
@@ -17,18 +18,18 @@ class ClassUnloadDSLWrapper private[dsl] (
   private val classUnloadProfile: ClassUnloadProfile
 ) {
   /** Represents a ClassUnload event and any associated data. */
-  type ClassUnloadEventAndData = (ClassUnloadEvent, Seq[JDIEventDataResult])
+  type ClassUnloadEventAndData = (ClassUnloadEventInfoProfile, Seq[JDIEventDataResult])
 
   /** @see ClassUnloadProfile#tryGetOrCreateClassUnloadRequest(JDIArgument*) */
   def onClassUnload(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ClassUnloadEvent]] =
+  ): Try[IdentityPipeline[ClassUnloadEventInfoProfile]] =
     classUnloadProfile.tryGetOrCreateClassUnloadRequest(extraArguments: _*)
 
   /** @see ClassUnloadProfile#getOrCreateClassUnloadRequest(JDIArgument*) */
   def onUnsafeClassUnload(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ClassUnloadEvent] =
+  ): IdentityPipeline[ClassUnloadEventInfoProfile] =
     classUnloadProfile.getOrCreateClassUnloadRequest(extraArguments: _*)
 
   /** @see ClassUnloadProfile#getOrCreateClassUnloadRequestWithData(JDIArgument*) */
