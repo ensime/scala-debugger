@@ -29,9 +29,9 @@ class PureThreadStartEventInfoProfile(
   private val threadStartEvent: ThreadStartEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _virtualMachine: => VirtualMachine = threadStartEvent.virtualMachine(),
-  _thread: => ThreadReference = threadStartEvent.thread(),
-  _threadReferenceType: => ReferenceType = threadStartEvent.thread().referenceType()
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType
 ) extends PureEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

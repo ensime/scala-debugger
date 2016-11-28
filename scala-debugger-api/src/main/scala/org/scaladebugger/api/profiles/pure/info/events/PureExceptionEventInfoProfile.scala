@@ -34,13 +34,13 @@ class PureExceptionEventInfoProfile(
   private val exceptionEvent: ExceptionEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _catchLocation: => Option[Location] = Option(exceptionEvent.catchLocation()),
-  _exception: => ObjectReference = exceptionEvent.exception(),
-  _exceptionReferenceType: => ReferenceType = exceptionEvent.exception().referenceType(),
-  _virtualMachine: => VirtualMachine = exceptionEvent.virtualMachine(),
-  _thread: => ThreadReference = exceptionEvent.thread(),
-  _threadReferenceType: => ReferenceType = exceptionEvent.thread().referenceType(),
-  _location: => Location = exceptionEvent.location()
+  _catchLocation: => Option[Location],
+  _exception: => ObjectReference,
+  _exceptionReferenceType: => ReferenceType,
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureLocatableEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

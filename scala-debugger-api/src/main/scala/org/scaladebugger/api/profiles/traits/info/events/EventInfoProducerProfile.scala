@@ -85,6 +85,11 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
     watchpointEvent: WatchpointEvent,
     jdiArguments: JDIArgument*
   )(
+    container: => Either[ObjectReference, ReferenceType] =
+      Option(watchpointEvent.`object`())
+        .map(Left.apply)
+        .getOrElse(Right(watchpointEvent.field().declaringType())),
+    field: => Field = watchpointEvent.field(),
     virtualMachine: => VirtualMachine = watchpointEvent.virtualMachine(),
     thread: => ThreadReference = watchpointEvent.thread(),
     threadReferenceType: => ReferenceType = watchpointEvent.thread().referenceType(),

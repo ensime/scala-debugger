@@ -33,12 +33,12 @@ class PureMonitorContendedEnterEventInfoProfile(
   private val monitorContendedEnterEvent: MonitorContendedEnterEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _monitor: => ObjectReference = monitorContendedEnterEvent.monitor(),
-  _monitorReferenceType: => ReferenceType = monitorContendedEnterEvent.monitor().referenceType(),
-  _virtualMachine: => VirtualMachine = monitorContendedEnterEvent.virtualMachine(),
-  _thread: => ThreadReference = monitorContendedEnterEvent.thread(),
-  _threadReferenceType: => ReferenceType = monitorContendedEnterEvent.thread().referenceType(),
-  _location: => Location = monitorContendedEnterEvent.location()
+  _monitor: => ObjectReference,
+  _monitorReferenceType: => ReferenceType,
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureLocatableEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

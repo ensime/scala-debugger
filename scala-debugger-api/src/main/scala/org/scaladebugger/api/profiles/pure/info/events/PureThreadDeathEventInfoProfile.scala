@@ -29,9 +29,9 @@ class PureThreadDeathEventInfoProfile(
   private val threadDeathEvent: ThreadDeathEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _virtualMachine: => VirtualMachine = threadDeathEvent.virtualMachine(),
-  _thread: => ThreadReference = threadDeathEvent.thread(),
-  _threadReferenceType: => ReferenceType = threadDeathEvent.thread().referenceType()
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType
 ) extends PureEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

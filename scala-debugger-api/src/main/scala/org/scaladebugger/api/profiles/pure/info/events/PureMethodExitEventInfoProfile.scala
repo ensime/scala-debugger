@@ -32,12 +32,12 @@ class PureMethodExitEventInfoProfile(
   private val methodExitEvent: MethodExitEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _method: => Method = methodExitEvent.method(),
-  _returnValue: => Value = methodExitEvent.returnValue(),
-  _virtualMachine: => VirtualMachine = methodExitEvent.virtualMachine(),
-  _thread: => ThreadReference = methodExitEvent.thread(),
-  _threadReferenceType: => ReferenceType = methodExitEvent.thread().referenceType(),
-  _location: => Location = methodExitEvent.location()
+  _method: => Method,
+  _returnValue: => Value,
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureLocatableEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

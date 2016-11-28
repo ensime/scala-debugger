@@ -33,15 +33,12 @@ class PureAccessWatchpointEventInfoProfile(
   private val accessWatchpointEvent: AccessWatchpointEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _container: => Either[ObjectReference, ReferenceType] =
-    Option(accessWatchpointEvent.`object`())
-      .map(Left.apply)
-      .getOrElse(Right(accessWatchpointEvent.field().declaringType())),
-  _field: => Field = accessWatchpointEvent.field(),
-  _virtualMachine: => VirtualMachine = accessWatchpointEvent.virtualMachine(),
-  _thread: => ThreadReference = accessWatchpointEvent.thread(),
-  _threadReferenceType: => ReferenceType = accessWatchpointEvent.thread().referenceType(),
-  _location: => Location = accessWatchpointEvent.location()
+  _container: => Either[ObjectReference, ReferenceType],
+  _field: => Field,
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureWatchpointEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

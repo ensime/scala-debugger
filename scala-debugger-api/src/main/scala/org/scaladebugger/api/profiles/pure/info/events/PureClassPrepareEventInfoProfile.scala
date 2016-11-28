@@ -30,10 +30,10 @@ class PureClassPrepareEventInfoProfile(
   private val classPrepareEvent: ClassPrepareEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _virtualMachine: => VirtualMachine = classPrepareEvent.virtualMachine(),
-  _thread: => ThreadReference = classPrepareEvent.thread(),
-  _threadReferenceType: => ReferenceType = classPrepareEvent.thread().referenceType(),
-  _referenceType: => ReferenceType = classPrepareEvent.referenceType()
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _referenceType: => ReferenceType
 ) extends PureEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

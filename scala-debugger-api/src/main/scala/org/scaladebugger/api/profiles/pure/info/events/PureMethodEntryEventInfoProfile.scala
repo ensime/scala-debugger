@@ -31,11 +31,11 @@ class PureMethodEntryEventInfoProfile(
   private val methodEntryEvent: MethodEntryEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _method: => Method = methodEntryEvent.method(),
-  _virtualMachine: => VirtualMachine = methodEntryEvent.virtualMachine(),
-  _thread: => ThreadReference = methodEntryEvent.thread(),
-  _threadReferenceType: => ReferenceType = methodEntryEvent.thread().referenceType(),
-  _location: => Location = methodEntryEvent.location()
+  _method: => Method,
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureLocatableEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

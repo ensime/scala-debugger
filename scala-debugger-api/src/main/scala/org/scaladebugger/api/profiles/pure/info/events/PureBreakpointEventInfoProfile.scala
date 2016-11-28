@@ -30,10 +30,10 @@ class PureBreakpointEventInfoProfile(
   private val breakpointEvent: BreakpointEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _virtualMachine: => VirtualMachine = breakpointEvent.virtualMachine(),
-  _thread: => ThreadReference = breakpointEvent.thread(),
-  _threadReferenceType: => ReferenceType = breakpointEvent.thread().referenceType(),
-  _location: => Location = breakpointEvent.location()
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureLocatableEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

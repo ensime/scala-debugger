@@ -33,15 +33,12 @@ class PureModificationWatchpointEventInfoProfile(
   private val modificationWatchpointEvent: ModificationWatchpointEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _container: => Either[ObjectReference, ReferenceType] =
-    Option(modificationWatchpointEvent.`object`())
-      .map(Left.apply)
-      .getOrElse(Right(modificationWatchpointEvent.field().declaringType())),
-  _field: => Field = modificationWatchpointEvent.field(),
-  _virtualMachine: => VirtualMachine = modificationWatchpointEvent.virtualMachine(),
-  _thread: => ThreadReference = modificationWatchpointEvent.thread(),
-  _threadReferenceType: => ReferenceType = modificationWatchpointEvent.thread().referenceType(),
-  _location: => Location = modificationWatchpointEvent.location()
+  _container: => Either[ObjectReference, ReferenceType],
+  _field: => Field,
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureWatchpointEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

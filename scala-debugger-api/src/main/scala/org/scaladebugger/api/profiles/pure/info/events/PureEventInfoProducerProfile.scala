@@ -74,6 +74,8 @@ class PureEventInfoProducerProfile(
     watchpointEvent: WatchpointEvent,
     jdiArguments: JDIArgument*
   )(
+    container: => Either[ObjectReference, ReferenceType],
+    field: => Field,
     virtualMachine: => VirtualMachine,
     thread: => ThreadReference,
     threadReferenceType: => ReferenceType,
@@ -84,6 +86,8 @@ class PureEventInfoProducerProfile(
     watchpointEvent = watchpointEvent,
     jdiArguments = jdiArguments
   )(
+    _container = container,
+    _field = field,
     _virtualMachine = virtualMachine,
     _thread = thread,
     _threadReferenceType = threadReferenceType,

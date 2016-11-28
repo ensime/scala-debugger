@@ -32,12 +32,12 @@ class PureMonitorWaitEventInfoProfile(
   private val monitorWaitEvent: MonitorWaitEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _monitor: => ObjectReference = monitorWaitEvent.monitor(),
-  _monitorReferenceType: => ReferenceType = monitorWaitEvent.monitor().referenceType(),
-  _virtualMachine: => VirtualMachine = monitorWaitEvent.virtualMachine(),
-  _thread: => ThreadReference = monitorWaitEvent.thread(),
-  _threadReferenceType: => ReferenceType = monitorWaitEvent.thread().referenceType(),
-  _location: => Location = monitorWaitEvent.location()
+  _monitor: => ObjectReference,
+  _monitorReferenceType: => ReferenceType,
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureLocatableEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

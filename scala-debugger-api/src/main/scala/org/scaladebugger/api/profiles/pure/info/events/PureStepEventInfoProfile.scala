@@ -30,10 +30,10 @@ class PureStepEventInfoProfile(
   private val stepEvent: StepEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _virtualMachine: => VirtualMachine = stepEvent.virtualMachine(),
-  _thread: => ThreadReference = stepEvent.thread(),
-  _threadReferenceType: => ReferenceType = stepEvent.thread().referenceType(),
-  _location: => Location = stepEvent.location()
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureLocatableEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

@@ -30,10 +30,10 @@ class PureLocatableEventInfoProfile(
   private val locatableEvent: LocatableEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _virtualMachine: => VirtualMachine = locatableEvent.virtualMachine(),
-  _thread: => ThreadReference = locatableEvent.thread(),
-  _threadReferenceType: => ReferenceType = locatableEvent.thread().referenceType(),
-  _location: => Location = locatableEvent.location()
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,

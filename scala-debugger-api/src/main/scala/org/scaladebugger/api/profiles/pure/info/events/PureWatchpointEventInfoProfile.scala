@@ -33,15 +33,12 @@ class PureWatchpointEventInfoProfile(
   private val watchpointEvent: WatchpointEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
-  _container: => Either[ObjectReference, ReferenceType] =
-    Option(watchpointEvent.`object`())
-      .map(Left.apply)
-      .getOrElse(Right(watchpointEvent.field().declaringType())),
-  _field: => Field = watchpointEvent.field(),
-  _virtualMachine: => VirtualMachine = watchpointEvent.virtualMachine(),
-  _thread: => ThreadReference = watchpointEvent.thread(),
-  _threadReferenceType: => ReferenceType = watchpointEvent.thread().referenceType(),
-  _location: => Location = watchpointEvent.location()
+  _container: => Either[ObjectReference, ReferenceType],
+  _field: => Field,
+  _virtualMachine: => VirtualMachine,
+  _thread: => ThreadReference,
+  _threadReferenceType: => ReferenceType,
+  _location: => Location
 ) extends PureLocatableEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,
