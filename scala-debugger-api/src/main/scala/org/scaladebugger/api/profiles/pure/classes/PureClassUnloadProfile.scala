@@ -190,7 +190,7 @@ trait PureClassUnloadProfile extends ClassUnloadProfile {
     val newPipeline = eventManager
       .addEventDataStream(ClassUnloadEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[ClassUnloadEvent], t._2))
-      .map(t => (eventProducer.newClassUnloadEventInfoProfile(
+      .map(t => (eventProducer.newDefaultClassUnloadEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgsWithFilter: _*

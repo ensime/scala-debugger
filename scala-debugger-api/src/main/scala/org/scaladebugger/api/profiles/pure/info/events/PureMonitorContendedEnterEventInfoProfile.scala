@@ -71,7 +71,8 @@ class PureMonitorContendedEnterEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newMonitorContendedEnterEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      monitorContendedEnterEvent = monitorContendedEnterEvent
+      monitorContendedEnterEvent = monitorContendedEnterEvent,
+      jdiArguments = jdiArguments
     )(
       monitor = _monitor,
       monitorReferenceType = _monitorReferenceType,

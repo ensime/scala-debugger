@@ -59,7 +59,8 @@ class PureVMStartEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newVMStartEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      vmStartEvent = vmStartEvent
+      vmStartEvent = vmStartEvent,
+      jdiArguments = jdiArguments
     )(
       virtualMachine = _virtualMachine,
       thread = _thread,

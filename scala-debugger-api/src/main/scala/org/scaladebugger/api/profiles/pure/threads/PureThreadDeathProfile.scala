@@ -190,11 +190,11 @@ trait PureThreadDeathProfile extends ThreadDeathProfile {
     val newPipeline = eventManager
       .addEventDataStream(ThreadDeathEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[ThreadDeathEvent], t._2))
-      .map(t => (eventProducer.newThreadDeathEventInfoProfile(
+      .map(t => (eventProducer.newDefaultThreadDeathEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgsWithFilter: _*
-      )(), t._2))
+      ), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

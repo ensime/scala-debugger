@@ -42,11 +42,11 @@ trait PureVMStartProfile extends VMStartProfile {
     eventManager
       .addEventDataStream(VMStartEventType, eArgs: _*)
       .map(t => (t._1.asInstanceOf[VMStartEvent], t._2))
-      .map(t => (eventProducer.newVMStartEventInfoProfile(
+      .map(t => (eventProducer.newDefaultVMStartEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgs: _*
-      )(), t._2))
+      ), t._2))
       .noop()
   }
 }

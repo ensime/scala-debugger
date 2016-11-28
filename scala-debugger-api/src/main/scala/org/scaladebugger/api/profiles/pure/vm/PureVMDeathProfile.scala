@@ -190,7 +190,7 @@ trait PureVMDeathProfile extends VMDeathProfile {
     val newPipeline = eventManager
       .addEventDataStream(VMDeathEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[VMDeathEvent], t._2))
-      .map(t => (eventProducer.newVMDeathEventInfoProfile(
+      .map(t => (eventProducer.newDefaultVMDeathEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgsWithFilter: _*

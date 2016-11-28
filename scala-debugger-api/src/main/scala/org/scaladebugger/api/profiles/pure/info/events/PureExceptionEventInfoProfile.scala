@@ -73,7 +73,8 @@ class PureExceptionEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newExceptionEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      exceptionEvent = exceptionEvent
+      exceptionEvent = exceptionEvent,
+      jdiArguments = jdiArguments
     )(
       catchLocation = _catchLocation,
       exception = _exception,

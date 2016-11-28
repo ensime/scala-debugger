@@ -390,11 +390,11 @@ trait PureExceptionProfile extends ExceptionProfile {
     val newPipeline = eventManager
       .addEventDataStream(ExceptionEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[ExceptionEvent], t._2))
-      .map(t => (eventProducer.newExceptionEventInfoProfile(
+      .map(t => (eventProducer.newDefaultExceptionEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgsWithFilter: _*
-      )(), t._2))
+      ), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

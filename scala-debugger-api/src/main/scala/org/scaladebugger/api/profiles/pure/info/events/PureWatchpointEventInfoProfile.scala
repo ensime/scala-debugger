@@ -72,7 +72,7 @@ class PureWatchpointEventInfoProfile(
     jep.newWatchpointEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
       watchpointEvent = watchpointEvent,
-      jdiArguments: _*
+      jdiArguments = jdiArguments
     )(
       virtualMachine = _virtualMachine,
       thread = _thread,

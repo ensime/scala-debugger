@@ -82,7 +82,8 @@ class PureModificationWatchpointEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newModificationWatchpointEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      modificationWatchpointEvent = modificationWatchpointEvent
+      modificationWatchpointEvent = modificationWatchpointEvent,
+      jdiArguments = jdiArguments
     )(
       container = _container,
       field = _field,

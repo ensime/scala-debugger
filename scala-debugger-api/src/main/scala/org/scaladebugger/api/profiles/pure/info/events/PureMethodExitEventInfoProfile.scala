@@ -70,7 +70,8 @@ class PureMethodExitEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newMethodExitEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      methodExitEvent = methodExitEvent
+      methodExitEvent = methodExitEvent,
+      jdiArguments = jdiArguments
     )(
       method = _method,
       returnValue = _returnValue,

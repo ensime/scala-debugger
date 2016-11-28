@@ -80,7 +80,8 @@ class PureAccessWatchpointEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newAccessWatchpointEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      accessWatchpointEvent = accessWatchpointEvent
+      accessWatchpointEvent = accessWatchpointEvent,
+      jdiArguments = jdiArguments
     )(
       container = _container,
       field = _field,

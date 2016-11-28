@@ -44,10 +44,10 @@ class PureEventInfoProfile(
    */
   override def toJavaInfo: EventInfoProfile = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newDefaultEventInfoProfile(
+    jep.newEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
       event = event,
-      jdiArguments: _*
+      jdiArguments = jdiArguments
     )
   }
 

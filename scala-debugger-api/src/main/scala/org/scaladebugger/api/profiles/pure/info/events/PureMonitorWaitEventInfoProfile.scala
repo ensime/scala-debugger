@@ -70,7 +70,8 @@ class PureMonitorWaitEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newMonitorWaitEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      monitorWaitEvent = monitorWaitEvent
+      monitorWaitEvent = monitorWaitEvent,
+      jdiArguments = jdiArguments
     )(
       monitor = _monitor,
       monitorReferenceType = _monitorReferenceType,

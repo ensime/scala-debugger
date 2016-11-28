@@ -251,11 +251,11 @@ trait PureModificationWatchpointProfile extends ModificationWatchpointProfile {
     val newPipeline = eventManager
       .addEventDataStream(ModificationWatchpointEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[ModificationWatchpointEvent], t._2))
-      .map(t => (eventProducer.newModificationWatchpointEventInfoProfile(
+      .map(t => (eventProducer.newDefaultModificationWatchpointEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgsWithFilter: _*
-      )(), t._2))
+      ), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

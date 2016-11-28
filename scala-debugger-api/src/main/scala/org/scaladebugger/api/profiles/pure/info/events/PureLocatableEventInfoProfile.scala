@@ -62,7 +62,7 @@ class PureLocatableEventInfoProfile(
     jep.newLocatableEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
       locatableEvent = locatableEvent,
-      jdiArguments: _*
+      jdiArguments = jdiArguments
     )(
       virtualMachine = _virtualMachine,
       thread = _thread,

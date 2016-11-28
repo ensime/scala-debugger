@@ -306,11 +306,11 @@ trait PureStepProfile extends StepProfile {
     val newPipeline = eventManager
       .addEventDataStream(StepEventType, args._2: _*)
       .map(t => (t._1.asInstanceOf[StepEvent], t._2))
-      .map(t => (eventProducer.newStepEventInfoProfile(
+      .map(t => (eventProducer.newDefaultStepEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgs: _*
-      )(), t._2))
+      ), t._2))
       .noop()
 
     newPipeline

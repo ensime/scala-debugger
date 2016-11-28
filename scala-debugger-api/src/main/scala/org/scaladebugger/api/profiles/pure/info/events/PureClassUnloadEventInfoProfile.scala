@@ -50,7 +50,8 @@ class PureClassUnloadEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newClassUnloadEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      classUnloadEvent = classUnloadEvent
+      classUnloadEvent = classUnloadEvent,
+      jdiArguments = jdiArguments
     )
   }
 

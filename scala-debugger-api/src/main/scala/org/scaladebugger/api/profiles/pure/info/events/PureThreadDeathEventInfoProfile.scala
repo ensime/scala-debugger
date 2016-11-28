@@ -59,7 +59,8 @@ class PureThreadDeathEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newThreadDeathEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      threadDeathEvent = threadDeathEvent
+      threadDeathEvent = threadDeathEvent,
+      jdiArguments = jdiArguments
     )(
       virtualMachine = _virtualMachine,
       thread = _thread,

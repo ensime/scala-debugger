@@ -198,11 +198,11 @@ trait PureMonitorWaitProfile extends MonitorWaitProfile {
     val newPipeline = eventManager
       .addEventDataStream(MonitorWaitEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[MonitorWaitEvent], t._2))
-      .map(t => (eventProducer.newMonitorWaitEventInfoProfile(
+      .map(t => (eventProducer.newDefaultMonitorWaitEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgsWithFilter: _*
-      )(), t._2))
+      ), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

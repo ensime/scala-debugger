@@ -35,14 +35,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): EventInfoProfile = newEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     event = event,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )
 
   /** Creates a new instance of the event profile. */
   def newEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     event: Event,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   ): EventInfoProfile
 
   /** Fills in additional properties with default values. */
@@ -53,14 +53,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): LocatableEventInfoProfile = newLocatableEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     locatableEvent = locatableEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the locatable event profile. */
   def newLocatableEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     locatableEvent: LocatableEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     virtualMachine: => VirtualMachine = locatableEvent.virtualMachine(),
     thread: => ThreadReference = locatableEvent.thread(),
@@ -76,14 +76,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): WatchpointEventInfoProfile = newWatchpointEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     watchpointEvent = watchpointEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the watchpoint event profile. */
   def newWatchpointEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     watchpointEvent: WatchpointEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     container: => Either[ObjectReference, ReferenceType] =
       Option(watchpointEvent.`object`())
@@ -104,14 +104,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): AccessWatchpointEventInfoProfile = newAccessWatchpointEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     accessWatchpointEvent = accessWatchpointEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the access watchpoint event profile. */
   def newAccessWatchpointEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     accessWatchpointEvent: AccessWatchpointEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     container: => Either[ObjectReference, ReferenceType] =
       Option(accessWatchpointEvent.`object`())
@@ -132,14 +132,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): BreakpointEventInfoProfile = newBreakpointEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     breakpointEvent = breakpointEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the breakpoint event profile. */
   def newBreakpointEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     breakpointEvent: BreakpointEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     virtualMachine: => VirtualMachine = breakpointEvent.virtualMachine(),
     thread: => ThreadReference = breakpointEvent.thread(),
@@ -155,14 +155,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): ClassPrepareEventInfoProfile = newClassPrepareEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     classPrepareEvent = classPrepareEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the class prepare event profile. */
   def newClassPrepareEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     classPrepareEvent: ClassPrepareEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     virtualMachine: => VirtualMachine = classPrepareEvent.virtualMachine(),
     thread: => ThreadReference = classPrepareEvent.thread(),
@@ -178,14 +178,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): ClassUnloadEventInfoProfile = newClassUnloadEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     classUnloadEvent = classUnloadEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )
 
   /** Creates a new instance of the class unload event profile. */
   def newClassUnloadEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     classUnloadEvent: ClassUnloadEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   ): ClassUnloadEventInfoProfile
 
   /** Fills in additional properties with default values. */
@@ -196,14 +196,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): ExceptionEventInfoProfile = newExceptionEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     exceptionEvent = exceptionEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the exception event profile. */
   def newExceptionEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     exceptionEvent: ExceptionEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     catchLocation: => Option[Location] = Option(exceptionEvent.catchLocation()),
     exception: => ObjectReference = exceptionEvent.exception(),
@@ -222,14 +222,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): MethodEntryEventInfoProfile = newMethodEntryEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     methodEntryEvent = methodEntryEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the method entry event profile. */
   def newMethodEntryEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     methodEntryEvent: MethodEntryEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     method: => Method = methodEntryEvent.method(),
     virtualMachine: => VirtualMachine = methodEntryEvent.virtualMachine(),
@@ -246,14 +246,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): MethodExitEventInfoProfile = newMethodExitEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     methodExitEvent = methodExitEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the method exit event profile. */
   def newMethodExitEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     methodExitEvent: MethodExitEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     method: => Method = methodExitEvent.method(),
     returnValue: => Value = methodExitEvent.returnValue(),
@@ -271,14 +271,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): ModificationWatchpointEventInfoProfile = newModificationWatchpointEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     modificationWatchpointEvent = modificationWatchpointEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the modification watchpoint event profile. */
   def newModificationWatchpointEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     modificationWatchpointEvent: ModificationWatchpointEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     container: => Either[ObjectReference, ReferenceType] =
       Option(modificationWatchpointEvent.`object`())
@@ -299,14 +299,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): MonitorContendedEnteredEventInfoProfile = newMonitorContendedEnteredEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     monitorContendedEnteredEvent = monitorContendedEnteredEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the monitor contended entered event profile. */
   def newMonitorContendedEnteredEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorContendedEnteredEvent: MonitorContendedEnteredEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     monitor: => ObjectReference = monitorContendedEnteredEvent.monitor(),
     monitorReferenceType: => ReferenceType = monitorContendedEnteredEvent.monitor().referenceType(),
@@ -324,14 +324,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): MonitorContendedEnterEventInfoProfile = newMonitorContendedEnterEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     monitorContendedEnterEvent = monitorContendedEnterEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the monitor contended enter event profile. */
   def newMonitorContendedEnterEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorContendedEnterEvent: MonitorContendedEnterEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     monitor: => ObjectReference = monitorContendedEnterEvent.monitor(),
     monitorReferenceType: => ReferenceType = monitorContendedEnterEvent.monitor().referenceType(),
@@ -349,14 +349,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): MonitorWaitedEventInfoProfile = newMonitorWaitedEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     monitorWaitedEvent = monitorWaitedEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the monitor waited event profile. */
   def newMonitorWaitedEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorWaitedEvent: MonitorWaitedEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     monitor: => ObjectReference = monitorWaitedEvent.monitor(),
     monitorReferenceType: => ReferenceType = monitorWaitedEvent.monitor().referenceType(),
@@ -374,14 +374,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): MonitorWaitEventInfoProfile = newMonitorWaitEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     monitorWaitEvent = monitorWaitEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the monitor wait event profile. */
   def newMonitorWaitEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorWaitEvent: MonitorWaitEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     monitor: => ObjectReference = monitorWaitEvent.monitor(),
     monitorReferenceType: => ReferenceType = monitorWaitEvent.monitor().referenceType(),
@@ -399,14 +399,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): StepEventInfoProfile = newStepEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     stepEvent = stepEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the step event profile. */
   def newStepEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     stepEvent: StepEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     virtualMachine: => VirtualMachine = stepEvent.virtualMachine(),
     thread: => ThreadReference = stepEvent.thread(),
@@ -422,14 +422,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): ThreadDeathEventInfoProfile = newThreadDeathEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     threadDeathEvent = threadDeathEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the thread death event profile. */
   def newThreadDeathEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadDeathEvent: ThreadDeathEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     virtualMachine: => VirtualMachine = threadDeathEvent.virtualMachine(),
     thread: => ThreadReference = threadDeathEvent.thread(),
@@ -444,14 +444,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): ThreadStartEventInfoProfile = newThreadStartEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     threadStartEvent = threadStartEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the thread start event profile. */
   def newThreadStartEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadStartEvent: ThreadStartEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     virtualMachine: => VirtualMachine = threadStartEvent.virtualMachine(),
     thread: => ThreadReference = threadStartEvent.thread(),
@@ -466,14 +466,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): VMDeathEventInfoProfile = newVMDeathEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     vmDeathEvent = vmDeathEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )
 
   /** Creates a new instance of the vm death event profile. */
   def newVMDeathEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     vmDeathEvent: VMDeathEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   ): VMDeathEventInfoProfile
 
   /** Fills in additional properties with default values. */
@@ -484,14 +484,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): VMDisconnectEventInfoProfile = newVMDisconnectEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     vmDisconnectEvent = vmDisconnectEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )
 
   /** Creates a new instance of the vm disconnect event profile. */
   def newVMDisconnectEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     vmDisconnectEvent: VMDisconnectEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   ): VMDisconnectEventInfoProfile
 
   /** Fills in additional properties with default values. */
@@ -502,14 +502,14 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): VMStartEventInfoProfile = newVMStartEventInfoProfile(
     scalaVirtualMachine = scalaVirtualMachine,
     vmStartEvent = vmStartEvent,
-    jdiArguments: _*
+    jdiArguments = jdiArguments
   )()
 
   /** Creates a new instance of the vm start event profile. */
   def newVMStartEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     vmStartEvent: VMStartEvent,
-    jdiArguments: JDIArgument*
+    jdiArguments: Seq[JDIArgument]
   )(
     virtualMachine: => VirtualMachine = vmStartEvent.virtualMachine(),
     thread: => ThreadReference = vmStartEvent.thread(),

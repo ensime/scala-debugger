@@ -61,7 +61,8 @@ class PureClassPrepareEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newClassPrepareEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      classPrepareEvent = classPrepareEvent
+      classPrepareEvent = classPrepareEvent,
+      jdiArguments = jdiArguments
     )(
       virtualMachine = _virtualMachine,
       thread = _thread,

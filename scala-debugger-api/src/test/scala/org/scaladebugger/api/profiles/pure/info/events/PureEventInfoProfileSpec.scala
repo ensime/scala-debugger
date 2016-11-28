@@ -51,7 +51,7 @@ class PureEventInfoProfileSpec extends test.ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Java version of event info producer creates a new event instance
-        (mockEventInfoProducer.newDefaultEventInfoProfile _)
+        (mockEventInfoProducer.newEventInfoProfile _)
           .expects(mockScalaVirtualMachine, mockEvent, mockJdiArguments)
           .returning(expected).once()
 

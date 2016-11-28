@@ -198,11 +198,11 @@ trait PureMonitorContendedEnteredProfile extends MonitorContendedEnteredProfile 
     val newPipeline = eventManager
       .addEventDataStream(MonitorContendedEnteredEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[MonitorContendedEnteredEvent], t._2))
-      .map(t => (eventProducer.newMonitorContendedEnteredEventInfoProfile(
+      .map(t => (eventProducer.newDefaultMonitorContendedEnteredEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgsWithFilter: _*
-      )(), t._2))
+      ), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

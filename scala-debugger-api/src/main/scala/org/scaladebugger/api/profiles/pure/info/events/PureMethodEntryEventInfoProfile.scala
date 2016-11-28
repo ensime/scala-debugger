@@ -68,7 +68,8 @@ class PureMethodEntryEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newMethodEntryEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      methodEntryEvent = methodEntryEvent
+      methodEntryEvent = methodEntryEvent,
+      jdiArguments = jdiArguments
     )(
       method = _method,
       virtualMachine = _virtualMachine,

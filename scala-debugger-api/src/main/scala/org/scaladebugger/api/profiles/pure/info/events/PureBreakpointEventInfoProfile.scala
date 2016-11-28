@@ -66,7 +66,8 @@ class PureBreakpointEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newBreakpointEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      breakpointEvent = breakpointEvent
+      breakpointEvent = breakpointEvent,
+      jdiArguments = jdiArguments
     )(
       virtualMachine = _virtualMachine,
       thread = _thread,

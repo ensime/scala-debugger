@@ -42,7 +42,7 @@ trait PureVMDisconnectProfile extends VMDisconnectProfile {
     eventManager
       .addEventDataStream(VMDisconnectEventType, eArgs: _*)
       .map(t => (t._1.asInstanceOf[VMDisconnectEvent], t._2))
-      .map(t => (eventProducer.newVMDisconnectEventInfoProfile(
+      .map(t => (eventProducer.newDefaultVMDisconnectEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgs: _*

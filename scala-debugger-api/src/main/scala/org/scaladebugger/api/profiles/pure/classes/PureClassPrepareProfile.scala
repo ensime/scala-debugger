@@ -189,11 +189,11 @@ trait PureClassPrepareProfile extends ClassPrepareProfile {
     val newPipeline = eventManager
       .addEventDataStream(ClassPrepareEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[ClassPrepareEvent], t._2))
-      .map(t => (eventProducer.newClassPrepareEventInfoProfile(
+      .map(t => (eventProducer.newDefaultClassPrepareEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgsWithFilter: _*
-      )(), t._2))
+      ), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

@@ -241,11 +241,11 @@ trait PureBreakpointProfile extends BreakpointProfile {
     val newPipeline = eventManager
       .addEventDataStream(BreakpointEventType, eArgsWithFilter: _*)
       .map(t => (t._1.asInstanceOf[BreakpointEvent], t._2))
-      .map(t => (eventProducer.newBreakpointEventInfoProfile(
+      .map(t => (eventProducer.newDefaultBreakpointEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
         t._1,
         rArgs ++ eArgsWithFilter: _*
-      )(), t._2))
+      ), t._2))
       .noop()
 
     // Create a companion pipeline who, when closed, checks to see if there

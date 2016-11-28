@@ -66,7 +66,8 @@ class PureStepEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newStepEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      stepEvent = stepEvent
+      stepEvent = stepEvent,
+      jdiArguments = jdiArguments
     )(
       virtualMachine = _virtualMachine,
       thread = _thread,

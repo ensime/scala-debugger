@@ -59,7 +59,8 @@ class PureThreadStartEventInfoProfile(
     val jep = infoProducer.eventProducer.toJavaInfo
     jep.newThreadStartEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      threadStartEvent = threadStartEvent
+      threadStartEvent = threadStartEvent,
+      jdiArguments = jdiArguments
     )(
       virtualMachine = _virtualMachine,
       thread = _thread,
