@@ -44,7 +44,7 @@ class PureEventInfoProfile(
    */
   override def toJavaInfo: EventInfoProfile = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newEventInfoProfile(
+    jep.newDefaultEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
       event = event,
       jdiArguments: _*
@@ -64,8 +64,7 @@ class PureEventInfoProfile(
    * @return The collection of request arguments
    */
   override lazy val requestArguments: Seq[JDIRequestArgument] = {
-    jdiArguments.filter(_.isInstanceOf[JDIRequestArgument])
-      .map(_.asInstanceOf[JDIRequestArgument])
+    jdiArguments.collect { case r: JDIRequestArgument => r }
   }
 
   /**
@@ -74,8 +73,7 @@ class PureEventInfoProfile(
    * @return The collection of event arguments
    */
   override lazy val eventArguments: Seq[JDIEventArgument] = {
-    jdiArguments.filter(_.isInstanceOf[JDIEventArgument])
-      .map(_.asInstanceOf[JDIEventArgument])
+    jdiArguments.collect { case e: JDIEventArgument => e }
   }
 
   /**
@@ -95,7 +93,14 @@ class PureEventInfoProfile(
    *
    * @return True if plain, otherwise false
    */
-  override def isPlainEvent: Boolean = event.getClass.equals(classOf[Event])
+  override def isPlainEvent: Boolean = eventClass.equals(classOf[Event])
+
+  /**
+   * Returns the class of the underlying event.
+   *
+   * @return The class of the event
+   */
+  protected def eventClass: Class[_] = event.getClass
 
   /**
    * Returns whether or not this event represents an access watchpoint event.
@@ -290,10 +295,11 @@ class PureEventInfoProfile(
    */
   override def toAccessWatchpointEvent: AccessWatchpointEventInfoProfile = {
     assert(isAccessWatchpointEvent, "Event must be an access watchpoint event!")
-    infoProducer.eventProducer.newAccessWatchpointEventInfoProfile(
+    infoProducer.eventProducer.newDefaultAccessWatchpointEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      accessWatchpointEvent = event.asInstanceOf[AccessWatchpointEvent]
-    )()
+      accessWatchpointEvent = event.asInstanceOf[AccessWatchpointEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -304,10 +310,11 @@ class PureEventInfoProfile(
    */
   override def toBreakpointEvent: BreakpointEventInfoProfile = {
     assert(isBreakpointEvent, "Event must be a breakpoint event!")
-    infoProducer.eventProducer.newBreakpointEventInfoProfile(
+    infoProducer.eventProducer.newDefaultBreakpointEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      breakpointEvent = event.asInstanceOf[BreakpointEvent]
-    )()
+      breakpointEvent = event.asInstanceOf[BreakpointEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -318,10 +325,11 @@ class PureEventInfoProfile(
    */
   override def toClassPrepareEvent: ClassPrepareEventInfoProfile = {
     assert(isClassPrepareEvent, "Event must be a class prepare event!")
-    infoProducer.eventProducer.newClassPrepareEventInfoProfile(
+    infoProducer.eventProducer.newDefaultClassPrepareEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      classPrepareEvent = event.asInstanceOf[ClassPrepareEvent]
-    )()
+      classPrepareEvent = event.asInstanceOf[ClassPrepareEvent],
+      jdiArguments: _*
+    )
   }
 
   /** :w
@@ -332,9 +340,10 @@ class PureEventInfoProfile(
    */
   override def toClassUnloadEvent: ClassUnloadEventInfoProfile = {
     assert(isClassUnloadEvent, "Event must be a class unload event!")
-    infoProducer.eventProducer.newClassUnloadEventInfoProfile(
+    infoProducer.eventProducer.newDefaultClassUnloadEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      classUnloadEvent = event.asInstanceOf[ClassUnloadEvent]
+      classUnloadEvent = event.asInstanceOf[ClassUnloadEvent],
+      jdiArguments: _*
     )
   }
 
@@ -346,10 +355,11 @@ class PureEventInfoProfile(
    */
   override def toExceptionEvent: ExceptionEventInfoProfile = {
     assert(isExceptionEvent, "Event must be an exception event!")
-    infoProducer.eventProducer.newExceptionEventInfoProfile(
+    infoProducer.eventProducer.newDefaultExceptionEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      exceptionEvent = event.asInstanceOf[ExceptionEvent]
-    )()
+      exceptionEvent = event.asInstanceOf[ExceptionEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -360,10 +370,11 @@ class PureEventInfoProfile(
    */
   override def toLocatableEvent: LocatableEventInfoProfile = {
     assert(isLocatableEvent, "Event must be a locatable event!")
-    infoProducer.eventProducer.newLocatableEventInfoProfile(
+    infoProducer.eventProducer.newDefaultLocatableEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      locatableEvent = event.asInstanceOf[LocatableEvent]
-    )()
+      locatableEvent = event.asInstanceOf[LocatableEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -374,10 +385,11 @@ class PureEventInfoProfile(
    */
   override def toMethodEntryEvent: MethodEntryEventInfoProfile = {
     assert(isMethodEntryEvent, "Event must be a method entry event!")
-    infoProducer.eventProducer.newMethodEntryEventInfoProfile(
+    infoProducer.eventProducer.newDefaultMethodEntryEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      methodEntryEvent = event.asInstanceOf[MethodEntryEvent]
-    )()
+      methodEntryEvent = event.asInstanceOf[MethodEntryEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -388,10 +400,11 @@ class PureEventInfoProfile(
    */
   override def toMethodExitEvent: MethodExitEventInfoProfile = {
     assert(isMethodExitEvent, "Event must be a method exit event!")
-    infoProducer.eventProducer.newMethodExitEventInfoProfile(
+    infoProducer.eventProducer.newDefaultMethodExitEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      methodExitEvent = event.asInstanceOf[MethodExitEvent]
-    )()
+      methodExitEvent = event.asInstanceOf[MethodExitEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -402,10 +415,11 @@ class PureEventInfoProfile(
    */
   override def toModificationWatchpointEvent: ModificationWatchpointEventInfoProfile = {
     assert(isModificationWatchpointEvent, "Event must be a modification watchpoint event!")
-    infoProducer.eventProducer.newModificationWatchpointEventInfoProfile(
+    infoProducer.eventProducer.newDefaultModificationWatchpointEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      modificationWatchpointEvent = event.asInstanceOf[ModificationWatchpointEvent]
-    )()
+      modificationWatchpointEvent = event.asInstanceOf[ModificationWatchpointEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -416,10 +430,11 @@ class PureEventInfoProfile(
    */
   override def toMonitorContendedEnteredEvent: MonitorContendedEnteredEventInfoProfile = {
     assert(isMonitorContendedEnteredEvent, "Event must be a monitor contended entered event!")
-    infoProducer.eventProducer.newMonitorContendedEnteredEventInfoProfile(
+    infoProducer.eventProducer.newDefaultMonitorContendedEnteredEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      monitorContendedEnteredEvent = event.asInstanceOf[MonitorContendedEnteredEvent]
-    )()
+      monitorContendedEnteredEvent = event.asInstanceOf[MonitorContendedEnteredEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -430,10 +445,11 @@ class PureEventInfoProfile(
    */
   override def toMonitorContendedEnterEvent: MonitorContendedEnterEventInfoProfile = {
     assert(isMonitorContendedEnterEvent, "Event must be a monitor contended enter event!")
-    infoProducer.eventProducer.newMonitorContendedEnterEventInfoProfile(
+    infoProducer.eventProducer.newDefaultMonitorContendedEnterEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      monitorContendedEnterEvent = event.asInstanceOf[MonitorContendedEnterEvent]
-    )()
+      monitorContendedEnterEvent = event.asInstanceOf[MonitorContendedEnterEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -444,10 +460,11 @@ class PureEventInfoProfile(
    */
   override def toMonitorWaitedEvent: MonitorWaitedEventInfoProfile = {
     assert(isMonitorWaitedEvent, "Event must be a monitor waited event!")
-    infoProducer.eventProducer.newMonitorWaitedEventInfoProfile(
+    infoProducer.eventProducer.newDefaultMonitorWaitedEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      monitorWaitedEvent = event.asInstanceOf[MonitorWaitedEvent]
-    )()
+      monitorWaitedEvent = event.asInstanceOf[MonitorWaitedEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -458,10 +475,11 @@ class PureEventInfoProfile(
    */
   override def toMonitorWaitEvent: MonitorWaitEventInfoProfile = {
     assert(isMonitorWaitEvent, "Event must be a monitor wait event!")
-    infoProducer.eventProducer.newMonitorWaitEventInfoProfile(
+    infoProducer.eventProducer.newDefaultMonitorWaitEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      monitorWaitEvent = event.asInstanceOf[MonitorWaitEvent]
-    )()
+      monitorWaitEvent = event.asInstanceOf[MonitorWaitEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -472,10 +490,11 @@ class PureEventInfoProfile(
    */
   override def toStepEvent: StepEventInfoProfile = {
     assert(isStepEvent, "Event must be a step event!")
-    infoProducer.eventProducer.newStepEventInfoProfile(
+    infoProducer.eventProducer.newDefaultStepEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      stepEvent = event.asInstanceOf[StepEvent]
-    )()
+      stepEvent = event.asInstanceOf[StepEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -486,10 +505,11 @@ class PureEventInfoProfile(
    */
   override def toThreadDeathEvent: ThreadDeathEventInfoProfile = {
     assert(isThreadDeathEvent, "Event must be a thread death event!")
-    infoProducer.eventProducer.newThreadDeathEventInfoProfile(
+    infoProducer.eventProducer.newDefaultThreadDeathEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      threadDeathEvent = event.asInstanceOf[ThreadDeathEvent]
-    )()
+      threadDeathEvent = event.asInstanceOf[ThreadDeathEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -500,10 +520,11 @@ class PureEventInfoProfile(
    */
   override def toThreadStartEvent: ThreadStartEventInfoProfile = {
     assert(isThreadStartEvent, "Event must be a thread start event!")
-    infoProducer.eventProducer.newThreadStartEventInfoProfile(
+    infoProducer.eventProducer.newDefaultThreadStartEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      threadStartEvent = event.asInstanceOf[ThreadStartEvent]
-    )()
+      threadStartEvent = event.asInstanceOf[ThreadStartEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -514,9 +535,10 @@ class PureEventInfoProfile(
    */
   override def toVMDeathEvent: VMDeathEventInfoProfile = {
     assert(isVMDeathEvent, "Event must be a vm death event!")
-    infoProducer.eventProducer.newVMDeathEventInfoProfile(
+    infoProducer.eventProducer.newDefaultVMDeathEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      vmDeathEvent = event.asInstanceOf[VMDeathEvent]
+      vmDeathEvent = event.asInstanceOf[VMDeathEvent],
+      jdiArguments: _*
     )
   }
 
@@ -528,9 +550,10 @@ class PureEventInfoProfile(
    */
   override def toVMDisconnectEvent: VMDisconnectEventInfoProfile = {
     assert(isVMDisconnectEvent, "Event must be a vm disconnect event!")
-    infoProducer.eventProducer.newVMDisconnectEventInfoProfile(
+    infoProducer.eventProducer.newDefaultVMDisconnectEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      vmDisconnectEvent = event.asInstanceOf[VMDisconnectEvent]
+      vmDisconnectEvent = event.asInstanceOf[VMDisconnectEvent],
+      jdiArguments: _*
     )
   }
 
@@ -542,10 +565,11 @@ class PureEventInfoProfile(
    */
   override def toVMStartEvent: VMStartEventInfoProfile = {
     assert(isVMStartEvent, "Event must be a vm start event!")
-    infoProducer.eventProducer.newVMStartEventInfoProfile(
+    infoProducer.eventProducer.newDefaultVMStartEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      vmStartEvent = event.asInstanceOf[VMStartEvent]
-    )()
+      vmStartEvent = event.asInstanceOf[VMStartEvent],
+      jdiArguments: _*
+    )
   }
 
   /**
@@ -556,9 +580,10 @@ class PureEventInfoProfile(
    */
   override def toWatchpointEvent: WatchpointEventInfoProfile = {
     assert(isWatchpointEvent, "Event must be a watchpoint event!")
-    infoProducer.eventProducer.newWatchpointEventInfoProfile(
+    infoProducer.eventProducer.newDefaultWatchpointEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      watchpointEvent = event.asInstanceOf[WatchpointEvent]
-    )()
+      watchpointEvent = event.asInstanceOf[WatchpointEvent],
+      jdiArguments: _*
+    )
   }
 }

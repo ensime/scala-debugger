@@ -19,5 +19,12 @@ class PureInfoProducerProfileSpec extends test.ParallelMockFunSpec {
         actual should be(expected)
       }
     }
+
+    describe("#eventProducer") {
+      it("should be a singleton that contains the info producer as a parent") {
+        pureInfoProducerProfile.eventProducer.infoProducer should
+          be (pureInfoProducerProfile)
+      }
+    }
   }
 }
