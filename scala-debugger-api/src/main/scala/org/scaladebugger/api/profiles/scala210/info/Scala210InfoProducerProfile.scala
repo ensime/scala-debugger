@@ -25,7 +25,7 @@ class Scala210InfoProducerProfile extends PureInfoProducerProfile {
     field: Field,
     offsetIndex: Int
   )(
-    virtualMachine: VirtualMachine
+    virtualMachine: => VirtualMachine
   ): FieldVariableInfoProfile = new Scala210FieldInfoProfile(
     scalaVirtualMachine,
     this,
@@ -47,8 +47,8 @@ class Scala210InfoProducerProfile extends PureInfoProducerProfile {
     scalaVirtualMachine: ScalaVirtualMachine,
     objectReference: ObjectReference
   )(
-    virtualMachine: VirtualMachine,
-    referenceType: ReferenceType
+    virtualMachine: => VirtualMachine,
+    referenceType: => ReferenceType
   ): ObjectInfoProfile = new Scala210ObjectInfoProfile(
     scalaVirtualMachine,
     this,
