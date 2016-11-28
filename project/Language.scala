@@ -6,8 +6,8 @@ object Language {
   val settings = Seq(
     libraryDependencies ++= Seq(
       "org.parboiled" %% "parboiled" % "2.1.0",
-      "org.scalatest" %% "scalatest" % "3.0.0-M14" % "test,it",
-      "org.scalamock" %% "scalamock-scalatest-support" % "3.2.1" % "test,it"
+      "org.scalatest" %% "scalatest" % "3.0.0" % "test,it",
+      "org.scalamock" %% "scalamock-scalatest-support" % "3.3.0" % "test,it"
     )
   )
 }
