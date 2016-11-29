@@ -272,6 +272,31 @@ class PureEventInfoProducerProfile(
     _location = location
   )
 
+  override def newMonitorEventInfoProfile(
+    scalaVirtualMachine: ScalaVirtualMachine,
+    monitorEvent: MonitorEvent,
+    jdiArguments: Seq[JDIArgument]
+  )(
+    monitor: => ObjectReference,
+    monitorReferenceType: => ReferenceType,
+    virtualMachine: => VirtualMachine,
+    thread: => ThreadReference,
+    threadReferenceType: => ReferenceType,
+    location: => Location
+  ): MonitorEventInfoProfile = new PureMonitorEventInfoProfile(
+    scalaVirtualMachine = scalaVirtualMachine,
+    infoProducer = infoProducer,
+    monitorEvent = monitorEvent,
+    jdiArguments = jdiArguments
+  )(
+    _monitor = monitor,
+    _monitorReferenceType = monitorReferenceType,
+    _virtualMachine = virtualMachine,
+    _thread = thread,
+    _threadReferenceType = threadReferenceType,
+    _location = location
+  )
+
   override def newMonitorContendedEnteredEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorContendedEnteredEvent: MonitorContendedEnteredEvent,

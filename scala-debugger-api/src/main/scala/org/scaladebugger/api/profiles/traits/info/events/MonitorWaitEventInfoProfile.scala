@@ -7,7 +7,7 @@ import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, ThreadInfo
  * Represents the interface that needs to be implemented to provide
  * an abstraction over the JDI monitor wait event interface.
  */
-trait MonitorWaitEventInfoProfile extends LocatableEventInfoProfile {
+trait MonitorWaitEventInfoProfile extends MonitorEventInfoProfile {
   /**
    * Returns the JDI representation this profile instance wraps.
    *
@@ -20,7 +20,7 @@ trait MonitorWaitEventInfoProfile extends LocatableEventInfoProfile {
    *
    * @return The information profile about the monitor object
    */
-  def monitor: ObjectInfoProfile
+  override def monitor: ObjectInfoProfile
 
   /**
    * Returns the thread where the event occurred.

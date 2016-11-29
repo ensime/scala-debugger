@@ -423,6 +423,31 @@ class PureEventInfoProfile(
   }
 
   /**
+   * Returns the event as a monitor event.
+   *
+   * @return The monitor event profile wrapping the event
+   * @throws AssertionError If not a monitor event
+   */
+  override def toMonitorEvent: MonitorEventInfoProfile = {
+    assert(isMonitorEvent, "Event must be a monitor event!")
+    infoProducer.eventProducer.newDefaultMonitorEventInfoProfile(
+      scalaVirtualMachine = scalaVirtualMachine,
+      monitorEvent = newMonitorEvent(event.asInstanceOf[LocatableEvent]),
+      jdiArguments: _*
+    )
+  }
+
+  /**
+   * Creates a new instance of a monitor event from a locatable event.
+   *
+   * @param locatableEvent The locatable event to wrap in a monitor event
+   *
+   * @return The new monitor event instance
+   */
+  protected def newMonitorEvent(locatableEvent: LocatableEvent): MonitorEvent =
+    new MonitorEvent(locatableEvent)
+
+  /**
    * Returns the event as a monitor contended entered event.
    *
    * @return The monitor contended entered event profile wrapping the event

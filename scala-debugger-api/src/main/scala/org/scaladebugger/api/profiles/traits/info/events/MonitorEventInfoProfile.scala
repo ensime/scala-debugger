@@ -1,29 +1,31 @@
 package org.scaladebugger.api.profiles.traits.info.events
 
-import com.sun.jdi.event.MonitorContendedEnteredEvent
+import com.sun.jdi.event.LocatableEvent
 import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, ThreadInfoProfile}
 
 /**
  * Represents the interface that needs to be implemented to provide
- * an abstraction over the JDI montior contended entered event interface.
+ * an abstraction over the JDI monitor events.
  */
-trait MonitorContendedEnteredEventInfoProfile extends MonitorEventInfoProfile {
+trait MonitorEventInfoProfile extends LocatableEventInfoProfile {
   /**
    * Returns the JDI representation this profile instance wraps.
    *
-   * @return The JDI instance
+   * @return The JDI instance as a locatable event since there is
+   *         no abstraction between monitor events
    */
-  override def toJdiInstance: MonitorContendedEnteredEvent
+  override def toJdiInstance: LocatableEvent
 
   /**
-   * Returns the monitor that was entered.
+   * Returns the monitor associated with the event.
    *
    * @return The information profile about the monitor object
    */
-  override def monitor: ObjectInfoProfile
+  def monitor: ObjectInfoProfile
 
   /**
-   * Returns the thread where this event occurred.
+   * Returns the thread tied to the monitor object (typically where
+   * the event occurred).
    *
    * @return The information profile about the thread
    */

@@ -3,8 +3,8 @@ package org.scaladebugger.api.profiles.pure.info.events
 import com.sun.jdi._
 import com.sun.jdi.event.MonitorWaitEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
-import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitEventInfoProfile
-import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, ObjectInfoProfile, ThreadInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.{MonitorEvent, MonitorWaitEventInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -38,12 +38,14 @@ class PureMonitorWaitEventInfoProfile(
   _thread: => ThreadReference,
   _threadReferenceType: => ReferenceType,
   _location: => Location
-) extends PureLocatableEventInfoProfile(
+) extends PureMonitorEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,
-  locatableEvent = monitorWaitEvent,
+  monitorEvent = new MonitorEvent(monitorWaitEvent),
   jdiArguments = jdiArguments
 )(
+  _monitor = _monitor,
+  _monitorReferenceType = _monitorReferenceType,
   _virtualMachine = _virtualMachine,
   _thread = _thread,
   _threadReferenceType = _threadReferenceType,
@@ -89,32 +91,6 @@ class PureMonitorWaitEventInfoProfile(
    */
   override def toJdiInstance: MonitorWaitEvent =
     monitorWaitEvent
-
-  /**
-   * Returns the monitor that was enter.
-   *
-   * @return The information profile about the monitor object
-   */
-  override def monitor: ObjectInfoProfile = infoProducer.newObjectInfoProfile(
-    scalaVirtualMachine = scalaVirtualMachine,
-    objectReference =_monitor
-  )(
-    virtualMachine = _virtualMachine,
-    referenceType = _monitorReferenceType
-  )
-
-  /**
-   * Returns the thread associated with this event.
-   *
-   * @return The information profile about the thread
-   */
-  override def thread: ThreadInfoProfile = infoProducer.newThreadInfoProfile(
-    scalaVirtualMachine = scalaVirtualMachine,
-    threadReference = _thread
-  )(
-    virtualMachine = _virtualMachine,
-    referenceType = _threadReferenceType
-  )
 
   /**
    * Returns the number of milliseconds the thread will wait on the monitor.

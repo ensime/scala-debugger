@@ -1,23 +1,24 @@
 package org.scaladebugger.api.profiles.pure.info.events
 
 import com.sun.jdi._
-import com.sun.jdi.event.MonitorWaitedEvent
+import com.sun.jdi.event.LocatableEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
-import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
-import org.scaladebugger.api.profiles.traits.info.events.{MonitorEvent, MonitorWaitedEventInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.events.{LocatableEventInfoProfile, MonitorEvent, MonitorEventInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, ObjectInfoProfile, ThreadInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
- * Represents a pure implementation of a monitor waited event info
+ * Represents a pure implementation of a monitor event info
  * profile that adds no custom logic on top of the standard JDI.
  *
  * @param scalaVirtualMachine The high-level virtual machine containing the
  *                            array
  * @param infoProducer The producer of info-based profile instances
- * @param monitorWaitedEvent The monitor waited event to wrap in the profile
+ * @param monitorEvent The monitor contended entered event to
+ *                                     wrap in the profile
  * @param jdiArguments The request and event arguments tied to the provided
  *                     event
- * @param _monitor The object reference to the monitor being waited up
+ * @param _monitor The object reference to the monitor being entered
  * @param _monitorReferenceType The reference type of the monitor
  * @param _virtualMachine The low-level virtual machine where the event
  *                        originated
@@ -26,10 +27,10 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  *                             event originated
  * @param _location The location of the event occurrence
  */
-class PureMonitorWaitedEventInfoProfile(
+class PureMonitorEventInfoProfile(
   override val scalaVirtualMachine: ScalaVirtualMachine,
   override protected val infoProducer: InfoProducerProfile,
-  private val monitorWaitedEvent: MonitorWaitedEvent,
+  private val monitorEvent: MonitorEvent,
   private val jdiArguments: Seq[JDIArgument] = Nil
 )(
   _monitor: => ObjectReference,
@@ -38,19 +39,17 @@ class PureMonitorWaitedEventInfoProfile(
   _thread: => ThreadReference,
   _threadReferenceType: => ReferenceType,
   _location: => Location
-) extends PureMonitorEventInfoProfile(
+) extends PureLocatableEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,
-  monitorEvent = new MonitorEvent(monitorWaitedEvent),
+  locatableEvent = monitorEvent.locatableEvent,
   jdiArguments = jdiArguments
 )(
-  _monitor = _monitor,
-  _monitorReferenceType = _monitorReferenceType,
   _virtualMachine = _virtualMachine,
   _thread = _thread,
   _threadReferenceType = _threadReferenceType,
   _location = _location
-) with MonitorWaitedEventInfoProfile {
+) with MonitorEventInfoProfile {
   /**
    * Returns whether or not this info profile represents the low-level Java
    * implementation.
@@ -68,11 +67,11 @@ class PureMonitorWaitedEventInfoProfile(
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  override def toJavaInfo: MonitorWaitedEventInfoProfile = {
+  override def toJavaInfo: LocatableEventInfoProfile = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newMonitorWaitedEventInfoProfile(
+    jep.newMonitorEventInfoProfile(
       scalaVirtualMachine = scalaVirtualMachine,
-      monitorWaitedEvent = monitorWaitedEvent,
+      monitorEvent = monitorEvent,
       jdiArguments = jdiArguments
     )(
       monitor = _monitor,
@@ -89,13 +88,31 @@ class PureMonitorWaitedEventInfoProfile(
    *
    * @return The JDI instance
    */
-  override def toJdiInstance: MonitorWaitedEvent =
-    monitorWaitedEvent
+  override def toJdiInstance: LocatableEvent = monitorEvent.locatableEvent
 
   /**
-   * Returns whether or not the wait has timed out or been interrupted.
+   * Returns the monitor associated with this event.
    *
-   * @return True if timed out or interrupted, otherwise false
+   * @return The information profile about the monitor object
    */
-  override def timedout: Boolean = monitorWaitedEvent.timedout()
+  override def monitor: ObjectInfoProfile = infoProducer.newObjectInfoProfile(
+    scalaVirtualMachine = scalaVirtualMachine,
+    objectReference = _monitor
+  )(
+    virtualMachine = _virtualMachine,
+    referenceType = _monitorReferenceType
+  )
+
+  /**
+   * Returns the thread associated with this event.
+   *
+   * @return The information profile about the thread
+   */
+  override def thread: ThreadInfoProfile = infoProducer.newThreadInfoProfile(
+    scalaVirtualMachine = scalaVirtualMachine,
+    threadReference = _thread
+  )(
+    virtualMachine = _virtualMachine,
+    referenceType = _threadReferenceType
+  )
 }

@@ -973,6 +973,49 @@ class PureEventInfoProfileSpec extends test.ParallelMockFunSpec {
       }
     }
 
+    describe("#toMonitorEvent") {
+      it("should throw an assertion error if the event does not inherit from a monitor event") {
+        val mockEvent = mock[Event]
+        val pureEventInfoProfile = new TestPureEventInfoProfile[Event](
+          event = mockEvent
+        )
+
+        an [AssertionError] should be thrownBy pureEventInfoProfile.toMonitorEvent
+      }
+
+      it("should return a new copy of MonitorEventProfile using the event producer") {
+        val expected = mock[MonitorEventInfoProfile]
+
+        // Set up our event (a real monitor event) to be wrapped in our pseudo
+        // monitor event class
+        val mockMonitorEvent = mock[MonitorWaitEvent]
+        val monitorEvent = new MonitorEvent(mockMonitorEvent)
+        val pureEventInfoProfile = new TestPureEventInfoProfile[MonitorEvent](
+          event = mockMonitorEvent
+        ) {
+          override protected def newMonitorEvent(
+            locatableEvent: LocatableEvent
+          ): MonitorEvent = monitorEvent
+        }
+
+        // Acquires access to the event info producer
+        val mockEventInfoProducer = mock[EventInfoProducerProfile]
+        (mockInfoProducer.eventProducer _).expects()
+          .returning(mockEventInfoProducer).once()
+
+        // Creates a new instance of the event info using defaults
+        (mockEventInfoProducer.newDefaultMonitorEventInfoProfile _).expects(
+          mockScalaVirtualMachine,
+          monitorEvent,
+          mockJdiArguments
+        ).returning(expected).once()
+
+        val actual = pureEventInfoProfile.toMonitorEvent
+
+        actual should be (expected)
+      }
+    }
+
     describe("#toMonitorContendedEnteredEvent") {
       it("should throw an assertion error if the event does not inherit from MonitorContendedEnteredEvent") {
         val mockEvent = mock[Event]

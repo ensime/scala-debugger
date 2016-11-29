@@ -69,6 +69,31 @@ trait EventInfoProducerProfile extends JavaInfoProfile {
   ): LocatableEventInfoProfile
 
   /** Fills in additional properties with default values. */
+  def newDefaultMonitorEventInfoProfile(
+    scalaVirtualMachine: ScalaVirtualMachine,
+    monitorEvent: MonitorEvent,
+    jdiArguments: JDIArgument*
+  ): MonitorEventInfoProfile = newMonitorEventInfoProfile(
+    scalaVirtualMachine = scalaVirtualMachine,
+    monitorEvent = monitorEvent,
+    jdiArguments = jdiArguments
+  )()
+
+  /** Creates a new instance of the monitor contended entered event profile. */
+  def newMonitorEventInfoProfile(
+    scalaVirtualMachine: ScalaVirtualMachine,
+    monitorEvent: MonitorEvent,
+    jdiArguments: Seq[JDIArgument]
+  )(
+    monitor: => ObjectReference = monitorEvent.monitor(),
+    monitorReferenceType: => ReferenceType = monitorEvent.monitor().referenceType(),
+    virtualMachine: => VirtualMachine = monitorEvent.virtualMachine(),
+    thread: => ThreadReference = monitorEvent.thread(),
+    threadReferenceType: => ReferenceType = monitorEvent.thread().referenceType(),
+    location: => Location = monitorEvent.location()
+  ): MonitorEventInfoProfile
+
+  /** Fills in additional properties with default values. */
   def newDefaultWatchpointEventInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     watchpointEvent: WatchpointEvent,

@@ -1,10 +1,10 @@
 package org.scaladebugger.api.profiles.pure.info.events
 
-import com.sun.jdi.event.MonitorContendedEnteredEvent
 import com.sun.jdi._
+import com.sun.jdi.event.MonitorContendedEnteredEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
-import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, ObjectInfoProfile, ThreadInfoProfile}
-import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnteredEventInfoProfile
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.{MonitorContendedEnteredEventInfoProfile, MonitorEvent}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -39,12 +39,14 @@ class PureMonitorContendedEnteredEventInfoProfile(
   _thread: => ThreadReference,
   _threadReferenceType: => ReferenceType,
   _location: => Location
-) extends PureLocatableEventInfoProfile(
+) extends PureMonitorEventInfoProfile(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,
-  locatableEvent = monitorContendedEnteredEvent,
+  monitorEvent = new MonitorEvent(monitorContendedEnteredEvent),
   jdiArguments = jdiArguments
 )(
+  _monitor = _monitor,
+  _monitorReferenceType = _monitorReferenceType,
   _virtualMachine = _virtualMachine,
   _thread = _thread,
   _threadReferenceType = _threadReferenceType,
@@ -90,30 +92,4 @@ class PureMonitorContendedEnteredEventInfoProfile(
    */
   override def toJdiInstance: MonitorContendedEnteredEvent =
     monitorContendedEnteredEvent
-
-  /**
-   * Returns the monitor that was entered.
-   *
-   * @return The information profile about the monitor object
-   */
-  override def monitor: ObjectInfoProfile = infoProducer.newObjectInfoProfile(
-    scalaVirtualMachine = scalaVirtualMachine,
-    objectReference =_monitor
-  )(
-    virtualMachine = _virtualMachine,
-    referenceType = _monitorReferenceType
-  )
-
-  /**
-   * Returns the thread associated with this event.
-   *
-   * @return The information profile about the thread
-   */
-  override def thread: ThreadInfoProfile = infoProducer.newThreadInfoProfile(
-    scalaVirtualMachine = scalaVirtualMachine,
-    threadReference = _thread
-  )(
-    virtualMachine = _virtualMachine,
-    referenceType = _threadReferenceType
-  )
 }

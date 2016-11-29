@@ -116,6 +116,17 @@ trait EventInfoProfile extends CommonInfoProfile {
   def isModificationWatchpointEvent: Boolean
 
   /**
+   * Returns whether or not this event represents any
+   * monitor event.
+   *
+   * @return True if any monitor event, otherwise false
+   */
+  def isMonitorEvent: Boolean = {
+    isMonitorContendedEnteredEvent || isMonitorContendedEnterEvent ||
+    isMonitorWaitedEvent || isMonitorWaitEvent
+  }
+
+  /**
    * Returns whether or not this event represents a
    * monitor contended entered event.
    *
@@ -366,6 +377,25 @@ trait EventInfoProfile extends CommonInfoProfile {
    */
   @throws[AssertionError]
   def toModificationWatchpointEvent: ModificationWatchpointEventInfoProfile
+
+  /**
+   * Returns the event as a monitor event.
+   *
+   * @return Success containing the monitor event profile wrapping
+   *         the event, otherwise a failure
+   */
+  def tryToMonitorEvent: Try[MonitorEventInfoProfile] = {
+    Try(toMonitorEvent)
+  }
+
+  /**
+   * Returns the event as a monitor event.
+   *
+   * @return The monitor event profile wrapping the event
+   * @throws AssertionError If not a monitor event
+   */
+  @throws[AssertionError]
+  def toMonitorEvent: MonitorEventInfoProfile
 
   /**
    * Returns the event as a monitor contended entered event.
@@ -621,6 +651,8 @@ trait EventInfoProfile extends CommonInfoProfile {
       this.toVMDisconnectEvent
     else if (this.isVMStartEvent)
       this.toVMStartEvent
+    else if (this.isMonitorEvent)
+      this.toMonitorEvent
     else if (this.isWatchpointEvent)
       this.toWatchpointEvent
     else if (this.isLocatableEvent)
