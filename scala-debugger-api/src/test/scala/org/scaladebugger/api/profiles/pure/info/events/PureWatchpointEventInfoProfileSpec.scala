@@ -1,12 +1,12 @@
 package org.scaladebugger.api.profiles.pure.info.events
 
-import com.sun.jdi.event._
 import com.sun.jdi._
+import com.sun.jdi.event._
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.JDIEventArgument
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
-import org.scaladebugger.api.profiles.traits.info.events._
 import org.scaladebugger.api.profiles.traits.info._
+import org.scaladebugger.api.profiles.traits.info.events._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 class PureWatchpointEventInfoProfileSpec extends test.ParallelMockFunSpec {

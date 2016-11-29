@@ -5,14 +5,14 @@ import com.sun.jdi.{Location, ReferenceType, ThreadReference, VirtualMachine}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.JDIEventArgument
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.profiles.traits.info.events._
-import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, LocationInfoProfile, ThreadInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
-class PureLocatableEventInfoProfileSpec extends test.ParallelMockFunSpec {
+class PureBreakpointEventInfoProfileSpec extends test.ParallelMockFunSpec {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockInfoProducer = mock[InfoProducerProfile]
-  private val mockLocatableEvent = mock[LocatableEvent]
+  private val mockBreakpointEvent = mock[BreakpointEvent]
 
   private val mockJdiRequestArguments = Seq(mock[JDIRequestArgument])
   private val mockJdiEventArguments = Seq(mock[JDIEventArgument])
@@ -24,10 +24,10 @@ class PureLocatableEventInfoProfileSpec extends test.ParallelMockFunSpec {
   private val mockThreadReferenceType = mock[ReferenceType]
   private val mockLocation = mock[Location]
 
-  private val pureLocatableEventInfoProfile = new PureLocatableEventInfoProfile(
+  private val pureBreakpointEventInfoProfile = new PureBreakpointEventInfoProfile(
     scalaVirtualMachine = mockScalaVirtualMachine,
     infoProducer = mockInfoProducer,
-    locatableEvent = mockLocatableEvent,
+    breakpointEvent = mockBreakpointEvent,
     jdiArguments = mockJdiArguments
   )(
     _virtualMachine = mockVirtualMachine,
@@ -36,10 +36,10 @@ class PureLocatableEventInfoProfileSpec extends test.ParallelMockFunSpec {
     _location = mockLocation
   )
 
-  describe("PureLocatableEventInfoProfile") {
+  describe("PureBreakpointEventInfoProfile") {
     describe("#toJavaInfo") {
       it("should return a new instance of the Java profile representation") {
-        val expected = mock[LocatableEventInfoProfile]
+        val expected = mock[BreakpointEventInfoProfile]
 
         // Event info producer will be generated in its Java form
         val mockEventInfoProducer = mock[EventInfoProducerProfile]
@@ -51,9 +51,9 @@ class PureLocatableEventInfoProfileSpec extends test.ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newLocatableEventInfoProfile(
+        (mockEventInfoProducer.newBreakpointEventInfoProfile(
           _: ScalaVirtualMachine,
-          _: LocatableEvent,
+          _: BreakpointEvent,
           _: Seq[JDIArgument]
         )(
           _: VirtualMachine,
@@ -62,12 +62,12 @@ class PureLocatableEventInfoProfileSpec extends test.ParallelMockFunSpec {
           _: Location
         )).expects(
           mockScalaVirtualMachine,
-          mockLocatableEvent,
+          mockBreakpointEvent,
           mockJdiArguments,
           *, *, *, *
         ).returning(expected).once()
 
-        val actual = pureLocatableEventInfoProfile.toJavaInfo
+        val actual = pureBreakpointEventInfoProfile.toJavaInfo
 
         actual should be (expected)
       }
@@ -77,7 +77,7 @@ class PureLocatableEventInfoProfileSpec extends test.ParallelMockFunSpec {
       it("should return true") {
         val expected = true
 
-        val actual = pureLocatableEventInfoProfile.isJavaInfo
+        val actual = pureBreakpointEventInfoProfile.isJavaInfo
 
         actual should be (expected)
       }
@@ -85,57 +85,9 @@ class PureLocatableEventInfoProfileSpec extends test.ParallelMockFunSpec {
 
     describe("#toJdiInstance") {
       it("should return the JDI instance this profile instance represents") {
-        val expected = mockLocatableEvent
+        val expected = mockBreakpointEvent
 
-        val actual = pureLocatableEventInfoProfile.toJdiInstance
-
-        actual should be (expected)
-      }
-    }
-
-    describe("#thread") {
-      it("should return a new instance of the thread info profile") {
-        val expected = mock[ThreadInfoProfile]
-
-        // NOTE: Cannot validate second set of args because they are
-        //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newThreadInfoProfile(
-          _: ScalaVirtualMachine,
-          _: ThreadReference
-        )(
-          _: VirtualMachine,
-          _: ReferenceType
-        )).expects(
-          mockScalaVirtualMachine,
-          mockThreadReference,
-          *, *
-        ).returning(expected).once()
-
-        val actual = pureLocatableEventInfoProfile.thread
-
-        actual should be (expected)
-      }
-    }
-
-    describe("#location") {
-      it("should return a new instance of the location info profile") {
-        val expected = mock[LocationInfoProfile]
-
-        (mockInfoProducer.newLocationInfoProfile _)
-          .expects(mockScalaVirtualMachine, mockLocation)
-          .returning(expected).once()
-
-        val actual = pureLocatableEventInfoProfile.location
-
-        actual should be (expected)
-      }
-    }
-
-    describe("#toString") {
-      it("should return the string representation of the JDI event object") {
-        val expected = mockLocatableEvent.toString // NOTE: Cannot mock toString method
-
-        val actual = pureLocatableEventInfoProfile.toString
+        val actual = pureBreakpointEventInfoProfile.toJdiInstance
 
         actual should be (expected)
       }
