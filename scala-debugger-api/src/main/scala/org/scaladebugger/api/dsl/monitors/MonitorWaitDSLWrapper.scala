@@ -4,7 +4,7 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitEventInfoProfile
-import org.scaladebugger.api.profiles.traits.monitors.MonitorWaitProfile
+import org.scaladebugger.api.profiles.traits.requests.monitors.MonitorWaitProfile
 
 import scala.util.Try
 

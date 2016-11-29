@@ -2,17 +2,17 @@ package org.scaladebugger.api.profiles.pure
 //import acyclic.file
 import com.sun.jdi.VirtualMachine
 import org.scaladebugger.api.lowlevel.ManagerContainer
-import org.scaladebugger.api.profiles.pure.breakpoints.PureBreakpointProfile
-import org.scaladebugger.api.profiles.pure.classes.{PureClassPrepareProfile, PureClassUnloadProfile}
-import org.scaladebugger.api.profiles.pure.events.PureEventListenerProfile
-import org.scaladebugger.api.profiles.pure.exceptions.PureExceptionProfile
+import org.scaladebugger.api.profiles.pure.requests.breakpoints.PureBreakpointProfile
+import org.scaladebugger.api.profiles.pure.requests.classes.{PureClassPrepareProfile, PureClassUnloadProfile}
+import org.scaladebugger.api.profiles.pure.requests.events.PureEventListenerProfile
+import org.scaladebugger.api.profiles.pure.requests.exceptions.PureExceptionProfile
 import org.scaladebugger.api.profiles.pure.info.{PureCreateInfoProfile, PureGrabInfoProfile, PureInfoProducerProfile, PureMiscInfoProfile}
-import org.scaladebugger.api.profiles.pure.methods.{PureMethodEntryProfile, PureMethodExitProfile}
-import org.scaladebugger.api.profiles.pure.monitors.{PureMonitorContendedEnterProfile, PureMonitorContendedEnteredProfile, PureMonitorWaitProfile, PureMonitorWaitedProfile}
-import org.scaladebugger.api.profiles.pure.steps.PureStepProfile
-import org.scaladebugger.api.profiles.pure.threads.{PureThreadDeathProfile, PureThreadStartProfile}
-import org.scaladebugger.api.profiles.pure.vm.{PureVMDeathProfile, PureVMDisconnectProfile, PureVMStartProfile}
-import org.scaladebugger.api.profiles.pure.watchpoints.{PureAccessWatchpointProfile, PureModificationWatchpointProfile}
+import org.scaladebugger.api.profiles.pure.requests.methods.{PureMethodEntryProfile, PureMethodExitProfile}
+import org.scaladebugger.api.profiles.pure.requests.monitors.{PureMonitorContendedEnterProfile, PureMonitorContendedEnteredProfile, PureMonitorWaitProfile, PureMonitorWaitedProfile}
+import org.scaladebugger.api.profiles.pure.requests.steps.PureStepProfile
+import org.scaladebugger.api.profiles.pure.requests.threads.{PureThreadDeathProfile, PureThreadStartProfile}
+import org.scaladebugger.api.profiles.pure.requests.vm.{PureVMDeathProfile, PureVMDisconnectProfile, PureVMStartProfile}
+import org.scaladebugger.api.profiles.pure.requests.watchpoints.{PureAccessWatchpointProfile, PureModificationWatchpointProfile}
 import org.scaladebugger.api.profiles.traits.ManagerContainerDebugProfile
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine

@@ -4,7 +4,7 @@ import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnterEventInfoProfile
-import org.scaladebugger.api.profiles.traits.monitors.MonitorContendedEnterProfile
+import org.scaladebugger.api.profiles.traits.requests.monitors.MonitorContendedEnterProfile
 
 import scala.util.Success
 

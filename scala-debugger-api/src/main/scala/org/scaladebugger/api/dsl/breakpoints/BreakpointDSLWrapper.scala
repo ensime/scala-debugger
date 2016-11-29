@@ -4,7 +4,7 @@ import acyclic.file
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.breakpoints.BreakpointProfile
+import org.scaladebugger.api.profiles.traits.requests.breakpoints.BreakpointProfile
 import org.scaladebugger.api.profiles.traits.info.events.BreakpointEventInfoProfile
 
 import scala.util.Try

@@ -3,7 +3,7 @@ package org.scaladebugger.api.dsl.exceptions
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.exceptions.ExceptionProfile
+import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionProfile
 import org.scaladebugger.api.profiles.traits.info.events.ExceptionEventInfoProfile
 
 import scala.util.Try

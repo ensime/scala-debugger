@@ -4,7 +4,7 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.VMDeathEventInfoProfile
-import org.scaladebugger.api.profiles.traits.vm.VMDeathProfile
+import org.scaladebugger.api.profiles.traits.requests.vm.VMDeathProfile
 
 import scala.util.Try
 

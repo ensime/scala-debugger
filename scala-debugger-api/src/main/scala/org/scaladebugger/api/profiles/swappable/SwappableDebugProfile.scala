@@ -2,17 +2,17 @@ package org.scaladebugger.api.profiles.swappable
 //import acyclic.file
 
 import org.scaladebugger.api.profiles.ProfileManager
-import org.scaladebugger.api.profiles.swappable.breakpoints.SwappableBreakpointProfile
-import org.scaladebugger.api.profiles.swappable.classes.{SwappableClassPrepareProfile, SwappableClassUnloadProfile}
-import org.scaladebugger.api.profiles.swappable.events.SwappableEventListenerProfile
-import org.scaladebugger.api.profiles.swappable.exceptions.SwappableExceptionProfile
+import org.scaladebugger.api.profiles.swappable.requests.breakpoints.SwappableBreakpointProfile
+import org.scaladebugger.api.profiles.swappable.requests.classes.{SwappableClassPrepareProfile, SwappableClassUnloadProfile}
+import org.scaladebugger.api.profiles.swappable.requests.events.SwappableEventListenerProfile
+import org.scaladebugger.api.profiles.swappable.requests.exceptions.SwappableExceptionProfile
 import org.scaladebugger.api.profiles.swappable.info.{SwappableCreateInfoProfile, SwappableGrabInfoProfile, SwappableMiscInfoProfile}
-import org.scaladebugger.api.profiles.swappable.methods.{SwappableMethodEntryProfile, SwappableMethodExitProfile}
-import org.scaladebugger.api.profiles.swappable.monitors.{SwappableMonitorContendedEnterProfile, SwappableMonitorContendedEnteredProfile, SwappableMonitorWaitProfile, SwappableMonitorWaitedProfile}
-import org.scaladebugger.api.profiles.swappable.steps.SwappableStepProfile
-import org.scaladebugger.api.profiles.swappable.threads.{SwappableThreadDeathProfile, SwappableThreadStartProfile}
-import org.scaladebugger.api.profiles.swappable.vm.{SwappableVMDeathProfile, SwappableVMDisconnectProfile, SwappableVMStartProfile}
-import org.scaladebugger.api.profiles.swappable.watchpoints.{SwappableAccessWatchpointProfile, SwappableModificationWatchpointProfile}
+import org.scaladebugger.api.profiles.swappable.requests.methods.{SwappableMethodEntryProfile, SwappableMethodExitProfile}
+import org.scaladebugger.api.profiles.swappable.requests.monitors.{SwappableMonitorContendedEnterProfile, SwappableMonitorContendedEnteredProfile, SwappableMonitorWaitProfile, SwappableMonitorWaitedProfile}
+import org.scaladebugger.api.profiles.swappable.requests.steps.SwappableStepProfile
+import org.scaladebugger.api.profiles.swappable.requests.threads.{SwappableThreadDeathProfile, SwappableThreadStartProfile}
+import org.scaladebugger.api.profiles.swappable.requests.vm.{SwappableVMDeathProfile, SwappableVMDisconnectProfile, SwappableVMStartProfile}
+import org.scaladebugger.api.profiles.swappable.requests.watchpoints.{SwappableAccessWatchpointProfile, SwappableModificationWatchpointProfile}
 import org.scaladebugger.api.profiles.traits.DebugProfile
 
 /**

@@ -5,7 +5,7 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.events.EventListenerProfile
+import org.scaladebugger.api.profiles.traits.requests.events.EventListenerProfile
 import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
 
 import scala.util.Try

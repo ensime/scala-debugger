@@ -3,7 +3,7 @@ package org.scaladebugger.api.dsl.classes
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.classes.ClassPrepareProfile
+import org.scaladebugger.api.profiles.traits.requests.classes.ClassPrepareProfile
 import org.scaladebugger.api.profiles.traits.info.events.ClassPrepareEventInfoProfile
 
 import scala.util.Try

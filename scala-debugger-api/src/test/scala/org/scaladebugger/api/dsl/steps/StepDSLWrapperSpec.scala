@@ -5,7 +5,7 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
 import org.scaladebugger.api.profiles.traits.info.events.StepEventInfoProfile
-import org.scaladebugger.api.profiles.traits.steps.StepProfile
+import org.scaladebugger.api.profiles.traits.requests.steps.StepProfile
 
 import scala.util.Success
 

@@ -4,7 +4,7 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.MethodEntryEventInfoProfile
-import org.scaladebugger.api.profiles.traits.methods.MethodEntryProfile
+import org.scaladebugger.api.profiles.traits.requests.methods.MethodEntryProfile
 
 import scala.util.Try
 

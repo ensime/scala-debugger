@@ -1,17 +1,17 @@
 package org.scaladebugger.api.profiles.traits
 //import acyclic.file
 
-import org.scaladebugger.api.profiles.traits.breakpoints.BreakpointProfile
-import org.scaladebugger.api.profiles.traits.classes.{ClassPrepareProfile, ClassUnloadProfile}
-import org.scaladebugger.api.profiles.traits.events.EventListenerProfile
-import org.scaladebugger.api.profiles.traits.exceptions.ExceptionProfile
+import org.scaladebugger.api.profiles.traits.requests.breakpoints.BreakpointProfile
+import org.scaladebugger.api.profiles.traits.requests.classes.{ClassPrepareProfile, ClassUnloadProfile}
+import org.scaladebugger.api.profiles.traits.requests.events.EventListenerProfile
+import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionProfile
 import org.scaladebugger.api.profiles.traits.info.{CreateInfoProfile, GrabInfoProfile, MiscInfoProfile}
-import org.scaladebugger.api.profiles.traits.methods.{MethodEntryProfile, MethodExitProfile}
-import org.scaladebugger.api.profiles.traits.monitors.{MonitorContendedEnterProfile, MonitorContendedEnteredProfile, MonitorWaitProfile, MonitorWaitedProfile}
-import org.scaladebugger.api.profiles.traits.steps.StepProfile
-import org.scaladebugger.api.profiles.traits.threads.{ThreadDeathProfile, ThreadStartProfile}
-import org.scaladebugger.api.profiles.traits.vm.{VMDeathProfile, VMDisconnectProfile, VMStartProfile}
-import org.scaladebugger.api.profiles.traits.watchpoints.{AccessWatchpointProfile, ModificationWatchpointProfile}
+import org.scaladebugger.api.profiles.traits.requests.methods.{MethodEntryProfile, MethodExitProfile}
+import org.scaladebugger.api.profiles.traits.requests.monitors.{MonitorContendedEnterProfile, MonitorContendedEnteredProfile, MonitorWaitProfile, MonitorWaitedProfile}
+import org.scaladebugger.api.profiles.traits.requests.steps.StepProfile
+import org.scaladebugger.api.profiles.traits.requests.threads.{ThreadDeathProfile, ThreadStartProfile}
+import org.scaladebugger.api.profiles.traits.requests.vm.{VMDeathProfile, VMDisconnectProfile, VMStartProfile}
+import org.scaladebugger.api.profiles.traits.requests.watchpoints.{AccessWatchpointProfile, ModificationWatchpointProfile}
 
 /**
  * Represents the interface that needs to be implemented to provide

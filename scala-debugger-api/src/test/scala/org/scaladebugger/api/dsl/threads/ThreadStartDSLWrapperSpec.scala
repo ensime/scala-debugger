@@ -4,7 +4,7 @@ import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.ThreadStartEventInfoProfile
-import org.scaladebugger.api.profiles.traits.threads.ThreadStartProfile
+import org.scaladebugger.api.profiles.traits.requests.threads.ThreadStartProfile
 
 import scala.util.Success
 
