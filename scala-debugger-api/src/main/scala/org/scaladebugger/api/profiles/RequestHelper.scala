@@ -82,12 +82,17 @@ class RequestHelper[
    * the same arguments. The memoized result will be thrown out if the
    * underlying request storage indicates that the request has been removed.
    *
-   * Takes the custom request arguments as well as the JDI request argument
-   * collection as input.
-   *
+   * @param requestArgs The custom request arguments
+   * @param jdiRequestArgs The JDI request arguments
    * @return Success containing the event id, otherwise a failure
    */
-  lazy val newRequest = {
+  def newRequest(
+    requestArgs: RequestArgs,
+    jdiRequestArgs: Seq[JDIRequestArgument]
+  ) = newRequestImpl(requestArgs, jdiRequestArgs)
+
+  /** Represents the internal implementation of newRequest. */
+  private lazy val newRequestImpl = {
     type Input = (RequestArgs, Seq[JDIRequestArgument])
     type Key = (RequestArgs, Seq[JDIRequestArgument])
     type Output = Try[String]

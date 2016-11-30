@@ -30,17 +30,25 @@ trait PureAccessWatchpointProfile extends AccessWatchpointProfile {
 
   private lazy val eventProducer = infoProducer.eventProducer
 
-  // Define types for request helper
-  // E: Event Type
-  // EI: Event Info Type
-  // RequestArgs: (Class Name, Field Name, JDI Request Args)
-  // CounterKey: (Class Name, Field Name, JDI Request Args)
-  private type E = AccessWatchpointEvent
-  private type EI = AccessWatchpointEventInfoProfile
-  private type RequestArgs = (String, String, Seq[JDIRequestArgument])
-  private type CounterKey = (String, String, Seq[JDIRequestArgument])
+  /** Represents helper utility to create/manage requests. */
+  private lazy val requestHelper = newAccessWatchpointRequestHelper()
 
-  private lazy val requestHelper = {
+  /**
+   * Constructs a new request helper for access watchpoint.
+   *
+   * @return The new request helper
+   */
+  protected def newAccessWatchpointRequestHelper() = {
+    // Define types for request helper
+    // E: Event Type
+    // EI: Event Info Type
+    // RequestArgs: (Class Name, Field Name, JDI Request Args)
+    // CounterKey: (Class Name, Field Name, JDI Request Args)
+    type E = AccessWatchpointEvent
+    type EI = AccessWatchpointEventInfoProfile
+    type RequestArgs = (String, String, Seq[JDIRequestArgument])
+    type CounterKey = (String, String, Seq[JDIRequestArgument])
+
     new RequestHelper[E, EI, RequestArgs, CounterKey](
       scalaVirtualMachine = scalaVirtualMachine,
       eventManager = eventManager,
@@ -98,7 +106,7 @@ trait PureAccessWatchpointProfile extends AccessWatchpointProfile {
   ): Try[IdentityPipeline[AccessWatchpointEventAndData]] = {
     val JDIArgumentGroup(rArgs, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
 
-    val requestArgs: RequestArgs = (className, fieldName, rArgs)
+    val requestArgs = (className, fieldName, rArgs)
     requestHelper.newRequest(requestArgs, rArgs)
       .flatMap(id => requestHelper.newEventPipeline(id, eArgs, requestArgs))
   }
