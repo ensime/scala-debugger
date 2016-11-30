@@ -164,9 +164,9 @@ class RequestHelperSpec extends test.ParallelMockFunSpec {
           // Retrieve any request info to extract extra arguments
           val mockRequestInfo = mock[RequestInfo]
           mockRetrieveRequestInfo.expects(requestId)
-            .returning(Some(mockRequestInfo)).twice()
+            .returning(Some(mockRequestInfo)).once()
           (mockRequestInfo.extraArguments _).expects()
-            .returning(mockJdiRequestArgs).twice()
+            .returning(mockJdiRequestArgs).once()
 
           // Create base event pipeline (raw event coming from JDI)
           val eventPipeline = Pipeline.newPipeline(
@@ -175,41 +175,120 @@ class RequestHelperSpec extends test.ParallelMockFunSpec {
           )
           (mockEventManager.addEventDataStream _)
             .expects(testEventType, updatedJdiEventArgs)
-            .returning(eventPipeline).twice()
+            .returning(eventPipeline).once()
 
           // Transform into event info pipeline (added as child to event pipeline)
           requestHelper.newEventPipeline(
             requestId,
             mockJdiEventArgs,
             counterKey
-          ) should not be a [Failure[_]]
+          )
 
           // Validate that each event gets transformed into the event info
           mockNewEventInfo.expects(
             mockScalaVirtualMachine,
             mockEvent,
-            mockJdiRequestArgs ++updatedJdiEventArgs
+            mockJdiRequestArgs ++ updatedJdiEventArgs
           ).returning(mockEventInfo).once()
 
           // Process a new event
-          val (eventInfo, dataResults) = eventPipeline.process(
+          val (event, dataResults) = eventPipeline.process(
             (mockEvent, mockJdiEventDataResults)
           ).get.head
 
-          // TODO: eventInfo is not equal to mockEventInfo!
-          //       Because of noop() call? Or something else?
-          eventInfo should be (mockEventInfo)
+          event should be (mockEvent)
           dataResults should be (mockJdiEventDataResults)
         }
       }
 
-      describe("when closing the generated pipeline") {
+      describe("when closing the generated pipelines for a specific request") {
         it("should remove the underlying request if all pipelines are closed") {
-          fail()
+          val totalPipelines = 3
+          val requestId = UUID.randomUUID().toString
+          val mockJdiRequestArgs = Seq(mock[JDIRequestArgument])
+          val mockJdiEventArgs = Seq(mock[JDIEventArgument])
+          val counterKey = ("test string", 999)
+
+          // Retrieve any request info to extract extra arguments
+          val mockRequestInfo = mock[RequestInfo]
+          mockRetrieveRequestInfo.expects(*)
+            .returning(Some(mockRequestInfo))
+            .repeated(totalPipelines).times()
+          (mockRequestInfo.extraArguments _).expects()
+            .returning(mockJdiRequestArgs)
+            .repeated(totalPipelines).times()
+
+          // Create N new pipelines
+          val pipelines = (1 to totalPipelines).map(_ => {
+            // Create base event pipeline (raw event coming from JDI)
+            val eventPipeline = Pipeline.newPipeline(
+              classOf[(E, Seq[JDIEventDataResult])],
+              Map(EventManager.EventHandlerIdMetadataField -> requestId)
+            )
+            (mockEventManager.addEventDataStream _).expects(*, *)
+              .returning(eventPipeline)
+              .repeated(totalPipelines).once()
+
+            requestHelper.newEventPipeline(
+              requestId,
+              mockJdiEventArgs,
+              counterKey
+            ).get
+          })
+
+          // Expect removing the request and removing the underlying event
+          // handlers for the N pipelines
+          mockRemoveRequestById.expects(requestId).once()
+          (mockEventManager.removeEventHandler _).expects(requestId)
+            .repeated(totalPipelines).times()
+
+          // Close the N pipelines
+          pipelines.foreach(_.close())
         }
 
         it("should remove the underlying request if close data says to do so") {
-          fail()
+          val totalPipelines = 3
+          val requestId = UUID.randomUUID().toString
+          val mockJdiRequestArgs = Seq(mock[JDIRequestArgument])
+          val mockJdiEventArgs = Seq(mock[JDIEventArgument])
+          val counterKey = ("test string", 999)
+
+          // Retrieve any request info to extract extra arguments
+          val mockRequestInfo = mock[RequestInfo]
+          mockRetrieveRequestInfo.expects(*)
+            .returning(Some(mockRequestInfo))
+            .repeated(totalPipelines).times()
+          (mockRequestInfo.extraArguments _).expects()
+            .returning(mockJdiRequestArgs)
+            .repeated(totalPipelines).times()
+
+          // Create N new pipelines
+          val pipelines = (1 to totalPipelines).map(_ => {
+            // Create base event pipeline (raw event coming from JDI)
+            val eventPipeline = Pipeline.newPipeline(
+              classOf[(E, Seq[JDIEventDataResult])],
+              Map(EventManager.EventHandlerIdMetadataField -> requestId)
+            )
+            (mockEventManager.addEventDataStream _).expects(*, *)
+              .returning(eventPipeline)
+              .repeated(totalPipelines).once()
+
+            requestHelper.newEventPipeline(
+              requestId,
+              mockJdiEventArgs,
+              counterKey
+            ).get
+          })
+
+          // Expect removing the request and removing the underlying event
+          // handlers for the N pipelines
+          mockRemoveRequestById.expects(requestId).once()
+          (mockEventManager.removeEventHandler _).expects(requestId)
+            .repeated(totalPipelines).times()
+
+          // Close 1 pipeline and force the close of all others
+          import org.scaladebugger.api.profiles.Constants.CloseRemoveAll
+          pipelines.head.close(data = CloseRemoveAll)
         }
       }
     }

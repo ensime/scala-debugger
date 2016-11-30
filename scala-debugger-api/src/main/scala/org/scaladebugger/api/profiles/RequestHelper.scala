@@ -172,10 +172,8 @@ class RequestHelper[
     eventManager
       .addEventDataStream(etInstance, eventArgs: _*)
       .map(t => (t._1.asInstanceOf[E], t._2))
-      .map(t => (
-        _newEventInfo(scalaVirtualMachine, t._1, allArgs),
-        t._2
-      )).noop()
+      .map(t => (_newEventInfo(scalaVirtualMachine, t._1, allArgs), t._2))
+      .noop()
   }
 
   /**
