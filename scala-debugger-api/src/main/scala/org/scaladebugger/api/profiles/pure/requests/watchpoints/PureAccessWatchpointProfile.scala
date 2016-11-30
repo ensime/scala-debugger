@@ -9,9 +9,9 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
 import org.scaladebugger.api.lowlevel.watchpoints._
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.RequestHelper
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.profiles.traits.info.events.AccessWatchpointEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.RequestHelper
 import org.scaladebugger.api.profiles.traits.requests.watchpoints.AccessWatchpointProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
@@ -46,20 +46,22 @@ trait PureAccessWatchpointProfile extends AccessWatchpointProfile {
       eventManager = eventManager,
       etInstance = AccessWatchpointEventType,
       _newRequestId = java.util.UUID.randomUUID().toString,
-      _newRequest = (requestId, requestArgs, jdiArgs) => {
-        val (className, fieldName, args) = requestArgs
+      _newRequest = (requestId, requestArgs, jdiRequestArgs) => {
+        val (className, fieldName, _) = requestArgs
         accessWatchpointManager.createAccessWatchpointRequestWithId(
           requestId,
           className,
           fieldName,
-          args: _*
+          jdiRequestArgs: _*
         )
       },
       _hasRequest = (requestArgs) => {
         val (className, fieldName, _) = requestArgs
         accessWatchpointManager.hasAccessWatchpointRequest(className, fieldName)
       },
-      _removeRequestById = accessWatchpointManager.removeAccessWatchpointRequestWithId,
+      _removeRequestById = (requestId) => {
+        accessWatchpointManager.removeAccessWatchpointRequestWithId(requestId)
+      },
       _newEventInfo = (s, event, jdiArgs) => {
         eventProducer.newDefaultAccessWatchpointEventInfoProfile(s, event)
       },
@@ -98,7 +100,7 @@ trait PureAccessWatchpointProfile extends AccessWatchpointProfile {
 
     val requestArgs: RequestArgs = (className, fieldName, rArgs)
     requestHelper.newRequest(requestArgs, rArgs)
-      .map(id => requestHelper.newEventPipeline(id, eArgs, requestArgs))
+      .flatMap(id => requestHelper.newEventPipeline(id, eArgs, requestArgs))
   }
 
   /**

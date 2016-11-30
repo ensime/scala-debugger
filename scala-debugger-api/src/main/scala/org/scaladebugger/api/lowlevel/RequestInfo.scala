@@ -7,11 +7,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
  */
 trait RequestInfo {
   /** The id of the request. */
-  val requestId: String
+  def requestId: String
 
   /** Whether or not this request is pending (not on remote JVM). */
-  val isPending: Boolean
+  def isPending: Boolean
 
   /** Represents extra arguments provided to the request. */
-  val extraArguments: Seq[JDIRequestArgument]
+  def extraArguments: Seq[JDIRequestArgument]
 }

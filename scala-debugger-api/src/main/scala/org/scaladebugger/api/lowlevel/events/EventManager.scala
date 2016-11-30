@@ -71,7 +71,7 @@ trait EventManager {
    *
    * @return The resulting event stream in the form of a pipeline of events
    */
-   def addEventStream(
+  def addEventStream(
     eventType: EventType,
     eventArguments: JDIEventArgument*
   ): IdentityPipeline[Event] = addEventStreamWithId(
@@ -90,7 +90,7 @@ trait EventManager {
    *
    * @return The resulting event stream in the form of a pipeline of events
    */
-   def addEventStreamWithId(
+  def addEventStreamWithId(
     eventHandlerId: String,
     eventType: EventType,
     eventArguments: JDIEventArgument*
@@ -110,7 +110,7 @@ trait EventManager {
    * @return The resulting event stream in the form of a pipeline of events
    *         and collected data
    */
-   def addEventDataStream(
+  def addEventDataStream(
     eventType: EventType,
     eventArguments: JDIEventArgument*
   ): IdentityPipeline[EventAndData] = addEventDataStreamWithId(
@@ -166,7 +166,7 @@ trait EventManager {
    *
    * @return The id associated with the event handler
    */
-   def addResumingEventHandlerWithId(
+  def addResumingEventHandlerWithId(
     eventHandlerId: String,
     eventType: EventType,
     eventHandler: (Event, Seq[JDIEventDataResult]) => Unit,
@@ -198,7 +198,7 @@ trait EventManager {
    *
    * @return The id associated with the event handler
    */
-   def addResumingEventHandler(
+  def addResumingEventHandler(
     eventType: EventType,
     eventHandler: (Event, Seq[JDIEventDataResult]) => Unit,
     eventArguments: JDIEventArgument*
@@ -221,7 +221,7 @@ trait EventManager {
    *
    * @return The id associated with the event handler
    */
-   def addResumingEventHandlerWithId(
+  def addResumingEventHandlerWithId(
     eventHandlerId: String,
     eventType: EventType,
     eventHandler: (Event) => Unit,
@@ -246,7 +246,7 @@ trait EventManager {
    *
    * @return The id associated with the event handler
    */
-   def addResumingEventHandler(
+  def addResumingEventHandler(
     eventType: EventType,
     eventHandler: (Event) => Unit,
     eventArguments: JDIEventArgument*
@@ -270,7 +270,7 @@ trait EventManager {
    *
    * @return The id associated with the event handler
    */
-   def addEventHandlerWithId(
+  def addEventHandlerWithId(
     eventHandlerId: String,
     eventType: EventType,
     eventHandler: EventHandler,
@@ -289,7 +289,7 @@ trait EventManager {
    *
    * @return The id associated with the event handler
    */
-   def addEventHandler(
+  def addEventHandler(
     eventType: EventType,
     eventHandler: EventHandler,
     eventArguments: JDIEventArgument*
@@ -312,7 +312,7 @@ trait EventManager {
    *
    * @return The id associated with the event handler
    */
-   def addEventHandlerWithId(
+  def addEventHandlerWithId(
     eventHandlerId: String,
     eventType: EventType,
     eventHandler: (Event) => Boolean,
@@ -337,7 +337,7 @@ trait EventManager {
    *
    * @return The id associated with the event handler
    */
-   def addEventHandler(
+  def addEventHandler(
     eventType: EventType,
     eventHandler: (Event) => Boolean,
     eventArguments: JDIEventArgument*

@@ -34,8 +34,8 @@ class PureAccessWatchpointProfileSpec extends test.ParallelMockFunSpec with JDIM
 
     // NOTE: If we set a specific request id, return that, otherwise use the
     //       default behavior
-    override protected def newAccessWatchpointRequestId(): String =
-      if (requestId != null) requestId else super.newAccessWatchpointRequestId()
+    //override protected def newAccessWatchpointRequestId(): String =
+    //  if (requestId != null) requestId else super.newAccessWatchpointRequestId()
 
     override protected val accessWatchpointManager = mockAccessWatchpointManager
     override protected val eventManager: EventManager = mockEventManager

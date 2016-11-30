@@ -1,16 +1,16 @@
-package org.scaladebugger.api.profiles.traits.requests
+package org.scaladebugger.api.profiles
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.sun.jdi.event.Event
-import org.scaladebugger.api.lowlevel.{JDIArgument, RequestInfo}
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
-import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
+import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
+import org.scaladebugger.api.lowlevel.{JDIArgument, RequestInfo}
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
@@ -54,9 +54,9 @@ class RequestHelper[
   protected val eventManager: EventManager,
   private val etInstance: EventType,
   private val _newRequestId: () => String,
-  private val _newRequest: (String, RequestArgs, Seq[JDIArgument]) => Try[String],
+  private val _newRequest: (String, RequestArgs, Seq[JDIRequestArgument]) => Try[String],
   private val _hasRequest: (RequestArgs) => Boolean,
-  private val _removeRequestById: String => Any,
+  private val _removeRequestById: String => Unit,
   private val _newEventInfo: (ScalaVirtualMachine, E, Seq[JDIArgument]) => EI,
   private val _retrieveRequestInfo: String => Option[RequestInfo]
 ) {
@@ -103,7 +103,7 @@ class RequestHelper[
     )
 
     (requestArgs: RequestArgs, jdiRequestArgs: Seq[JDIRequestArgument]) =>
-      m((requestArgs, jdiRequestArgs))
+      Try(m((requestArgs, jdiRequestArgs))).flatten
   }
 
   /**
@@ -117,27 +117,19 @@ class RequestHelper[
    *                  new pipeline
    * @param counterKey The key used to increment and decrement the underlying
    *                   pipeline counter
-   * @return The new event and data pipeline
+   * @return Success containing new event and data pipeline, otherwise a failure
    */
   def newEventPipeline(
     requestId: String,
     eventArgs: Seq[JDIEventArgument],
     counterKey: CounterKey
-  ): IdentityPipeline[EventAndData] = {
+  ): Try[IdentityPipeline[EventAndData]] = Try {
     // Lookup final set of request arguments used when creating the request
     val rArgs = _retrieveRequestInfo(requestId)
       .map(_.extraArguments).getOrElse(Nil)
 
     val eArgsWithFilter = UniqueIdPropertyFilter(id = requestId) +: eventArgs
-    val newPipeline = eventManager
-      .addEventDataStream(etInstance, eArgsWithFilter: _*)
-      .map(t => (t._1.asInstanceOf[E], t._2))
-      .map(t => (_newEventInfo(
-        scalaVirtualMachine,
-        t._1,
-        rArgs ++ eArgsWithFilter
-      ), t._2))
-      .noop()
+    val newPipeline = newEventStream(rArgs, eArgsWithFilter)
 
     // Create a companion pipeline who, when closed, checks to see if there
     // are no more pipelines for the given request and, if so, removes the
@@ -146,13 +138,12 @@ class RequestHelper[
       classOf[EventAndData],
       newPipelineCloseFunc(requestId, counterKey)
     )
+    val combinedPipeline = newPipeline.unionOutput(closePipeline)
 
     // Increment the counter for open pipelines
     pipelineCounter
       .getOrElseUpdate(counterKey, new AtomicInteger(0))
       .incrementAndGet()
-
-    val combinedPipeline = newPipeline.unionOutput(closePipeline)
 
     // Store the new event handler id as associated with the current request
     pipelineRequestEventIds.put(
@@ -173,15 +164,16 @@ class RequestHelper[
    * @param eventArgs The event arguments to use when creating the stream
    * @return A new pipeline of events and associated data
    */
-  def newEventStream(
+  private def newEventStream(
     requestArgs: Seq[JDIRequestArgument],
     eventArgs: Seq[JDIEventArgument]
   ): IdentityPipeline[EventAndData] = {
+    val allArgs = (requestArgs ++ eventArgs).distinct
     eventManager
       .addEventDataStream(etInstance, eventArgs: _*)
       .map(t => (t._1.asInstanceOf[E], t._2))
       .map(t => (
-        _newEventInfo(scalaVirtualMachine, t._1, requestArgs ++ eventArgs),
+        _newEventInfo(scalaVirtualMachine, t._1, allArgs),
         t._2
       )).noop()
   }
@@ -193,7 +185,7 @@ class RequestHelper[
    * @param counterKey The key used to decrement the underlying pipeline counter
    * @return The new function for closing the pipeline
    */
-  def newPipelineCloseFunc(
+  private def newPipelineCloseFunc(
     requestId: String,
     counterKey: CounterKey
   ): (Option[Any]) => Unit = (data: Option[Any]) => {

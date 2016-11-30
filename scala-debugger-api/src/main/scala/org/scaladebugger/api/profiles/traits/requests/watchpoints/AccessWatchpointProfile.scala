@@ -5,8 +5,8 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.watchpoints.AccessWatchpointRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.RequestHelper
 import org.scaladebugger.api.profiles.traits.info.events.AccessWatchpointEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.RequestHelper
 
 import scala.util.Try
 
