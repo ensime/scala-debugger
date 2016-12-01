@@ -1,48 +1,244 @@
 package org.scaladebugger.api.profiles.pure.requests.threads
-import acyclic.file
-import com.sun.jdi.event.Event
-import org.scaladebugger.api.lowlevel.events.EventManager
+
+import com.sun.jdi.event.ThreadStartEvent
 import org.scaladebugger.api.lowlevel.events.EventType.ThreadStartEventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
+import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
-import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.lowlevel.threads.{PendingThreadStartSupportLike, ThreadStartManager, ThreadStartRequestInfo}
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.Constants
+import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducerProfile, ThreadStartEventInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.JDIMockHelpers
+import test.{JDIMockHelpers, TestRequestHelper}
 
-import scala.util.{Failure, Success}
+import scala.util.Success
 
 class PureThreadStartProfileSpec extends FunSpec with Matchers
-with ParallelTestExecution with MockFactory with JDIMockHelpers
-{
+with ParallelTestExecution with MockFactory with JDIMockHelpers {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockThreadStartManager = mock[ThreadStartManager]
   private val mockEventManager = mock[EventManager]
   private val mockInfoProducer = mock[InfoProducerProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
 
-  private val pureThreadStartProfile = new Object with PureThreadStartProfile {
-    private var requestId: String = _
-    def setRequestId(requestId: String): Unit = this.requestId = requestId
+  private type E = ThreadStartEvent
+  private type EI = ThreadStartEventInfoProfile
+  private type EIData = (EI, Seq[JDIEventDataResult])
+  private type RequestArgs = Seq[JDIRequestArgument]
+  private type CounterKey = Seq[JDIRequestArgument]
+  private class CustomTestRequestHelper extends TestRequestHelper[E, EI, RequestArgs, CounterKey](
+    scalaVirtualMachine = mockScalaVirtualMachine,
+    eventManager = mockEventManager,
+    etInstance = ThreadStartEventType
+  )
 
-    // NOTE: If we set a specific request id, return that, otherwise use the
-    //       default behavior
-    override protected def newThreadStartRequestId(): String =
-      if (requestId != null) requestId else super.newThreadStartRequestId()
-
+  private class TestPureThreadStartProfile(
+    private val customTestRequestHelper: Option[CustomTestRequestHelper] = None
+  ) extends PureThreadStartProfile {
+    override def newThreadStartRequestHelper() = {
+      val originalRequestHelper = super.newThreadStartRequestHelper()
+      customTestRequestHelper.getOrElse(originalRequestHelper)
+    }
     override protected val threadStartManager = mockThreadStartManager
     override protected val eventManager: EventManager = mockEventManager
     override protected val infoProducer: InfoProducerProfile = mockInfoProducer
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
+  private val mockRequestHelper = mock[CustomTestRequestHelper]
+  private val pureThreadStartProfile =
+    new TestPureThreadStartProfile(Some(mockRequestHelper))
+
   describe("PureThreadStartProfile") {
+    describe("for custom request helper") {
+      describe("#_newRequestId") {
+        it("should return a new id each time") {
+          val pureThreadStartProfile = new TestPureThreadStartProfile()
+          val requestHelper = pureThreadStartProfile.newThreadStartRequestHelper()
+
+          val requestId1 = requestHelper._newRequestId()
+          val requestId2 = requestHelper._newRequestId()
+
+          requestId1 shouldBe a [String]
+          requestId2 shouldBe a [String]
+          requestId1 should not be (requestId2)
+        }
+      }
+
+      describe("#_newRequest") {
+        it("should create a new request with the provided args and id") {
+          val expected = Success("some id")
+
+          val pureThreadStartProfile = new TestPureThreadStartProfile()
+          val requestHelper = pureThreadStartProfile.newThreadStartRequestHelper()
+
+          val requestId = expected.get
+          val requestArgs = Seq(mock[JDIRequestArgument])
+          val jdiRequestArgs = Seq(mock[JDIRequestArgument])
+
+          (mockThreadStartManager.createThreadStartRequestWithId _)
+            .expects(requestId, jdiRequestArgs)
+            .returning(expected)
+            .once()
+
+          val actual = requestHelper._newRequest(requestId, requestArgs, jdiRequestArgs)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_hasRequest") {
+        it("should return true if a request exists with matching request arguments") {
+          val expected = true
+
+          val pureThreadStartProfile = new TestPureThreadStartProfile()
+          val requestHelper = pureThreadStartProfile.newThreadStartRequestHelper()
+
+          val requestId = "some id"
+          val requestArgs = Seq(mock[JDIRequestArgument])
+          val requestInfo = ThreadStartRequestInfo(
+            requestId = requestId,
+            isPending = false,
+            extraArguments = requestArgs
+          )
+
+          // Get a list of request ids
+          (mockThreadStartManager.threadStartRequestList _).expects()
+            .returning(Seq(requestId)).once()
+
+          // Look up a request that has arguments
+          (mockThreadStartManager.getThreadStartRequestInfo _).expects(requestId)
+            .returning(Some(requestInfo)).once()
+
+          val actual = requestHelper._hasRequest(requestArgs)
+
+          actual should be (expected)
+        }
+
+        it("should return false if no request exists with matching request arguments") {
+          val expected = false
+
+          val pureThreadStartProfile = new TestPureThreadStartProfile()
+          val requestHelper = pureThreadStartProfile.newThreadStartRequestHelper()
+
+          val requestId = "some id"
+          val requestArgs = Seq(mock[JDIRequestArgument])
+          val requestInfo = ThreadStartRequestInfo(
+            requestId = requestId,
+            isPending = false,
+            extraArguments = Seq(mock[JDIRequestArgument])
+          )
+
+          // Get a list of request ids
+          (mockThreadStartManager.threadStartRequestList _).expects()
+            .returning(Seq(requestId)).once()
+
+          // Look up a request that does not have same arguments
+          (mockThreadStartManager.getThreadStartRequestInfo _).expects(requestId)
+            .returning(Some(requestInfo)).once()
+
+          val actual = requestHelper._hasRequest(requestArgs)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_removeByRequestId") {
+        it("should remove the request with the specified id") {
+          val pureThreadStartProfile = new TestPureThreadStartProfile()
+          val requestHelper = pureThreadStartProfile.newThreadStartRequestHelper()
+
+          val requestId = "some id"
+
+          (mockThreadStartManager.removeThreadStartRequest _)
+            .expects(requestId)
+            .returning(true)
+            .once()
+
+          requestHelper._removeRequestById(requestId)
+        }
+      }
+
+
+      describe("#_retrieveRequestInfo") {
+        it("should get the info for the request with the specified id") {
+          val expected = Some(ThreadStartRequestInfo(
+            requestId = "some id",
+            isPending = true,
+            extraArguments = Seq(mock[JDIRequestArgument])
+          ))
+
+          val pureThreadStartProfile = new TestPureThreadStartProfile()
+          val requestHelper = pureThreadStartProfile.newThreadStartRequestHelper()
+
+          val requestId = "some id"
+
+          (mockThreadStartManager.getThreadStartRequestInfo _)
+            .expects(requestId)
+            .returning(expected)
+            .once()
+
+          val actual = requestHelper._retrieveRequestInfo(requestId)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_newEventInfo") {
+        it("should create new event info for the specified args") {
+          val expected = mock[ThreadStartEventInfoProfile]
+
+          val pureThreadStartProfile = new TestPureThreadStartProfile()
+          val requestHelper = pureThreadStartProfile.newThreadStartRequestHelper()
+
+          val mockEventProducer = mock[EventInfoProducerProfile]
+          (mockInfoProducer.eventProducer _).expects()
+            .returning(mockEventProducer).once()
+
+          val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+          val mockEvent = mock[ThreadStartEvent]
+          val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
+          (mockEventProducer.newDefaultThreadStartEventInfoProfile _)
+            .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
+            .returning(expected).once()
+
+          val actual = requestHelper._newEventInfo(
+            mockScalaVirtualMachine,
+            mockEvent,
+            mockJdiArgs
+          )
+
+          actual should be (expected)
+        }
+      }
+    }
+
+    describe("#tryGetOrCreateThreadStartRequestWithData") {
+      it("should use the request helper's request and event pipeline methods") {
+        val requestId = java.util.UUID.randomUUID().toString
+        val mockJdiRequestArgs = Seq(mock[JDIRequestArgument])
+        val mockJdiEventArgs = Seq(mock[JDIEventArgument])
+        val requestArgs = mockJdiRequestArgs
+
+        (mockRequestHelper.newRequest _)
+          .expects(requestArgs, mockJdiRequestArgs)
+          .returning(Success(requestId)).once()
+        (mockRequestHelper.newEventPipeline _)
+          .expects(requestId, mockJdiEventArgs, requestArgs)
+          .returning(Success(Pipeline.newPipeline(classOf[EIData]))).once()
+
+        val actual = pureThreadStartProfile.tryGetOrCreateThreadStartRequest(
+          mockJdiRequestArgs ++ mockJdiEventArgs: _*
+        ).get
+
+        actual shouldBe an [IdentityPipeline[EIData]]
+      }
+    }
+
     describe("#threadStartRequests") {
       it("should include all active requests") {
         val expected = Seq(
@@ -283,6 +479,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
         actual should be (expected)
       }
     }
+
     describe("#isThreadStartRequestWithArgsPending") {
       it("should return false if no requests exist") {
         val expected = false
@@ -375,327 +572,6 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
         )
 
         actual should be (expected)
-      }
-    }
-
-    describe("#tryGetOrCreateThreadStartRequestWithData") {
-      it("should create a new request if one has not be made yet") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-        val uniqueIdPropertyFilter = UniqueIdPropertyFilter(id = TestRequestId)
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureThreadStartProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockThreadStartManager.threadStartRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockThreadStartManager.createThreadStartRequestWithId _)
-            .expects(TestRequestId, uniqueIdProperty +: arguments)
-            .returning(Success(TestRequestId)).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ThreadStartEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(
-          arguments: _*
-        )
-      }
-
-      it("should capture exceptions thrown when creating the request") {
-        val expected = Failure(new Throwable)
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureThreadStartProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockThreadStartManager.threadStartRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockThreadStartManager.createThreadStartRequestWithId _)
-            .expects(TestRequestId, uniqueIdProperty +: arguments)
-            .throwing(expected.failed.get).once()
-        }
-
-        val actual = pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(
-          arguments: _*
-        )
-
-        actual should be (expected)
-      }
-
-      it("should create a new request if the previous one was removed") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureThreadStartProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureThreadStartProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockThreadStartManager.threadStartRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockThreadStartManager.createThreadStartRequestWithId _)
-            .expects(TestRequestId, uniqueIdProperty +: arguments)
-            .returning(Success(TestRequestId)).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ThreadStartEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureThreadStartProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId + "other")
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId + "other")
-
-          // Return empty this time to indicate that the vm start request
-          // was removed some time between the two calls
-          (mockThreadStartManager.threadStartRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockThreadStartManager.createThreadStartRequestWithId _)
-            .expects(TestRequestId + "other", uniqueIdProperty +: arguments)
-            .returning(Success(TestRequestId + "other")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ThreadStartEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(
-          arguments: _*
-        )
-      }
-
-      it("should not create a new request if the previous one still exists") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureThreadStartProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockThreadStartManager.threadStartRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockThreadStartManager.createThreadStartRequestWithId _)
-            .expects(TestRequestId, uniqueIdProperty +: arguments)
-            .returning(Success(TestRequestId)).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ThreadStartEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureThreadStartProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Return collection of matching arguments to indicate that we do
-          // still have the request
-          val internalId = java.util.UUID.randomUUID().toString
-          (mockThreadStartManager.threadStartRequestList _)
-            .expects()
-            .returning(Seq(internalId)).once()
-          (mockThreadStartManager.getThreadStartRequestInfo _)
-            .expects(internalId)
-            .returning(Some(ThreadStartRequestInfo(TestRequestId, false, arguments))).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ThreadStartEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(
-          arguments: _*
-        )
-      }
-
-      it("should remove the underlying request if all pipelines are closed") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureThreadStartProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockThreadStartManager.threadStartRequestList _)
-              .expects()
-              .returning(Nil).once()
-            (mockThreadStartManager.threadStartRequestList _)
-              .expects()
-              .returning(Seq(TestRequestId)).once()
-
-            (mockThreadStartManager.getThreadStartRequestInfo _)
-              .expects(TestRequestId)
-              .returning(Some(ThreadStartRequestInfo(TestRequestId, false, arguments))).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockThreadStartManager.createThreadStartRequestWithId _)
-              .expects(TestRequestId, uniqueIdProperty +: arguments)
-              .returning(Success(TestRequestId)).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(ThreadStartEventType, Seq(uniqueIdPropertyFilter))
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockThreadStartManager.removeThreadStartRequest _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(arguments: _*)
-        val p2 = pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(arguments: _*)
-
-        p1.foreach(_.close())
-        p2.foreach(_.close())
-      }
-
-      it("should remove the underlying request if close data says to do so") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureThreadStartProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockThreadStartManager.threadStartRequestList _)
-              .expects()
-              .returning(Nil).once()
-            (mockThreadStartManager.threadStartRequestList _)
-              .expects()
-              .returning(Seq(TestRequestId)).once()
-
-            (mockThreadStartManager.getThreadStartRequestInfo _)
-              .expects(TestRequestId)
-              .returning(Some(ThreadStartRequestInfo(TestRequestId, false, arguments))).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockThreadStartManager.createThreadStartRequestWithId _)
-              .expects(TestRequestId, uniqueIdProperty +: arguments)
-              .returning(Success(TestRequestId)).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(ThreadStartEventType, Seq(uniqueIdPropertyFilter))
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockThreadStartManager.removeThreadStartRequest _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(arguments: _*)
-        val p2 = pureThreadStartProfile.tryGetOrCreateThreadStartRequestWithData(arguments: _*)
-
-        p1.foreach(_.close(now = true, data = Constants.CloseRemoveAll))
       }
     }
   }

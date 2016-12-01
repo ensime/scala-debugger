@@ -1,16 +1,12 @@
 package org.scaladebugger.api.profiles.pure.requests.vm
-import acyclic.file
-import com.sun.jdi.event.{Event, VMDeathEvent}
-import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
+import com.sun.jdi.event.VMDeathEvent
 import org.scaladebugger.api.lowlevel.events.EventType.VMDeathEventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
+import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
-import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.lowlevel.vm.{PendingVMDeathSupportLike, VMDeathManager, VMDeathRequestInfo}
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.Constants
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducerProfile, VMDeathEventInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
@@ -18,7 +14,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{JDIMockHelpers, TestRequestHelper}
 
-import scala.util.{Failure, Success}
+import scala.util.Success
 
 class PureVMDeathProfileSpec extends FunSpec with Matchers
 with ParallelTestExecution with MockFactory with JDIMockHelpers
