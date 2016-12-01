@@ -53,7 +53,7 @@ trait PureModificationWatchpointProfile extends ModificationWatchpointProfile {
       scalaVirtualMachine = scalaVirtualMachine,
       eventManager = eventManager,
       etInstance = ModificationWatchpointEventType,
-      _newRequestId = java.util.UUID.randomUUID().toString,
+      _newRequestId = () => java.util.UUID.randomUUID().toString,
       _newRequest = (requestId, requestArgs, jdiRequestArgs) => {
         val (className, fieldName, _) = requestArgs
         modificationWatchpointManager.createModificationWatchpointRequestWithId(
@@ -71,7 +71,7 @@ trait PureModificationWatchpointProfile extends ModificationWatchpointProfile {
         modificationWatchpointManager.removeModificationWatchpointRequestWithId(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultModificationWatchpointEventInfoProfile(s, event)
+        eventProducer.newDefaultModificationWatchpointEventInfoProfile(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = modificationWatchpointManager.getModificationWatchpointRequestInfoWithId
     )

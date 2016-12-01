@@ -53,7 +53,7 @@ trait PureAccessWatchpointProfile extends AccessWatchpointProfile {
       scalaVirtualMachine = scalaVirtualMachine,
       eventManager = eventManager,
       etInstance = AccessWatchpointEventType,
-      _newRequestId = java.util.UUID.randomUUID().toString,
+      _newRequestId = () => java.util.UUID.randomUUID().toString,
       _newRequest = (requestId, requestArgs, jdiRequestArgs) => {
         val (className, fieldName, _) = requestArgs
         accessWatchpointManager.createAccessWatchpointRequestWithId(
@@ -71,7 +71,7 @@ trait PureAccessWatchpointProfile extends AccessWatchpointProfile {
         accessWatchpointManager.removeAccessWatchpointRequestWithId(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultAccessWatchpointEventInfoProfile(s, event)
+        eventProducer.newDefaultAccessWatchpointEventInfoProfile(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = accessWatchpointManager.getAccessWatchpointRequestInfoWithId
     )

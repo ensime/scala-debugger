@@ -54,7 +54,7 @@ trait PureVMDeathProfile extends VMDeathProfile {
       scalaVirtualMachine = scalaVirtualMachine,
       eventManager = eventManager,
       etInstance = VMDeathEventType,
-      _newRequestId = java.util.UUID.randomUUID().toString,
+      _newRequestId = () => java.util.UUID.randomUUID().toString,
       _newRequest = (requestId, _, jdiRequestArgs) => {
         vmDeathManager.createVMDeathRequestWithId(
           requestId,
@@ -72,7 +72,7 @@ trait PureVMDeathProfile extends VMDeathProfile {
         vmDeathManager.removeVMDeathRequest(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultVMDeathEventInfoProfile(s, event)
+        eventProducer.newDefaultVMDeathEventInfoProfile(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = vmDeathManager.getVMDeathRequestInfo
     )

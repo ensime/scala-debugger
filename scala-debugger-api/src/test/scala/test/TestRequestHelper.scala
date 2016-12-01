@@ -14,7 +14,7 @@ import scala.util.Success
 class TestRequestHelper[E <: Event, EI <: EventInfoProfile, RequestArgs, CounterKey](
   override val scalaVirtualMachine: ScalaVirtualMachine,
   override val eventManager: EventManager,
-  private val etInstance: EventType.Value
+  override val etInstance: EventType.Value
 )(
   implicit val eClassTag: ClassTag[E],
   eiClassTag: ClassTag[EI]

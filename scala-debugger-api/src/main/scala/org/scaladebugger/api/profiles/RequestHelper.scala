@@ -52,13 +52,13 @@ class RequestHelper[
 ](
   protected val scalaVirtualMachine: ScalaVirtualMachine,
   protected val eventManager: EventManager,
-  private val etInstance: EventType,
-  private val _newRequestId: () => String,
-  private val _newRequest: (String, RequestArgs, Seq[JDIRequestArgument]) => Try[String],
-  private val _hasRequest: (RequestArgs) => Boolean,
-  private val _removeRequestById: String => Unit,
-  private val _newEventInfo: (ScalaVirtualMachine, E, Seq[JDIArgument]) => EI,
-  private val _retrieveRequestInfo: String => Option[RequestInfo]
+  private[profiles] val etInstance: EventType,
+  private[profiles] val _newRequestId: () => String,
+  private[profiles] val _newRequest: (String, RequestArgs, Seq[JDIRequestArgument]) => Try[String],
+  private[profiles] val _hasRequest: (RequestArgs) => Boolean,
+  private[profiles] val _removeRequestById: String => Unit,
+  private[profiles] val _newEventInfo: (ScalaVirtualMachine, E, Seq[JDIArgument]) => EI,
+  private[profiles] val _retrieveRequestInfo: String => Option[RequestInfo]
 ) {
 
   /** Represents the combination of event and data returned. */
