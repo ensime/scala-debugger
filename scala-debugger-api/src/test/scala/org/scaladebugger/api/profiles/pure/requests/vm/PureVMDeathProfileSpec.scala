@@ -12,7 +12,7 @@ import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.Constants
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
-import org.scaladebugger.api.profiles.traits.info.events.VMDeathEventInfoProfile
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducerProfile, VMDeathEventInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -40,17 +40,187 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
     etInstance = VMDeathEventType
   )
 
-  private val mockRequestHelper = mock[CustomTestRequestHelper]
-
-  private val pureVMDeathProfile = new Object with PureVMDeathProfile {
-    override protected def newVMDeathRequestHelper() = mockRequestHelper
+  private class TestPureVMDeathProfile(
+    private val customTestRequestHelper: Option[CustomTestRequestHelper] = None
+  ) extends PureVMDeathProfile {
+    override def newVMDeathRequestHelper() = {
+      val originalRequestHelper = super.newVMDeathRequestHelper()
+      customTestRequestHelper.getOrElse(originalRequestHelper)
+    }
     override protected val vmDeathManager = mockVMDeathManager
     override protected val eventManager: EventManager = mockEventManager
     override protected val infoProducer: InfoProducerProfile = mockInfoProducer
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
+  private val mockRequestHelper = mock[CustomTestRequestHelper]
+  private val pureVMDeathProfile =
+    new TestPureVMDeathProfile(Some(mockRequestHelper))
+
   describe("PureVMDeathProfile") {
+    describe("for custom request helper") {
+      describe("#_newRequestId") {
+        it("should return a new id each time") {
+          val pureVMDeathProfile = new TestPureVMDeathProfile()
+          val requestHelper = pureVMDeathProfile.newVMDeathRequestHelper()
+
+          val requestId1 = requestHelper._newRequestId()
+          val requestId2 = requestHelper._newRequestId()
+
+          requestId1 shouldBe a [String]
+          requestId2 shouldBe a [String]
+          requestId1 should not be (requestId2)
+        }
+      }
+
+      describe("#_newRequest") {
+        it("should create a new request with the provided args and id") {
+          val expected = Success("some id")
+
+          val pureVMDeathProfile = new TestPureVMDeathProfile()
+          val requestHelper = pureVMDeathProfile.newVMDeathRequestHelper()
+
+          val requestId = expected.get
+          val requestArgs = Seq(mock[JDIRequestArgument])
+          val jdiRequestArgs = Seq(mock[JDIRequestArgument])
+
+          (mockVMDeathManager.createVMDeathRequestWithId _)
+            .expects(requestId, jdiRequestArgs)
+            .returning(expected)
+            .once()
+
+          val actual = requestHelper._newRequest(requestId, requestArgs, jdiRequestArgs)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_hasRequest") {
+        it("should return true if a request exists with matching request arguments") {
+          val expected = true
+
+          val pureVMDeathProfile = new TestPureVMDeathProfile()
+          val requestHelper = pureVMDeathProfile.newVMDeathRequestHelper()
+
+          val requestId = "some id"
+          val requestArgs = Seq(mock[JDIRequestArgument])
+          val requestInfo = VMDeathRequestInfo(
+            requestId = requestId,
+            isPending = false,
+            extraArguments = requestArgs
+          )
+
+          // Get a list of request ids
+          (mockVMDeathManager.vmDeathRequestList _).expects()
+            .returning(Seq(requestId)).once()
+
+          // Look up a request that has arguments
+          (mockVMDeathManager.getVMDeathRequestInfo _).expects(requestId)
+            .returning(Some(requestInfo)).once()
+
+          val actual = requestHelper._hasRequest(requestArgs)
+
+          actual should be (expected)
+        }
+
+        it("should return false if no request exists with matching request arguments") {
+          val expected = false
+
+          val pureVMDeathProfile = new TestPureVMDeathProfile()
+          val requestHelper = pureVMDeathProfile.newVMDeathRequestHelper()
+
+          val requestId = "some id"
+          val requestArgs = Seq(mock[JDIRequestArgument])
+          val requestInfo = VMDeathRequestInfo(
+            requestId = requestId,
+            isPending = false,
+            extraArguments = Seq(mock[JDIRequestArgument])
+          )
+
+          // Get a list of request ids
+          (mockVMDeathManager.vmDeathRequestList _).expects()
+            .returning(Seq(requestId)).once()
+
+          // Look up a request that does not have same arguments
+          (mockVMDeathManager.getVMDeathRequestInfo _).expects(requestId)
+            .returning(Some(requestInfo)).once()
+
+          val actual = requestHelper._hasRequest(requestArgs)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_removeByRequestId") {
+        it("should remove the request with the specified id") {
+          val pureVMDeathProfile = new TestPureVMDeathProfile()
+          val requestHelper = pureVMDeathProfile.newVMDeathRequestHelper()
+
+          val requestId = "some id"
+
+          (mockVMDeathManager.removeVMDeathRequest _)
+            .expects(requestId)
+            .returning(true)
+            .once()
+
+          requestHelper._removeRequestById(requestId)
+        }
+      }
+
+
+      describe("#_retrieveRequestInfo") {
+        it("should get the info for the request with the specified id") {
+          val expected = Some(VMDeathRequestInfo(
+            requestId = "some id",
+            isPending = true,
+            extraArguments = Seq(mock[JDIRequestArgument])
+          ))
+
+          val pureVMDeathProfile = new TestPureVMDeathProfile()
+          val requestHelper = pureVMDeathProfile.newVMDeathRequestHelper()
+
+          val requestId = "some id"
+
+          (mockVMDeathManager.getVMDeathRequestInfo _)
+            .expects(requestId)
+            .returning(expected)
+            .once()
+
+          val actual = requestHelper._retrieveRequestInfo(requestId)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_newEventInfo") {
+        it("should create new event info for the specified args") {
+          val expected = mock[VMDeathEventInfoProfile]
+
+          val pureVMDeathProfile = new TestPureVMDeathProfile()
+          val requestHelper = pureVMDeathProfile.newVMDeathRequestHelper()
+
+          val mockEventProducer = mock[EventInfoProducerProfile]
+          (mockInfoProducer.eventProducer _).expects()
+            .returning(mockEventProducer).once()
+
+          val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+          val mockEvent = mock[VMDeathEvent]
+          val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
+          (mockEventProducer.newDefaultVMDeathEventInfoProfile _)
+            .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
+            .returning(expected).once()
+
+          val actual = requestHelper._newEventInfo(
+            mockScalaVirtualMachine,
+            mockEvent,
+            mockJdiArgs
+          )
+
+          actual should be (expected)
+        }
+      }
+    }
+
     describe("#tryGetOrCreateVMDeathRequestWithData") {
       it("should use the request helper's request and event pipeline methods") {
         val requestId = java.util.UUID.randomUUID().toString

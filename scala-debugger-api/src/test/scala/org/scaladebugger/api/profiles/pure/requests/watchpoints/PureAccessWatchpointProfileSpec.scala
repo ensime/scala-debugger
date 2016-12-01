@@ -33,7 +33,6 @@ class PureAccessWatchpointProfileSpec extends test.ParallelMockFunSpec with JDIM
     etInstance = AccessWatchpointEventType
   )
 
-  private val mockRequestHelper = mock[CustomTestRequestHelper]
   private class TestPureAccessWatchpointProfile(
     private val customTestRequestHelper: Option[CustomTestRequestHelper] = None
   ) extends PureAccessWatchpointProfile {
@@ -47,6 +46,7 @@ class PureAccessWatchpointProfileSpec extends test.ParallelMockFunSpec with JDIM
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
+  private val mockRequestHelper = mock[CustomTestRequestHelper]
   private val pureAccessWatchpointProfile =
     new TestPureAccessWatchpointProfile(Some(mockRequestHelper))
 

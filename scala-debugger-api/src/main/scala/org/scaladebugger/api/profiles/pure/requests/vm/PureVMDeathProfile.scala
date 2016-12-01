@@ -62,7 +62,7 @@ trait PureVMDeathProfile extends VMDeathProfile {
         )
       },
       _hasRequest = (requestArgs) => {
-        !vmDeathManager.vmDeathRequestList
+        vmDeathManager.vmDeathRequestList
           .flatMap(vmDeathManager.getVMDeathRequestInfo)
           .map(_.extraArguments)
           .map(_.filterNot(_.isInstanceOf[UniqueIdProperty]))
