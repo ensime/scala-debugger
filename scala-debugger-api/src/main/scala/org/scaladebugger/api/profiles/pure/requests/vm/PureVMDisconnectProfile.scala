@@ -1,15 +1,19 @@
 package org.scaladebugger.api.profiles.pure.requests.vm
 //import acyclic.file
 
+import java.util.concurrent.ConcurrentHashMap
+
 import com.sun.jdi.event.VMDisconnectEvent
-import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.EventManager
-import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
-import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.requests.vm.VMDisconnectProfile
 import org.scaladebugger.api.lowlevel.events.EventType.VMDisconnectEventType
+import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
+import org.scaladebugger.api.lowlevel.{JDIArgument, StandardRequestInfo}
+import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
+import org.scaladebugger.api.profiles.RequestHelper
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.VMDisconnectEventInfoProfile
+import org.scaladebugger.api.profiles.traits.requests.vm.VMDisconnectProfile
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.util.Try
@@ -26,6 +30,46 @@ trait PureVMDisconnectProfile extends VMDisconnectProfile {
 
   private lazy val eventProducer = infoProducer.eventProducer
 
+  /** Represents helper utility to create/manage requests. */
+  private lazy val requestHelper = newVMDisconnectRequestHelper()
+
+  /**
+   * Constructs a new request helper for access watchpoint.
+   *
+   * @return The new request helper
+   */
+  protected def newVMDisconnectRequestHelper() = {
+    // Define types for request helper
+    // E: Event Type
+    // EI: Event Info Type
+    // RequestArgs: (Class Name, Field Name, JDI Request Args)
+    // CounterKey: (Class Name, Field Name, JDI Request Args)
+    type E = VMDisconnectEvent
+    type EI = VMDisconnectEventInfoProfile
+    type RequestArgs = Seq[JDIRequestArgument]
+    type CounterKey = Seq[JDIRequestArgument]
+
+    // Used to hold request args across method calls
+    import scala.collection.JavaConverters._
+    val requestArgsCache = new ConcurrentHashMap[String, RequestArgs]().asScala
+
+    new RequestHelper[E, EI, RequestArgs, CounterKey](
+      scalaVirtualMachine = scalaVirtualMachine,
+      eventManager = eventManager,
+      etInstance = VMDisconnectEventType,
+      _newRequestId = () => java.util.UUID.randomUUID().toString,
+      _newRequest = (requestId, requestArgs, _) =>
+        Try(requestArgsCache.put(requestId, requestArgs)).map(_ => requestId),
+      _hasRequest = _ => false,
+      _removeRequestById = _ => {},
+      _newEventInfo = (s, event, jdiArgs) => {
+        eventProducer.newDefaultVMDisconnectEventInfoProfile(s, event, jdiArgs: _*)
+      },
+      _retrieveRequestInfo = requestId => requestArgsCache.get(requestId)
+        .map(rArgs => StandardRequestInfo(requestId, isPending = true, rArgs))
+    )
+  }
+
   /**
    * Constructs a stream of vm disconnect events.
    *
@@ -36,17 +80,11 @@ trait PureVMDisconnectProfile extends VMDisconnectProfile {
    */
   override def tryGetOrCreateVMDisconnectRequestWithData(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMDisconnectEventAndData]] = Try {
+  ): Try[IdentityPipeline[VMDisconnectEventAndData]] = {
     val JDIArgumentGroup(rArgs, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
 
-    eventManager
-      .addEventDataStream(VMDisconnectEventType, eArgs: _*)
-      .map(t => (t._1.asInstanceOf[VMDisconnectEvent], t._2))
-      .map(t => (eventProducer.newDefaultVMDisconnectEventInfoProfile(
-        scalaVirtualMachine = scalaVirtualMachine,
-        t._1,
-        rArgs ++ eArgs: _*
-      ), t._2))
-      .noop()
+    val requestArgs = rArgs
+    requestHelper.newRequest(requestArgs, rArgs)
+      .flatMap(id => requestHelper.newEventPipeline(id, eArgs, requestArgs))
   }
 }
