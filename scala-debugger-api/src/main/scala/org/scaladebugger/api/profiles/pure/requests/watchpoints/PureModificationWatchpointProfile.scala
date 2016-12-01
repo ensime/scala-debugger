@@ -1,29 +1,20 @@
 package org.scaladebugger.api.profiles.pure.requests.watchpoints
 //import acyclic.file
 
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicInteger
-
 import com.sun.jdi.event.ModificationWatchpointEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.api.lowlevel.events.EventManager
 import org.scaladebugger.api.lowlevel.events.EventType.ModificationWatchpointEventType
-import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
-import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
-import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
 import org.scaladebugger.api.lowlevel.watchpoints._
-import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.Constants._
 import org.scaladebugger.api.profiles.RequestHelper
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
 import org.scaladebugger.api.profiles.traits.info.events.ModificationWatchpointEventInfoProfile
 import org.scaladebugger.api.profiles.traits.requests.watchpoints.ModificationWatchpointProfile
-import org.scaladebugger.api.utils.{Memoization, MultiMap}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
-import scala.collection.JavaConverters._
 import scala.util.Try
 
 /**
@@ -97,20 +88,6 @@ trait PureModificationWatchpointProfile extends ModificationWatchpointProfile {
       case _                                            => Nil
     })
   }
-
-  /**
-   * Contains a mapping of request ids to associated event handler ids.
-   */
-  private val pipelineRequestEventIds = new MultiMap[String, String]
-
-  /**
-   * Contains mapping from input to a counter indicating how many pipelines
-   * are currently active for the input.
-   */
-  private val pipelineCounter = new ConcurrentHashMap[
-    (String, String, Seq[JDIEventArgument]),
-    AtomicInteger
-  ]().asScala
 
   /**
    * Constructs a stream of modification watchpoint events for field in the
