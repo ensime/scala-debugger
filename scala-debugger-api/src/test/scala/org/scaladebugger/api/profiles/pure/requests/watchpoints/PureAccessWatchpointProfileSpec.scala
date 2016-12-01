@@ -53,8 +53,6 @@ class PureAccessWatchpointProfileSpec extends test.ParallelMockFunSpec with JDIM
   describe("PureAccessWatchpointProfile") {
     describe("#tryGetOrCreateAccessWatchpointRequestWithData") {
       it("should use the request helper's request and event pipeline methods") {
-        val expected = Success(Pipeline.newPipeline(classOf[EIData]))
-
         val requestId = java.util.UUID.randomUUID().toString
         val className = "some.name"
         val fieldName = "someName"
@@ -67,15 +65,15 @@ class PureAccessWatchpointProfileSpec extends test.ParallelMockFunSpec with JDIM
           .returning(Success(requestId)).once()
         (mockRequestHelper.newEventPipeline _)
           .expects(requestId, mockJdiEventArgs, requestArgs)
-          .returning(expected).once()
+          .returning(Success(Pipeline.newPipeline(classOf[EIData]))).once()
 
         val actual = pureAccessWatchpointProfile.tryGetOrCreateAccessWatchpointRequest(
           className,
           fieldName,
           mockJdiRequestArgs ++ mockJdiEventArgs: _*
-        )
+        ).get
 
-        actual should be (expected)
+        actual shouldBe an [IdentityPipeline[EIData]]
       }
     }
 

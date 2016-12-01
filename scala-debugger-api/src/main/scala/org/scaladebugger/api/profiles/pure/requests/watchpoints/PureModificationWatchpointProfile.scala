@@ -16,7 +16,9 @@ import org.scaladebugger.api.lowlevel.watchpoints._
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.Constants._
+import org.scaladebugger.api.profiles.RequestHelper
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.ModificationWatchpointEventInfoProfile
 import org.scaladebugger.api.profiles.traits.requests.watchpoints.ModificationWatchpointProfile
 import org.scaladebugger.api.utils.{Memoization, MultiMap}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
@@ -36,6 +38,53 @@ trait PureModificationWatchpointProfile extends ModificationWatchpointProfile {
   protected val infoProducer: InfoProducerProfile
 
   private lazy val eventProducer = infoProducer.eventProducer
+
+  /** Represents helper utility to create/manage requests. */
+  private lazy val requestHelper = newModificationWatchpointRequestHelper()
+
+  /**
+   * Constructs a new request helper for modification watchpoint.
+   *
+   * @return The new request helper
+   */
+  protected def newModificationWatchpointRequestHelper() = {
+    // Define types for request helper
+    // E: Event Type
+    // EI: Event Info Type
+    // RequestArgs: (Class Name, Field Name, JDI Request Args)
+    // CounterKey: (Class Name, Field Name, JDI Request Args)
+    type E = ModificationWatchpointEvent
+    type EI = ModificationWatchpointEventInfoProfile
+    type RequestArgs = (String, String, Seq[JDIRequestArgument])
+    type CounterKey = (String, String, Seq[JDIRequestArgument])
+
+    new RequestHelper[E, EI, RequestArgs, CounterKey](
+      scalaVirtualMachine = scalaVirtualMachine,
+      eventManager = eventManager,
+      etInstance = ModificationWatchpointEventType,
+      _newRequestId = java.util.UUID.randomUUID().toString,
+      _newRequest = (requestId, requestArgs, jdiRequestArgs) => {
+        val (className, fieldName, _) = requestArgs
+        modificationWatchpointManager.createModificationWatchpointRequestWithId(
+          requestId,
+          className,
+          fieldName,
+          jdiRequestArgs: _*
+        )
+      },
+      _hasRequest = (requestArgs) => {
+        val (className, fieldName, _) = requestArgs
+        modificationWatchpointManager.hasModificationWatchpointRequest(className, fieldName)
+      },
+      _removeRequestById = (requestId) => {
+        modificationWatchpointManager.removeModificationWatchpointRequestWithId(requestId)
+      },
+      _newEventInfo = (s, event, jdiArgs) => {
+        eventProducer.newDefaultModificationWatchpointEventInfoProfile(s, event)
+      },
+      _retrieveRequestInfo = modificationWatchpointManager.getModificationWatchpointRequestInfoWithId
+    )
+  }
 
   /**
    * Retrieves the collection of active and pending modification watchpoint requests.
@@ -77,14 +126,12 @@ trait PureModificationWatchpointProfile extends ModificationWatchpointProfile {
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ModificationWatchpointEventAndData]] = Try {
+  ): Try[IdentityPipeline[ModificationWatchpointEventAndData]] = {
     val JDIArgumentGroup(rArgs, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
-    val requestId = newModificationWatchpointRequest((
-      className,
-      fieldName,
-      rArgs
-    ))
-    newModificationWatchpointPipeline(requestId, (className, fieldName, eArgs))
+
+    val requestArgs = (className, fieldName, rArgs)
+    requestHelper.newRequest(requestArgs, rArgs)
+      .flatMap(id => requestHelper.newEventPipeline(id, eArgs, requestArgs))
   }
 
   /**
@@ -189,132 +236,4 @@ trait PureModificationWatchpointProfile extends ModificationWatchpointProfile {
       modificationWatchpointManager.removeModificationWatchpointRequestWithId(a.requestId)
     )
   }
-
-  /**
-   * Creates a new modification watchpoint request using the given arguments.
-   * The request is memoized, meaning that the same request will be returned for
-   * the same arguments. The memoized result will be thrown out if the
-   * underlying request storage indicates that the request has been removed.
-   *
-   * @return The id of the created modification watchpoint request
-   */
-  protected val newModificationWatchpointRequest = {
-    type Input = (String, String, Seq[JDIRequestArgument])
-    type Key = (String, String, Seq[JDIRequestArgument])
-    type Output = String
-
-    new Memoization[Input, Key, Output](
-      memoFunc = (input: Input) => {
-        val requestId = newModificationWatchpointRequestId()
-        val args = UniqueIdProperty(id = requestId) +: input._3
-
-        modificationWatchpointManager.createModificationWatchpointRequestWithId(
-          requestId,
-          input._1,
-          input._2,
-          args: _*
-        ).get
-
-        requestId
-      },
-      cacheInvalidFunc = (key: Key) => {
-        !modificationWatchpointManager.hasModificationWatchpointRequest(
-          key._1,
-          key._2
-        )
-      }
-    )
-  }
-
-  /**
-   * Creates a new pipeline of modification watchpoint events and data using
-   * the given arguments. The pipeline is NOT memoized; therefore, each call
-   * creates a new pipeline with a new underlying event handler feeding the
-   * pipeline. This means that the pipeline needs to be properly closed to
-   * remove the event handler.
-   *
-   * @param requestId The id of the request whose events to stream through the
-   *                  new pipeline
-   * @param args The additional event arguments to provide to the event handler
-   *             feeding the new pipeline
-   * @return The new modification watchpoint event and data pipeline
-   */
-  protected def newModificationWatchpointPipeline(
-    requestId: String,
-    args: (String, String, Seq[JDIEventArgument])
-    ): IdentityPipeline[ModificationWatchpointEventAndData] = {
-    // Lookup final set of request arguments used when creating the request
-    val rArgs = modificationWatchpointManager.getModificationWatchpointRequestInfoWithId(requestId)
-      .map(_.extraArguments).getOrElse(Nil)
-
-    val eArgsWithFilter = UniqueIdPropertyFilter(id = requestId) +: args._3
-    val newPipeline = eventManager
-      .addEventDataStream(ModificationWatchpointEventType, eArgsWithFilter: _*)
-      .map(t => (t._1.asInstanceOf[ModificationWatchpointEvent], t._2))
-      .map(t => (eventProducer.newDefaultModificationWatchpointEventInfoProfile(
-        scalaVirtualMachine = scalaVirtualMachine,
-        t._1,
-        rArgs ++ eArgsWithFilter: _*
-      ), t._2))
-      .noop()
-
-    // Create a companion pipeline who, when closed, checks to see if there
-    // are no more pipelines for the given request and, if so, removes the
-    // request as well
-    val closePipeline = Pipeline.newPipeline(
-      classOf[ModificationWatchpointEventAndData],
-      newModificationWatchpointPipelineCloseFunc(requestId, args)
-    )
-
-    // Increment the counter for open pipelines
-    pipelineCounter
-      .getOrElseUpdate(args, new AtomicInteger(0))
-      .incrementAndGet()
-
-    val combinedPipeline = newPipeline.unionOutput(closePipeline)
-
-    // Store the new event handler id as associated with the current request
-    pipelineRequestEventIds.put(
-      requestId,
-      combinedPipeline.currentMetadata(
-        EventManager.EventHandlerIdMetadataField
-      ).asInstanceOf[String]
-    )
-
-    combinedPipeline
-  }
-
-  /**
-   * Creates a new function used for closing generated pipelines.
-   *
-   * @param requestId The id of the request
-   * @param args The arguments associated with the request
-   * @return The new function for closing the pipeline
-   */
-  protected def newModificationWatchpointPipelineCloseFunc(
-    requestId: String,
-    args: (String, String, Seq[JDIEventArgument])
-  ): (Option[Any]) => Unit = (data: Option[Any]) => {
-    val pCounter = pipelineCounter(args)
-
-    val totalPipelinesRemaining = pCounter.decrementAndGet()
-
-    if (totalPipelinesRemaining == 0 || data.exists(_ == CloseRemoveAll)) {
-      modificationWatchpointManager.removeModificationWatchpointRequestWithId(
-        requestId
-      )
-      pipelineRequestEventIds.remove(requestId).foreach(
-        _.foreach(eventManager.removeEventHandler)
-      )
-      pCounter.set(0)
-    }
-  }
-
-  /**
-   * Used to generate new request ids to capture request/event matches.
-   *
-   * @return The new id as a string
-   */
-  protected def newModificationWatchpointRequestId(): String =
-    java.util.UUID.randomUUID().toString
 }
