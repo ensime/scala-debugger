@@ -44,6 +44,8 @@ class PureFieldInfoProfileSpec extends test.ParallelMockFunSpec
           .returning(mockInfoProducerProfile).once()
 
         // Create new info profile using Java version of info producer
+        // NOTE: Cannot validate second set of args because they are
+        //       call-by-name, which ScalaMock does not support presently
         (mockInfoProducerProfile.newFieldInfoProfile(
           _: ScalaVirtualMachine,
           _: Either[ObjectReference, ReferenceType],
@@ -56,7 +58,7 @@ class PureFieldInfoProfileSpec extends test.ParallelMockFunSpec
           Left(mockObjectReference),
           mockField,
           offsetIndex,
-          mockVirtualMachine
+          *
         ).returning(expected).once()
 
         val actual = pureFieldInfoProfile.toJavaInfo
@@ -82,6 +84,8 @@ class PureFieldInfoProfileSpec extends test.ParallelMockFunSpec
           .returning(mockInfoProducerProfile).once()
 
         // Create new info profile using Java version of info producer
+        // NOTE: Cannot validate second set of args because they are
+        //       call-by-name, which ScalaMock does not support presently
         (mockInfoProducerProfile.newFieldInfoProfile(
           _: ScalaVirtualMachine,
           _: Either[ObjectReference, ReferenceType],
@@ -90,12 +94,12 @@ class PureFieldInfoProfileSpec extends test.ParallelMockFunSpec
         )(
           _: VirtualMachine
         )).expects(
-            mockScalaVirtualMachine,
-            Right(mockReferenceType),
-            mockField,
-            offsetIndex,
-            mockVirtualMachine
-          ).returning(expected).once()
+          mockScalaVirtualMachine,
+          Right(mockReferenceType),
+          mockField,
+          offsetIndex,
+          *
+        ).returning(expected).once()
 
         val actual = pureFieldInfoProfile.toJavaInfo
 

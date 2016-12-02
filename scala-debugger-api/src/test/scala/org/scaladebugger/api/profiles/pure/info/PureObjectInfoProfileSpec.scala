@@ -50,6 +50,8 @@ class PureObjectInfoProfileSpec extends test.ParallelMockFunSpec
           .returning(mockInfoProducerProfile).once()
 
         // Create new info profile using Java version of info producer
+        // NOTE: Cannot validate second set of args because they are
+        //       call-by-name, which ScalaMock does not support presently
         (mockInfoProducerProfile.newObjectInfoProfile(
           _: ScalaVirtualMachine,
           _: ObjectReference
@@ -59,8 +61,7 @@ class PureObjectInfoProfileSpec extends test.ParallelMockFunSpec
         )).expects(
           mockScalaVirtualMachine,
           mockObjectReference,
-          mockVirtualMachine,
-          mockReferenceType
+          *, *
         ).returning(expected).once()
 
         val actual = pureObjectInfoProfile.toJavaInfo
