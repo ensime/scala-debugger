@@ -38,10 +38,10 @@ trait PureEventListenerProfile extends EventListenerProfile {
     eventType: EventType,
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[EventAndData]] = Try {
-    val JDIArgumentGroup(_, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
+    val JDIArgumentGroup(rArgs, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
     eventManager.addEventDataStream(eventType, eArgs: _*)
       .map(t => (eventProducer.newDefaultEventInfoProfile(
-        scalaVirtualMachine, t._1, eArgs: _*
+        scalaVirtualMachine, t._1, rArgs ++ eArgs: _*
       ), t._2))
       .noop()
   }

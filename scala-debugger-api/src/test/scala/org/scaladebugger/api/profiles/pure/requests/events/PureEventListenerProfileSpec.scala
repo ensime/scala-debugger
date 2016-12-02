@@ -10,12 +10,16 @@ import org.scaladebugger.api.lowlevel.events.{EventHandlerInfo, EventManager, JD
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducerProfile, EventInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scalatest.concurrent.{Futures, ScalaFutures}
+import org.scalatest.time.{Milliseconds, Span}
 import test.JDIMockHelpers
 
 import scala.util.Success
 
 class PureEventListenerProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+  with Futures with ScalaFutures
 {
   private val TestEventHandlerId = java.util.UUID.randomUUID().toString
   private val mockEventManager = mock[EventManager]
@@ -91,10 +95,9 @@ class PureEventListenerProfileSpec extends test.ParallelMockFunSpec with JDIMock
 
     describe("#tryCreateEventListenerWithData") {
       it("should set a low-level event and stream its events") {
-        val expected = Success(Pipeline.newPipeline(
-          classOf[PureEventListenerProfile#EventAndData]
-        ))
+        val expected = (mock[EventInfoProfile], Seq(mock[JDIEventDataResult]))
         val eventType = stub[EventType] // Using mock throws stack overflow
+        val mockEvent = mock[Event]
         val requestArguments = Seq(mock[JDIRequestArgument])
         val eventArguments = Seq(mock[JDIEventArgument])
         val arguments = requestArguments ++ eventArguments
@@ -106,12 +109,24 @@ class PureEventListenerProfileSpec extends test.ParallelMockFunSpec with JDIMock
           .expects(eventType, eventArguments)
           .returning(lowlevelPipeline).once()
 
-        val actual = pureEventListenerProfile.tryCreateEventListenerWithData(
+        val eFuture = pureEventListenerProfile.tryCreateEventListenerWithData(
           eventType,
           arguments: _*
-        )
+        ).get.toFuture
 
-        actual should be (expected)
+        // Create a new event info profile
+        val mockEventInfoProducer = mock[EventInfoProducerProfile]
+        (mockInfoProducer.eventProducer _).expects()
+          .returning(mockEventInfoProducer).once()
+        (mockEventInfoProducer.newDefaultEventInfoProfile _).expects(
+          mockScalaVirtualMachine,
+          mockEvent,
+          arguments
+        ).returning(expected._1).once()
+
+        lowlevelPipeline.process((mockEvent, expected._2))
+
+        whenReady(eFuture) { actual => actual should be (expected) }
       }
     }
   }
