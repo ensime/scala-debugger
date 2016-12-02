@@ -1,13 +1,18 @@
 package org.scaladebugger.api.profiles.pure.requests.vm
-import com.sun.jdi.event.Event
+import com.sun.jdi.event.{Event, VMDisconnectEvent}
+import org.scaladebugger.api.lowlevel.StandardRequestInfo
 import org.scaladebugger.api.lowlevel.events.EventType.VMDisconnectEventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
+import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
-import org.scaladebugger.api.profiles.traits.info.events.VMDisconnectEventInfoProfile
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducerProfile, VMDisconnectEventInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
-import test.JDIMockHelpers
+import test.{JDIMockHelpers, TestRequestHelper}
+
+import scala.util.Success
 
 class PureVMDisconnectProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers
 {
@@ -15,33 +20,168 @@ class PureVMDisconnectProfileSpec extends test.ParallelMockFunSpec with JDIMockH
   private val mockInfoProducer = mock[InfoProducerProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
 
-  private val pureVMDisconnectProfile = new Object with PureVMDisconnectProfile {
+  private type E = VMDisconnectEvent
+  private type EI = VMDisconnectEventInfoProfile
+  private type EIData = (EI, Seq[JDIEventDataResult])
+  private type RequestArgs = Seq[JDIRequestArgument]
+  private type CounterKey = Seq[JDIRequestArgument]
+  private class CustomTestRequestHelper extends TestRequestHelper[E, EI, RequestArgs, CounterKey](
+    scalaVirtualMachine = mockScalaVirtualMachine,
+    eventManager = mockEventManager,
+    etInstance = VMDisconnectEventType
+  )
+
+  private class TestPureVMDisconnectProfile(
+    private val customTestRequestHelper: Option[CustomTestRequestHelper] = None
+  ) extends PureVMDisconnectProfile {
+    override def newVMDisconnectRequestHelper() = {
+      val originalRequestHelper = super.newVMDisconnectRequestHelper()
+      customTestRequestHelper.getOrElse(originalRequestHelper)
+    }
     override protected val eventManager: EventManager = mockEventManager
     override protected val infoProducer: InfoProducerProfile = mockInfoProducer
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
+  private val mockRequestHelper = mock[CustomTestRequestHelper]
+  private val pureVMDisconnectProfile =
+    new TestPureVMDisconnectProfile(Some(mockRequestHelper))
+
   describe("PureVMDisconnectProfile") {
+    describe("for custom request helper") {
+      describe("#_newRequestId") {
+        it("should return a new id each time") {
+          val pureVMDisconnectProfile = new TestPureVMDisconnectProfile()
+          val requestHelper = pureVMDisconnectProfile.newVMDisconnectRequestHelper()
+
+          val requestId1 = requestHelper._newRequestId()
+          val requestId2 = requestHelper._newRequestId()
+
+          requestId1 shouldBe a [String]
+          requestId2 shouldBe a [String]
+          requestId1 should not be (requestId2)
+        }
+      }
+
+      describe("#_hasRequest") {
+        it("should return true if a request exists with the specified args") {
+          val expected = true
+
+          val pureVMDisconnectProfile = new TestPureVMDisconnectProfile()
+          val requestHelper = pureVMDisconnectProfile.newVMDisconnectRequestHelper()
+
+          val requestId = "some id"
+          val requestArgs = Seq(mock[JDIRequestArgument])
+
+          requestHelper._newRequest(requestId, requestArgs, requestArgs)
+
+          val actual = requestHelper._hasRequest(requestArgs)
+
+          actual should be (expected)
+        }
+
+        it("should return false if no request exists with the specified args") {
+          val expected = false
+
+          val pureVMDisconnectProfile = new TestPureVMDisconnectProfile()
+          val requestHelper = pureVMDisconnectProfile.newVMDisconnectRequestHelper()
+
+          val requestArgs = Seq(mock[JDIRequestArgument])
+
+          val actual = requestHelper._hasRequest(requestArgs)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_removeByRequestId") {
+        it("should remove the request with the specified id") {
+          val pureVMDisconnectProfile = new TestPureVMDisconnectProfile()
+          val requestHelper = pureVMDisconnectProfile.newVMDisconnectRequestHelper()
+
+          val requestId = "some id"
+          val requestArgs = Seq(mock[JDIRequestArgument])
+
+          requestHelper._newRequest(requestId, requestArgs, requestArgs)
+          requestHelper._removeRequestById(requestId)
+          requestHelper._hasRequest(requestArgs) should be (false)
+        }
+      }
+
+
+      describe("#_retrieveRequestInfo") {
+        it("should construct info for the request with the specified id") {
+          val expected = Some(StandardRequestInfo(
+            requestId = "some id",
+            isPending = true,
+            extraArguments = Seq(mock[JDIRequestArgument])
+          ))
+
+          val pureVMDisconnectProfile = new TestPureVMDisconnectProfile()
+          val requestHelper = pureVMDisconnectProfile.newVMDisconnectRequestHelper()
+
+
+          val actual = expected.flatMap(info => {
+            requestHelper._newRequest(
+              info.requestId,
+              info.extraArguments,
+              info.extraArguments
+            )
+            requestHelper._retrieveRequestInfo(info.requestId)
+          })
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_newEventInfo") {
+        it("should create new event info for the specified args") {
+          val expected = mock[VMDisconnectEventInfoProfile]
+
+          val pureVMDisconnectProfile = new TestPureVMDisconnectProfile()
+          val requestHelper = pureVMDisconnectProfile.newVMDisconnectRequestHelper()
+
+          val mockEventProducer = mock[EventInfoProducerProfile]
+          (mockInfoProducer.eventProducer _).expects()
+            .returning(mockEventProducer).once()
+
+          val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+          val mockEvent = mock[VMDisconnectEvent]
+          val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
+          (mockEventProducer.newDefaultVMDisconnectEventInfoProfile _)
+            .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
+            .returning(expected).once()
+
+          val actual = requestHelper._newEventInfo(
+            mockScalaVirtualMachine,
+            mockEvent,
+            mockJdiArgs
+          )
+
+          actual should be (expected)
+        }
+      }
+    }
+
     describe("#tryGetOrCreateVMDisconnectRequestWithData") {
-      it("should create a stream of events with data for disconnections") {
-        val expected = (mock[VMDisconnectEventInfoProfile], Seq(mock[JDIEventDataResult]))
-        val arguments = Seq(mock[JDIEventArgument])
+      it("should use the request helper's request and event pipeline methods") {
+        val requestId = java.util.UUID.randomUUID().toString
+        val mockJdiRequestArgs = Seq(mock[JDIRequestArgument])
+        val mockJdiEventArgs = Seq(mock[JDIEventArgument])
+        val requestArgs = mockJdiRequestArgs
 
-        val lowlevelPipeline = Pipeline.newPipeline(
-          classOf[(Event, Seq[JDIEventDataResult])]
-        )
-        (mockEventManager.addEventDataStream _).expects(
-          VMDisconnectEventType, arguments
-        ).returning(lowlevelPipeline).once()
+        (mockRequestHelper.newRequest _)
+          .expects(requestArgs, mockJdiRequestArgs)
+          .returning(Success(requestId)).once()
+        (mockRequestHelper.newEventPipeline _)
+          .expects(requestId, mockJdiEventArgs, requestArgs)
+          .returning(Success(Pipeline.newPipeline(classOf[EIData]))).once()
 
-        var actual: (VMDisconnectEventInfoProfile, Seq[JDIEventDataResult]) = null
-        val pipeline =
-          pureVMDisconnectProfile.tryGetOrCreateVMDisconnectRequestWithData(arguments: _*)
-        pipeline.get.foreach(actual = _)
+        val actual = pureVMDisconnectProfile.tryGetOrCreateVMDisconnectRequest(
+          mockJdiRequestArgs ++ mockJdiEventArgs: _*
+        ).get
 
-        pipeline.get.process(expected)
-
-        actual should be (expected)
+        actual shouldBe an [IdentityPipeline[EIData]]
       }
     }
   }

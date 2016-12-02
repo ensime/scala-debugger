@@ -60,8 +60,8 @@ trait PureVMDisconnectProfile extends VMDisconnectProfile {
       _newRequestId = () => java.util.UUID.randomUUID().toString,
       _newRequest = (requestId, requestArgs, _) =>
         Try(requestArgsCache.put(requestId, requestArgs)).map(_ => requestId),
-      _hasRequest = _ => false,
-      _removeRequestById = _ => {},
+      _hasRequest = id => requestArgsCache.values.toSeq.contains(id),
+      _removeRequestById = requestId => requestArgsCache.remove(requestId),
       _newEventInfo = (s, event, jdiArgs) => {
         eventProducer.newDefaultVMDisconnectEventInfoProfile(s, event, jdiArgs: _*)
       },
