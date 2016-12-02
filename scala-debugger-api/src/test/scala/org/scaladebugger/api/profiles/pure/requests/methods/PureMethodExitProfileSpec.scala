@@ -1,22 +1,20 @@
 package org.scaladebugger.api.profiles.pure.requests.methods
-import acyclic.file
-import com.sun.jdi.event.Event
-import org.scaladebugger.api.lowlevel.events.EventManager
+import com.sun.jdi.event.MethodExitEvent
 import org.scaladebugger.api.lowlevel.events.EventType.MethodExitEventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.lowlevel.events.filters.{MethodNameFilter, UniqueIdPropertyFilter}
+import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.methods.{MethodExitManager, MethodExitRequestInfo, PendingMethodExitSupportLike}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
-import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.Constants
+import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducerProfile, MethodExitEventInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.JDIMockHelpers
+import test.{JDIMockHelpers, TestRequestHelper}
 
-import scala.util.{Failure, Success}
+import scala.util.Success
 
 class PureMethodExitProfileSpec extends FunSpec with Matchers
 with ParallelTestExecution with MockFactory with JDIMockHelpers
@@ -27,22 +25,194 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
   private val mockInfoProducer = mock[InfoProducerProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
 
-  private val pureMethodExitProfile = new Object with PureMethodExitProfile {
-    private var requestId: String = _
-    def setRequestId(requestId: String): Unit = this.requestId = requestId
+  private type E = MethodExitEvent
+  private type EI = MethodExitEventInfoProfile
+  private type EIData = (EI, Seq[JDIEventDataResult])
+  private type RequestArgs = (String, String, Seq[JDIRequestArgument])
+  private type CounterKey = (String, String, Seq[JDIRequestArgument])
+  private class CustomTestRequestHelper extends TestRequestHelper[E, EI, RequestArgs, CounterKey](
+    scalaVirtualMachine = mockScalaVirtualMachine,
+    eventManager = mockEventManager,
+    etInstance = MethodExitEventType
+  )
 
-    // NOTE: If we set a specific request id, return that, otherwise use the
-    //       default behavior
-    override protected def newMethodExitRequestId(): String =
-      if (requestId != null) requestId else super.newMethodExitRequestId()
-
+  private class TestPureMethodExitProfile(
+    private val customTestRequestHelper: Option[CustomTestRequestHelper] = None
+  ) extends PureMethodExitProfile {
+    override def newMethodExitRequestHelper() = {
+      val originalRequestHelper = super.newMethodExitRequestHelper()
+      customTestRequestHelper.getOrElse(originalRequestHelper)
+    }
     override protected val methodExitManager = mockMethodExitManager
     override protected val eventManager: EventManager = mockEventManager
     override protected val infoProducer: InfoProducerProfile = mockInfoProducer
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
+  private val mockRequestHelper = mock[CustomTestRequestHelper]
+  private val pureMethodExitProfile =
+    new TestPureMethodExitProfile(Some(mockRequestHelper))
+
   describe("PureMethodExitProfile") {
+    describe("for custom request helper") {
+      describe("#_newRequestId") {
+        it("should return a new id each time") {
+          val pureMethodExitProfile = new TestPureMethodExitProfile()
+          val requestHelper = pureMethodExitProfile.newMethodExitRequestHelper()
+
+          val requestId1 = requestHelper._newRequestId()
+          val requestId2 = requestHelper._newRequestId()
+
+          requestId1 shouldBe a [String]
+          requestId2 shouldBe a [String]
+          requestId1 should not be (requestId2)
+        }
+      }
+
+      describe("#_newRequest") {
+        it("should create a new request with the provided args and id") {
+          val expected = Success("some id")
+
+          val pureMethodExitProfile = new TestPureMethodExitProfile()
+          val requestHelper = pureMethodExitProfile.newMethodExitRequestHelper()
+
+          val requestId = expected.get
+          val className = "class.name"
+          val methodName = "method.name"
+          val requestArgs = (className, methodName, Seq(mock[JDIRequestArgument]))
+          val jdiRequestArgs = Seq(mock[JDIRequestArgument])
+
+          (mockMethodExitManager.createMethodExitRequestWithId _)
+            .expects(requestId, className, methodName, jdiRequestArgs)
+            .returning(expected)
+            .once()
+
+          val actual = requestHelper._newRequest(requestId, requestArgs, jdiRequestArgs)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_hasRequest") {
+        it("should return the result of checking if a request with matching properties exists") {
+          val expected = true
+
+          val pureMethodExitProfile = new TestPureMethodExitProfile()
+          val requestHelper = pureMethodExitProfile.newMethodExitRequestHelper()
+
+          val className = "class.name"
+          val methodName = "method.name"
+          val requestArgs = (className, methodName, Seq(mock[JDIRequestArgument]))
+
+          (mockMethodExitManager.hasMethodExitRequest _)
+            .expects(className, methodName)
+            .returning(expected)
+            .once()
+
+          val actual = requestHelper._hasRequest(requestArgs)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_removeByRequestId") {
+        it("should remove the request with the specified id") {
+          val pureMethodExitProfile = new TestPureMethodExitProfile()
+          val requestHelper = pureMethodExitProfile.newMethodExitRequestHelper()
+
+          val requestId = "some id"
+
+          (mockMethodExitManager.removeMethodExitRequestWithId _)
+            .expects(requestId)
+            .returning(true)
+            .once()
+
+          requestHelper._removeRequestById(requestId)
+        }
+      }
+
+
+      describe("#_retrieveRequestInfo") {
+        it("should get the info for the request with the specified id") {
+          val expected = Some(MethodExitRequestInfo(
+            requestId = "some id",
+            isPending = true,
+            className = "some.name",
+            methodName = "someName",
+            extraArguments = Seq(mock[JDIRequestArgument])
+          ))
+
+          val pureMethodExitProfile = new TestPureMethodExitProfile()
+          val requestHelper = pureMethodExitProfile.newMethodExitRequestHelper()
+
+          val requestId = "some id"
+
+          (mockMethodExitManager.getMethodExitRequestInfoWithId _)
+            .expects(requestId)
+            .returning(expected)
+            .once()
+
+          val actual = requestHelper._retrieveRequestInfo(requestId)
+
+          actual should be (expected)
+        }
+      }
+
+      describe("#_newEventInfo") {
+        it("should create new event info for the specified args") {
+          val expected = mock[MethodExitEventInfoProfile]
+
+          val pureMethodExitProfile = new TestPureMethodExitProfile()
+          val requestHelper = pureMethodExitProfile.newMethodExitRequestHelper()
+
+          val mockEventProducer = mock[EventInfoProducerProfile]
+          (mockInfoProducer.eventProducer _).expects()
+            .returning(mockEventProducer).once()
+
+          val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+          val mockEvent = mock[MethodExitEvent]
+          val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
+          (mockEventProducer.newDefaultMethodExitEventInfoProfile _)
+            .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
+            .returning(expected).once()
+
+          val actual = requestHelper._newEventInfo(
+            mockScalaVirtualMachine,
+            mockEvent,
+            mockJdiArgs
+          )
+
+          actual should be (expected)
+        }
+      }
+    }
+
+    describe("#tryGetOrCreateMethodExitRequestWithData") {
+      it("should use the request helper's request and event pipeline methods") {
+        val requestId = java.util.UUID.randomUUID().toString
+        val className = "some.name"
+        val methodName = "someName"
+        val mockJdiRequestArgs = Seq(mock[JDIRequestArgument])
+        val mockJdiEventArgs = Seq(mock[JDIEventArgument])
+        val requestArgs = (className, methodName, mockJdiRequestArgs)
+
+        (mockRequestHelper.newRequest _)
+          .expects(requestArgs, mockJdiRequestArgs)
+          .returning(Success(requestId)).once()
+        (mockRequestHelper.newEventPipeline _)
+          .expects(requestId, mockJdiEventArgs, requestArgs)
+          .returning(Success(Pipeline.newPipeline(classOf[EIData]))).once()
+
+        val actual = pureMethodExitProfile.tryGetOrCreateMethodExitRequest(
+          className,
+          methodName,
+          mockJdiRequestArgs ++ mockJdiEventArgs: _*
+        ).get
+
+        actual shouldBe an [IdentityPipeline[EIData]]
+      }
+    }
+
     describe("#methodExitRequests") {
       it("should include all active requests") {
         val expected = Seq(
@@ -775,498 +945,6 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
         )
 
         actual should be (expected)
-      }
-    }
-
-    describe("#tryGetOrCreateMethodExitRequestWithData") {
-      it("should create a new request if one has not be made yet") {
-        val className = "some.class.name"
-        val methodName = "someMethodName"
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-        val uniqueIdPropertyFilter = UniqueIdPropertyFilter(id = TestRequestId)
-        val eventArguments = Seq(
-          uniqueIdPropertyFilter,
-          MethodNameFilter(methodName)
-        )
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMethodExitProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockMethodExitManager.hasMethodExitRequest _)
-            .expects(className, methodName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMethodExitManager.createMethodExitRequestWithId _).expects(
-            TestRequestId,
-            className,
-            methodName,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MethodExitEventType, eventArguments)
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-      }
-
-      it("should capture exceptions thrown when creating the request") {
-        val expected = Failure(new Throwable)
-        val className = "some.class.name"
-        val methodName = "someMethodName"
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMethodExitProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockMethodExitManager.hasMethodExitRequest _)
-            .expects(className, methodName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMethodExitManager.createMethodExitRequestWithId _).expects(
-            TestRequestId,
-            className,
-            methodName,
-            uniqueIdProperty +: arguments
-          ).throwing(expected.failed.get).once()
-        }
-
-        val actual = pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-
-        actual should be (expected)
-      }
-
-      it("should create a new request if the previous one was removed") {
-        val className = "some.class.name"
-        val methodName = "someMethodName"
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMethodExitProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMethodExitProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-          val eventArguments = Seq(
-            uniqueIdPropertyFilter,
-            MethodNameFilter(methodName)
-          )
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockMethodExitManager.hasMethodExitRequest _)
-            .expects(className, methodName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMethodExitManager.createMethodExitRequestWithId _).expects(
-            TestRequestId,
-            className,
-            methodName,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MethodExitEventType, eventArguments)
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMethodExitProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId + "other")
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId + "other")
-          val eventArguments = Seq(
-            uniqueIdPropertyFilter,
-            MethodNameFilter(methodName)
-          )
-
-          // Return false this time to indicate that the methodExit request
-          // was removed some time between the two calls
-          (mockMethodExitManager.hasMethodExitRequest _)
-            .expects(className, methodName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMethodExitManager.createMethodExitRequestWithId _).expects(
-            TestRequestId + "other",
-            className,
-            methodName,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MethodExitEventType, eventArguments)
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-      }
-
-      it("should not create a new request if the previous one still exists") {
-        val className = "some.class.name"
-        val methodName = "someMethodName"
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMethodExitProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-          val eventArguments = Seq(
-            uniqueIdPropertyFilter,
-            MethodNameFilter(methodName)
-          )
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockMethodExitManager.hasMethodExitRequest _)
-            .expects(className, methodName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMethodExitManager.createMethodExitRequestWithId _).expects(
-            TestRequestId,
-            className,
-            methodName,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MethodExitEventType, eventArguments)
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMethodExitProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-          val eventArguments = Seq(
-            uniqueIdPropertyFilter,
-            MethodNameFilter(methodName)
-          )
-
-          // Return true to indicate that we do still have the request
-          (mockMethodExitManager.hasMethodExitRequest _)
-            .expects(className, methodName)
-            .returning(true).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MethodExitEventType, eventArguments)
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-      }
-
-      it("should create a new request for different input") {
-        val className = "some.class.name"
-        val methodName = "someMethodName"
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMethodExitProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMethodExitProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-          val eventArguments = Seq(
-            uniqueIdPropertyFilter,
-            MethodNameFilter(methodName)
-          )
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockMethodExitManager.hasMethodExitRequest _)
-            .expects(className, methodName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMethodExitManager.createMethodExitRequestWithId _).expects(
-            TestRequestId,
-            className,
-            methodName,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MethodExitEventType, eventArguments)
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMethodExitProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId + "other")
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId + "other")
-          val eventArguments = Seq(
-            uniqueIdPropertyFilter,
-            MethodNameFilter(methodName + 1)
-          )
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockMethodExitManager.hasMethodExitRequest _)
-            .expects(className, methodName + 1)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMethodExitManager.createMethodExitRequestWithId _).expects(
-            TestRequestId + "other",
-            className,
-            methodName + 1,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MethodExitEventType, eventArguments)
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName + 1,
-          arguments: _*
-        )
-      }
-
-      it("should remove the underlying request if all pipelines are closed") {
-        val className = "some.class.name"
-        val methodName = "someMethodName"
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMethodExitProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            val eventArguments = Seq(
-              uniqueIdPropertyFilter,
-              MethodNameFilter(methodName)
-            )
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockMethodExitManager.hasMethodExitRequest _)
-              .expects(className, methodName)
-              .returning(false).once()
-            (mockMethodExitManager.hasMethodExitRequest _)
-              .expects(className, methodName)
-              .returning(true).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockMethodExitManager.createMethodExitRequestWithId _).expects(
-              TestRequestId,
-              className,
-              methodName,
-              uniqueIdProperty +: arguments
-            ).returning(Success("")).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(MethodExitEventType, eventArguments)
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockMethodExitManager.removeMethodExitRequestWithId _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-        val p2 = pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-
-        p1.foreach(_.close())
-        p2.foreach(_.close())
-      }
-
-      it("should remove the underlying request if close data says to do so") {
-        val className = "some.class.name"
-        val methodName = "someMethodName"
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMethodExitProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            val eventArguments = Seq(
-              uniqueIdPropertyFilter,
-              MethodNameFilter(methodName)
-            )
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockMethodExitManager.hasMethodExitRequest _)
-              .expects(className, methodName)
-              .returning(false).once()
-            (mockMethodExitManager.hasMethodExitRequest _)
-              .expects(className, methodName)
-              .returning(true).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockMethodExitManager.createMethodExitRequestWithId _).expects(
-              TestRequestId,
-              className,
-              methodName,
-              uniqueIdProperty +: arguments
-            ).returning(Success("")).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(MethodExitEventType, eventArguments)
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockMethodExitManager.removeMethodExitRequestWithId _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-        val p2 = pureMethodExitProfile.tryGetOrCreateMethodExitRequestWithData(
-          className,
-          methodName,
-          arguments: _*
-        )
-
-        p1.foreach(_.close(now = true, data = Constants.CloseRemoveAll))
       }
     }
   }
