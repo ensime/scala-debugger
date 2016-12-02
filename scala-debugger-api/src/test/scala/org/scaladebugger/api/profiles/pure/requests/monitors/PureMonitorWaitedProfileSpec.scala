@@ -1,48 +1,246 @@
 package org.scaladebugger.api.profiles.pure.requests.monitors
-import acyclic.file
-import com.sun.jdi.event.Event
-import org.scaladebugger.api.lowlevel.events.EventManager
+
+import com.sun.jdi.event.MonitorWaitedEvent
 import org.scaladebugger.api.lowlevel.events.EventType.MonitorWaitedEventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
-import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
+import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.monitors.{MonitorWaitedManager, MonitorWaitedRequestInfo, PendingMonitorWaitedSupportLike}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
-import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.Constants
+import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducerProfile, MonitorWaitedEventInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.JDIMockHelpers
+import test.{JDIMockHelpers, TestRequestHelper}
 
-import scala.util.{Failure, Success}
+import scala.util.Success
 
 class PureMonitorWaitedProfileSpec extends FunSpec with Matchers
 with ParallelTestExecution with MockFactory with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
-  private val mockMonitorWaitedManager = mock[MonitorWaitedManager]
+  private val mockMonitorWaitedManager =
+    mock[MonitorWaitedManager]
   private val mockEventManager = mock[EventManager]
   private val mockInfoProducer = mock[InfoProducerProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
 
-  private val pureMonitorWaitedProfile = new Object with PureMonitorWaitedProfile {
-    private var requestId: String = _
-    def setRequestId(requestId: String): Unit = this.requestId = requestId
+  private type E = MonitorWaitedEvent
+  private type EI = MonitorWaitedEventInfoProfile
+  private type EIData = (EI, Seq[JDIEventDataResult])
+  private type RequestArgs = Seq[JDIRequestArgument]
+  private type CounterKey = Seq[JDIRequestArgument]
+  private class CustomTestRequestHelper extends TestRequestHelper[E, EI, RequestArgs, CounterKey](
+    scalaVirtualMachine = mockScalaVirtualMachine,
+    eventManager = mockEventManager,
+    etInstance = MonitorWaitedEventType
+  )
 
-    // NOTE: If we set a specific request id, return that, otherwise use the
-    //       default behavior
-    override protected def newMonitorWaitedRequestId(): String =
-      if (requestId != null) requestId else super.newMonitorWaitedRequestId()
-
+  private class TestPureMonitorWaitedProfile(
+    private val customTestRequestHelper: Option[CustomTestRequestHelper] = None
+  ) extends PureMonitorWaitedProfile {
+    override def newMonitorWaitedRequestHelper() = {
+      val originalRequestHelper = super.newMonitorWaitedRequestHelper()
+      customTestRequestHelper.getOrElse(originalRequestHelper)
+    }
     override protected val monitorWaitedManager = mockMonitorWaitedManager
     override protected val eventManager: EventManager = mockEventManager
     override protected val infoProducer: InfoProducerProfile = mockInfoProducer
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
+  private val mockRequestHelper = mock[CustomTestRequestHelper]
+  private val pureMonitorWaitedProfile =
+    new TestPureMonitorWaitedProfile(Some(mockRequestHelper))
+
   describe("PureMonitorWaitedProfile") {
+    describe("for custom request helper") {
+      describe("#_newRequestId") {
+        it("should return a new id each time") {
+          val pureMonitorWaitedProfile = new TestPureMonitorWaitedProfile()
+          val requestHelper = pureMonitorWaitedProfile.newMonitorWaitedRequestHelper()
+
+          val requestId1 = requestHelper._newRequestId()
+          val requestId2 = requestHelper._newRequestId()
+
+          requestId1 shouldBe a[String]
+          requestId2 shouldBe a[String]
+          requestId1 should not be (requestId2)
+        }
+      }
+
+      describe("#_newRequest") {
+        it("should create a new request with the provided args and id") {
+          val expected = Success("some id")
+
+          val pureMonitorWaitedProfile = new TestPureMonitorWaitedProfile()
+          val requestHelper = pureMonitorWaitedProfile.newMonitorWaitedRequestHelper()
+
+          val requestId = expected.get
+          val requestArgs = Seq(mock[JDIRequestArgument])
+          val jdiRequestArgs = Seq(mock[JDIRequestArgument])
+
+          (mockMonitorWaitedManager.createMonitorWaitedRequestWithId _)
+            .expects(requestId, jdiRequestArgs)
+            .returning(expected)
+            .once()
+
+          val actual = requestHelper._newRequest(requestId, requestArgs, jdiRequestArgs)
+
+          actual should be(expected)
+        }
+      }
+
+      describe("#_hasRequest") {
+        it("should return true if a request exists with matching request arguments") {
+          val expected = true
+
+          val pureMonitorWaitedProfile = new TestPureMonitorWaitedProfile()
+          val requestHelper = pureMonitorWaitedProfile.newMonitorWaitedRequestHelper()
+
+          val requestId = "some id"
+          val requestArgs = Seq(mock[JDIRequestArgument])
+          val requestInfo = MonitorWaitedRequestInfo(
+            requestId = requestId,
+            isPending = false,
+            extraArguments = requestArgs
+          )
+
+          // Get a list of request ids
+          (mockMonitorWaitedManager.monitorWaitedRequestList _).expects()
+            .returning(Seq(requestId)).once()
+
+          // Look up a request that has arguments
+          (mockMonitorWaitedManager.getMonitorWaitedRequestInfo _).expects(requestId)
+            .returning(Some(requestInfo)).once()
+
+          val actual = requestHelper._hasRequest(requestArgs)
+
+          actual should be(expected)
+        }
+
+        it("should return false if no request exists with matching request arguments") {
+          val expected = false
+
+          val pureMonitorWaitedProfile = new TestPureMonitorWaitedProfile()
+          val requestHelper = pureMonitorWaitedProfile.newMonitorWaitedRequestHelper()
+
+          val requestId = "some id"
+          val requestArgs = Seq(mock[JDIRequestArgument])
+          val requestInfo = MonitorWaitedRequestInfo(
+            requestId = requestId,
+            isPending = false,
+            extraArguments = Seq(mock[JDIRequestArgument])
+          )
+
+          // Get a list of request ids
+          (mockMonitorWaitedManager.monitorWaitedRequestList _).expects()
+            .returning(Seq(requestId)).once()
+
+          // Look up a request that does not have same arguments
+          (mockMonitorWaitedManager.getMonitorWaitedRequestInfo _).expects(requestId)
+            .returning(Some(requestInfo)).once()
+
+          val actual = requestHelper._hasRequest(requestArgs)
+
+          actual should be(expected)
+        }
+      }
+
+      describe("#_removeByRequestId") {
+        it("should remove the request with the specified id") {
+          val pureMonitorWaitedProfile = new TestPureMonitorWaitedProfile()
+          val requestHelper = pureMonitorWaitedProfile.newMonitorWaitedRequestHelper()
+
+          val requestId = "some id"
+
+          (mockMonitorWaitedManager.removeMonitorWaitedRequest _)
+            .expects(requestId)
+            .returning(true)
+            .once()
+
+          requestHelper._removeRequestById(requestId)
+        }
+      }
+
+
+      describe("#_retrieveRequestInfo") {
+        it("should get the info for the request with the specified id") {
+          val expected = Some(MonitorWaitedRequestInfo(
+            requestId = "some id",
+            isPending = true,
+            extraArguments = Seq(mock[JDIRequestArgument])
+          ))
+
+          val pureMonitorWaitedProfile = new TestPureMonitorWaitedProfile()
+          val requestHelper = pureMonitorWaitedProfile.newMonitorWaitedRequestHelper()
+
+          val requestId = "some id"
+
+          (mockMonitorWaitedManager.getMonitorWaitedRequestInfo _)
+            .expects(requestId)
+            .returning(expected)
+            .once()
+
+          val actual = requestHelper._retrieveRequestInfo(requestId)
+
+          actual should be(expected)
+        }
+      }
+
+      describe("#_newEventInfo") {
+        it("should create new event info for the specified args") {
+          val expected = mock[MonitorWaitedEventInfoProfile]
+
+          val pureMonitorWaitedProfile = new TestPureMonitorWaitedProfile()
+          val requestHelper = pureMonitorWaitedProfile.newMonitorWaitedRequestHelper()
+
+          val mockEventProducer = mock[EventInfoProducerProfile]
+          (mockInfoProducer.eventProducer _).expects()
+            .returning(mockEventProducer).once()
+
+          val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+          val mockEvent = mock[MonitorWaitedEvent]
+          val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
+          (mockEventProducer.newDefaultMonitorWaitedEventInfoProfile _)
+            .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
+            .returning(expected).once()
+
+          val actual = requestHelper._newEventInfo(
+            mockScalaVirtualMachine,
+            mockEvent,
+            mockJdiArgs
+          )
+
+          actual should be(expected)
+        }
+      }
+    }
+
+    describe("#tryGetOrCreateMonitorWaitedRequestWithData") {
+      it("should use the request helper's request and event pipeline methods") {
+        val requestId = java.util.UUID.randomUUID().toString
+        val mockJdiRequestArgs = Seq(mock[JDIRequestArgument])
+        val mockJdiEventArgs = Seq(mock[JDIEventArgument])
+        val requestArgs = mockJdiRequestArgs
+
+        (mockRequestHelper.newRequest _)
+          .expects(requestArgs, mockJdiRequestArgs)
+          .returning(Success(requestId)).once()
+        (mockRequestHelper.newEventPipeline _)
+          .expects(requestId, mockJdiEventArgs, requestArgs)
+          .returning(Success(Pipeline.newPipeline(classOf[EIData]))).once()
+
+        val actual = pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequest(
+          mockJdiRequestArgs ++ mockJdiEventArgs: _*
+        ).get
+
+        actual shouldBe an[IdentityPipeline[EIData]]
+      }
+    }
+
     describe("#monitorWaitedRequests") {
       it("should include all active requests") {
         val expected = Seq(
@@ -67,7 +265,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.monitorWaitedRequests
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should include pending requests if supported") {
@@ -91,7 +289,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.monitorWaitedRequests
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should only include active requests if pending unsupported") {
@@ -106,7 +304,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.monitorWaitedRequests
 
-        actual should be (expected)
+        actual should be(expected)
       }
     }
 
@@ -120,7 +318,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.removeMonitorWaitedRequestWithArgs()
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should return None if no request with matching extra arguments exists") {
@@ -147,7 +345,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.removeMonitorWaitedRequestWithArgs()
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should return remove and return matching pending requests") {
@@ -180,7 +378,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
           extraArguments: _*
         )
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should remove and return matching non-pending requests") {
@@ -213,7 +411,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
           extraArguments: _*
         )
 
-        actual should be (expected)
+        actual should be(expected)
       }
     }
 
@@ -227,7 +425,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.removeAllMonitorWaitedRequests()
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should remove and return all pending requests") {
@@ -257,7 +455,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.removeAllMonitorWaitedRequests()
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should remove and return all non-pending requests") {
@@ -287,7 +485,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.removeAllMonitorWaitedRequests()
 
-        actual should be (expected)
+        actual should be(expected)
       }
     }
 
@@ -300,7 +498,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.isMonitorWaitedRequestWithArgsPending()
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should return false if no request with matching extra arguments exists") {
@@ -326,7 +524,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
 
         val actual = pureMonitorWaitedProfile.isMonitorWaitedRequestWithArgsPending()
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should return false if no matching request is pending") {
@@ -354,7 +552,7 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
           extraArguments: _*
         )
 
-        actual should be (expected)
+        actual should be(expected)
       }
 
       it("should return true if at least one matching request is pending") {
@@ -382,330 +580,8 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
           extraArguments: _*
         )
 
-        actual should be (expected)
-      }
-    }
-
-    describe("#tryGetOrCreateMonitorWaitedRequestWithData") {
-      it("should create a new request if one has not be made yet") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-        val uniqueIdPropertyFilter = UniqueIdPropertyFilter(id = TestRequestId)
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMonitorWaitedProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockMonitorWaitedManager.monitorWaitedRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMonitorWaitedManager.createMonitorWaitedRequestWithId _)
-            .expects(TestRequestId, uniqueIdProperty +: arguments)
-            .returning(Success(TestRequestId)).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MonitorWaitedEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(
-          arguments: _*
-        )
-      }
-
-      it("should capture exceptions thrown when creating the request") {
-        val expected = Failure(new Throwable)
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMonitorWaitedProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockMonitorWaitedManager.monitorWaitedRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMonitorWaitedManager.createMonitorWaitedRequestWithId _)
-            .expects(TestRequestId, uniqueIdProperty +: arguments)
-            .throwing(expected.failed.get).once()
-        }
-
-        val actual = pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(
-          arguments: _*
-        )
-
-        actual should be (expected)
-      }
-
-      it("should create a new request if the previous one was removed") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMonitorWaitedProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMonitorWaitedProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockMonitorWaitedManager.monitorWaitedRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMonitorWaitedManager.createMonitorWaitedRequestWithId _)
-            .expects(TestRequestId, uniqueIdProperty +: arguments)
-            .returning(Success(TestRequestId)).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MonitorWaitedEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMonitorWaitedProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId + "other")
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId + "other")
-
-          // Return empty this time to indicate that the vm death request
-          // was removed some time between the two calls
-          (mockMonitorWaitedManager.monitorWaitedRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMonitorWaitedManager.createMonitorWaitedRequestWithId _)
-            .expects(TestRequestId + "other", uniqueIdProperty +: arguments)
-            .returning(Success(TestRequestId + "other")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MonitorWaitedEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(
-          arguments: _*
-        )
-      }
-
-      it("should not create a new request if the previous one still exists") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMonitorWaitedProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockMonitorWaitedManager.monitorWaitedRequestList _)
-            .expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockMonitorWaitedManager.createMonitorWaitedRequestWithId _)
-            .expects(TestRequestId, uniqueIdProperty +: arguments)
-            .returning(Success(TestRequestId)).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MonitorWaitedEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureMonitorWaitedProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Return collection of matching arguments to indicate that we do
-          // still have the request
-          val internalId = java.util.UUID.randomUUID().toString
-          (mockMonitorWaitedManager.monitorWaitedRequestList _)
-            .expects()
-            .returning(Seq(internalId)).once()
-          (mockMonitorWaitedManager.getMonitorWaitedRequestInfo _)
-            .expects(internalId)
-            .returning(Some(MonitorWaitedRequestInfo(TestRequestId, false, arguments))).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(MonitorWaitedEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(
-          arguments: _*
-        )
-      }
-
-      it("should remove the underlying request if all pipelines are closed") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMonitorWaitedProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockMonitorWaitedManager.monitorWaitedRequestList _)
-              .expects()
-              .returning(Nil).once()
-            (mockMonitorWaitedManager.monitorWaitedRequestList _)
-              .expects()
-              .returning(Seq(TestRequestId)).once()
-
-            (mockMonitorWaitedManager.getMonitorWaitedRequestInfo _)
-              .expects(TestRequestId)
-              .returning(Some(MonitorWaitedRequestInfo(TestRequestId, false, arguments))).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockMonitorWaitedManager.createMonitorWaitedRequestWithId _)
-              .expects(TestRequestId, uniqueIdProperty +: arguments)
-              .returning(Success(TestRequestId)).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(MonitorWaitedEventType, Seq(uniqueIdPropertyFilter))
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockMonitorWaitedManager.removeMonitorWaitedRequest _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(arguments: _*)
-        val p2 = pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(arguments: _*)
-
-        p1.foreach(_.close())
-        p2.foreach(_.close())
-      }
-
-      it("should remove the underlying request if close data says to do so") {
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureMonitorWaitedProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockMonitorWaitedManager.monitorWaitedRequestList _)
-              .expects()
-              .returning(Nil).once()
-            (mockMonitorWaitedManager.monitorWaitedRequestList _)
-              .expects()
-              .returning(Seq(TestRequestId)).once()
-
-            (mockMonitorWaitedManager.getMonitorWaitedRequestInfo _)
-              .expects(TestRequestId)
-              .returning(Some(MonitorWaitedRequestInfo(TestRequestId, false, arguments))).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockMonitorWaitedManager.createMonitorWaitedRequestWithId _)
-              .expects(TestRequestId, uniqueIdProperty +: arguments)
-              .returning(Success(TestRequestId)).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(MonitorWaitedEventType, Seq(uniqueIdPropertyFilter))
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockMonitorWaitedManager.removeMonitorWaitedRequest _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(arguments: _*)
-        val p2 = pureMonitorWaitedProfile.tryGetOrCreateMonitorWaitedRequestWithData(arguments: _*)
-
-        p1.foreach(_.close(now = true, data = Constants.CloseRemoveAll))
+        actual should be(expected)
       }
     }
   }
 }
-

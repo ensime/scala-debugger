@@ -39,11 +39,6 @@ trait PureVMStartProfile extends VMStartProfile {
    * @return The new request helper
    */
   protected def newVMStartRequestHelper() = {
-    // Define types for request helper
-    // E: Event Type
-    // EI: Event Info Type
-    // RequestArgs: (Class Name, Field Name, JDI Request Args)
-    // CounterKey: (Class Name, Field Name, JDI Request Args)
     type E = VMStartEvent
     type EI = VMStartEventInfoProfile
     type RequestArgs = Seq[JDIRequestArgument]

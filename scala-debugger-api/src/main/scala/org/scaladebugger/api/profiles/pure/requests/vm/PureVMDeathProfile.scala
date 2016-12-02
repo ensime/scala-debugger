@@ -40,11 +40,6 @@ trait PureVMDeathProfile extends VMDeathProfile {
    * @return The new request helper
    */
   protected def newVMDeathRequestHelper() = {
-    // Define types for request helper
-    // E: Event Type
-    // EI: Event Info Type
-    // RequestArgs: (Class Name, Field Name, JDI Request Args)
-    // CounterKey: (Class Name, Field Name, JDI Request Args)
     type E = VMDeathEvent
     type EI = VMDeathEventInfoProfile
     type RequestArgs = Seq[JDIRequestArgument]
