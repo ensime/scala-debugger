@@ -1,6 +1,6 @@
 package org.scaladebugger.api.profiles.pure.requests.exceptions
-import com.sun.jdi.event.Event
-import org.scaladebugger.api.lowlevel.events.EventManager
+import com.sun.jdi.event.{Event, ExceptionEvent}
+import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.events.EventType.ExceptionEventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
@@ -8,10 +8,12 @@ import org.scaladebugger.api.lowlevel.exceptions.{ExceptionManager, ExceptionReq
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.pipelines.Pipeline
+import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.Constants
 import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducerProfile, ExceptionEventInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
-import test.JDIMockHelpers
+import test.{JDIMockHelpers, TestRequestHelper}
 
 import scala.util.{Failure, Success}
 
@@ -23,22 +25,450 @@ class PureExceptionProfileSpec extends test.ParallelMockFunSpec with JDIMockHelp
   private val mockInfoProducer = mock[InfoProducerProfile]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
 
-  private val pureExceptionProfile = new Object with PureExceptionProfile {
-    private var requestId: String = _
-    def setRequestId(requestId: String): Unit = this.requestId = requestId
+  private type E = ExceptionEvent
+  private type EI = ExceptionEventInfoProfile
+  private type EIData = (EI, Seq[JDIEventDataResult])
+  private type RequestArgs = (String, Boolean, Boolean, Seq[JDIRequestArgument])
+  private type CounterKey = (String, Boolean, Boolean, Seq[JDIRequestArgument])
+  private class CustomTestRequestHelper extends TestRequestHelper[E, EI, RequestArgs, CounterKey](
+    scalaVirtualMachine = mockScalaVirtualMachine,
+    eventManager = mockEventManager,
+    etInstance = ExceptionEventType
+  )
 
-    // NOTE: If we set a specific request id, return that, otherwise use the
-    //       default behavior
-    override protected def newExceptionRequestId(): String =
-      if (requestId != null) requestId else super.newExceptionRequestId()
-
+  private class TestPureExceptionProfile(
+    private val customTestRequestHelper: Option[CustomTestRequestHelper] = None
+  ) extends PureExceptionProfile {
+    override def newExceptionRequestHelper(forCatchall: Boolean) = {
+      val originalRequestHelper = super.newExceptionRequestHelper(forCatchall)
+      customTestRequestHelper.getOrElse(originalRequestHelper)
+    }
     override protected val exceptionManager = mockExceptionManager
     override protected val eventManager: EventManager = mockEventManager
     override protected val infoProducer: InfoProducerProfile = mockInfoProducer
     override protected val scalaVirtualMachine: ScalaVirtualMachine = mockScalaVirtualMachine
   }
 
+  private val mockRequestHelper = mock[CustomTestRequestHelper]
+  private val pureExceptionProfile =
+    new TestPureExceptionProfile(Some(mockRequestHelper))
+
   describe("PureExceptionProfile") {
+    describe("for custom request helper") {
+      describe("#_newRequestId") {
+        describe("forCatchall == false") {
+          it("should return a new id each time") {
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = false
+            )
+
+            val requestId1 = requestHelper._newRequestId()
+            val requestId2 = requestHelper._newRequestId()
+
+            requestId1 shouldBe a [String]
+            requestId2 shouldBe a [String]
+            requestId1 should not be (requestId2)
+          }
+        }
+
+        describe("forCatchall == true") {
+          it("should return a new id each time") {
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = true
+            )
+
+            val requestId1 = requestHelper._newRequestId()
+            val requestId2 = requestHelper._newRequestId()
+
+            requestId1 shouldBe a [String]
+            requestId2 shouldBe a [String]
+            requestId1 should not be (requestId2)
+          }
+        }
+      }
+
+      describe("#_newRequest") {
+        describe("forCatchall == false") {
+          it("should create a new request with the provided args and id") {
+            val expected = Success("some id")
+
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = false
+            )
+
+            val requestId = expected.get
+            val exceptionName = "exception.name"
+            val notifyCaught = true
+            val notifyUncaught = false
+            val requestArgs = (exceptionName, notifyCaught, notifyUncaught, Seq(mock[JDIRequestArgument]))
+            val jdiRequestArgs = Seq(mock[JDIRequestArgument])
+
+            (mockExceptionManager.createExceptionRequestWithId _).expects(
+              requestId,
+              exceptionName,
+              notifyCaught,
+              notifyUncaught,
+              jdiRequestArgs
+            ).returning(expected).once()
+
+            val actual = requestHelper._newRequest(requestId, requestArgs, jdiRequestArgs)
+
+            actual should be (expected)
+          }
+        }
+
+        describe("forCatchall == true") {
+          it("should create a new request with the provided args and id") {
+            val expected = Success("some id")
+
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = true
+            )
+
+            val requestId = expected.get
+            val notifyCaught = true
+            val notifyUncaught = false
+            val requestArgs = ("", notifyCaught, notifyUncaught, Seq(mock[JDIRequestArgument]))
+            val jdiRequestArgs = Seq(mock[JDIRequestArgument])
+
+            (mockExceptionManager.createCatchallExceptionRequestWithId _).expects(
+              requestId,
+              notifyCaught,
+              notifyUncaught,
+              jdiRequestArgs
+            ).returning(expected).once()
+
+            val actual = requestHelper._newRequest(requestId, requestArgs, jdiRequestArgs)
+
+            actual should be (expected)
+          }
+        }
+      }
+
+      describe("#_hasRequest") {
+        describe("forCatchall == false") {
+          it("should return the result of checking if a request with matching properties exists") {
+            val expected = true
+
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = false
+            )
+
+            val exceptionName = "exception.name"
+            val notifyCaught = true
+            val notifyUncaught = false
+            val requestArgs = (exceptionName, notifyCaught, notifyUncaught, Seq(mock[JDIRequestArgument]))
+
+            (mockExceptionManager.hasExceptionRequest _).expects(exceptionName)
+              .returning(expected).once()
+
+            val actual = requestHelper._hasRequest(requestArgs)
+
+            actual should be(expected)
+          }
+        }
+
+        describe("forCatchall == true") {
+          it("should return false if a catchall exception with matching input does not exist") {
+            val expected = false
+
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = true
+            )
+
+            val exceptionRequestInfo = ExceptionRequestInfo(
+              requestId = "some id",
+              isPending = true,
+              className = "some.class", // Not catchall
+              notifyCaught = true,
+              notifyUncaught = false,
+              extraArguments = Seq(mock[JDIRequestArgument])
+            )
+
+            val requestArgs = (
+              "",
+              exceptionRequestInfo.notifyCaught,
+              exceptionRequestInfo.notifyUncaught,
+              exceptionRequestInfo.extraArguments
+            )
+
+            (mockExceptionManager.exceptionRequestList _).expects()
+              .returning(Seq(exceptionRequestInfo)).once()
+
+            val actual = requestHelper._hasRequest(requestArgs)
+
+            actual should be(expected)
+          }
+
+          it("should return true if a catchall exception with matching input exists") {
+            val expected = true
+
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = true
+            )
+
+            val exceptionRequestInfo = ExceptionRequestInfo(
+              requestId = "some id",
+              isPending = true,
+              className = ExceptionRequestInfo.DefaultCatchallExceptionName,
+              notifyCaught = true,
+              notifyUncaught = false,
+              extraArguments = Seq(mock[JDIRequestArgument])
+            )
+
+            val requestArgs = (
+              exceptionRequestInfo.className,
+              exceptionRequestInfo.notifyCaught,
+              exceptionRequestInfo.notifyUncaught,
+              exceptionRequestInfo.extraArguments
+            )
+
+            (mockExceptionManager.exceptionRequestList _).expects()
+              .returning(Seq(exceptionRequestInfo)).once()
+
+            val actual = requestHelper._hasRequest(requestArgs)
+
+            actual should be(expected)
+          }
+        }
+      }
+
+      describe("#_removeByRequestId") {
+        describe("forCatchall == false") {
+          it("should remove the request with the specified id") {
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = false
+            )
+
+            val requestId = "some id"
+
+            (mockExceptionManager.removeExceptionRequestWithId _)
+              .expects(requestId)
+              .returning(true)
+              .once()
+
+            requestHelper._removeRequestById(requestId)
+          }
+        }
+
+        describe("forCatchall == true") {
+          it("should remove the request with the specified id") {
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = true
+            )
+
+            val requestId = "some id"
+
+            (mockExceptionManager.removeExceptionRequestWithId _)
+              .expects(requestId)
+              .returning(true)
+              .once()
+
+            requestHelper._removeRequestById(requestId)
+          }
+        }
+      }
+
+      describe("#_retrieveRequestInfo") {
+        describe("forCatchall == false") {
+          it("should get the info for the request with the specified id") {
+            val expected = Some(ExceptionRequestInfo(
+              requestId = "some id",
+              isPending = true,
+              className = "some.name",
+              notifyCaught = true,
+              notifyUncaught = false,
+              extraArguments = Seq(mock[JDIRequestArgument])
+            ))
+
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = false
+            )
+
+            val requestId = "some id"
+
+            (mockExceptionManager.getExceptionRequestInfoWithId _)
+              .expects(requestId)
+              .returning(expected)
+              .once()
+
+            val actual = requestHelper._retrieveRequestInfo(requestId)
+
+            actual should be (expected)
+          }
+        }
+
+        describe("forCatchall == true") {
+          it("should get the info for the request with the specified id") {
+            val expected = Some(ExceptionRequestInfo(
+              requestId = "some id",
+              isPending = true,
+              className = "some.name",
+              notifyCaught = true,
+              notifyUncaught = false,
+              extraArguments = Seq(mock[JDIRequestArgument])
+            ))
+
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = true
+            )
+
+            val requestId = "some id"
+
+            (mockExceptionManager.getExceptionRequestInfoWithId _)
+              .expects(requestId)
+              .returning(expected)
+              .once()
+
+            val actual = requestHelper._retrieveRequestInfo(requestId)
+
+            actual should be (expected)
+          }
+        }
+      }
+
+      describe("#_newEventInfo") {
+        describe("forCatchall == false") {
+          it("should create new event info for the specified args") {
+            val expected = mock[ExceptionEventInfoProfile]
+
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = false
+            )
+
+            val mockEventProducer = mock[EventInfoProducerProfile]
+            (mockInfoProducer.eventProducer _).expects()
+              .returning(mockEventProducer).once()
+
+            val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+            val mockEvent = mock[ExceptionEvent]
+            val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
+            (mockEventProducer.newDefaultExceptionEventInfoProfile _)
+              .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
+              .returning(expected).once()
+
+            val actual = requestHelper._newEventInfo(
+              mockScalaVirtualMachine,
+              mockEvent,
+              mockJdiArgs
+            )
+
+            actual should be (expected)
+          }
+        }
+
+        describe("forCatchall == true") {
+          it("should create new event info for the specified args") {
+            val expected = mock[ExceptionEventInfoProfile]
+
+            val pureExceptionProfile = new TestPureExceptionProfile()
+            val requestHelper = pureExceptionProfile.newExceptionRequestHelper(
+              forCatchall = true
+            )
+
+            val mockEventProducer = mock[EventInfoProducerProfile]
+            (mockInfoProducer.eventProducer _).expects()
+              .returning(mockEventProducer).once()
+
+            val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
+            val mockEvent = mock[ExceptionEvent]
+            val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
+            (mockEventProducer.newDefaultExceptionEventInfoProfile _)
+              .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
+              .returning(expected).once()
+
+            val actual = requestHelper._newEventInfo(
+              mockScalaVirtualMachine,
+              mockEvent,
+              mockJdiArgs
+            )
+
+            actual should be (expected)
+          }
+        }
+      }
+    }
+
+    describe("#tryGetOrCreateExceptionRequestWithData") {
+      it("should throw an exception if the exception name is null") {
+        pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
+          null,
+          notifyCaught = true,
+          notifyUncaught = false,
+          Seq(mock[JDIRequestArgument], mock[JDIEventArgument]): _*
+        ).failed.get shouldBe an [IllegalArgumentException]
+      }
+
+      it("should use the standard request helper's request and event pipeline methods") {
+        val requestId = java.util.UUID.randomUUID().toString
+        val exceptionName = "some.name"
+        val notifyCaught = true
+        val notifyUncaught = false
+        val mockJdiRequestArgs = Seq(mock[JDIRequestArgument])
+        val mockJdiEventArgs = Seq(mock[JDIEventArgument])
+        val requestArgs = (exceptionName, notifyCaught, notifyUncaught, mockJdiRequestArgs)
+
+        (mockRequestHelper.newRequest _)
+          .expects(requestArgs, mockJdiRequestArgs)
+          .returning(Success(requestId)).once()
+        (mockRequestHelper.newEventPipeline _)
+          .expects(requestId, mockJdiEventArgs, requestArgs)
+          .returning(Success(Pipeline.newPipeline(classOf[EIData]))).once()
+
+        val actual = pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
+          exceptionName,
+          notifyCaught,
+          notifyUncaught,
+          mockJdiRequestArgs ++ mockJdiEventArgs: _*
+        ).get
+
+        actual shouldBe an [IdentityPipeline[EIData]]
+      }
+    }
+
+    describe("#tryGetOrCreateAllExceptionsRequestWithData") {
+      it("should use the catchall request helper's request and event pipeline methods") {
+        val requestId = java.util.UUID.randomUUID().toString
+        val notifyCaught = true
+        val notifyUncaught = false
+        val mockJdiRequestArgs = Seq(mock[JDIRequestArgument])
+        val mockJdiEventArgs = Seq(mock[JDIEventArgument])
+        val requestArgs = (
+          ExceptionRequestInfo.DefaultCatchallExceptionName,
+          notifyCaught,
+          notifyUncaught,
+          mockJdiRequestArgs
+        )
+
+        (mockRequestHelper.newRequest _)
+          .expects(requestArgs, mockJdiRequestArgs)
+          .returning(Success(requestId)).once()
+        (mockRequestHelper.newEventPipeline _)
+          .expects(requestId, mockJdiEventArgs, requestArgs)
+          .returning(Success(Pipeline.newPipeline(classOf[EIData]))).once()
+
+        val actual = pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
+          notifyCaught,
+          notifyUncaught,
+          mockJdiRequestArgs ++ mockJdiEventArgs: _*
+        ).get
+
+        actual shouldBe an [IdentityPipeline[EIData]]
+      }
+    }
+
     describe("#exceptionRequests") {
       it("should include all active requests") {
         val expected = Seq(
@@ -1395,869 +1825,6 @@ class PureExceptionProfileSpec extends test.ParallelMockFunSpec with JDIMockHelp
         )
 
         actual should be (expected)
-      }
-    }
-
-    describe("#tryGetOrCreateExceptionRequestWithData") {
-      it("should create a new request if one has not be made yet") {
-        val exceptionName = "some.exception"
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-        val uniqueIdPropertyFilter = UniqueIdPropertyFilter(id = TestRequestId)
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockExceptionManager.hasExceptionRequest _)
-            .expects(exceptionName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createExceptionRequestWithId _).expects(
-            TestRequestId,
-            exceptionName,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-      }
-
-      it("should capture exceptions thrown when creating the request") {
-        val expected = Failure(new Throwable)
-        val exceptionName = "some.exception"
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockExceptionManager.hasExceptionRequest _)
-            .expects(exceptionName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createExceptionRequestWithId _).expects(
-            TestRequestId,
-            exceptionName,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).throwing(expected.failed.get).once()
-        }
-
-        val actual = pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        actual should be (expected)
-      }
-
-      it("should create a new request if the previous one was removed") {
-        val exceptionName = "some.exception"
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockExceptionManager.hasExceptionRequest _)
-            .expects(exceptionName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createExceptionRequestWithId _).expects(
-            TestRequestId,
-            exceptionName,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId + "other")
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId + "other")
-
-          // Return false this time to indicate that the exception request
-          // was removed some time between the two calls
-          (mockExceptionManager.hasExceptionRequest _)
-            .expects(exceptionName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createExceptionRequestWithId _).expects(
-            TestRequestId + "other",
-            exceptionName,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-      }
-
-      it("should not create a new request if the previous one still exists") {
-        val exceptionName = "some.exception"
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockExceptionManager.hasExceptionRequest _)
-            .expects(exceptionName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createExceptionRequestWithId _).expects(
-            TestRequestId,
-            exceptionName,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Return true to indicate that we do still have the request
-          (mockExceptionManager.hasExceptionRequest _)
-            .expects(exceptionName)
-            .returning(true).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-      }
-
-      it("should create a new request for different input") {
-        val exceptionName = "some.exception"
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockExceptionManager.hasExceptionRequest _)
-            .expects(exceptionName)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createExceptionRequestWithId _).expects(
-            TestRequestId,
-            exceptionName,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId + "other")
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId + "other")
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // false since we have never created the request)
-          (mockExceptionManager.hasExceptionRequest _)
-            .expects(exceptionName + 1)
-            .returning(false).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createExceptionRequestWithId _).expects(
-            TestRequestId + "other",
-            exceptionName + 1,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName + 1,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-      }
-
-      it("should remove the underlying request if all pipelines are closed") {
-        val exceptionName = "some.exception"
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockExceptionManager.hasExceptionRequest _).expects(exceptionName)
-              .returning(false).once()
-            (mockExceptionManager.hasExceptionRequest _).expects(exceptionName)
-              .returning(true).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockExceptionManager.createExceptionRequestWithId _).expects(
-              TestRequestId,
-              exceptionName,
-              notifyCaught,
-              notifyUncaught,
-              uniqueIdProperty +: arguments
-            ).returning(Success("")).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockExceptionManager.removeExceptionRequestWithId _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-        val p2 = pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        p1.foreach(_.close())
-        p2.foreach(_.close())
-      }
-
-      it("should remove the underlying request if close data says to do so") {
-        val exceptionName = "some.exception"
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockExceptionManager.hasExceptionRequest _).expects(exceptionName)
-              .returning(false).once()
-            (mockExceptionManager.hasExceptionRequest _).expects(exceptionName)
-              .returning(true).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockExceptionManager.createExceptionRequestWithId _).expects(
-              TestRequestId,
-              exceptionName,
-              notifyCaught,
-              notifyUncaught,
-              uniqueIdProperty +: arguments
-            ).returning(Success("")).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockExceptionManager.removeExceptionRequestWithId _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-        val p2 = pureExceptionProfile.tryGetOrCreateExceptionRequestWithData(
-          exceptionName,
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        p1.foreach(_.close(now = true, data = Constants.CloseRemoveAll))
-      }
-    }
-
-    describe("#tryGetOrCreateAllExceptionsRequestWithData") {
-      it("should create a new request if one has not be made yet") {
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-        val uniqueIdPropertyFilter = UniqueIdPropertyFilter(id = TestRequestId)
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockExceptionManager.exceptionRequestList _).expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createCatchallExceptionRequestWithId _).expects(
-            TestRequestId,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-      }
-
-      it("should capture exceptions thrown when creating the request") {
-        val expected = Failure(new Throwable)
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockExceptionManager.exceptionRequestList _).expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createCatchallExceptionRequestWithId _).expects(
-            TestRequestId,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).throwing(expected.failed.get).once()
-        }
-
-        val actual = pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        actual should be (expected)
-      }
-
-      it("should create a new request if the previous one was removed") {
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockExceptionManager.exceptionRequestList _).expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createCatchallExceptionRequestWithId _).expects(
-            TestRequestId,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId + "other")
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId + "other")
-
-          // Return empty this time to indicate that the exception request
-          // was removed some time between the two calls
-          (mockExceptionManager.exceptionRequestList _).expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createCatchallExceptionRequestWithId _).expects(
-            TestRequestId + "other",
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-      }
-
-      it("should not create a new request if the previous one still exists") {
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId)
-
-          val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Memoized request function first checks to make sure the cache
-          // has not been invalidated underneath (first call will always be
-          // empty since we have never created the request)
-          (mockExceptionManager.exceptionRequestList _).expects()
-            .returning(Nil).once()
-
-          // NOTE: Expect the request to be created with a unique id
-          (mockExceptionManager.createCatchallExceptionRequestWithId _).expects(
-            TestRequestId,
-            notifyCaught,
-            notifyUncaught,
-            uniqueIdProperty +: arguments
-          ).returning(Success("")).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        inSequence {
-          // Set a known test id so we can validate the unique property is added
-          import scala.language.reflectiveCalls
-          pureExceptionProfile.setRequestId(TestRequestId + "other")
-
-          val uniqueIdPropertyFilter =
-            UniqueIdPropertyFilter(id = TestRequestId)
-
-          // Return matching info to indicate that we do still have the request
-          (mockExceptionManager.exceptionRequestList _).expects()
-            .returning(Seq(ExceptionRequestInfo(
-              requestId = TestRequestId,
-              false,
-              className = ExceptionRequestInfo.DefaultCatchallExceptionName,
-              notifyCaught = notifyCaught,
-              notifyUncaught = notifyUncaught,
-              extraArguments = arguments
-            ))).once()
-
-          (mockEventManager.addEventDataStream _)
-            .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-            .returning(Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            )).once()
-        }
-
-        pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-      }
-
-      it("should remove the underlying request if all pipelines are closed") {
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockExceptionManager.exceptionRequestList _).expects()
-              .returning(Nil).once()
-            // Return matching info to indicate that we do still have the request
-            (mockExceptionManager.exceptionRequestList _).expects()
-              .returning(Seq(ExceptionRequestInfo(
-                requestId = TestRequestId,
-                false,
-                className = ExceptionRequestInfo.DefaultCatchallExceptionName,
-                notifyCaught = notifyCaught,
-                notifyUncaught = notifyUncaught,
-                extraArguments = uniqueIdProperty +: arguments
-              ))).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockExceptionManager.createCatchallExceptionRequestWithId _)
-              .expects(
-                TestRequestId,
-                notifyCaught,
-                notifyUncaught,
-                uniqueIdProperty +: arguments
-              )
-              .returning(Success("")).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockExceptionManager.removeExceptionRequestWithId _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-        val p2 = pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        p1.foreach(_.close())
-        p2.foreach(_.close())
-      }
-
-      it("should remove the underlying request if close data says to do so") {
-        val notifyCaught = true
-        val notifyUncaught = true
-        val arguments = Seq(mock[JDIRequestArgument])
-
-        // Set a known test id so we can validate the unique property is added
-        import scala.language.reflectiveCalls
-        pureExceptionProfile.setRequestId(TestRequestId)
-
-        inSequence {
-          val eventHandlerIds = Seq("a", "b")
-          inAnyOrder {
-            val uniqueIdProperty = UniqueIdProperty(id = TestRequestId)
-            val uniqueIdPropertyFilter =
-              UniqueIdPropertyFilter(id = TestRequestId)
-
-            // Memoized request function first checks to make sure the cache
-            // has not been invalidated underneath (first call will always be
-            // empty since we have never created the request)
-            (mockExceptionManager.exceptionRequestList _).expects()
-              .returning(Nil).once()
-            // Return matching info to indicate that we do still have the request
-            (mockExceptionManager.exceptionRequestList _).expects()
-              .returning(Seq(ExceptionRequestInfo(
-                requestId = TestRequestId,
-                false,
-                className = ExceptionRequestInfo.DefaultCatchallExceptionName,
-                notifyCaught = notifyCaught,
-                notifyUncaught = notifyUncaught,
-                extraArguments = uniqueIdProperty +: arguments
-              ))).once()
-
-            // NOTE: Expect the request to be created with a unique id
-            (mockExceptionManager.createCatchallExceptionRequestWithId _)
-              .expects(
-                TestRequestId,
-                notifyCaught,
-                notifyUncaught,
-                uniqueIdProperty +: arguments
-              )
-              .returning(Success("")).once()
-
-            // NOTE: Pipeline adds an event handler id to its metadata
-            def newEventPipeline(id: String) = Pipeline.newPipeline(
-              classOf[(Event, Seq[JDIEventDataResult])]
-            ).withMetadata(Map(EventManager.EventHandlerIdMetadataField -> id))
-
-            eventHandlerIds.foreach(id => {
-              (mockEventManager.addEventDataStream _)
-                .expects(ExceptionEventType, Seq(uniqueIdPropertyFilter))
-                .returning(newEventPipeline(id)).once()
-            })
-          }
-
-          (mockExceptionManager.removeExceptionRequestWithId _)
-            .expects(TestRequestId).once()
-          eventHandlerIds.foreach(id => {
-            (mockEventManager.removeEventHandler _).expects(id).once()
-          })
-        }
-
-        val p1 = pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-        val p2 = pureExceptionProfile.tryGetOrCreateAllExceptionsRequestWithData(
-          notifyCaught,
-          notifyUncaught,
-          arguments: _*
-        )
-
-        p1.foreach(_.close(now = true, data = Constants.CloseRemoveAll))
       }
     }
   }
