@@ -36,7 +36,7 @@ trait PureThreadStartProfile extends ThreadStartProfile {
   private lazy val requestHelper = newThreadStartRequestHelper()
 
   /**
-   * Constructs a new request helper for access watchpoint.
+   * Constructs a new request helper for thread start.
    *
    * @return The new request helper
    */

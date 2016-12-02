@@ -36,7 +36,7 @@ trait PureMonitorWaitProfile extends MonitorWaitProfile {
   private lazy val requestHelper = newMonitorWaitRequestHelper()
 
   /**
-   * Constructs a new request helper for access watchpoint.
+   * Constructs a new request helper for monitor wait.
    *
    * @return The new request helper
    */

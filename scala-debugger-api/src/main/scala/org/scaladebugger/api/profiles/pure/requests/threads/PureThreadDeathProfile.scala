@@ -35,7 +35,7 @@ trait PureThreadDeathProfile extends ThreadDeathProfile {
   private lazy val requestHelper = newThreadDeathRequestHelper()
 
   /**
-   * Constructs a new request helper for access watchpoint.
+   * Constructs a new request helper for thread death.
    *
    * @return The new request helper
    */

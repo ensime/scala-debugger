@@ -36,7 +36,7 @@ trait PureMonitorContendedEnterProfile extends MonitorContendedEnterProfile {
   private lazy val requestHelper = newMonitorContendedEnterRequestHelper()
 
   /**
-   * Constructs a new request helper for access watchpoint.
+   * Constructs a new request helper for monitor contended enter.
    *
    * @return The new request helper
    */

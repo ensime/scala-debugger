@@ -34,7 +34,7 @@ trait PureVMStartProfile extends VMStartProfile {
   private lazy val requestHelper = newVMStartRequestHelper()
 
   /**
-   * Constructs a new request helper for access watchpoint.
+   * Constructs a new request helper for vm start.
    *
    * @return The new request helper
    */

@@ -35,7 +35,7 @@ trait PureVMDeathProfile extends VMDeathProfile {
   private lazy val requestHelper = newVMDeathRequestHelper()
 
   /**
-   * Constructs a new request helper for access watchpoint.
+   * Constructs a new request helper for vm death.
    *
    * @return The new request helper
    */
