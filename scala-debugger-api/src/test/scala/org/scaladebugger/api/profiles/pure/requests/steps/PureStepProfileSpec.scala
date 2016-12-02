@@ -1,6 +1,6 @@
 package org.scaladebugger.api.profiles.pure.requests.steps
 import com.sun.jdi.ThreadReference
-import com.sun.jdi.event.Event
+import com.sun.jdi.event.{Event, StepEvent}
 import org.scaladebugger.api.lowlevel.events.EventType.StepEventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
@@ -8,7 +8,7 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.filters.ThreadFilter
 import org.scaladebugger.api.lowlevel.steps.{PendingStepSupportLike, StepManager, StepRequestInfo}
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProfile, StepEventInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducerProfile, EventInfoProfile, StepEventInfoProfile}
 import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, ThreadInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalatest.concurrent.{Futures, ScalaFutures}
@@ -703,11 +703,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
     
     describe("#stepIntoLineWithData") {
       it("should create a new step request and pipeline whose future is returned") {
-        val expected = (mock[StepEventInfoProfile], Nil)
+        val expected = (mock[StepEventInfoProfile], Seq(mock[JDIEventDataResult]))
+        val mockStepEvent = mock[StepEvent]
 
-        val stepPipeline = Pipeline.newPipeline(
-          classOf[(EventInfoProfile, Seq[JDIEventDataResult])]
-        )
         val lowlevelPipeline = Pipeline.newPipeline(
           classOf[(Event, Seq[JDIEventDataResult])]
         )
@@ -717,12 +715,25 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
         // These filters should be injected by our profile
         val threadFilter = ThreadFilter(threadReference = mockThreadReference)
 
+        val stepRequestInfo = StepRequestInfo(
+          requestId = "",
+          isPending = true,
+          removeExistingRequests = true,
+          threadReference = mock[ThreadReference],
+          size = 0,
+          depth = 0,
+          extraArguments = rArgs :+ threadFilter
+        )
+
         (mockThreadInfoProfile.toJdiInstance _).expects()
           .returning(mockThreadReference).once()
 
         (mockStepManager.createStepIntoLineRequest _)
-          .expects(mockThreadReference, rArgs :+ threadFilter)
+          .expects(mockThreadReference, stepRequestInfo.extraArguments)
           .returning(Success(TestRequestId)).once()
+
+        (mockStepManager.getStepRequestInfoWithId _).expects(*)
+          .returning(Some(stepRequestInfo)).once()
 
         (mockEventManager.addEventDataStream _)
           .expects(StepEventType, eArgs)
@@ -733,8 +744,18 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           rArgs ++ eArgs: _*
         )
 
+        // Should convert event to info representation
+        val mockEventInfoProducer = mock[EventInfoProducerProfile]
+        (mockInfoProducer.eventProducer _).expects()
+          .returning(mockEventInfoProducer).once()
+        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+          mockScalaVirtualMachine,
+          mockStepEvent,
+          stepRequestInfo.extraArguments ++ eArgs
+        ).returning(expected._1).once()
+
         // Process the pipeline to trigger the future
-        stepPipeline.process(expected)
+        lowlevelPipeline.process((mockStepEvent, expected._2))
 
         whenReady(stepFuture) { actual => actual should be (expected) }
       }
@@ -758,7 +779,8 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
 
     describe("#stepOutLineWithData") {
       it("should create a new step request and pipeline whose future is returned") {
-        val expected = (mock[StepEventInfoProfile], Nil)
+        val expected = (mock[StepEventInfoProfile], Seq(mock[JDIEventDataResult]))
+        val mockStepEvent = mock[StepEvent]
 
         val stepPipeline = Pipeline.newPipeline(
           classOf[(EventInfoProfile, Seq[JDIEventDataResult])]
@@ -772,12 +794,25 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
         // These filters should be injected by our profile
         val threadFilter = ThreadFilter(threadReference = mockThreadReference)
 
+        val stepRequestInfo = StepRequestInfo(
+          requestId = "",
+          isPending = true,
+          removeExistingRequests = true,
+          threadReference = mock[ThreadReference],
+          size = 0,
+          depth = 0,
+          extraArguments = rArgs :+ threadFilter
+        )
+
         (mockThreadInfoProfile.toJdiInstance _).expects()
           .returning(mockThreadReference).once()
 
         (mockStepManager.createStepOutLineRequest _)
-          .expects(mockThreadReference, rArgs :+ threadFilter)
+          .expects(mockThreadReference, stepRequestInfo.extraArguments)
           .returning(Success(TestRequestId)).once()
+
+        (mockStepManager.getStepRequestInfoWithId _).expects(*)
+          .returning(Some(stepRequestInfo)).once()
 
         (mockEventManager.addEventDataStream _)
           .expects(StepEventType, eArgs)
@@ -788,8 +823,18 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           rArgs ++ eArgs: _*
         )
 
+        // Should convert event to info representation
+        val mockEventInfoProducer = mock[EventInfoProducerProfile]
+        (mockInfoProducer.eventProducer _).expects()
+          .returning(mockEventInfoProducer).once()
+        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+          mockScalaVirtualMachine,
+          mockStepEvent,
+          stepRequestInfo.extraArguments ++ eArgs
+        ).returning(expected._1).once()
+
         // Process the pipeline to trigger the future
-        stepPipeline.process(expected)
+        lowlevelPipeline.process((mockStepEvent, expected._2))
 
         whenReady(stepFuture) { actual => actual should be (expected) }
       }
@@ -813,11 +858,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
 
     describe("#stepOverLineWithData") {
       it("should create a new step request and pipeline whose future is returned") {
-        val expected = (mock[StepEventInfoProfile], Nil)
+        val expected = (mock[StepEventInfoProfile], Seq(mock[JDIEventDataResult]))
+        val mockStepEvent = mock[StepEvent]
 
-        val stepPipeline = Pipeline.newPipeline(
-          classOf[(EventInfoProfile, Seq[JDIEventDataResult])]
-        )
         val lowlevelPipeline = Pipeline.newPipeline(
           classOf[(Event, Seq[JDIEventDataResult])]
         )
@@ -827,12 +870,25 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
         // These filters should be injected by our profile
         val threadFilter = ThreadFilter(threadReference = mockThreadReference)
 
+        val stepRequestInfo = StepRequestInfo(
+          requestId = "",
+          isPending = true,
+          removeExistingRequests = true,
+          threadReference = mock[ThreadReference],
+          size = 0,
+          depth = 0,
+          extraArguments = rArgs :+ threadFilter
+        )
+
         (mockThreadInfoProfile.toJdiInstance _).expects()
           .returning(mockThreadReference).once()
 
         (mockStepManager.createStepOverLineRequest _)
-          .expects(mockThreadReference, rArgs :+ threadFilter)
+          .expects(mockThreadReference, stepRequestInfo.extraArguments)
           .returning(Success(TestRequestId)).once()
+
+        (mockStepManager.getStepRequestInfoWithId _).expects(*)
+          .returning(Some(stepRequestInfo)).once()
 
         (mockEventManager.addEventDataStream _)
           .expects(StepEventType, eArgs)
@@ -843,8 +899,18 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           rArgs ++ eArgs: _*
         )
 
+        // Should convert event to info representation
+        val mockEventInfoProducer = mock[EventInfoProducerProfile]
+        (mockInfoProducer.eventProducer _).expects()
+          .returning(mockEventInfoProducer).once()
+        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+          mockScalaVirtualMachine,
+          mockStepEvent,
+          stepRequestInfo.extraArguments ++ eArgs
+        ).returning(expected._1).once()
+
         // Process the pipeline to trigger the future
-        stepPipeline.process(expected)
+        lowlevelPipeline.process((mockStepEvent, expected._2))
 
         whenReady(stepFuture) { actual => actual should be (expected) }
       }
@@ -868,11 +934,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
 
     describe("#stepIntoMinWithData") {
       it("should create a new step request and pipeline whose future is returned") {
-        val expected = (mock[StepEventInfoProfile], Nil)
+        val expected = (mock[StepEventInfoProfile], Seq(mock[JDIEventDataResult]))
+        val mockStepEvent = mock[StepEvent]
 
-        val stepPipeline = Pipeline.newPipeline(
-          classOf[(EventInfoProfile, Seq[JDIEventDataResult])]
-        )
         val lowlevelPipeline = Pipeline.newPipeline(
           classOf[(Event, Seq[JDIEventDataResult])]
         )
@@ -882,12 +946,25 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
         // These filters should be injected by our profile
         val threadFilter = ThreadFilter(threadReference = mockThreadReference)
 
+        val stepRequestInfo = StepRequestInfo(
+          requestId = "",
+          isPending = true,
+          removeExistingRequests = true,
+          threadReference = mock[ThreadReference],
+          size = 0,
+          depth = 0,
+          extraArguments = rArgs :+ threadFilter
+        )
+
         (mockThreadInfoProfile.toJdiInstance _).expects()
           .returning(mockThreadReference).once()
 
         (mockStepManager.createStepIntoMinRequest _)
-          .expects(mockThreadReference, rArgs :+ threadFilter)
+          .expects(mockThreadReference, stepRequestInfo.extraArguments)
           .returning(Success(TestRequestId)).once()
+
+        (mockStepManager.getStepRequestInfoWithId _).expects(*)
+          .returning(Some(stepRequestInfo)).once()
 
         (mockEventManager.addEventDataStream _)
           .expects(StepEventType, eArgs)
@@ -898,8 +975,18 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           rArgs ++ eArgs: _*
         )
 
+        // Should convert event to info representation
+        val mockEventInfoProducer = mock[EventInfoProducerProfile]
+        (mockInfoProducer.eventProducer _).expects()
+          .returning(mockEventInfoProducer).once()
+        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+          mockScalaVirtualMachine,
+          mockStepEvent,
+          stepRequestInfo.extraArguments ++ eArgs
+        ).returning(expected._1).once()
+
         // Process the pipeline to trigger the future
-        stepPipeline.process(expected)
+        lowlevelPipeline.process((mockStepEvent, expected._2))
 
         whenReady(stepFuture) { actual => actual should be (expected) }
       }
@@ -923,11 +1010,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
 
     describe("#stepOutMinWithData") {
       it("should create a new step request and pipeline whose future is returned") {
-        val expected = (mock[StepEventInfoProfile], Nil)
+        val expected = (mock[StepEventInfoProfile], Seq(mock[JDIEventDataResult]))
+        val mockStepEvent = mock[StepEvent]
 
-        val stepPipeline = Pipeline.newPipeline(
-          classOf[(EventInfoProfile, Seq[JDIEventDataResult])]
-        )
         val lowlevelPipeline = Pipeline.newPipeline(
           classOf[(Event, Seq[JDIEventDataResult])]
         )
@@ -937,12 +1022,25 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
         // These filters should be injected by our profile
         val threadFilter = ThreadFilter(threadReference = mockThreadReference)
 
+        val stepRequestInfo = StepRequestInfo(
+          requestId = "",
+          isPending = true,
+          removeExistingRequests = true,
+          threadReference = mock[ThreadReference],
+          size = 0,
+          depth = 0,
+          extraArguments = rArgs :+ threadFilter
+        )
+
         (mockThreadInfoProfile.toJdiInstance _).expects()
           .returning(mockThreadReference).once()
 
         (mockStepManager.createStepOutMinRequest _)
-          .expects(mockThreadReference, rArgs :+ threadFilter)
+          .expects(mockThreadReference, stepRequestInfo.extraArguments)
           .returning(Success(TestRequestId)).once()
+
+        (mockStepManager.getStepRequestInfoWithId _).expects(*)
+          .returning(Some(stepRequestInfo)).once()
 
         (mockEventManager.addEventDataStream _)
           .expects(StepEventType, eArgs)
@@ -953,8 +1051,18 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           rArgs ++ eArgs: _*
         )
 
+        // Should convert event to info representation
+        val mockEventInfoProducer = mock[EventInfoProducerProfile]
+        (mockInfoProducer.eventProducer _).expects()
+          .returning(mockEventInfoProducer).once()
+        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+          mockScalaVirtualMachine,
+          mockStepEvent,
+          stepRequestInfo.extraArguments ++ eArgs
+        ).returning(expected._1).once()
+
         // Process the pipeline to trigger the future
-        stepPipeline.process(expected)
+        lowlevelPipeline.process((mockStepEvent, expected._2))
 
         whenReady(stepFuture) { actual => actual should be (expected) }
       }
@@ -978,11 +1086,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
 
     describe("#stepOverMinWithData") {
       it("should create a new step request and pipeline whose future is returned") {
-        val expected = (mock[StepEventInfoProfile], Nil)
+        val expected = (mock[StepEventInfoProfile], Seq(mock[JDIEventDataResult]))
+        val mockStepEvent = mock[StepEvent]
 
-        val stepPipeline = Pipeline.newPipeline(
-          classOf[(EventInfoProfile, Seq[JDIEventDataResult])]
-        )
         val lowlevelPipeline = Pipeline.newPipeline(
           classOf[(Event, Seq[JDIEventDataResult])]
         )
@@ -992,12 +1098,25 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
         // These filters should be injected by our profile
         val threadFilter = ThreadFilter(threadReference = mockThreadReference)
 
+        val stepRequestInfo = StepRequestInfo(
+          requestId = "",
+          isPending = true,
+          removeExistingRequests = true,
+          threadReference = mock[ThreadReference],
+          size = 0,
+          depth = 0,
+          extraArguments = rArgs :+ threadFilter
+        )
+
         (mockThreadInfoProfile.toJdiInstance _).expects()
           .returning(mockThreadReference).once()
 
         (mockStepManager.createStepOverMinRequest _)
-          .expects(mockThreadReference, rArgs :+ threadFilter)
+          .expects(mockThreadReference, stepRequestInfo.extraArguments)
           .returning(Success(TestRequestId)).once()
+
+        (mockStepManager.getStepRequestInfoWithId _).expects(*)
+          .returning(Some(stepRequestInfo)).once()
 
         (mockEventManager.addEventDataStream _)
           .expects(StepEventType, eArgs)
@@ -1008,8 +1127,18 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           rArgs ++ eArgs: _*
         )
 
+        // Should convert event to info representation
+        val mockEventInfoProducer = mock[EventInfoProducerProfile]
+        (mockInfoProducer.eventProducer _).expects()
+          .returning(mockEventInfoProducer).once()
+        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+          mockScalaVirtualMachine,
+          mockStepEvent,
+          stepRequestInfo.extraArguments ++ eArgs
+        ).returning(expected._1).once()
+
         // Process the pipeline to trigger the future
-        stepPipeline.process(expected)
+        lowlevelPipeline.process((mockStepEvent, expected._2))
 
         whenReady(stepFuture) { actual => actual should be (expected) }
       }
@@ -1034,13 +1163,28 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
     describe("#tryCreateStepListenerWithData") {
       it("should create a stream of events with data for steps") {
         val expected = (mock[StepEventInfoProfile], Seq(mock[JDIEventDataResult]))
-        val arguments = Seq(mock[JDIEventArgument])
+        val rArgs = Seq(mock[JDIRequestArgument])
+        val eArgs = Seq(mock[JDIEventArgument])
+        val arguments = rArgs ++ eArgs
+
+        val stepRequestInfo = StepRequestInfo(
+          requestId = "",
+          isPending = true,
+          removeExistingRequests = true,
+          threadReference = mock[ThreadReference],
+          size = 0,
+          depth = 0,
+          extraArguments = rArgs
+        )
+
+        (mockStepManager.getStepRequestInfoWithId _).expects(*)
+          .returning(Some(stepRequestInfo)).once()
 
         val lowlevelPipeline = Pipeline.newPipeline(
           classOf[(Event, Seq[JDIEventDataResult])]
         )
         (mockEventManager.addEventDataStream _).expects(
-          StepEventType, arguments
+          StepEventType, eArgs
         ).returning(lowlevelPipeline).once()
 
         var actual: (StepEventInfoProfile, Seq[JDIEventDataResult]) = null

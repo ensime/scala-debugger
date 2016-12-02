@@ -308,7 +308,7 @@ trait PureStepProfile extends StepProfile {
       .map(t => (t._1.asInstanceOf[StepEvent], t._2))
       .map(t => (eventProducer.newDefaultStepEventInfoProfile(
         scalaVirtualMachine = scalaVirtualMachine,
-        t._1,
+        stepEvent = t._1,
         rArgs ++ eArgs: _*
       ), t._2))
       .noop()
