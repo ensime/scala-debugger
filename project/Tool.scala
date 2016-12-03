@@ -19,7 +19,7 @@ object Tool {
       "org.slf4j" % "slf4j-log4j12" % "1.7.5",
       "log4j" % "log4j" % "1.2.17" % "test,it",
       "org.scalatest" %% "scalatest" % "3.0.0" % "test,it",
-      "org.scalamock" %% "scalamock-scalatest-support" % "3.3.0" % "test,it"
+      "org.scalamock" %% "scalamock-scalatest-support" % "3.4.2" % "test,it"
     ),
 
     // Exclude tools.jar (JDI) since not allowed to ship without JDK
