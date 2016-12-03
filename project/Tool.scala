@@ -11,9 +11,9 @@ object Tool {
     fork in IntegrationTest := true,
 
     libraryDependencies ++= Seq(
-      "com.lihaoyi" % "ammonite" % "0.7.7" cross CrossVersion.full,
-      "com.lihaoyi" % "ammonite-util" % "0.7.7" cross CrossVersion.full,
-      "com.lihaoyi" %% "ammonite-terminal" % "0.7.7",
+      "com.lihaoyi" % "ammonite" % "COMMIT-7d7b824" cross CrossVersion.full,
+      "com.lihaoyi" % "ammonite-util" % "COMMIT-7d7b824" cross CrossVersion.full,
+      "com.lihaoyi" %% "ammonite-terminal" % "COMMIT-7d7b824",
       "org.rogach" %% "scallop" % "2.0.5",
       "org.slf4j" % "slf4j-api" % "1.7.5",
       "org.slf4j" % "slf4j-log4j12" % "1.7.5",

@@ -27,11 +27,16 @@ object Common {
     crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0"),
 
     scalacOptions ++= Seq(
-      "-encoding", "UTF-8", "-target:jvm-1.6",
+      "-encoding", "UTF-8",
       "-deprecation", "-unchecked", "-feature",
       "-Xfatal-warnings"
     ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, scalaMajor)) if scalaMajor == 10 => Seq("-Ywarn-all")
+      case Some((2, scalaMajor)) if scalaMajor == 10 => Seq(
+        "-Ywarn-all", "-target:jvm-1.6"
+      )
+      case Some((2, scalaMajor)) if scalaMajor == 11 => Seq(
+        "-target:jvm-1.6"
+      )
       case _ => Nil
     }),
 
