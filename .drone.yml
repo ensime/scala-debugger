@@ -1,7 +1,5 @@
 matrix:
   SCALA_VERSION:
-    - 2.10.6
-    - 2.11.8
     - 2.12.0
   TEST_SUITE:
     - test it:test
