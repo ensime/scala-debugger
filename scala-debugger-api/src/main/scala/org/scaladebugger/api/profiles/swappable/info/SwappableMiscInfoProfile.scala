@@ -2,6 +2,7 @@ package org.scaladebugger.api.profiles.swappable.info
 //import acyclic.file
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfileManagement
 import org.scaladebugger.api.profiles.traits.info.{MiscInfoProfile, ValueInfoProfile}
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
  * Represents a swappable profile for miscellaneous info that redirects the
@@ -9,6 +10,10 @@ import org.scaladebugger.api.profiles.traits.info.{MiscInfoProfile, ValueInfoPro
  */
 trait SwappableMiscInfoProfile extends MiscInfoProfile {
   this: SwappableDebugProfileManagement =>
+
+  override def toScalaVirtualMachine: ScalaVirtualMachine = {
+    withCurrentProfile.toScalaVirtualMachine
+  }
 
   override def availableLinesForFile(fileName: String): Option[Seq[Int]] = {
     withCurrentProfile.availableLinesForFile(fileName)

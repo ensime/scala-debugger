@@ -4,12 +4,11 @@ import java.util.concurrent.ConcurrentHashMap
 
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.utils.{JDILoader, Logging}
-import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine}
+import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine, ScalaVirtualMachineManager}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future, Promise}
-
 import Debugger._
 
 /** Represents the constants available to the debugger interface. */
@@ -313,11 +312,24 @@ trait Debugger extends Logging {
   def isRunning: Boolean
 
   /**
-   * Retrieves the connected virtual machines for the debugger.
+   * Retrieves the Scala virtual machine manager associated with this debugger.
+   *
+   * @return The Scala virtual machine manager.
+   */
+  def scalaVirtualMachineManager: ScalaVirtualMachineManager =
+    ScalaVirtualMachineManager.Instance
+
+  /**
+   * Retrieves the connected virtual machines for the debugger. Does not
+   * include any dummy virtual machines.
    *
    * @return The collection of connected virtual machines
    */
-  def connectedScalaVirtualMachines: Seq[ScalaVirtualMachine]
+  def connectedScalaVirtualMachines: Seq[ScalaVirtualMachine] =
+    scalaVirtualMachineManager.filter {
+      case d: DummyScalaVirtualMachine  => false
+      case s                            => true
+    }.toSeq
 
   /**
    * Creates a new dummy Scala virtual machine instance that can be used to
@@ -327,7 +339,7 @@ trait Debugger extends Logging {
    * @return The new dummy (no-op) Scala virtual machine instance
    */
   def newDummyScalaVirtualMachine(): ScalaVirtualMachine =
-    DummyScalaVirtualMachine.newInstance()
+    DummyScalaVirtualMachine.newInstance(scalaVirtualMachineManager)
 
   /**
    * Adds a new Scala virtual machine to use for pending operations. Essentially

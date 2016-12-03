@@ -1,11 +1,10 @@
 package org.scaladebugger.api.debuggers
 import acyclic.file
-
 import com.sun.jdi._
 import com.sun.jdi.connect.LaunchingConnector
 import org.scaladebugger.api.profiles.{ProfileManager, StandardProfileManager}
 import org.scaladebugger.api.utils.{Logging, LoopingTaskRunner}
-import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, StandardScalaVirtualMachine}
+import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager, StandardScalaVirtualMachine}
 
 import scala.collection.JavaConverters._
 
@@ -66,6 +65,8 @@ class LaunchingDebugger private[api] (
   private val suspend: Boolean = true
 ) extends Debugger with Logging {
   private val ConnectorClassString = "com.sun.jdi.CommandLineLaunch"
+
+  /** Represents the active Scala virtual machine. */
   @volatile private var scalaVirtualMachine: Option[ScalaVirtualMachine] = None
 
   /**
@@ -121,7 +122,9 @@ class LaunchingDebugger private[api] (
     logger.debug("Starting looping task runner")
     loopingTaskRunner.start()
 
-    scalaVirtualMachine = Some(newScalaVirtualMachine(
+    // Create and set our new active SVM
+    scalaVirtualMachine = Some(addNewScalaVirtualMachine(
+      scalaVirtualMachineManager,
       virtualMachine,
       profileManager,
       loopingTaskRunner
@@ -157,29 +160,34 @@ class LaunchingDebugger private[api] (
       .foreach(_.process().destroy())
 
     // Wipe our reference to the old virtual machine
+    scalaVirtualMachine.foreach(scalaVirtualMachineManager.remove)
     scalaVirtualMachine = None
   }
 
   /**
-   * Creates a new ScalaVirtualMachine instance.
+   * Creates and adds a new ScalaVirtualMachine instance.
    *
+   * @param scalaVirtualMachineManager The manager of of the new virtual machine
    * @param virtualMachine The underlying virtual machine
    * @param profileManager The profile manager associated with the
    *                       virtual machine
    * @param loopingTaskRunner The looping task runner used to process events
    *                          for the virtual machine
-   *
    * @return The new ScalaVirtualMachine instance
    */
-  protected def newScalaVirtualMachine(
+  protected def addNewScalaVirtualMachine(
+    scalaVirtualMachineManager: ScalaVirtualMachineManager,
     virtualMachine: VirtualMachine,
     profileManager: ProfileManager,
     loopingTaskRunner: LoopingTaskRunner
-  ): StandardScalaVirtualMachine = new StandardScalaVirtualMachine(
-    virtualMachine,
-    profileManager,
-    loopingTaskRunner
-  )
+  ): ScalaVirtualMachine = {
+    scalaVirtualMachineManager.add(new StandardScalaVirtualMachine(
+      scalaVirtualMachineManager,
+      virtualMachine,
+      profileManager,
+      loopingTaskRunner
+    ))
+  }
 
   /**
    * Retrieves the connector to be used to launch a new process and connect
@@ -191,12 +199,4 @@ class LaunchingDebugger private[api] (
     virtualMachineManager.launchingConnectors().asScala
       .find(_.name() == ConnectorClassString)
   }
-
-  /**
-   * Retrieves the connected virtual machines for the debugger.
-   *
-   * @return The collection of connected virtual machines
-   */
-  override def connectedScalaVirtualMachines: Seq[ScalaVirtualMachine] =
-    scalaVirtualMachine.toSeq
 }

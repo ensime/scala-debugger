@@ -21,6 +21,7 @@ import scala.util.Try
 /**
  * Represents a virtual machine running Scala code.
  *
+ * @param manager The manager containing this virtual machine
  * @param _virtualMachine The underlying virtual machine
  * @param profileManager The manager used to provide specific implementations
  *                       of debugging via profiles
@@ -29,6 +30,7 @@ import scala.util.Try
  *                 client (library) side to help distinguish multiple VMs
  */
 class StandardScalaVirtualMachine(
+  override val manager: ScalaVirtualMachineManager,
   protected val _virtualMachine: VirtualMachine,
   protected val profileManager: ProfileManager,
   private val loopingTaskRunner: LoopingTaskRunner,
@@ -92,7 +94,8 @@ class StandardScalaVirtualMachine(
     defaultProfile: String,
     startProcessingEvents: Boolean
   ): Unit = synchronized {
-    assert(!isInitialized, "Scala virtual machine already initialized!")
+    assert(!isInitialized,
+      s"Scala virtual machine '$uniqueId' already initialized!")
 
     logger.debug(vmString("Initializing Scala virtual machine!"))
 

@@ -11,10 +11,13 @@ import org.scaladebugger.api.profiles.traits.DebugProfile
 /**
  * Represents a virtual machine running Scala code whose operations do nothing.
  *
+ * @param manager The manager containing this virtual machine
  * @param profileManager The manager used to provide specific implementations
  *                       of debugging via profiles
+ * @param lowlevel The manager containing all low-level API managers
  */
-class DummyScalaVirtualMachine(
+class DummyScalaVirtualMachine private[virtualmachines] (
+  override val manager: ScalaVirtualMachineManager,
   protected val profileManager: ProfileManager,
   override val lowlevel: ManagerContainer = ManagerContainer.usingDummyManagers()
 ) extends ScalaVirtualMachine {
@@ -132,15 +135,32 @@ object DummyScalaVirtualMachine {
   /**
    * Creates a new instance of the dummy Scala virtual machine using a new
    * instance of the default profile manager.
+   * Adds the dummy instance to the provided Scala virtual machine manager.
    *
+   * @param scalaVirtualMachineManager The manager to tie to this dummy vm
    * @param defaultProfile The default profile to use with the dummy vm
    * @return The new dummy Scala virtual machine
    */
-  def newInstance(defaultProfile: String): DummyScalaVirtualMachine = {
+  def newInstance(
+    scalaVirtualMachineManager: ScalaVirtualMachineManager,
+    defaultProfile: String
+  ): DummyScalaVirtualMachine = {
     val managerContainer = ManagerContainer.usingDummyManagers()
+    val profileManager = new StandardProfileManager
 
-    val dummyScalaVirtualMachine = new DummyScalaVirtualMachine(
-      StandardProfileManager.newDefaultInstance(managerContainer),
+    // Create the dummy Scala virtual machine and add it to the manager
+    val dummyScalaVirtualMachine = scalaVirtualMachineManager.add(
+      new DummyScalaVirtualMachine(
+        scalaVirtualMachineManager,
+        profileManager,
+        managerContainer
+      )
+    )
+
+    // Register default profiles
+    StandardProfileManager.registerDefaultProfiles(
+      profileManager,
+      dummyScalaVirtualMachine,
       managerContainer
     )
 
@@ -152,8 +172,26 @@ object DummyScalaVirtualMachine {
   /**
    * Creates a new instance of the dummy Scala virtual machine using a new
    * instance of the default profile manager. Uses the default profile.
+   * Adds the dummy instance to the provided Scala virtual machine manager.
+   *
+   * @param scalaVirtualMachineManager The manager to tie to this dummy vm
+   * @return The new dummy Scala virtual machine
+   */
+  def newInstance(
+    scalaVirtualMachineManager: ScalaVirtualMachineManager
+  ): DummyScalaVirtualMachine = newInstance(
+    scalaVirtualMachineManager,
+    DefaultProfileName
+  )
+
+  /**
+   * Creates a new instance of the dummy Scala virtual machine using a new
+   * instance of the default profile manager. Uses the default profile and
+   * adds the dummy instance to the global Scala virtual machine manager.
    *
    * @return The new dummy Scala virtual machine
    */
-  def newInstance(): DummyScalaVirtualMachine = newInstance(DefaultProfileName)
+  def newInstance(): DummyScalaVirtualMachine = newInstance(
+    ScalaVirtualMachineManager.Instance
+  )
 }

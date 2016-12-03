@@ -3,6 +3,7 @@ package org.scaladebugger.api.profiles
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
+import com.sun.jdi.VirtualMachine
 import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
@@ -60,9 +61,19 @@ class RequestHelper[
   private[profiles] val _newEventInfo: (ScalaVirtualMachine, E, Seq[JDIArgument]) => EI,
   private[profiles] val _retrieveRequestInfo: String => Option[RequestInfo]
 ) {
+  // Do not allow any argument to be null (stop at front door)
+  require(
+    scalaVirtualMachine != null && eventManager != null && etInstance != null &&
+    _newRequestId != null && _newRequest != null && _hasRequest != null &&
+    _removeRequestById != null && _newEventInfo != null &&
+    _removeRequestById != null
+  )
 
   /** Represents the combination of event and data returned. */
   type EventAndData = (EI, Seq[JDIEventDataResult])
+
+  /** Represents the manager of the Scala virtual machine. */
+  private lazy val scalaVirtualMachineManager = scalaVirtualMachine.manager
 
   /**
    * Contains a mapping of request ids to associated event handler ids.
@@ -177,8 +188,11 @@ class RequestHelper[
     eventManager
       .addEventDataStream(etInstance, eventArgs: _*)
       .map(t => (t._1.asInstanceOf[E], t._2))
-      .map(t => (_newEventInfo(scalaVirtualMachine, t._1, allArgs), t._2))
-      .noop()
+      .map(t => {
+        val vm = Try(t._1.virtualMachine())
+        val svm = vm.flatMap(vm => Try(scalaVirtualMachineManager(vm)))
+        svm.map(s => (_newEventInfo(s, t._1, allArgs), t._2)).get
+      }).noop()
   }
 
   /**

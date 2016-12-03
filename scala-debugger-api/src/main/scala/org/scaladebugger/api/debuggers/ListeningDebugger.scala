@@ -1,11 +1,10 @@
 package org.scaladebugger.api.debuggers
 import acyclic.file
-
 import com.sun.jdi._
 import com.sun.jdi.connect.{Connector, ListeningConnector}
 import org.scaladebugger.api.profiles.{ProfileManager, StandardProfileManager}
 import org.scaladebugger.api.utils.{Logging, LoopingTaskRunner}
-import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, StandardScalaVirtualMachine}
+import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager, StandardScalaVirtualMachine}
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -64,16 +63,15 @@ class ListeningDebugger private[api] (
 ) extends Debugger with Logging {
   private val ConnectorClassString = "com.sun.jdi.SocketListen"
 
+  /** Represents the active Scala virtual machines. */
+  @volatile private var scalaVirtualMachines: Seq[ScalaVirtualMachine] = Nil
+
   // Contains all components for the currently-running debugger
   @volatile private var components: Option[(
     LoopingTaskRunner,
     ListeningConnector,
     java.util.Map[String, Connector.Argument]
   )] = None
-
-  @volatile private var scalaVirtualMachines: collection.mutable.Seq[
-    ScalaVirtualMachine
-  ] = collection.mutable.Seq()
 
   /**
    * Represents the JVM options to feed to remote JVMs whom will connect to
@@ -184,7 +182,8 @@ class ListeningDebugger private[api] (
 
     // Mark that we have completely stopped the debugger
     components = None
-    scalaVirtualMachines = collection.mutable.Seq()
+    scalaVirtualMachines.foreach(scalaVirtualMachineManager.remove)
+    scalaVirtualMachines = Nil
   }
 
   /**
@@ -215,12 +214,13 @@ class ListeningDebugger private[api] (
     arguments: java.util.Map[String, Connector.Argument],
     defaultProfile: String,
     startProcessingEvents: Boolean,
-    newVirtualMachineFunc: StandardScalaVirtualMachine => T
+    newVirtualMachineFunc: ScalaVirtualMachine => T
   ): Unit = {
     val newVirtualMachine = Try(connector.accept(arguments))
 
     // Invoke our callback upon receiving a new virtual machine
-    val scalaVirtualMachine = newVirtualMachine.map(newScalaVirtualMachine(
+    val scalaVirtualMachine = newVirtualMachine.map(addNewScalaVirtualMachine(
+      scalaVirtualMachineManager,
       _: VirtualMachine,
       newProfileManagerFunc(),
       loopingTaskRunner
@@ -240,25 +240,29 @@ class ListeningDebugger private[api] (
   }
 
   /**
-   * Creates a new ScalaVirtualMachine instance.
+   * Creates and adds a new ScalaVirtualMachine instance.
    *
+   * @param scalaVirtualMachineManager The manager of of the new virtual machine
    * @param virtualMachine The underlying virtual machine
    * @param profileManager The profile manager associated with the
    *                       virtual machine
    * @param loopingTaskRunner The looping task runner used to process events
    *                          for the virtual machine
-   *
    * @return The new ScalaVirtualMachine instance
    */
-  protected def newScalaVirtualMachine(
+  protected def addNewScalaVirtualMachine(
+    scalaVirtualMachineManager: ScalaVirtualMachineManager,
     virtualMachine: VirtualMachine,
     profileManager: ProfileManager,
     loopingTaskRunner: LoopingTaskRunner
-  ): StandardScalaVirtualMachine = new StandardScalaVirtualMachine(
-    virtualMachine,
-    profileManager,
-    loopingTaskRunner
-  )
+  ): ScalaVirtualMachine = {
+    scalaVirtualMachineManager.add(new StandardScalaVirtualMachine(
+      scalaVirtualMachineManager,
+      virtualMachine,
+      profileManager,
+      loopingTaskRunner
+    ))
+  }
 
   /**
    * Retrieves the connector to be used to listen for incoming JVM connections.
@@ -269,12 +273,4 @@ class ListeningDebugger private[api] (
     virtualMachineManager.listeningConnectors().asScala
       .find(_.name() == ConnectorClassString)
   }
-
-  /**
-   * Retrieves the connected virtual machines for the debugger.
-   *
-   * @return The collection of connected virtual machines
-   */
-  override def connectedScalaVirtualMachines: Seq[ScalaVirtualMachine] =
-    scalaVirtualMachines
 }

@@ -7,6 +7,7 @@ import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.profiles.scala210.Scala210DebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 import scala.collection.JavaConverters._
 
@@ -59,33 +60,20 @@ class StandardProfileManager extends ProfileManager {
 }
 
 object StandardProfileManager {
-  /**
-   * Creates a new instance of the profile manager with default profiles
-   * already registered.
-   *
-   * @note Currently, the pure debug profile has its virtual machine set to
-   *       null, which makes operations like retrieving the main class name
-   *       and arguments impossible. Do not use those methods with this
-   *       default profile manager!
-   *
-   * @param managerContainer The container of managers to use with this new
-   *                         profile manager
-   *
-   * @return The new profile manager
-   */
-  def newDefaultInstance(
+  /** TODO: Write docs */
+  def registerDefaultProfiles(
+    profileManager: ProfileManager,
+    scalaVirtualMachine: ScalaVirtualMachine,
     managerContainer: ManagerContainer = ManagerContainer.usingDummyManagers()
-  ): StandardProfileManager = {
-    val profileManager = new StandardProfileManager
-
+  ): ProfileManager = {
     // TODO: Refactor PureDebugProfile to not need virtual machine as providing
     //       null will cause usage of it to fail
     profileManager.register(PureDebugProfile.Name, new PureDebugProfile(
-      null, managerContainer
-    )(_virtualMachine = null))
+      scalaVirtualMachine, managerContainer
+    )(_virtualMachine = scalaVirtualMachine.underlyingVirtualMachine))
     profileManager.register(Scala210DebugProfile.Name, new Scala210DebugProfile(
-      null, managerContainer
-    )(_virtualMachine = null))
+      scalaVirtualMachine, managerContainer
+    )(_virtualMachine = scalaVirtualMachine.underlyingVirtualMachine))
 
     profileManager
   }

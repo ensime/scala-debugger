@@ -56,6 +56,11 @@ trait ScalaVirtualMachine extends SwappableDebugProfile with ProfileManager {
   def isStarted: Boolean
 
   /**
+   * Represents the manager containing this virtual machine.
+   */
+  val manager: ScalaVirtualMachineManager
+
+  /**
    * Represents the cache of objects available on the virtual machine.
    * Caching is done manually, so this cache is not populated as objects are
    * created on the virtual machine.

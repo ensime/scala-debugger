@@ -19,6 +19,13 @@ trait PureMiscInfoProfile extends MiscInfoProfile with JDIHelperMethods {
   protected val classManager: ClassManager
 
   /**
+   * Retrieves the Scala virtual machine associated with this profile instance.
+   *
+   * @return The Scala virtual machine instance
+   */
+  override def toScalaVirtualMachine: ScalaVirtualMachine = scalaVirtualMachine
+
+  /**
    * Retrieves the list of available lines for a specific file.
    *
    * @param fileName The name of the file whose lines to retrieve

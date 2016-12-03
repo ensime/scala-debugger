@@ -1,13 +1,19 @@
 package org.scaladebugger.api.profiles.traits.info
 
-import scala.util.Try
-//import acyclic.file
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
  * Represents the interface that needs to be implemented to provide
  * miscellaneous info functionality for a specific debug profile.
  */
 trait MiscInfoProfile {
+  /**
+   * Retrieves the Scala virtual machine associated with this profile instance.
+   *
+   * @return The Scala virtual machine instance
+   */
+  def toScalaVirtualMachine: ScalaVirtualMachine
+
   /**
    * Retrieves the list of available lines for a specific file.
    *
