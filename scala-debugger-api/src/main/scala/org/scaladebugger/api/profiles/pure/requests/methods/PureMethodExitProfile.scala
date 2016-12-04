@@ -119,7 +119,11 @@ trait PureMethodExitProfile extends MethodExitProfile {
 
     val requestArgs = (className, methodName, rArgs)
     requestHelper.newRequest(requestArgs, rArgs)
-      .flatMap(id => requestHelper.newEventPipeline(id, eArgs, requestArgs))
+      .flatMap(id => requestHelper.newEventPipeline(
+        id,
+        MethodNameFilter(methodName) +: eArgs,
+        requestArgs
+      ))
   }
 
   /**

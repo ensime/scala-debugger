@@ -6,6 +6,7 @@ import com.sun.jdi.event.MethodEntryEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.EventManager
 import org.scaladebugger.api.lowlevel.events.EventType.MethodEntryEventType
+import org.scaladebugger.api.lowlevel.events.filters.MethodNameFilter
 import org.scaladebugger.api.lowlevel.methods.{MethodEntryManager, MethodEntryRequestInfo, PendingMethodEntrySupportLike}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.utils.JDIArgumentGroup
@@ -111,7 +112,11 @@ trait PureMethodEntryProfile extends MethodEntryProfile {
 
     val requestArgs = (className, methodName, rArgs)
     requestHelper.newRequest(requestArgs, rArgs)
-      .flatMap(id => requestHelper.newEventPipeline(id, eArgs, requestArgs))
+      .flatMap(id => requestHelper.newEventPipeline(
+        id,
+        MethodNameFilter(methodName) +: eArgs,
+        requestArgs
+      ))
   }
 
   /**
