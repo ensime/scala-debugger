@@ -23,7 +23,9 @@ class CustomPropertyFilterProcessor(
    * @return True if the event passes through the filter, otherwise false
    */
   override def process(event: Event): Boolean = {
-    event.request().getProperty(key) == value
+    Option(event.request())
+      .flatMap(r => Option(r.getProperty(key)))
+      .exists(_ == value)
   }
 
   /**

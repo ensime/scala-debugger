@@ -61,7 +61,8 @@ trait PureVMStartProfile extends VMStartProfile {
         eventProducer.newDefaultVMStartEventInfoProfile(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = requestId => requestArgsCache.get(requestId)
-        .map(rArgs => StandardRequestInfo(requestId, isPending = true, rArgs))
+        .map(rArgs => StandardRequestInfo(requestId, isPending = true, rArgs)),
+      _includeUniqueId = false
     )
   }
 

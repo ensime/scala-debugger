@@ -3,7 +3,6 @@ package org.scaladebugger.api.profiles
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.sun.jdi.VirtualMachine
 import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
@@ -39,6 +38,10 @@ import scala.util.Try
  *                      JDI arguments
  * @param _retrieveRequestInfo Retrieves the information for a request using its
  *                           request id, returning Some(info) if found
+ * @param _includeUniqueId If true, includes a unique id on each new request
+ *                         and filters the generated pipelines using the
+ *                         unique id property filter (should be set to false
+ *                         for events without requests such as VM Start)
  * @tparam E The JDI event
  * @tparam EI The event info type to transform the JDI event into
  * @tparam RequestArgs The arguments used to create a request
@@ -59,7 +62,8 @@ class RequestHelper[
   private[profiles] val _hasRequest: (RequestArgs) => Boolean,
   private[profiles] val _removeRequestById: String => Unit,
   private[profiles] val _newEventInfo: (ScalaVirtualMachine, E, Seq[JDIArgument]) => EI,
-  private[profiles] val _retrieveRequestInfo: String => Option[RequestInfo]
+  private[profiles] val _retrieveRequestInfo: String => Option[RequestInfo],
+  private[profiles] val _includeUniqueId: Boolean = true
 ) {
   // Do not allow any argument to be null (stop at front door)
   require(
@@ -111,7 +115,9 @@ class RequestHelper[
     val m = new Memoization[Input, Key, Output](
       memoFunc = (input: Input) => {
         val requestId = _newRequestId()
-        val args = UniqueIdProperty(id = requestId) +: input._2
+        val args =
+          if (_includeUniqueId) UniqueIdProperty(id = requestId) +: input._2
+          else input._2
 
         _newRequest(requestId, input._1, args)
       },
@@ -144,7 +150,9 @@ class RequestHelper[
     val rArgs = _retrieveRequestInfo(requestId)
       .map(_.extraArguments).getOrElse(Nil)
 
-    val eArgsWithFilter = UniqueIdPropertyFilter(id = requestId) +: eventArgs
+    val eArgsWithFilter =
+      if (_includeUniqueId) UniqueIdPropertyFilter(id = requestId) +: eventArgs
+      else eventArgs
     val newPipeline = newEventStream(rArgs, eArgsWithFilter)
 
     // Create a companion pipeline who, when closed, checks to see if there
