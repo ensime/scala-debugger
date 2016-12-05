@@ -19,7 +19,7 @@ install:
   - cmd: SET PATH=C:\sbt\sbt-launcher-packaging-0.13.13\bin;%JAVA_HOME%\bin;%PATH%
   - cmd: SET COURSIER_VERBOSITY=-1
   - cmd: SET SBT_OPTS=-Xss2m -Xms1024m -Xmx4096m -XX:+TieredCompilation -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:MaxPermSize=256m -XX:ReservedCodeCacheSize=256M
-  - cmd: SET SCALATEST_SPAN_SCALE_FACTOR=10
+  - cmd: SET SCALATEST_SPAN_SCALE_FACTOR=20
   - cmd: SET SBT_TASK_LIMIT=4
   - cmd: SET SCALATEST_PARALLEL_TESTS=2
   - cmd: SET SCALATEST_SLEEP_SCALE_FACTOR=2.0

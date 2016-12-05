@@ -13,7 +13,7 @@ build:
     - SCALATEST_PARALLEL_TESTS=2
     - SCALATEST_SLEEP_SCALE_FACTOR=2.0
     - CACHE_DIR="/drone"
-    - SCALATEST_SPAN_SCALE_FACTOR=10
+    - SCALATEST_SPAN_SCALE_FACTOR=20
   commands:
     - host `curl -s http://httpbin.org/ip | jq -r '.origin'` || true
     - javac -version
