@@ -30,7 +30,7 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
   private val testWorkers = 4
 
   private implicit val mockVirtualMachineManager = mock[VirtualMachineManager]
-  private val testScalaVirtualMachineManager = ScalaVirtualMachineManager.Instance
+  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
   private val mockAddNewScalaVirtualMachineFunc = mockFunction[
@@ -289,11 +289,11 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
           .returning(mockVirtualMachine).once()
 
         class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          testScalaVirtualMachineManager, mockVirtualMachine, null, null
+          mockScalaVirtualMachineManager, mockVirtualMachine, null, null
         )
         val stubScalaVirtualMachine = stub[TestScalaVirtualMachine]
         mockAddNewScalaVirtualMachineFunc.expects(
-          testScalaVirtualMachineManager, mockVirtualMachine, *, *
+          listeningDebugger.scalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(stubScalaVirtualMachine).once()
 
         mockCallback.expects(stubScalaVirtualMachine).once()
@@ -320,11 +320,11 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
           .returning(mockVirtualMachine).once()
 
         class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          testScalaVirtualMachineManager, mockVirtualMachine, null, null
+          mockScalaVirtualMachineManager, mockVirtualMachine, null, null
         )
         val mockScalaVirtualMachine = mock[TestScalaVirtualMachine]
         mockAddNewScalaVirtualMachineFunc.expects(
-          testScalaVirtualMachineManager, mockVirtualMachine, *, *
+          listeningDebugger.scalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.processPendingRequests _)
@@ -353,11 +353,11 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
           .returning(mockVirtualMachine).once()
 
         class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          testScalaVirtualMachineManager, mockVirtualMachine, null, null
+          mockScalaVirtualMachineManager, mockVirtualMachine, null, null
         )
         val mockScalaVirtualMachine = mock[TestScalaVirtualMachine]
         mockAddNewScalaVirtualMachineFunc.expects(
-          testScalaVirtualMachineManager, mockVirtualMachine, *, *
+          listeningDebugger.scalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.initialize _)
@@ -370,93 +370,6 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
           true,
           _ => {}
         )
-      }
-    }
-
-    describe("#connectedScalaVirtualMachines") {
-      it("should return an empty list if the debugger has not connected") {
-        listeningDebugger.connectedScalaVirtualMachines should be (empty)
-      }
-
-      it("should return a list with all connected virtual machines") {
-        val mockListeningConnector = mock[ListeningConnector]
-        val mockArguments = mock[java.util.Map[String, Connector.Argument]]
-        val mockCallback = mockFunction[ScalaVirtualMachine, Unit]
-        val mockVirtualMachine = mock[VirtualMachine]
-
-        // Expect accept call, returning a new virtual machine instance
-        (mockListeningConnector.accept _).expects(mockArguments)
-          .returning(mockVirtualMachine).once()
-
-        class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          testScalaVirtualMachineManager, mockVirtualMachine, null, null
-        )
-        val stubScalaVirtualMachine = stub[TestScalaVirtualMachine]
-        mockAddNewScalaVirtualMachineFunc.expects(
-          testScalaVirtualMachineManager, mockVirtualMachine, *, *
-        ).returning(stubScalaVirtualMachine).once()
-
-        mockCallback.expects(stubScalaVirtualMachine).once()
-
-        listeningDebugger.listenTask(
-          mockListeningConnector,
-          mockArguments,
-          "",
-          true,
-          mockCallback
-        )
-
-        listeningDebugger.connectedScalaVirtualMachines should
-          contain (stubScalaVirtualMachine)
-      }
-
-      it("should return an empty list if stopped after a virtual machine has connected") {
-        // MOCK ===============================================================
-        val mockListeningConnector = mock[ListeningConnector]
-
-        (mockListeningConnector.name _).expects()
-          .returning("com.sun.jdi.SocketListen")
-
-        (mockVirtualMachineManager.listeningConnectors _).expects()
-          .returning(Seq(mockListeningConnector).asJava)
-
-        (mockListeningConnector.defaultArguments _).expects().returning(Map(
-          "localAddress" -> createConnectorArgumentMock(setter = true),
-          "port" -> createConnectorArgumentMock(setter = true)
-        ).asJava)
-
-        (mockListeningConnector.supportsMultipleConnections _).expects().once()
-        (mockListeningConnector.startListening _).expects(*).once()
-        (mockLoopingTaskRunner.start _).expects().once()
-        (mockLoopingTaskRunner.addTask _).expects(*)
-          .repeated(testWorkers).times()
-        // MOCK ===============================================================
-
-        listeningDebugger.start((_) => {})
-
-        val mockVirtualMachine = mock[VirtualMachine]
-        val mockArguments = mock[java.util.Map[String, Connector.Argument]]
-        class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          testScalaVirtualMachineManager, mockVirtualMachine, null, null
-        )
-
-        listeningDebugger.listenTask(
-          mockListeningConnector,
-          mockArguments,
-          "",
-          true,
-          _ => {}
-        )
-
-        (mockVirtualMachineManager.connectedVirtualMachines _).expects()
-          .returning(List[VirtualMachine](mockVirtualMachine).asJava).once()
-        (mockVirtualMachine.dispose _).expects().once()
-        (mockListeningConnector.stopListening _).expects(*).once()
-        (mockLoopingTaskRunner.stop _).expects(true).once()
-
-        listeningDebugger.stop()
-
-        listeningDebugger.connectedScalaVirtualMachines should be (empty)
       }
     }
 

@@ -191,6 +191,6 @@ object DummyScalaVirtualMachine {
    * @return The new dummy Scala virtual machine
    */
   def newInstance(): DummyScalaVirtualMachine = newInstance(
-    ScalaVirtualMachineManager.Instance
+    ScalaVirtualMachineManager.GlobalInstance
   )
 }

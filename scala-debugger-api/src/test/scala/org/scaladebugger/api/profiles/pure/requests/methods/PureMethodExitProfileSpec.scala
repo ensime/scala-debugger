@@ -2,6 +2,7 @@ package org.scaladebugger.api.profiles.pure.requests.methods
 import com.sun.jdi.event.MethodExitEvent
 import org.scaladebugger.api.lowlevel.events.EventType.MethodExitEventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.events.filters.MethodNameFilter
 import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.methods.{MethodExitManager, MethodExitRequestInfo, PendingMethodExitSupportLike}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
@@ -196,12 +197,16 @@ with ParallelTestExecution with MockFactory with JDIMockHelpers
         val mockJdiEventArgs = Seq(mock[JDIEventArgument])
         val requestArgs = (className, methodName, mockJdiRequestArgs)
 
+        // Should create a new request and event pipeline with the pipeline
+        // being fed a method name filter as well as the provided input args
         (mockRequestHelper.newRequest _)
           .expects(requestArgs, mockJdiRequestArgs)
           .returning(Success(requestId)).once()
-        (mockRequestHelper.newEventPipeline _)
-          .expects(requestId, mockJdiEventArgs, requestArgs)
-          .returning(Success(Pipeline.newPipeline(classOf[EIData]))).once()
+        (mockRequestHelper.newEventPipeline _).expects(
+          requestId,
+          MethodNameFilter(methodName) +: mockJdiEventArgs,
+          requestArgs
+        ).returning(Success(Pipeline.newPipeline(classOf[EIData]))).once()
 
         val actual = pureMethodExitProfile.tryGetOrCreateMethodExitRequest(
           className,

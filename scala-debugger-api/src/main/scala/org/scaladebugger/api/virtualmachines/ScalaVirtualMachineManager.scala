@@ -8,22 +8,23 @@ import scala.collection.JavaConverters._
 
 object ScalaVirtualMachineManager {
   /** Represents the global Scala virtual machine manager. */
-  val Instance = new ScalaVirtualMachineManager
+  val GlobalInstance = new ScalaVirtualMachineManager
 }
 
 /**
  * Represents a manager of virtual machines, providing a variety of means to
  * look up a virtual machine.
  */
-class ScalaVirtualMachineManager private extends Traversable[ScalaVirtualMachine] {
+class ScalaVirtualMachineManager {
+  type ID = String
   type VM = VirtualMachine
   type SVM = ScalaVirtualMachine
-  private type IDM = scala.collection.mutable.Map[String, VM]
+  private type IDM = scala.collection.mutable.Map[ID, VM]
   private type VMM = scala.collection.mutable.Map[VM, SVM]
   private type VMB = scala.collection.mutable.Buffer[SVM]
 
   /** Contains a mapping of unique ids to their respective virtual machines. */
-  private val uniqueIdMap: IDM = new ConcurrentHashMap[String, VM]().asScala
+  private val uniqueIdMap: IDM = new ConcurrentHashMap[ID, VM]().asScala
 
   /** Contains a mapping of JDI VMs to the Scala VMs. */
   private val vmMap: VMM = new ConcurrentHashMap[VM, SVM]().asScala
@@ -47,6 +48,29 @@ class ScalaVirtualMachineManager private extends Traversable[ScalaVirtualMachine
       }
     }
   }
+
+  /**
+   * Returns the unique ids of the Scala virtual machines held by this
+   * manager.
+   *
+   * @return The collection of unique ids
+   */
+  def toUniqueIds: Seq[ID] = uniqueIdMap.keys.toSeq
+
+  /**
+   * Returns the virtual machines of the Scala virtual machines held by this
+   * manager.
+   *
+   * @return The collection of virtual machines
+   */
+  def toVMs: Seq[VirtualMachine] = vmMap.keys.toSeq
+
+  /**
+   * Returns the Scala virtual machines held by this manager.
+   *
+   * @return The collection of Scala virtual machines
+   */
+  def toSVMs: Seq[ScalaVirtualMachine] = scalaVirtualMachines
 
   /**
    * Adds a new Scala virtual machine to be managed. Ignores SVMs already
@@ -118,15 +142,6 @@ class ScalaVirtualMachineManager private extends Traversable[ScalaVirtualMachine
   }
 
   /**
-   * Iterates over all Scala virtual machine instances, executing the provided
-   * function.
-   *
-   * @param f The function to execute on each Scala virtual machine
-   * @tparam U The return type of the function being executed
-   */
-  override def foreach[U](f: (SVM) => U): Unit = scalaVirtualMachines.foreach(f)
-
-  /**
    * Looks up a Scala virtual machine by its unique id.
    *
    * @param uniqueId The unique id of the Scala virtual machine to retrieve
@@ -134,7 +149,7 @@ class ScalaVirtualMachineManager private extends Traversable[ScalaVirtualMachine
    * @throws IllegalStateException When no Scala virtual machine found
    */
   @throws[IllegalStateException]
-  def apply(uniqueId: String): SVM = {
+  def apply(uniqueId: ID): SVM = {
     get(uniqueId).getOrElse(throw new IllegalStateException(
       s"No Scala virtual machine found with unique id $uniqueId"
     ))
@@ -146,7 +161,7 @@ class ScalaVirtualMachineManager private extends Traversable[ScalaVirtualMachine
    * @param uniqueId The unique id of the Scala virtual machine to retrieve
    * @return Some Scala virtual machine if found, otherwise None
    */
-  def get(uniqueId: String): Option[SVM] = {
+  def get(uniqueId: ID): Option[SVM] = {
     Option(uniqueId).flatMap(uniqueIdMap.get).flatMap(get)
   }
 

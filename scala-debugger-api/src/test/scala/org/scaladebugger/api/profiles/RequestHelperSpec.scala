@@ -2,6 +2,7 @@ package org.scaladebugger.api.profiles
 
 import java.util.UUID
 
+import com.sun.jdi.VirtualMachine
 import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.{JDIArgument, RequestInfo}
 import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
@@ -12,7 +13,7 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
-import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager}
 
 import scala.util.{Failure, Success, Try}
 
@@ -183,6 +184,19 @@ class RequestHelperSpec extends test.ParallelMockFunSpec {
             mockJdiEventArgs,
             counterKey
           )
+
+          // Validate that we construct a new Scala virtual machine manager
+          // that obtains a Scala virtual machine associated with the event
+          val mockVirtualMachine = mock[VirtualMachine]
+          val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
+          (mockEvent.virtualMachine _).expects()
+            .returning(mockVirtualMachine).once()
+          (mockScalaVirtualMachine.manager _).expects()
+            .returning(mockScalaVirtualMachineManager).once()
+          (mockScalaVirtualMachineManager.apply(_: VirtualMachine))
+            .expects(mockVirtualMachine)
+            .returning(mockScalaVirtualMachine)
+            .once()
 
           // Validate that each event gets transformed into the event info
           mockNewEventInfo.expects(

@@ -46,7 +46,7 @@ class ScalaVirtualMachineSpec extends test.ParallelMockFunSpec
     mockFunction[ManagerContainer, Unit]
   private val mockProfileManager = mock[ProfileManager]
   private val scalaVirtualMachine = newScalaVirtualMachine(
-    ScalaVirtualMachineManager.Instance,
+    ScalaVirtualMachineManager.GlobalInstance,
     new TestManagerContainer {
       override def processPendingRequests(
         managerContainer: ManagerContainer

@@ -17,10 +17,10 @@ import org.scaladebugger.api.profiles.ProfileManager
 
 class DummyScalaVirtualMachineSpec extends test.ParallelMockFunSpec
 {
-  private val testScalaVirtualMachineManager = ScalaVirtualMachineManager.Instance
+  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
   private val mockProfileManager = mock[ProfileManager]
   private val dummyScalaVirtualMachine = new DummyScalaVirtualMachine(
-    testScalaVirtualMachineManager, mockProfileManager
+    mockScalaVirtualMachineManager, mockProfileManager
   )
 
   describe("DummyScalaVirtualMachine") {

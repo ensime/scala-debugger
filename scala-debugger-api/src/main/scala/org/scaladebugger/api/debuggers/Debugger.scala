@@ -313,10 +313,15 @@ trait Debugger extends Logging {
   /**
    * Retrieves the Scala virtual machine manager associated with this debugger.
    *
+   * @note Currently, this manager is global, meaning that all debuggers have
+   *       the same manager. Because of this, any operations dependent on the
+   *       manager will be associated with all debuggers (such as getting a list
+   *       of connected virtual machines).
+   *
    * @return The Scala virtual machine manager.
    */
   def scalaVirtualMachineManager: ScalaVirtualMachineManager =
-    ScalaVirtualMachineManager.Instance
+    ScalaVirtualMachineManager.GlobalInstance
 
   /**
    * Retrieves the connected virtual machines for the debugger. Does not
@@ -325,10 +330,10 @@ trait Debugger extends Logging {
    * @return The collection of connected virtual machines
    */
   def connectedScalaVirtualMachines: Seq[ScalaVirtualMachine] =
-    scalaVirtualMachineManager.filter {
+    scalaVirtualMachineManager.toSVMs.filter {
       case d: DummyScalaVirtualMachine  => false
       case s                            => true
-    }.toSeq
+    }
 
   /**
    * Creates a new dummy Scala virtual machine instance that can be used to

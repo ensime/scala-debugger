@@ -1,7 +1,7 @@
 package org.scaladebugger.api.debuggers
 
 import org.scaladebugger.api.utils.JDILoader
-import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine}
+import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine, ScalaVirtualMachineManager}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -9,6 +9,7 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
   with MockFactory with ScalaFutures
 {
+  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
   private class TestDebugger(override val jdiLoader: JDILoader)
     extends Debugger
   {
@@ -21,10 +22,26 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
       newVirtualMachineFunc: (ScalaVirtualMachine) => T
     ): Unit = ???
     override def newDummyScalaVirtualMachine(): ScalaVirtualMachine = ???
-    override def connectedScalaVirtualMachines: Seq[ScalaVirtualMachine] = ???
+    override def scalaVirtualMachineManager: ScalaVirtualMachineManager =
+      mockScalaVirtualMachineManager
   }
 
   describe("Debugger") {
+    describe("#connectedScalaVirtualMachines") {
+      it("should return all non-dummy scala virtual machines in the manager") {
+        val expected = Seq(mock[ScalaVirtualMachine], mock[ScalaVirtualMachine])
+        val allSVMs = expected :+ new DummyScalaVirtualMachine(null, null)
+
+        (mockScalaVirtualMachineManager.toSVMs _).expects()
+          .returning(allSVMs).once()
+
+        val debugger = new TestDebugger(new JDILoader())
+        val actual = debugger.connectedScalaVirtualMachines
+
+        actual should be (expected)
+      }
+    }
+
     describe("#start") {
       it("should be able to return a future for the first new JVM") {
         var newVMFunc: ScalaVirtualMachine => _ = null

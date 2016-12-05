@@ -25,7 +25,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
   private val testTimeout = 9876
 
   private val mockVirtualMachineManager = mock[VirtualMachineManager]
-  private val testScalaVirtualMachineManager = ScalaVirtualMachineManager.Instance
+  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
@@ -35,7 +35,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
   ]
 
   private class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-    testScalaVirtualMachineManager, mockVirtualMachine, mockProfileManager,
+    mockScalaVirtualMachineManager, mockVirtualMachine, mockProfileManager,
     mockLoopingTaskRunner
   )
   private val mockScalaVirtualMachine = mock[TestScalaVirtualMachine]
@@ -177,7 +177,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         // MOCK ===============================================================
 
         mockAddNewScalaVirtualMachineFunc.expects(
-          testScalaVirtualMachineManager, mockVirtualMachine, *, *
+          attachingDebugger.scalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.processPendingRequests _)
@@ -213,7 +213,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         // MOCK ===============================================================
 
         mockAddNewScalaVirtualMachineFunc.expects(
-          testScalaVirtualMachineManager, mockVirtualMachine, *, *
+          attachingDebugger.scalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.initialize _)
@@ -300,79 +300,6 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         (mockVirtualMachine.dispose _).expects().once()
 
         attachingDebugger.stop()
-      }
-    }
-
-    describe("#connectedScalaVirtualMachines") {
-      it("should return an empty list if the debugger has not connected") {
-        val attachingDebugger = new TestAttachingDebugger()
-
-        attachingDebugger.connectedScalaVirtualMachines should be (empty)
-      }
-
-      it("should return a list with one virtual machine when connected") {
-        val attachingDebugger = new TestAttachingDebugger()
-        val stubScalaVirtualMachine = stub[TestScalaVirtualMachine]
-
-        // MOCK ===============================================================
-        val mockAttachingConnector = mock[AttachingConnector]
-
-        (mockAttachingConnector.name _).expects()
-          .returning("com.sun.jdi.SocketAttach")
-
-        (mockVirtualMachineManager.attachingConnectors _).expects()
-          .returning(Seq(mockAttachingConnector).asJava)
-
-        (mockAttachingConnector.defaultArguments _).expects().returning(Map(
-          "hostname" -> createConnectorArgumentMock(setter = true),
-          "port" -> createConnectorArgumentMock(setter = true),
-          "timeout" -> createConnectorArgumentMock(setter = true)
-        ).asJava)
-
-        (mockAttachingConnector.attach _).expects(*)
-          .returning(mockVirtualMachine).once()
-        (mockLoopingTaskRunner.start _).expects().once()
-        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
-          .returning(stubScalaVirtualMachine).once()
-        // MOCK ===============================================================
-
-        attachingDebugger.start((_) => {})
-
-        attachingDebugger.connectedScalaVirtualMachines should
-          contain (stubScalaVirtualMachine)
-      }
-
-      it("should return an empty list if stopped after a virtual machine has connected") {
-        val attachingDebugger = new TestAttachingDebugger()
-
-        // MOCK ===============================================================
-        val mockAttachingConnector = mock[AttachingConnector]
-
-        (mockAttachingConnector.name _).expects()
-          .returning("com.sun.jdi.SocketAttach")
-
-        (mockVirtualMachineManager.attachingConnectors _).expects()
-          .returning(Seq(mockAttachingConnector).asJava)
-
-        (mockAttachingConnector.defaultArguments _).expects().returning(Map(
-          "hostname" -> createConnectorArgumentMock(setter = true),
-          "port" -> createConnectorArgumentMock(setter = true),
-          "timeout" -> createConnectorArgumentMock(setter = true)
-        ).asJava)
-
-        (mockAttachingConnector.attach _).expects(*)
-          .returning(mockVirtualMachine).once()
-        (mockLoopingTaskRunner.start _).expects().once()
-        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
-          .returning(stub[TestScalaVirtualMachine]).once()
-        (mockLoopingTaskRunner.stop _).expects(true).once()
-        (mockVirtualMachine.dispose _).expects().once()
-        // MOCK ===============================================================
-
-        attachingDebugger.start((_) => {})
-        attachingDebugger.stop()
-
-        attachingDebugger.connectedScalaVirtualMachines should be (empty)
       }
     }
 

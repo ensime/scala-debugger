@@ -57,7 +57,7 @@ trait ScalaVirtualMachine extends SwappableDebugProfile with ProfileManager {
   /**
    * Represents the manager containing this virtual machine.
    */
-  val manager: ScalaVirtualMachineManager
+  def manager: ScalaVirtualMachineManager
 
   /**
    * Represents the cache of objects available on the virtual machine.

@@ -23,7 +23,7 @@ class ProcessDebuggerSpec extends test.ParallelMockFunSpec {
   private val testTimeout = 9876
 
   private val mockVirtualMachineManager = mock[VirtualMachineManager]
-  private val testScalaVirtualMachineManager = ScalaVirtualMachineManager.Instance
+  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
@@ -33,7 +33,7 @@ class ProcessDebuggerSpec extends test.ParallelMockFunSpec {
   ]
 
   private class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-    testScalaVirtualMachineManager,
+    mockScalaVirtualMachineManager,
     mockVirtualMachine,
     mockProfileManager,
     mockLoopingTaskRunner
@@ -173,7 +173,7 @@ class ProcessDebuggerSpec extends test.ParallelMockFunSpec {
         // MOCK ===============================================================
 
         mockAddNewScalaVirtualMachineFunc.expects(
-          testScalaVirtualMachineManager, mockVirtualMachine, *, *
+          processDebugger.scalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.processPendingRequests _)
@@ -208,7 +208,7 @@ class ProcessDebuggerSpec extends test.ParallelMockFunSpec {
         // MOCK ===============================================================
 
         mockAddNewScalaVirtualMachineFunc.expects(
-          testScalaVirtualMachineManager, mockVirtualMachine, *, *
+          processDebugger.scalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.initialize _)
@@ -293,77 +293,6 @@ class ProcessDebuggerSpec extends test.ParallelMockFunSpec {
         (mockVirtualMachine.dispose _).expects().once()
 
         processDebugger.stop()
-      }
-    }
-
-    describe("#connectedScalaVirtualMachines") {
-      it("should return an empty list if the debugger has not connected") {
-        val processDebugger = new TestProcessDebugger()
-
-        processDebugger.connectedScalaVirtualMachines should be (empty)
-      }
-
-      it("should return a list with one virtual machine when connected") {
-        val processDebugger = new TestProcessDebugger()
-        val stubScalaVirtualMachine = stub[TestScalaVirtualMachine]
-
-        // MOCK ===============================================================
-        val mockAttachingConnector = mock[AttachingConnector]
-
-        (mockAttachingConnector.name _).expects()
-          .returning("com.sun.jdi.ProcessAttach")
-
-        (mockVirtualMachineManager.allConnectors _).expects()
-          .returning(Seq(mockAttachingConnector: Connector).asJava)
-
-        (mockAttachingConnector.defaultArguments _).expects().returning(Map(
-          "pid" -> createConnectorArgumentMock(setter = true),
-          "timeout" -> createConnectorArgumentMock(setter = true)
-        ).asJava)
-
-        (mockAttachingConnector.attach _).expects(*)
-          .returning(mockVirtualMachine).once()
-        (mockLoopingTaskRunner.start _).expects().once()
-        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
-          .returning(stubScalaVirtualMachine).once()
-        // MOCK ===============================================================
-
-        processDebugger.start((_) => {})
-
-        processDebugger.connectedScalaVirtualMachines should
-          contain (stubScalaVirtualMachine)
-      }
-
-      it("should return an empty list if stopped after a virtual machine has connected") {
-        val processDebugger = new TestProcessDebugger()
-
-        // MOCK ===============================================================
-        val mockAttachingConnector = mock[AttachingConnector]
-
-        (mockAttachingConnector.name _).expects()
-          .returning("com.sun.jdi.ProcessAttach")
-
-        (mockVirtualMachineManager.allConnectors _).expects()
-          .returning(Seq(mockAttachingConnector: Connector).asJava)
-
-        (mockAttachingConnector.defaultArguments _).expects().returning(Map(
-          "pid" -> createConnectorArgumentMock(setter = true),
-          "timeout" -> createConnectorArgumentMock(setter = true)
-        ).asJava)
-
-        (mockAttachingConnector.attach _).expects(*)
-          .returning(mockVirtualMachine).once()
-        (mockLoopingTaskRunner.start _).expects().once()
-        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
-          .returning(stub[TestScalaVirtualMachine]).once()
-        (mockLoopingTaskRunner.stop _).expects(true).once()
-        (mockVirtualMachine.dispose _).expects().once()
-        // MOCK ===============================================================
-
-        processDebugger.start((_) => {})
-        processDebugger.stop()
-
-        processDebugger.connectedScalaVirtualMachines should be (empty)
       }
     }
 

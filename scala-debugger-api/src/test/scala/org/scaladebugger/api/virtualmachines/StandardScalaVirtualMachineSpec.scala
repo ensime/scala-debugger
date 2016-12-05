@@ -12,13 +12,13 @@ class StandardScalaVirtualMachineSpec extends test.ParallelMockFunSpec
 {
   private val mockIsInitialized = mockFunction[Boolean]
   private val mockProcessOwnPendingRequests = mockFunction[Unit]
-  private val testScalaVirtualMachineManager = ScalaVirtualMachineManager.Instance
+  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
   private val mockEventManager = mock[EventManager]
   private val scalaVirtualMachine = new StandardScalaVirtualMachine(
-    testScalaVirtualMachineManager,
+    mockScalaVirtualMachineManager,
     mockVirtualMachine,
     mockProfileManager,
     mockLoopingTaskRunner
