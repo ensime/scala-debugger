@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.swappable.requests.methods
-//import acyclic.file
 
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.methods.MethodExitRequestInfo

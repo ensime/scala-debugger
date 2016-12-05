@@ -1,5 +1,4 @@
 package org.scaladebugger.api.utils
-import acyclic.file
 
 /**
  * Represents a collection of JVM options.

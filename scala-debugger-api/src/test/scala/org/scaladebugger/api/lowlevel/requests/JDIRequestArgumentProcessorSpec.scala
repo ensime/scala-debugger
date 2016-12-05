@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.requests
-import acyclic.file
 
 import com.sun.jdi.request.EventRequest
 import com.sun.jdi.{ObjectReference, ReferenceType, ThreadReference}

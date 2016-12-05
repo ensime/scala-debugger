@@ -1,5 +1,4 @@
 package org.scaladebugger.api.debuggers
-import acyclic.file
 
 import org.scaladebugger.api.utils.JDILoader
 import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine}
@@ -162,7 +161,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
         val debugger = new TestDebugger(null)
 
         val testUniqueId = java.util.UUID.randomUUID().toString
-        val scalaVirtualMachine = new DummyScalaVirtualMachine(null) {
+        val scalaVirtualMachine = new DummyScalaVirtualMachine(null, null) {
           override val uniqueId: String = testUniqueId
         }
 
@@ -178,7 +177,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
         val debugger = new TestDebugger(null)
 
         val testUniqueId = java.util.UUID.randomUUID().toString
-        val scalaVirtualMachine = new DummyScalaVirtualMachine(null) {
+        val scalaVirtualMachine = new DummyScalaVirtualMachine(null, null) {
           override val uniqueId: String = testUniqueId
         }
 
@@ -198,7 +197,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
         val debugger = new TestDebugger(null)
 
         val testUniqueId = java.util.UUID.randomUUID().toString
-        val scalaVirtualMachine = new DummyScalaVirtualMachine(null) {
+        val scalaVirtualMachine = new DummyScalaVirtualMachine(null, null) {
           override val uniqueId: String = testUniqueId
         }
 
@@ -221,7 +220,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
         val debugger = new TestDebugger(null)
 
         val testUniqueId = java.util.UUID.randomUUID().toString
-        val scalaVirtualMachine = new DummyScalaVirtualMachine(null) {
+        val scalaVirtualMachine = new DummyScalaVirtualMachine(null, null) {
           override val uniqueId: String = testUniqueId
         }
 
@@ -234,7 +233,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
         val debugger = new TestDebugger(null)
 
         val testUniqueId = java.util.UUID.randomUUID().toString
-        val scalaVirtualMachine = new DummyScalaVirtualMachine(null) {
+        val scalaVirtualMachine = new DummyScalaVirtualMachine(null, null) {
           override val uniqueId: String = testUniqueId
         }
 
@@ -255,7 +254,7 @@ class DebuggerSpec extends FunSpec with Matchers with ParallelTestExecution
         val debugger = new TestDebugger(null)
 
         val testUniqueId = java.util.UUID.randomUUID().toString
-        val scalaVirtualMachine = new DummyScalaVirtualMachine(null) {
+        val scalaVirtualMachine = new DummyScalaVirtualMachine(null, null) {
           override val uniqueId: String = testUniqueId
         }
 

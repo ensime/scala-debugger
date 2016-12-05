@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.pure
-//import acyclic.file
 import com.sun.jdi.VirtualMachine
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.pure.requests.breakpoints.PureBreakpointProfile

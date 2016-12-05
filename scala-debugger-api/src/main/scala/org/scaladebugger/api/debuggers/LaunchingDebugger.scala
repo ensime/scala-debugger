@@ -1,5 +1,4 @@
 package org.scaladebugger.api.debuggers
-import acyclic.file
 import com.sun.jdi._
 import com.sun.jdi.connect.LaunchingConnector
 import org.scaladebugger.api.profiles.{ProfileManager, StandardProfileManager}

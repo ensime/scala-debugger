@@ -1,7 +1,6 @@
 package org.scaladebugger.tool.backend.functions
 import java.io.File
 
-import acyclic.file
 import java.nio.file._
 
 import org.scaladebugger.api.utils.FileSearcher

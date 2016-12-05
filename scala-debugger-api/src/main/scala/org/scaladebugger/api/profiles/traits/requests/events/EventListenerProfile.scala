@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.traits.requests.events
-//import acyclic.file
 
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.EventHandlerInfo

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.utils
-import acyclic.file
 
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 

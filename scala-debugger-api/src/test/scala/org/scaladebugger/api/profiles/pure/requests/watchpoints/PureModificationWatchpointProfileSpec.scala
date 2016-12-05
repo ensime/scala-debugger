@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.pure.requests.watchpoints
-import acyclic.file
 import com.sun.jdi.event.{Event, ModificationWatchpointEvent}
 import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.virtualmachines
-import acyclic.file
 
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Seconds, Span, Milliseconds}

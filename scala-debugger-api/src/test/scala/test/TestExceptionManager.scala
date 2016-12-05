@@ -1,5 +1,4 @@
 package test
-import acyclic.file
 
 import com.sun.jdi.request.ExceptionRequest
 import org.scaladebugger.api.lowlevel.exceptions.{ExceptionRequestInfo, ExceptionManager}

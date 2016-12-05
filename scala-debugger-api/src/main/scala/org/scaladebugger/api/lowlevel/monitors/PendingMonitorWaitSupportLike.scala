@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.monitors
-import acyclic.file
 
 import org.scaladebugger.api.lowlevel.PendingRequestSupport
 

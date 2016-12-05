@@ -1,5 +1,4 @@
 package org.scaladebugger.language.parsers
-import acyclic.file
 
 import org.parboiled2._
 import org.scaladebugger.language.models.Context

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.events.misc.processors
-import acyclic.file
 
 import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.misc.{NoResume, YesResume}

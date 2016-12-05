@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.exceptions
-import acyclic.file
 
 import com.sun.jdi.{ReferenceType, VirtualMachine}
 import com.sun.jdi.request.{EventRequest, EventRequestManager, ExceptionRequest}

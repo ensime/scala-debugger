@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.requests.properties
-//import acyclic.file
 
 /**
  * Represents the interface for custom properties to implement.

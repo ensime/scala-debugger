@@ -1,5 +1,4 @@
 package org.scaladebugger.tool.backend
-import acyclic.file
 import java.net.URI
 import java.nio.file.Path
 

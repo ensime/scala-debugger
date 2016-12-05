@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.classes
-import acyclic.file
 import com.sun.jdi.{Field, Location, Method, ReferenceType}
 
 import collection.JavaConverters._

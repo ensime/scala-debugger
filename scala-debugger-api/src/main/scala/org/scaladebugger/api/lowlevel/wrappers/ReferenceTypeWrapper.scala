@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.wrappers
-import acyclic.file
 
 import org.scaladebugger.api.utils.Logging
 import com.sun.jdi.{Value, Field, ReferenceType}

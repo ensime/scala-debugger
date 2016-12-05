@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.pure.requests.threads
-//import acyclic.file
 
 import com.sun.jdi.event.ThreadDeathEvent
 import org.scaladebugger.api.lowlevel.JDIArgument

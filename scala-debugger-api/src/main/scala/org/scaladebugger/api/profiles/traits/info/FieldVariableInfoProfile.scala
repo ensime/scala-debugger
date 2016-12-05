@@ -2,7 +2,6 @@ package org.scaladebugger.api.profiles.traits.info
 
 import scala.util.Try
 
-//import acyclic.file
 
 /**
  * Represents the interface for variable-based interaction with field-specific

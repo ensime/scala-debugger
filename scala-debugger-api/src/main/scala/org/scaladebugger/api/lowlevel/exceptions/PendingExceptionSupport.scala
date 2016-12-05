@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.exceptions
-import acyclic.file
 
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.utils.PendingActionManager

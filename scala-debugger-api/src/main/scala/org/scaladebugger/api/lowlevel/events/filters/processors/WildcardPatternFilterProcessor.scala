@@ -1,6 +1,5 @@
 package org.scaladebugger.api.lowlevel.events.filters.processors
 
-//import acyclic.file
 
 import com.sun.jdi.event._
 import org.scaladebugger.api.lowlevel.events.filters.{JDIEventFilter, JDIEventFilterProcessor, WildcardPatternFilter}

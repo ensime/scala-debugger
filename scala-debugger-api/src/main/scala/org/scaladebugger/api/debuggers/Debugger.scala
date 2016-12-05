@@ -1,5 +1,4 @@
 package org.scaladebugger.api.debuggers
-import acyclic.file
 import java.util.concurrent.ConcurrentHashMap
 
 import org.scaladebugger.api.profiles.pure.PureDebugProfile

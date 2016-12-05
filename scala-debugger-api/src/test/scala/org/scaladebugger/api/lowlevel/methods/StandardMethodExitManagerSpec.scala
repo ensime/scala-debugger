@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.methods
-import acyclic.file
 import com.sun.jdi.request.{EventRequest, EventRequestManager, MethodExitRequest}
 import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scalamock.scalatest.MockFactory

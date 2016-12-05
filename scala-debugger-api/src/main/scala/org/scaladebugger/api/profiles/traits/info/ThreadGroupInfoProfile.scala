@@ -1,6 +1,5 @@
 package org.scaladebugger.api.profiles.traits.info
 
-//import acyclic.file
 
 import com.sun.jdi.{ThreadGroupReference, ThreadReference}
 

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.watchpoints
-import acyclic.file
 
 import com.sun.jdi.request.{ModificationWatchpointRequest, EventRequestManager}
 import org.scaladebugger.api.lowlevel.classes.ClassManager

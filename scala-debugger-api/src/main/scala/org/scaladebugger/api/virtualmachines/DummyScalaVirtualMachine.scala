@@ -1,5 +1,4 @@
 package org.scaladebugger.api.virtualmachines
-//import acyclic.file
 
 import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.ManagerContainer
@@ -16,7 +15,7 @@ import org.scaladebugger.api.profiles.traits.DebugProfile
  *                       of debugging via profiles
  * @param lowlevel The manager containing all low-level API managers
  */
-class DummyScalaVirtualMachine private[virtualmachines] (
+class DummyScalaVirtualMachine private[api] (
   override val manager: ScalaVirtualMachineManager,
   protected val profileManager: ProfileManager,
   override val lowlevel: ManagerContainer = ManagerContainer.usingDummyManagers()

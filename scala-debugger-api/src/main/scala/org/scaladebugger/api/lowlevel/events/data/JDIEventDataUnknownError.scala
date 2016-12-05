@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.events.data
-//import acyclic.file
 
 /**
  * Represents an unknown error that occurred when retrieving data.

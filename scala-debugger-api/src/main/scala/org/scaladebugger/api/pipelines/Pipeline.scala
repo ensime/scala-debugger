@@ -1,5 +1,4 @@
 package org.scaladebugger.api.pipelines
-import acyclic.file
 
 import java.io.Closeable
 

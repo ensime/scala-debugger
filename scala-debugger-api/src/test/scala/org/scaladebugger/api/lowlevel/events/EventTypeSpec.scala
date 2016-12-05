@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.events
-import acyclic.file
 
 import com.sun.jdi.event._
 import org.scalamock.scalatest.MockFactory

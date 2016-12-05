@@ -1,5 +1,4 @@
 package test
-import acyclic.file
 
 import com.sun.jdi.request.MonitorContendedEnteredRequest
 import org.scaladebugger.api.lowlevel.monitors.{MonitorContendedEnteredRequestInfo, MonitorContendedEnteredManager}

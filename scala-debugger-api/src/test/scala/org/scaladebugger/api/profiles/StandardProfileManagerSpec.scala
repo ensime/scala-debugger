@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles
-import acyclic.file
 
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}

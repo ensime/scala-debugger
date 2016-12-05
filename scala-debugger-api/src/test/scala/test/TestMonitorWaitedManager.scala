@@ -1,5 +1,4 @@
 package test
-import acyclic.file
 
 import com.sun.jdi.request.MonitorWaitedRequest
 import org.scaladebugger.api.lowlevel.monitors.{MonitorWaitedRequestInfo, MonitorWaitedManager}

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.swappable.requests.steps
-//import acyclic.file
 
 import com.sun.jdi.event.StepEvent
 import org.scaladebugger.api.lowlevel.JDIArgument

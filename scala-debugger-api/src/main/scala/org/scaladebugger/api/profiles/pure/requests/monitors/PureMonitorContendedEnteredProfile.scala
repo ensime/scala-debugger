@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.pure.requests.monitors
-//import acyclic.file
 
 import com.sun.jdi.event.MonitorContendedEnteredEvent
 import org.scaladebugger.api.lowlevel.JDIArgument

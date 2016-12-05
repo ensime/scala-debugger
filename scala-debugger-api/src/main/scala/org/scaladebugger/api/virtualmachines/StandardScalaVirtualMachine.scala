@@ -1,5 +1,4 @@
 package org.scaladebugger.api.virtualmachines
-//import acyclic.file
 
 import java.util.concurrent.atomic.AtomicBoolean
 

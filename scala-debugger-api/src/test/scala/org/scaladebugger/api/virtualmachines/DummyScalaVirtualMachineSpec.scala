@@ -1,5 +1,4 @@
 package org.scaladebugger.api.virtualmachines
-import acyclic.file
 
 import org.scaladebugger.api.profiles.traits.DebugProfile
 import org.scalamock.scalatest.MockFactory
@@ -18,9 +17,10 @@ import org.scaladebugger.api.profiles.ProfileManager
 
 class DummyScalaVirtualMachineSpec extends test.ParallelMockFunSpec
 {
+  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
   private val mockProfileManager = mock[ProfileManager]
   private val dummyScalaVirtualMachine = new DummyScalaVirtualMachine(
-    mockProfileManager
+    mockScalaVirtualMachineManager, mockProfileManager
   )
 
   describe("DummyScalaVirtualMachine") {

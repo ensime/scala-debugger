@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.threads
-import acyclic.file
 
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
 

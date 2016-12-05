@@ -1,5 +1,4 @@
 package test
-import acyclic.file
 
 import com.sun.jdi.request.ClassPrepareRequest
 import org.scaladebugger.api.lowlevel.classes.{ClassPrepareRequestInfo, ClassPrepareManager}

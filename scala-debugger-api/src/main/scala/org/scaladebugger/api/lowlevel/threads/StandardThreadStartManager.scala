@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.threads
-import acyclic.file
 
 import com.sun.jdi.request.{EventRequestManager, ThreadStartRequest}
 import org.scaladebugger.api.lowlevel.requests.Implicits._

@@ -1,5 +1,4 @@
 package test
-import acyclic.file
 
 import org.scaladebugger.api.lowlevel.events.{EventHandlerInfo, JDIEventArgument, EventManager}
 import org.scaladebugger.api.lowlevel.events.EventType.EventType

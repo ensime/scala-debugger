@@ -1,5 +1,4 @@
 package org.scaladebugger.tool.backend.functions
-import acyclic.file
 import org.scaladebugger.api.lowlevel.wrappers.Implicits._
 import org.scaladebugger.api.lowlevel.wrappers.ValueWrapper
 import org.scaladebugger.api.profiles.traits.info.{ThreadInfoProfile, VariableInfoProfile}

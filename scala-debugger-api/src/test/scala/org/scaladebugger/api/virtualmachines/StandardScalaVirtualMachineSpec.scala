@@ -1,5 +1,4 @@
 package org.scaladebugger.api.virtualmachines
-import acyclic.file
 import com.sun.jdi.VirtualMachine
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.lowlevel.events.EventManager
@@ -13,11 +12,13 @@ class StandardScalaVirtualMachineSpec extends test.ParallelMockFunSpec
 {
   private val mockIsInitialized = mockFunction[Boolean]
   private val mockProcessOwnPendingRequests = mockFunction[Unit]
+  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
   private val mockEventManager = mock[EventManager]
   private val scalaVirtualMachine = new StandardScalaVirtualMachine(
+    mockScalaVirtualMachineManager,
     mockVirtualMachine,
     mockProfileManager,
     mockLoopingTaskRunner

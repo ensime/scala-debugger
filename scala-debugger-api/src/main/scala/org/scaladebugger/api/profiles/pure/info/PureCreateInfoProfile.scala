@@ -1,6 +1,5 @@
 package org.scaladebugger.api.profiles.pure.info
 
-//import acyclic.file
 
 import com.sun.jdi.{ReferenceType, Value}
 import org.scaladebugger.api.lowlevel.classes.ClassManager

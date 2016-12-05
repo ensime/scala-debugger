@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.events.filters
-//import acyclic.file
 
 /**
  * Represents the interface for custom property filters to implement.

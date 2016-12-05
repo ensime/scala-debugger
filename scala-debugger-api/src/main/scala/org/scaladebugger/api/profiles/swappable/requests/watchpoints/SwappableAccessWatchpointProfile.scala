@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.swappable.requests.watchpoints
-//import acyclic.file
 
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.watchpoints.AccessWatchpointRequestInfo

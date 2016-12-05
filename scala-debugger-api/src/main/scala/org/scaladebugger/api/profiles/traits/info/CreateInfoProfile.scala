@@ -1,7 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import scala.util.Try
-//import acyclic.file
 
 /**
  * Represents the interface that needs to be implemented to provide

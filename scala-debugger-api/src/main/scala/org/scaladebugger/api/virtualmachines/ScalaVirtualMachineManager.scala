@@ -15,9 +15,9 @@ object ScalaVirtualMachineManager {
  * Represents a manager of virtual machines, providing a variety of means to
  * look up a virtual machine.
  */
-class ScalaVirtualMachineManager private extends Traversable[ScalaVirtualMachine] {
-  private type VM = VirtualMachine
-  private type SVM = ScalaVirtualMachine
+class ScalaVirtualMachineManager private[api] extends Traversable[ScalaVirtualMachine] {
+  type VM = VirtualMachine
+  type SVM = ScalaVirtualMachine
   private type IDM = scala.collection.mutable.Map[String, VM]
   private type VMM = scala.collection.mutable.Map[VM, SVM]
   private type VMB = scala.collection.mutable.Buffer[SVM]
@@ -146,7 +146,6 @@ class ScalaVirtualMachineManager private extends Traversable[ScalaVirtualMachine
    * @param uniqueId The unique id of the Scala virtual machine to retrieve
    * @return Some Scala virtual machine if found, otherwise None
    */
-  @throws[IllegalArgumentException]
   def get(uniqueId: String): Option[SVM] = {
     Option(uniqueId).flatMap(uniqueIdMap.get).flatMap(get)
   }

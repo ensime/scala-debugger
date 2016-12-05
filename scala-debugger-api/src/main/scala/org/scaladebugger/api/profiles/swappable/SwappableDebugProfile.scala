@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.swappable
-//import acyclic.file
 
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.swappable.requests.breakpoints.SwappableBreakpointProfile

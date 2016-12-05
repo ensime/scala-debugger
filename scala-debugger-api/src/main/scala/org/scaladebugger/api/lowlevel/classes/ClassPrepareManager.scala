@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.classes
-import acyclic.file
 
 import com.sun.jdi.request.{ClassPrepareRequest, EventRequestManager}
 import org.scaladebugger.api.lowlevel.requests.Implicits._

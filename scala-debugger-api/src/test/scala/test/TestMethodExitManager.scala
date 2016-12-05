@@ -1,5 +1,4 @@
 package test
-import acyclic.file
 
 import com.sun.jdi.request.MethodExitRequest
 import org.scaladebugger.api.lowlevel.methods.{MethodExitManager, MethodExitRequestInfo}

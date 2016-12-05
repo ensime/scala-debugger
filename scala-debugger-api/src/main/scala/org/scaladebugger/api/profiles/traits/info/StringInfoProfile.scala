@@ -1,6 +1,5 @@
 package org.scaladebugger.api.profiles.traits.info
 
-//import acyclic.file
 
 import com.sun.jdi.{ArrayReference, StringReference}
 import org.scaladebugger.api.profiles.traits.info.ArrayInfoProfile._

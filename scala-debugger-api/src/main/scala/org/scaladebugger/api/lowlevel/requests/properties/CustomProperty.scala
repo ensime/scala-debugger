@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.requests.properties
-//import acyclic.file
 
 import org.scaladebugger.api.lowlevel.requests.properties.processors.CustomPropertyProcessor
 

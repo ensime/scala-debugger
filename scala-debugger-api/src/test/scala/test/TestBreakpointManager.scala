@@ -1,5 +1,4 @@
 package test
-import acyclic.file
 
 import com.sun.jdi.request.BreakpointRequest
 import org.scaladebugger.api.lowlevel.breakpoints.{BreakpointRequestInfo, BreakpointManager}

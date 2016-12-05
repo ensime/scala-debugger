@@ -1,6 +1,5 @@
 package org.scaladebugger.api.profiles.pure.requests.methods
 
-//import acyclic.file
 
 import com.sun.jdi.event.MethodEntryEvent
 import org.scaladebugger.api.lowlevel.JDIArgument

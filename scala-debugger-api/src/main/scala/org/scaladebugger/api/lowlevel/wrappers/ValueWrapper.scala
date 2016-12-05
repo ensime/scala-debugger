@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.wrappers
-import acyclic.file
 
 import com.sun.jdi._
 

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.requests.filters
-import acyclic.file
 
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{ParallelTestExecution, FunSpec, Matchers}

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.swappable.requests.threads
-//import acyclic.file
 
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.threads.ThreadDeathRequestInfo

@@ -1,5 +1,4 @@
 package org.scaladebugger.tool.backend.functions
-import acyclic.file
 
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.tool.backend.StateManager

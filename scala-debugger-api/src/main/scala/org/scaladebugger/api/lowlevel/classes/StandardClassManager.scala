@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.classes
-import acyclic.file
 import org.scaladebugger.api.lowlevel.utils.JDIHelperMethods
 import org.scaladebugger.api.utils.Logging
 import com.sun.jdi.{Location, Method, ReferenceType, VirtualMachine}

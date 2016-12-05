@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.breakpoints
-import acyclic.file
 
 import org.scaladebugger.api.lowlevel.PendingRequestSupport
 

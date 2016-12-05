@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.swappable.info
-import acyclic.file
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile

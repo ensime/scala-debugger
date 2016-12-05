@@ -1,5 +1,4 @@
 package org.scaladebugger.tool.frontend
-import acyclic.file
 import ammonite.terminal.SpecialKeys.Ctrl
 import org.scaladebugger.tool.frontend.history.{HistoryManager, NoopHistoryManager}
 

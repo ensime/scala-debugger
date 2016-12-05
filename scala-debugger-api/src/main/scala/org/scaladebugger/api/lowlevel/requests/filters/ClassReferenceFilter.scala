@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.requests.filters
-//import acyclic.file
 
 import com.sun.jdi.ReferenceType
 import org.scaladebugger.api.lowlevel.requests.JDIRequestProcessor

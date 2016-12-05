@@ -1,5 +1,4 @@
 package org.scaladebugger.api.virtualmachines
-import acyclic.file
 
 import com.sun.jdi.VirtualMachine
 import org.scaladebugger.api.profiles.traits.DebugProfile

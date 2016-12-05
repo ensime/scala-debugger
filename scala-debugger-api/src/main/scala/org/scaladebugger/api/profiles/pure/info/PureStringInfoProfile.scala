@@ -1,6 +1,5 @@
 package org.scaladebugger.api.profiles.pure.info
 
-//import acyclic.file
 
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info._

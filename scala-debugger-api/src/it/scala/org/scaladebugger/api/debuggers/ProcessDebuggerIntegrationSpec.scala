@@ -1,7 +1,6 @@
 package org.scaladebugger.api.debuggers
 import java.io.IOException
 
-import acyclic.file
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.scaladebugger.api.utils.JDITools

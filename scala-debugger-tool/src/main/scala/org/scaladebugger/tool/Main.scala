@@ -1,5 +1,4 @@
 package org.scaladebugger.tool
-import acyclic.file
 
 import org.scaladebugger.api.utils.JDITools
 

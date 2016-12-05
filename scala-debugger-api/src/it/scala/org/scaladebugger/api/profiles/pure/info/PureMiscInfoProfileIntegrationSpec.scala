@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.pure.info
-import acyclic.file
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
 
 import org.scalatest.concurrent.Eventually

@@ -1,5 +1,4 @@
 package org.scaladebugger.tool.backend.utils
-import acyclic.file
 
 /**
  * Contains regular expression helper methods.

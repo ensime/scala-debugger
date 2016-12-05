@@ -1,5 +1,4 @@
 package test
-import acyclic.file
 
 import com.sun.jdi._
 import org.scalamock.scalatest.MockFactory

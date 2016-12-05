@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel
-import acyclic.file
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 
 /**

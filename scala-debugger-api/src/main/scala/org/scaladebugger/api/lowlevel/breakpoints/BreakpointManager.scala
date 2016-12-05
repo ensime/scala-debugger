@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.breakpoints
-import acyclic.file
 
 import com.sun.jdi.request.BreakpointRequest
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument

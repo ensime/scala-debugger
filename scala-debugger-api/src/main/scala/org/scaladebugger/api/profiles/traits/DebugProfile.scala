@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.traits
-//import acyclic.file
 
 import org.scaladebugger.api.profiles.traits.requests.breakpoints.BreakpointProfile
 import org.scaladebugger.api.profiles.traits.requests.classes.{ClassPrepareProfile, ClassUnloadProfile}

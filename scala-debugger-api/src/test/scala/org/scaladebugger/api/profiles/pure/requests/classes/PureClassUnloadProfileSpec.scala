@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.pure.requests.classes
-import acyclic.file
 import com.sun.jdi.event.{ClassUnloadEvent, Event}
 import org.scaladebugger.api.lowlevel.classes.{ClassUnloadManager, ClassUnloadRequestInfo, PendingClassUnloadSupportLike}
 import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}

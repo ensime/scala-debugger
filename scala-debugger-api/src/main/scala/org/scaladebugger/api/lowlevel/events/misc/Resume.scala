@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.events.misc
-//import acyclic.file
 
 import org.scaladebugger.api.lowlevel.events.misc.processors.ResumeProcessor
 import org.scaladebugger.api.lowlevel.events.{JDIEventProcessor, JDIEventArgument}

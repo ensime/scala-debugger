@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.wrappers
-import acyclic.file
 
 import org.scaladebugger.api.lowlevel.events.EventType
 import EventType.BreakpointEventType

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.threads
-import acyclic.file
 
 import com.sun.jdi.request.ThreadDeathRequest
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.pure.info
-import acyclic.file
 import com.sun.jdi._
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.utils
-import acyclic.file
 
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}

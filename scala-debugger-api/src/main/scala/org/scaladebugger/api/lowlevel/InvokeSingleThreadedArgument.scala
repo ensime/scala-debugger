@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel
-import acyclic.file
 
 /**
  * Represents a setting to only resume the thread where the invocation of

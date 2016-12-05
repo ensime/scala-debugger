@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.pure.requests.events
-import acyclic.file
 
 import java.util.concurrent.atomic.AtomicInteger
 import com.sun.jdi.event.BreakpointEvent

@@ -1,5 +1,4 @@
 package test
-import acyclic.file
 
 import com.sun.jdi.request.VMDeathRequest
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument

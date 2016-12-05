@@ -1,5 +1,4 @@
 package org.scaladebugger.tool.frontend
-import acyclic.file
 import java.io.OutputStreamWriter
 
 import ammonite.repl.FrontEndUtils

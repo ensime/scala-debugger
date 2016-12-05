@@ -1,13 +1,9 @@
 package org.scaladebugger.api.debuggers
-import acyclic.file
-
 import com.sun.jdi.connect.{AttachingConnector, Connector}
 import com.sun.jdi.{VirtualMachine, VirtualMachineManager}
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.utils.LoopingTaskRunner
-import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, StandardScalaVirtualMachine}
+import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager, StandardScalaVirtualMachine}
 
 import scala.collection.JavaConverters._
 
@@ -29,14 +25,18 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
   private val testTimeout = 9876
 
   private val mockVirtualMachineManager = mock[VirtualMachineManager]
+  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
+  private val mockVirtualMachine = mock[VirtualMachine]
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
-  private val mockNewScalaVirtualMachineFunc = mockFunction[
-    VirtualMachine, ProfileManager, LoopingTaskRunner, StandardScalaVirtualMachine
+  private val mockAddNewScalaVirtualMachineFunc = mockFunction[
+    ScalaVirtualMachineManager, VirtualMachine, ProfileManager,
+    LoopingTaskRunner, ScalaVirtualMachine
   ]
 
   private class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-    mockVirtualMachine, mockProfileManager, mockLoopingTaskRunner
+    mockScalaVirtualMachineManager, mockVirtualMachine, mockProfileManager,
+    mockLoopingTaskRunner
   )
   private val mockScalaVirtualMachine = mock[TestScalaVirtualMachine]
 
@@ -52,11 +52,13 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
     hostname              = testHostname,
     timeout               = testTimeout
   ) {
-    override protected def newScalaVirtualMachine(
+    override protected def addNewScalaVirtualMachine(
+      scalaVirtualMachineManager: ScalaVirtualMachineManager,
       virtualMachine: VirtualMachine,
       profileManager: ProfileManager,
       loopingTaskRunner: LoopingTaskRunner
-    ): StandardScalaVirtualMachine = mockNewScalaVirtualMachineFunc(
+    ): ScalaVirtualMachine = mockAddNewScalaVirtualMachineFunc(
+      scalaVirtualMachineManager,
       virtualMachine,
       profileManager,
       loopingTaskRunner
@@ -65,8 +67,6 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
     override def assertJdiLoaded(): Unit =
       if (!shouldJdiLoad) throw new AssertionError
   }
-
-  private val mockVirtualMachine = mock[VirtualMachine]
 
   describe("AttachingDebugger") {
     describe("#start") {
@@ -98,7 +98,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
 
         (mockAttachingConnector.attach _).expects(*).once()
         (mockLoopingTaskRunner.start _).expects().once()
-        mockNewScalaVirtualMachineFunc.expects(*, *, *)
+        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
           .returning(stub[TestScalaVirtualMachine]).once()
         // MOCK ===============================================================
 
@@ -141,7 +141,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         (mockAttachingConnector.attach _).expects(*)
           .returning(mockVirtualMachine).once()
         (mockLoopingTaskRunner.start _).expects().once()
-        mockNewScalaVirtualMachineFunc.expects(*, *, *)
+        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
           .returning(expected).once()
         // MOCK ===============================================================
 
@@ -176,8 +176,9 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         (mockLoopingTaskRunner.start _).expects().once()
         // MOCK ===============================================================
 
-        mockNewScalaVirtualMachineFunc.expects(mockVirtualMachine, *, *)
-          .returning(mockScalaVirtualMachine).once()
+        mockAddNewScalaVirtualMachineFunc.expects(
+          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+        ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.processPendingRequests _)
           .expects(expected).once()
@@ -211,8 +212,9 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         (mockLoopingTaskRunner.start _).expects().once()
         // MOCK ===============================================================
 
-        mockNewScalaVirtualMachineFunc.expects(mockVirtualMachine, *, *)
-          .returning(mockScalaVirtualMachine).once()
+        mockAddNewScalaVirtualMachineFunc.expects(
+          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+        ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.initialize _)
           .expects(Debugger.DefaultProfileName, true).once()
@@ -243,7 +245,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         (mockAttachingConnector.attach _).expects(*)
           .returning(mockVirtualMachine).once()
         (mockLoopingTaskRunner.start _).expects().once()
-        mockNewScalaVirtualMachineFunc.expects(*, *, *)
+        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
           .returning(stub[TestScalaVirtualMachine]).once()
         // MOCK ===============================================================
 
@@ -288,7 +290,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         (mockAttachingConnector.attach _).expects(*)
           .returning(mockVirtualMachine).once()
         (mockLoopingTaskRunner.start _).expects().once()
-        mockNewScalaVirtualMachineFunc.expects(*, *, *)
+        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
           .returning(stub[TestScalaVirtualMachine]).once()
         // MOCK ===============================================================
 
@@ -330,7 +332,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         (mockAttachingConnector.attach _).expects(*)
           .returning(mockVirtualMachine).once()
         (mockLoopingTaskRunner.start _).expects().once()
-        mockNewScalaVirtualMachineFunc.expects(*, *, *)
+        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
           .returning(stubScalaVirtualMachine).once()
         // MOCK ===============================================================
 
@@ -361,7 +363,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         (mockAttachingConnector.attach _).expects(*)
           .returning(mockVirtualMachine).once()
         (mockLoopingTaskRunner.start _).expects().once()
-        mockNewScalaVirtualMachineFunc.expects(*, *, *)
+        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
           .returning(stub[TestScalaVirtualMachine]).once()
         (mockLoopingTaskRunner.stop _).expects(true).once()
         (mockVirtualMachine.dispose _).expects().once()
@@ -396,7 +398,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         (mockAttachingConnector.attach _).expects(*)
           .returning(mockVirtualMachine).once()
         (mockLoopingTaskRunner.start _).expects().once()
-        mockNewScalaVirtualMachineFunc.expects(*, *, *)
+        mockAddNewScalaVirtualMachineFunc.expects(*, *, *, *)
           .returning(stub[TestScalaVirtualMachine]).once()
         // MOCK ===============================================================
 

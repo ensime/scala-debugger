@@ -1,5 +1,4 @@
 package org.scaladebugger.api.lowlevel.events.filters.processors
-//import acyclic.file
 
 import com.sun.jdi.event.{Event, LocatableEvent, MethodEntryEvent, MethodExitEvent}
 import org.scaladebugger.api.lowlevel.events.filters.{JDIEventFilter, JDIEventFilterProcessor, MethodNameFilter}

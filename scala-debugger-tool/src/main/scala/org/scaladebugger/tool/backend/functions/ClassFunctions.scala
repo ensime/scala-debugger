@@ -1,5 +1,4 @@
 package org.scaladebugger.tool.backend.functions
-import acyclic.file
 import org.scaladebugger.api.profiles.traits.info.{FieldVariableInfoProfile, MethodInfoProfile, ReferenceTypeInfoProfile}
 import org.scaladebugger.tool.backend.StateManager
 import org.scaladebugger.tool.backend.utils.Regex

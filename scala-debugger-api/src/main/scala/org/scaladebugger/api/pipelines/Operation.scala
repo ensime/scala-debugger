@@ -1,5 +1,4 @@
 package org.scaladebugger.api.pipelines
-import acyclic.file
 
 /**
  * Represents a single operation to be applied to data in a pipeline.

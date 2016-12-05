@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.swappable.info
-//import acyclic.file
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfileManagement
 import org.scaladebugger.api.profiles.traits.info.{MiscInfoProfile, ValueInfoProfile}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine

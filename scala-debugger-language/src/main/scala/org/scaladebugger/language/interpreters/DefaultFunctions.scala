@@ -1,6 +1,5 @@
 package org.scaladebugger.language.interpreters
 import org.scaladebugger.language.models
-import acyclic.file
 
 import java.io.PrintStream
 

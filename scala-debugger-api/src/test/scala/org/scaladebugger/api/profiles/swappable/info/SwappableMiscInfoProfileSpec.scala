@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.swappable.info
-import acyclic.file
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.profiles.ProfileManager

@@ -1,5 +1,4 @@
 package org.scaladebugger.tool.backend.functions
-import acyclic.file
 import com.sun.jdi.ThreadReference
 import com.sun.jdi.event.StepEvent
 import org.scaladebugger.api.lowlevel.events.JDIEventArgument

@@ -1,5 +1,4 @@
 package org.scaladebugger.api.virtualmachines
-//import acyclic.file
 
 import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.ManagerContainer
