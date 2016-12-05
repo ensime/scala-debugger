@@ -31,11 +31,26 @@ object Common {
       "-deprecation", "-unchecked", "-feature",
       "-Xfatal-warnings"
     ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, scalaMajor)) if scalaMajor == 10 => Seq(
+      case Some((2, 10)) => Seq(
         "-Ywarn-all", "-target:jvm-1.6"
       )
-      case Some((2, scalaMajor)) if scalaMajor == 11 => Seq(
+      case Some((2, 11)) => Seq(
         "-target:jvm-1.6"
+      )
+      case Some((2, 12)) => Seq(
+        "-target:jvm-1.8"
+      )
+      case _ => Nil
+    }),
+
+    scalacOptions in (Test, compile) ++= Seq(
+    ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 10)) => Seq()
+      case Some((2, 11)) => Seq()
+      case Some((2, 12)) => Seq(
+        "-deprecation:false" // Ignore deprecation warnings for now to do with
+                             // eta-expansion of zero-argument function tied to
+                             // ScalaMock quirks
       )
       case _ => Nil
     }),
