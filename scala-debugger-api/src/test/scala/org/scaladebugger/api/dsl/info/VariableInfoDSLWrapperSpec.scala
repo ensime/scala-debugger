@@ -5,7 +5,7 @@ import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.traits.DebugProfile
 import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, VariableInfoProfile}
-import org.scaladebugger.api.virtualmachines.{ObjectCache, ScalaVirtualMachine}
+import org.scaladebugger.api.virtualmachines.{ObjectCache, ScalaVirtualMachine, ScalaVirtualMachineManager}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
@@ -19,6 +19,7 @@ class VariableInfoDSLWrapperSpec extends test.ParallelMockFunSpec
   private val testScalaVirtualMachine = new Object with ScalaVirtualMachine {
     override val cache: ObjectCache = testObjectCache
     override val lowlevel: ManagerContainer = null
+    override val manager: ScalaVirtualMachineManager = null
     override def startProcessingEvents(): Unit = {}
     override def isInitialized: Boolean = false
     override def isProcessingEvents: Boolean = false

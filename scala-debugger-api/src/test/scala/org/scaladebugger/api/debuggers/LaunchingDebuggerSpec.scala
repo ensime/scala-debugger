@@ -28,7 +28,7 @@ class LaunchingDebuggerSpec extends test.ParallelMockFunSpec
   private val testSuspend = false
 
   private val mockVirtualMachineManager = mock[VirtualMachineManager]
-  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
+  private val testScalaVirtualMachineManager = ScalaVirtualMachineManager.Instance
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
@@ -38,7 +38,7 @@ class LaunchingDebuggerSpec extends test.ParallelMockFunSpec
   ]
 
   private class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-    mockScalaVirtualMachineManager, mockVirtualMachine,
+    testScalaVirtualMachineManager, mockVirtualMachine,
     mockProfileManager, mockLoopingTaskRunner
   )
   private val mockScalaVirtualMachine = mock[TestScalaVirtualMachine]
@@ -187,7 +187,7 @@ class LaunchingDebuggerSpec extends test.ParallelMockFunSpec
         // MOCK ===============================================================
 
         mockAddNewScalaVirtualMachineFunc.expects(
-          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+          testScalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.processPendingRequests _)
@@ -225,7 +225,7 @@ class LaunchingDebuggerSpec extends test.ParallelMockFunSpec
         // MOCK ===============================================================
 
         mockAddNewScalaVirtualMachineFunc.expects(
-          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+          testScalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.initialize _)

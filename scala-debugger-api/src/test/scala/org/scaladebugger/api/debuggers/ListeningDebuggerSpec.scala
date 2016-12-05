@@ -30,7 +30,7 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
   private val testWorkers = 4
 
   private implicit val mockVirtualMachineManager = mock[VirtualMachineManager]
-  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
+  private val testScalaVirtualMachineManager = ScalaVirtualMachineManager.Instance
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
   private val mockAddNewScalaVirtualMachineFunc = mockFunction[
@@ -289,11 +289,11 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
           .returning(mockVirtualMachine).once()
 
         class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          mockScalaVirtualMachineManager, mockVirtualMachine, null, null
+          testScalaVirtualMachineManager, mockVirtualMachine, null, null
         )
         val stubScalaVirtualMachine = stub[TestScalaVirtualMachine]
         mockAddNewScalaVirtualMachineFunc.expects(
-          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+          testScalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(stubScalaVirtualMachine).once()
 
         mockCallback.expects(stubScalaVirtualMachine).once()
@@ -320,11 +320,11 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
           .returning(mockVirtualMachine).once()
 
         class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          mockScalaVirtualMachineManager, mockVirtualMachine, null, null
+          testScalaVirtualMachineManager, mockVirtualMachine, null, null
         )
         val mockScalaVirtualMachine = mock[TestScalaVirtualMachine]
         mockAddNewScalaVirtualMachineFunc.expects(
-          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+          testScalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.processPendingRequests _)
@@ -353,11 +353,11 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
           .returning(mockVirtualMachine).once()
 
         class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          mockScalaVirtualMachineManager, mockVirtualMachine, null, null
+          testScalaVirtualMachineManager, mockVirtualMachine, null, null
         )
         val mockScalaVirtualMachine = mock[TestScalaVirtualMachine]
         mockAddNewScalaVirtualMachineFunc.expects(
-          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+          testScalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.initialize _)
@@ -389,11 +389,11 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
           .returning(mockVirtualMachine).once()
 
         class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          mockScalaVirtualMachineManager, mockVirtualMachine, null, null
+          testScalaVirtualMachineManager, mockVirtualMachine, null, null
         )
         val stubScalaVirtualMachine = stub[TestScalaVirtualMachine]
         mockAddNewScalaVirtualMachineFunc.expects(
-          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+          testScalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(stubScalaVirtualMachine).once()
 
         mockCallback.expects(stubScalaVirtualMachine).once()
@@ -437,7 +437,7 @@ class ListeningDebuggerSpec extends test.ParallelMockFunSpec
         val mockVirtualMachine = mock[VirtualMachine]
         val mockArguments = mock[java.util.Map[String, Connector.Argument]]
         class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-          mockScalaVirtualMachineManager, mockVirtualMachine, null, null
+          testScalaVirtualMachineManager, mockVirtualMachine, null, null
         )
 
         listeningDebugger.listenTask(

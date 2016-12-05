@@ -25,7 +25,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
   private val testTimeout = 9876
 
   private val mockVirtualMachineManager = mock[VirtualMachineManager]
-  private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
+  private val testScalaVirtualMachineManager = ScalaVirtualMachineManager.Instance
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockProfileManager = mock[ProfileManager]
   private val mockLoopingTaskRunner = mock[LoopingTaskRunner]
@@ -35,7 +35,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
   ]
 
   private class TestScalaVirtualMachine extends StandardScalaVirtualMachine(
-    mockScalaVirtualMachineManager, mockVirtualMachine, mockProfileManager,
+    testScalaVirtualMachineManager, mockVirtualMachine, mockProfileManager,
     mockLoopingTaskRunner
   )
   private val mockScalaVirtualMachine = mock[TestScalaVirtualMachine]
@@ -177,7 +177,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         // MOCK ===============================================================
 
         mockAddNewScalaVirtualMachineFunc.expects(
-          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+          testScalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.processPendingRequests _)
@@ -213,7 +213,7 @@ class AttachingDebuggerSpec extends test.ParallelMockFunSpec
         // MOCK ===============================================================
 
         mockAddNewScalaVirtualMachineFunc.expects(
-          mockScalaVirtualMachineManager, mockVirtualMachine, *, *
+          testScalaVirtualMachineManager, mockVirtualMachine, *, *
         ).returning(mockScalaVirtualMachine).once()
 
         (mockScalaVirtualMachine.initialize _)

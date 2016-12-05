@@ -15,7 +15,7 @@ object ScalaVirtualMachineManager {
  * Represents a manager of virtual machines, providing a variety of means to
  * look up a virtual machine.
  */
-class ScalaVirtualMachineManager private[api] extends Traversable[ScalaVirtualMachine] {
+class ScalaVirtualMachineManager private extends Traversable[ScalaVirtualMachine] {
   type VM = VirtualMachine
   type SVM = ScalaVirtualMachine
   private type IDM = scala.collection.mutable.Map[String, VM]
