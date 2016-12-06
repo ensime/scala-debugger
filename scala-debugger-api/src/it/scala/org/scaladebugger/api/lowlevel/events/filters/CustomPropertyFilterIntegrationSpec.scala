@@ -13,13 +13,8 @@ import EventType._
 
 class CustomPropertyFilterIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("CustomPropertyFilter") {
     it("should ignore all events whose custom property does not match the filter") {
       val testClass = "org.scaladebugger.test.filters.CustomPropertyFilter"

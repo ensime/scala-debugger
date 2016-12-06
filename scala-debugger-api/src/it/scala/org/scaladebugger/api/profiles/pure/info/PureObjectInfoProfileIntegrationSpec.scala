@@ -11,7 +11,7 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureObjectInfoProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
   implicit override val patienceConfig = PatienceConfig(
     timeout = scaled(test.Constants.EventuallyTimeout),
@@ -103,53 +103,6 @@ class PureObjectInfoProfileIntegrationSpec extends FunSpec with Matchers
           val methodName = t.get.topFrame.thisObject.method("publicMethod").name
 
           methodName should be ("publicMethod")
-        })
-      }
-    }
-
-    it("should be able to get a list of methods for the object") {
-      val testClass = "org.scaladebugger.test.info.Methods"
-      val testFile = JDITools.scalaClassStringToFileString(testClass)
-
-      @volatile var t: Option[ThreadInfoProfile] = None
-      val s = DummyScalaVirtualMachine.newInstance()
-
-      // NOTE: Do not resume so we can check the variables at the stack frame
-      s.withProfile(PureDebugProfile.Name)
-        .getOrCreateBreakpointRequest(testFile, 22, NoResume)
-        .foreach(e => t = Some(e.thread))
-
-      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
-        logTimeTaken(eventually {
-          val methodNames = t.get.topFrame.thisObject.methods.map(_.name)
-
-          methodNames should contain theSameElementsAs Seq(
-            // Defined methods
-            "main",
-            "innerMethod$1", // Nested method has different Java signature
-            "publicMethod",
-            "privateMethod",
-            "protectedMethod",
-            "zeroArgMethod",
-            "functionMethod", // Scala provides a method for the function
-                              // object since it would be treated as a field
-
-            // Inherited methods
-            "<clinit>",
-            "<init>",
-            "registerNatives",
-            "getClass",
-            "hashCode",
-            "equals",
-            "clone",
-            "toString",
-            "notify",
-            "notifyAll",
-            "wait", // Overloaded method
-            "wait",
-            "wait",
-            "finalize"
-          )
         })
       }
     }

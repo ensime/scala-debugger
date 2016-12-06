@@ -12,13 +12,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class Scala210FieldInfoProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("Scala210FieldInfoProfile") {
     it("should fix Scala-specific field names like org$scaladebugger$test$bugs$BugFromGitter$$name") {
       val testClass = "org.scaladebugger.test.bugs.BugFromGitter"

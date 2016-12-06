@@ -16,13 +16,8 @@ import EventType._
 
 class CustomPropertyDataRequestIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("CustomPropertyDataRequest") {
     it("should retrieve the custom property if available") {
       val testClass =

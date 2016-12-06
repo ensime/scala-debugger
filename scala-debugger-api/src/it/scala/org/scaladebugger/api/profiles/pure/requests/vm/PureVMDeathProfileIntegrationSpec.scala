@@ -11,13 +11,8 @@ import test.{Constants, TestUtilities, VirtualMachineFixtures}
 
 class PureVMDeathProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureVMDeathProfile") {
     it("should trigger when a virtual machine dies", Constants.NoWindows) {
       val testClass = "org.scaladebugger.test.misc.MainUsingApp"

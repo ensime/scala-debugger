@@ -10,13 +10,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureFrameInfoProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureFrameInfoProfile") {
     it("should be able to get the location of the frame") {
       val testClass = "org.scaladebugger.test.info.Variables"
@@ -266,33 +261,6 @@ class PureFrameInfoProfileIntegrationSpec extends FunSpec with Matchers
 
           // Field
           t.get.topFrame.variable("z1").name should be ("z1")
-        })
-      }
-    }
-
-    it("should be able to get variables from a closure") {
-      val testClass = "org.scaladebugger.test.info.Variables"
-      val testFile = JDITools.scalaClassStringToFileString(testClass)
-
-      @volatile var t: Option[ThreadInfoProfile] = None
-      val s = DummyScalaVirtualMachine.newInstance()
-
-      // NOTE: Do not resume so we can check the variables at the stack frame
-      s.withProfile(PureDebugProfile.Name)
-        .getOrCreateBreakpointRequest(testFile, 41, NoResume)
-        .foreach(e => t = Some(e.thread))
-
-      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
-        logTimeTaken(eventually {
-          val variableNames = t.get.topFrame.allVariables.map(_.name)
-
-          // NOTE: As there is no custom logic, this depicts the raw, top-level
-          //       variables seen within the closure
-          variableNames should contain theSameElementsAs Seq(
-            "h$1", "b$1",
-
-            "serialVersionUID"
-          )
         })
       }
     }

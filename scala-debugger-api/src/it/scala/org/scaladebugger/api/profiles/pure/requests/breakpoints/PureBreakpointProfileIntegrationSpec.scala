@@ -16,13 +16,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureBreakpointProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureBreakpointProfile") {
     it("should be able to set breakpoints within while loops") {
       val testClass = "org.scaladebugger.test.breakpoints.WhileLoop"

@@ -12,13 +12,8 @@ import EventType._
 
 class MinTriggerFilterIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("MinTriggerFilter") {
     it("should ignore the first N events for a handler using MinTriggerFilter(N)") {
       val testClass = "org.scaladebugger.test.filters.MinTriggerFilter"

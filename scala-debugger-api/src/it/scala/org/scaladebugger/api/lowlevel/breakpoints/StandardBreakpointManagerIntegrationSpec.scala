@@ -15,13 +15,8 @@ import EventType._
 
 class StandardBreakpointManagerIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("StandardBreakpointManager") {
     it("should be able to set breakpoints within while loops") {
       val testClass = "org.scaladebugger.test.breakpoints.WhileLoop"

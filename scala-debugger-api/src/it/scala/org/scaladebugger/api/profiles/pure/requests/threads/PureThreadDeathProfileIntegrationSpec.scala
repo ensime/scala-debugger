@@ -12,13 +12,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureThreadDeathProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureThreadDeathProfile") {
     it("should trigger when a thread dies") {
       val testClass = "org.scaladebugger.test.threads.ThreadDeath"

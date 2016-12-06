@@ -11,13 +11,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureClassTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureClassTypeInfoProfile") {
     it("should be able to retrieve information about the class type for variables and fields") {
       val testClass = "org.scaladebugger.test.info.ClassType"

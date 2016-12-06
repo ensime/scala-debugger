@@ -14,13 +14,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureExceptionProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureExceptionProfile") {
     it("should be able to detect exceptions in try blocks") {
       val testClass =

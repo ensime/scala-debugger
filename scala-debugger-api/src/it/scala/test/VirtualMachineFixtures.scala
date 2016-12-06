@@ -1,6 +1,6 @@
 package test
 
-import java.io.{InputStreamReader, BufferedReader}
+import java.io.{BufferedReader, InputStreamReader}
 import java.util.concurrent.atomic.AtomicBoolean
 
 import com.sun.jdi.event.VMStartEvent
@@ -8,10 +8,11 @@ import org.scaladebugger.api.debuggers.LaunchingDebugger
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.lowlevel.events.EventType
 import org.scaladebugger.api.profiles.ProfileManager
-import org.scaladebugger.api.utils.{JDITools, LoopingTaskRunner, Logging}
+import org.scaladebugger.api.utils.{JDITools, Logging, LoopingTaskRunner}
 import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, StandardScalaVirtualMachine}
 import EventType._
 import com.sun.jdi.VirtualMachine
+import org.scalatest.concurrent.Eventually
 
 import scala.concurrent.Future
 import scala.io.Source

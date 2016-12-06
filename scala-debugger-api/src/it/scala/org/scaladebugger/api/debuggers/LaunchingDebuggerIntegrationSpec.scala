@@ -9,14 +9,9 @@ import org.scaladebugger.api.utils.{JDITools, Logging}
 import test.TestUtilities
 
 class LaunchingDebuggerIntegrationSpec  extends FunSpec with Matchers
-  with Eventually with TestUtilities with Logging
+   with TestUtilities with Logging
   with ParallelTestExecution
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Span(5, Seconds)),
-    interval = scaled(Span(5, Milliseconds))
-  )
-
   describe("LaunchingDebugger") {
     it("should be able to start a JVM and connect to it") {
       val launchedJvmConnected = new AtomicBoolean(false)

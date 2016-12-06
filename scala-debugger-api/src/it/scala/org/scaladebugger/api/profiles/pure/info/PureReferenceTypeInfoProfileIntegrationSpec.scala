@@ -11,13 +11,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureReferenceTypeInfoProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureReferenceTypeInfoProfile") {
     it("should look up the source path using the Java package name") {
       val testClass = "org.scaladebugger.test.invalid.InvalidSourcePath"

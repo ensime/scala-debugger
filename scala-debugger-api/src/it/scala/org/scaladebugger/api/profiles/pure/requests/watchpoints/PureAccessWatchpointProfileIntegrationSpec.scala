@@ -13,13 +13,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureAccessWatchpointProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureAccessWatchpointProfile") {
     it("should be able to detect access to a field") {
       val testClass = "org.scaladebugger.test.watchpoints.AccessWatchpoint"

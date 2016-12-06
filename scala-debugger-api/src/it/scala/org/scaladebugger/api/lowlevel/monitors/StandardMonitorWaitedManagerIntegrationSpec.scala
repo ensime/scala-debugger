@@ -12,13 +12,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class StandardMonitorWaitedManagerIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("StandardMonitorWaitedManager") {
     it("should trigger when a thread has finished waiting on a monitor object") {
       val testClass = "org.scaladebugger.test.monitors.MonitorWaited"

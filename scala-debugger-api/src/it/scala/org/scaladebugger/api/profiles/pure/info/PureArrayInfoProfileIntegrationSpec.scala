@@ -11,13 +11,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureArrayInfoProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureArrayInfoProfile") {
     it("should be able to return the length of the array") {
       val testClass = "org.scaladebugger.test.info.Variables"

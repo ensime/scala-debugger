@@ -11,13 +11,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureMonitorContendedEnterProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureMonitorContendedEnterProfile") {
     it("should trigger when a thread attempts to enter a monitor already acquired by another thread") {
       val testClass = "org.scaladebugger.test.monitors.MonitorContendedEnter"

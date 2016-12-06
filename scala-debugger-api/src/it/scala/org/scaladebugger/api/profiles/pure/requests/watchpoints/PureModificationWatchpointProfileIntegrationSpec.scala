@@ -11,13 +11,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureModificationWatchpointProfileIntegrationSpec
   extends FunSpec with Matchers with ParallelTestExecution
-  with VirtualMachineFixtures with TestUtilities with Eventually
+  with VirtualMachineFixtures with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureModificationWatchpointProfile") {
     it("should be able to detect modification to a field") {
       val testClass = "org.scaladebugger.test.watchpoints.ModificationWatchpoint"

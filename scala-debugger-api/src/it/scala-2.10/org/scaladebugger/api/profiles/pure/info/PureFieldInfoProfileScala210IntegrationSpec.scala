@@ -14,12 +14,7 @@ class PureFieldInfoProfileScala210IntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
   with TestUtilities with Eventually
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
-  describe("PureFieldInfoProfile") {
+  describe("PureFieldInfoProfile for 2.10") {
     it("should not expand $outer to its underlying fields") {
       val testClass = "org.scaladebugger.test.info.OuterScope"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
@@ -48,5 +43,31 @@ class PureFieldInfoProfileScala210IntegrationSpec extends FunSpec with Matchers
         })
       }
     }
+
+    it("should not fix Scala-specific field names like org$scaladebugger$test$bugs$BugFromGitter$$name") {
+      val testClass = "org.scaladebugger.test.bugs.BugFromGitter"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadInfoProfile] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(PureDebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 20, NoResume)
+        .foreach(e => t = Some(e.thread))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val fieldNames = t.get.topFrame.allVariables.map(_.name)
+
+          fieldNames should contain theSameElementsAs Seq(
+            "actualTimes",
+            "times",
+            "org$scaladebugger$test$bugs$BugFromGitter$$name"
+          )
+        })
+      }
+    }
+
   }
 }

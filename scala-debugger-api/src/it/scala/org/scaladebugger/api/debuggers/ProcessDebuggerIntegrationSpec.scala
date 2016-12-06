@@ -11,14 +11,9 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class ProcessDebuggerIntegrationSpec extends FunSpec with Matchers
   with BeforeAndAfter with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
   with ParallelTestExecution
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Span(5, Seconds)),
-    interval = scaled(Span(5, Milliseconds))
-  )
-
   @volatile private var jvmProcess: (Int, Process) = _
 
   before {

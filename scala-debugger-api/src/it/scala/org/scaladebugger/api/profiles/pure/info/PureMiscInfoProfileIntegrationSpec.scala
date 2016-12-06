@@ -9,13 +9,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class PureMiscInfoProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureMiscInfoProfile") {
     it("should return the source paths for a given source name") {
       val testClass = "org.scaladebugger.test.info.MultiSource"

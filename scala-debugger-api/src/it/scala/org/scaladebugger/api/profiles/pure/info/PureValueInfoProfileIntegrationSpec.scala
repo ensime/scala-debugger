@@ -14,13 +14,8 @@ import scala.collection.immutable.TreeMap
 
 class PureValueInfoProfileIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("PureValueInfoProfile") {
     it("should be able to get the type name for a variable's value") {
       val testClass = "org.scaladebugger.test.info.Variables"

@@ -9,14 +9,9 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class FileSearcherIntegrationSpec extends FunSpec with Matchers
   with BeforeAndAfter with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
   with ParallelTestExecution
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Span(5, Seconds)),
-    interval = scaled(Span(5, Milliseconds))
-  )
-
   private val fileSearcher = new FileSearcher
   private lazy val searchPath = Paths.get(
     ClassLoader.getSystemResource("file_searcher").toURI

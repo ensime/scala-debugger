@@ -12,13 +12,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class MaxTriggerFilterIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("MaxTriggerFilter") {
     it("should ignore all events for a handler after the first N using MaxTriggerFilter(N)") {
       val testClass = "org.scaladebugger.test.filters.MaxTriggerFilter"

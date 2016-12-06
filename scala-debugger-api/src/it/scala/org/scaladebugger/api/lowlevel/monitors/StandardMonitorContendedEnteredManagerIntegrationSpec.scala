@@ -12,13 +12,8 @@ import test.{TestUtilities, VirtualMachineFixtures}
 
 class StandardMonitorContendedEnteredManagerIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("StandardMonitorContendedEnteredManager") {
     it("should trigger when a thread enters a monitor after waiting for it to be released by another thread") {
       val testClass = "org.scaladebugger.test.monitors.MonitorContendedEntered"

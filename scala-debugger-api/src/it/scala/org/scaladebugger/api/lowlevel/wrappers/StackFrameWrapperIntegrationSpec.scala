@@ -15,13 +15,8 @@ import scala.util.Try
 
 class StackFrameWrapperIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+  with TestUtilities
 {
-  implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
-  )
-
   describe("StackFrameWrapper") {
     it("should be able to analyze this object variables") {
       val testClass = "org.scaladebugger.test.misc.Variables"
