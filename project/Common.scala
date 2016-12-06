@@ -24,7 +24,7 @@ object Common {
     // Default version when not cross-compiling
     scalaVersion := "2.10.6",
 
-    crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0"),
+    crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
 
     scalacOptions ++= Seq(
       "-encoding", "UTF-8",
