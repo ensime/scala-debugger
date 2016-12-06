@@ -13,8 +13,9 @@ import org.scaladebugger.api.profiles.traits.info.{InfoProducerProfile, ThreadIn
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalatest.concurrent.{Futures, ScalaFutures}
 import org.scalatest.time.{Milliseconds, Span}
-import test.JDIMockHelpers
+import test.{JDIMockHelpers, Workarounds}
 
+import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers with Futures
@@ -773,7 +774,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           mockThreadInfoProfile
         )
 
-        whenReady(stepFuture.failed) { actual => actual should be (expected) }
+        val stepFutureFailed = Workarounds.transformFutureToFailed(stepFuture)
+
+        whenReady(stepFutureFailed) { actual => actual should be (expected) }
       }
     }
 
@@ -852,7 +855,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           mockThreadInfoProfile
         )
 
-        whenReady(stepFuture.failed) { actual => actual should be (expected) }
+        val stepFutureFailed = Workarounds.transformFutureToFailed(stepFuture)
+
+        whenReady(stepFutureFailed) { actual => actual should be (expected) }
       }
     }
 
@@ -928,7 +933,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           mockThreadInfoProfile
         )
 
-        whenReady(stepFuture.failed) { actual => actual should be (expected) }
+        val stepFutureFailed = Workarounds.transformFutureToFailed(stepFuture)
+
+        whenReady(stepFutureFailed) { actual => actual should be (expected) }
       }
     }
 
@@ -1004,7 +1011,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           mockThreadInfoProfile
         )
 
-        whenReady(stepFuture.failed) { actual => actual should be (expected) }
+        val stepFutureFailed = Workarounds.transformFutureToFailed(stepFuture)
+
+        whenReady(stepFutureFailed) { actual => actual should be (expected) }
       }
     }
 
@@ -1080,7 +1089,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           mockThreadInfoProfile
         )
 
-        whenReady(stepFuture.failed) { actual => actual should be (expected) }
+        val stepFutureFailed = Workarounds.transformFutureToFailed(stepFuture)
+
+        whenReady(stepFutureFailed) { actual => actual should be (expected) }
       }
     }
 
@@ -1156,7 +1167,9 @@ class PureStepProfileSpec extends test.ParallelMockFunSpec with JDIMockHelpers w
           mockThreadInfoProfile
         )
 
-        whenReady(stepFuture.failed) { actual => actual should be (expected) }
+        val stepFutureFailed = Workarounds.transformFutureToFailed(stepFuture)
+
+        whenReady(stepFutureFailed) { actual => actual should be (expected) }
       }
     }
 
