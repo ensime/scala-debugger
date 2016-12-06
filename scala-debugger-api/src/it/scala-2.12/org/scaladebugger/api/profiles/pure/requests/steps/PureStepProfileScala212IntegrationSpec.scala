@@ -1,4 +1,4 @@
-package api.profiles.pure.requests.steps
+package org.scaladebugger.api.profiles.pure.requests.steps
 
 import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine

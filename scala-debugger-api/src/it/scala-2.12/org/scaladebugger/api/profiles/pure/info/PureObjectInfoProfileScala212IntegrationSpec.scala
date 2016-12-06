@@ -1,4 +1,4 @@
-package api.profiles.pure.info
+package org.scaladebugger.api.profiles.pure.info
 
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
@@ -40,6 +40,8 @@ class PureObjectInfoProfileScala212IntegrationSpec extends FunSpec with Matchers
             "zeroArgMethod",
             "functionMethod", // Scala provides a method for the function
                               // object since it would be treated as a field
+            "$anonfun$functionMethod$1", // Scala 2.12
+            "$deserializeLambda$", // Scala 2.12
 
             // Inherited methods
             "<clinit>",

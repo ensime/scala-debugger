@@ -1,4 +1,4 @@
-package api.profiles.pure.info
+package org.scaladebugger.api.profiles.pure.info
 
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
@@ -33,8 +33,7 @@ class PureFrameInfoProfileScala212IntegrationSpec extends FunSpec with Matchers
           //       variables seen within the closure
           variableNames should contain theSameElementsAs Seq(
             "h$1", "b$1",
-
-            "serialVersionUID"
+            "$this" // Scala 2.12 specific variable
           )
         })
       }

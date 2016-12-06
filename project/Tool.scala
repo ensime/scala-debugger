@@ -3,6 +3,10 @@ import sbt._
 import sbtassembly.AssemblyKeys._
 
 object Tool {
+  lazy val ammoniteVersion = settingKey[String](
+    "Version of Ammonite used in projects"
+  )
+
   /** Tool-specific project settings. */
   val settings = Seq(
     // NOTE: Fork needed to avoid mixing in sbt classloader, which is causing
@@ -10,10 +14,13 @@ object Tool {
     fork in Test := true,
     fork in IntegrationTest := true,
 
+    // Contains the version of Ammonite used
+    ammoniteVersion := "COMMIT-cc9941d",
+
     libraryDependencies ++= Seq(
-      "com.lihaoyi" % "ammonite" % "COMMIT-7d7b824" cross CrossVersion.full,
-      "com.lihaoyi" % "ammonite-util" % "COMMIT-7d7b824" cross CrossVersion.full,
-      "com.lihaoyi" %% "ammonite-terminal" % "COMMIT-7d7b824",
+      "com.lihaoyi" % "ammonite" % ammoniteVersion.value cross CrossVersion.full,
+      "com.lihaoyi" % "ammonite-util" % ammoniteVersion.value cross CrossVersion.full,
+      "com.lihaoyi" %% "ammonite-terminal" % ammoniteVersion.value,
       "org.rogach" %% "scallop" % "2.0.5",
       "org.slf4j" % "slf4j-api" % "1.7.5",
       "org.slf4j" % "slf4j-log4j12" % "1.7.5",

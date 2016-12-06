@@ -1,4 +1,4 @@
-package api.profiles.pure.info
+package org.scaladebugger.api.profiles.pure.info
 
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
@@ -15,7 +15,7 @@ class PureFieldInfoProfileScala212IntegrationSpec extends FunSpec with Matchers
 {
   describe("PureFieldInfoProfile for 2.12") {
     // $outer does not appear in this scenario for Scala 2.12
-    it("should not expand $outer to its underlying fields") {
+    it("should not expand $outer to its underlying fields (no $outer in 2.12)") {
       val testClass = "org.scaladebugger.test.info.OuterScope"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
@@ -40,9 +40,8 @@ class PureFieldInfoProfileScala212IntegrationSpec extends FunSpec with Matchers
             "MODULE$",
             "x",
             "executionStart",
-            "scala$App$$_Args",
+            "scala$App$$_args", // Scala 2.12 (_Args is now _args)
             "scala$App$$initCode",
-            "$outer",
             "newValue"
           )
         })
