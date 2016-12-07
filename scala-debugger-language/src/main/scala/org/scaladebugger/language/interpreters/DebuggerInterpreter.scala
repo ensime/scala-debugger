@@ -64,11 +64,15 @@ class DebuggerInterpreter(
   })
 
   protected def toExpression(value: Any): Try[models.Expression] = {
-    Try(value.toString.toDouble).map(models.Number.apply) orElse
-    Try(value.toString.toBoolean).map(models.Truth.apply) orElse
-    Try(value.asInstanceOf[Unit]).map(_ => models.Undefined) orElse
-    Try(value.toString).map(models.Text.apply) orElse
-    Failure(new RuntimeException(s"Unable to convert $value to expression!"))
+    // Scala 2.12 allows value.asInstanceOf[Unit] to pass when value is not
+    // a unit type, so we need to handle it specially
+    if (value.isInstanceOf[Unit]) Success(models.Undefined)
+    else {
+      Try(value.toString.toDouble).map(models.Number.apply) orElse
+      Try(value.toString.toBoolean).map(models.Truth.apply) orElse
+      Try(value.toString).map(models.Text.apply) orElse
+      Failure(new RuntimeException(s"Unable to convert $value to expression!"))
+    }
   }
 
   /** Interprets code and returns collection of results for all top-level expressions */
