@@ -1,7 +1,7 @@
 environment:
   global:
-    - COMPILE: compile test:compile it:compile
-    - TEST_SUITE: test "it:testOnly -- -l NoWindows"
+    COMPILE: compile test:compile it:compile
+    TEST_SUITE: test "it:testOnly -- -l NoWindows"
   matrix:
     - SCALA_VERSION: 2.10.6
     - SCALA_VERSION: 2.11.8
