@@ -17,7 +17,7 @@ class FieldsListCommandIntegrationSpec extends FunSpec with Matchers
   )
 
   describe("FieldsListCommand") {
-    it("should list all classes if no arguments provided") {
+    it("should list all fields if no arguments provided") {
       val testClass = "org.scaladebugger.test.info.Fields"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testFileName = new File(testFile).getName
@@ -60,7 +60,7 @@ class FieldsListCommandIntegrationSpec extends FunSpec with Matchers
       }
     }
 
-    it("should limit to classes matching filter") {
+    it("should limit to fields matching filter") {
       val testClass = "org.scaladebugger.test.info.Fields"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testFileName = new File(testFile).getName
@@ -105,7 +105,7 @@ class FieldsListCommandIntegrationSpec extends FunSpec with Matchers
       }
     }
 
-    it("should limit to classes not matching filternot") {
+    it("should limit to fields not matching filternot") {
       val testClass = "org.scaladebugger.test.info.Fields"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
       val testFileName = new File(testFile).getName

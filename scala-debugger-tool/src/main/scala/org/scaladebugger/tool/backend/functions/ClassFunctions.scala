@@ -55,8 +55,12 @@ class ClassFunctions(
     val filterNot = m.get("filternot").map(_.toString).getOrElse("$^")
     val fnr = Regex.wildcardString(filterNot)
 
-    @inline def methodToString(m: MethodInfoProfile): String =
-      m.name + "(" + m.parameterTypeInfo.map(_.name).mkString(",") + ")"
+    @inline def methodToString(m: MethodInfoProfile): String = {
+      val p = m.tryParameterTypeInfo.map(_.map(_.name).mkString(",")).recover {
+        case t: Throwable => t.toString
+      }.get
+      m.name + "(" + p + ")"
+    }
 
     jvms.foreach(s => {
       writeLine(s"<= JVM ${s.uniqueId} =>")
