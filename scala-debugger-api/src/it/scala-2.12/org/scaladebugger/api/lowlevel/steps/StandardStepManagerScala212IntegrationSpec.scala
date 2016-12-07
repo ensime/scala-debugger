@@ -24,7 +24,7 @@ class StandardStepManagerScala212IntegrationSpec extends FunSpec with Matchers
           // Can skip entirely over for comprehension
           16,
           // Enters the foreach once (as part of anonymous function declaration?)
-          21, 22, 21,
+          21, 22, // NOTE: Scala 2.12 does not go back to line 21
           // Enters the map once (as part of anonymous function declaration?)
           26, 27, 26,
           // Can skip entirely over reduce (why?)

@@ -1,6 +1,5 @@
 package org.scaladebugger.api.profiles.scala210.info
 
-
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.pure.info.PureFieldInfoProfile
 import org.scaladebugger.api.profiles.traits.info._
@@ -38,16 +37,6 @@ class Scala210FieldInfoProfile(
 )(
   _virtualMachine = _virtualMachine
 ) {
-  // Construct regex to handle different naming conventions
-  // where the first group matches the desired name
-  private lazy val ParsePatterns = Seq(
-    // Grab tail end of org$scaladebugger$class$$fieldName
-    // as well as org.scaladebugger.class.fieldName
-    """(?:\w+[\$|\.]+)*([^\$\d]\w*)""",
-
-    // Grab the start of variables like x$1 and y$1
-    """(\w+)\$(?:\d\w*)"""
-  ).map("(?:^" + _ + "$)").map(_.r)
 
   /**
    * Creates a new Scala 2.10 field information profile with no offset index.
@@ -93,9 +82,6 @@ class Scala210FieldInfoProfile(
   override def name: String = {
     val rawName = super.name.trim
 
-    ParsePatterns
-      .flatMap(_.findFirstMatchIn(rawName))
-      .flatMap(m => Option(m.group(1)))
-      .headOption.getOrElse(rawName)
+    Rules.extractName(rawName)
   }
 }

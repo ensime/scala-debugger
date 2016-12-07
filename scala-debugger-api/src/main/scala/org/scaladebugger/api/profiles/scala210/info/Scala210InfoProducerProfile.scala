@@ -34,6 +34,21 @@ class Scala210InfoProducerProfile extends PureInfoProducerProfile {
     offsetIndex
   )(virtualMachine)
 
+  override def newLocalVariableInfoProfile(
+    scalaVirtualMachine: ScalaVirtualMachine,
+    frame: FrameInfoProfile,
+    localVariable: LocalVariable,
+    offsetIndex: Int
+  )(
+    virtualMachine: => VirtualMachine
+  ): IndexedVariableInfoProfile = new Scala210LocalVariableInfoProfile(
+    scalaVirtualMachine,
+    this,
+    frame,
+    localVariable,
+    offsetIndex
+  )(virtualMachine)
+
   override def newReferenceTypeInfoProfile(
     scalaVirtualMachine: ScalaVirtualMachine,
     referenceType: ReferenceType
