@@ -1,5 +1,5 @@
 package org.scaladebugger.tool.backend.functions
-import org.scaladebugger.api.profiles.traits.info.{FieldVariableInfoProfile, MethodInfoProfile, ReferenceTypeInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{FieldVariableInfo, MethodInfo, ReferenceTypeInfo}
 import org.scaladebugger.tool.backend.StateManager
 import org.scaladebugger.tool.backend.utils.Regex
 
@@ -25,7 +25,7 @@ class ClassFunctions(
     val filterNot = m.get("filternot").map(_.toString).getOrElse("$^")
     val fnr = Regex.wildcardString(filterNot)
 
-    @inline def classToString(c: ReferenceTypeInfoProfile): String =
+    @inline def classToString(c: ReferenceTypeInfo): String =
       c.name + " " + c.genericSignature.map("(" + _ + ")").getOrElse("")
 
     jvms.foreach(s => {
@@ -55,7 +55,7 @@ class ClassFunctions(
     val filterNot = m.get("filternot").map(_.toString).getOrElse("$^")
     val fnr = Regex.wildcardString(filterNot)
 
-    @inline def methodToString(m: MethodInfoProfile): String = {
+    @inline def methodToString(m: MethodInfo): String = {
       val p = m.tryParameterTypeInfo.map(_.map(_.name).mkString(",")).recover {
         case t: Throwable => t.toString
       }.get
@@ -91,7 +91,7 @@ class ClassFunctions(
     val filterNot = m.get("filternot").map(_.toString).getOrElse("$^")
     val fnr = Regex.wildcardString(filterNot)
 
-    @inline def fieldToString(f: FieldVariableInfoProfile): String =
+    @inline def fieldToString(f: FieldVariableInfo): String =
       f.name + ": " + f.typeName
 
     jvms.foreach(s => {

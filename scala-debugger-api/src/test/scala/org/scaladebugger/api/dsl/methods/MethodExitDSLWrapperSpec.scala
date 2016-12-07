@@ -3,14 +3,14 @@ package org.scaladebugger.api.dsl.methods
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.info.events.MethodExitEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.methods.MethodExitProfile
+import org.scaladebugger.api.profiles.traits.info.events.MethodExitEventInfo
+import org.scaladebugger.api.profiles.traits.requests.methods.MethodExitRequest
 
 import scala.util.Success
 
 class MethodExitDSLWrapperSpec extends test.ParallelMockFunSpec
 {
-  private val mockMethodExitProfile = mock[MethodExitProfile]
+  private val mockMethodExitProfile = mock[MethodExitRequest]
 
   describe("MethodExitDSLWrapper") {
     describe("#onMethodExit") {
@@ -20,7 +20,7 @@ class MethodExitDSLWrapperSpec extends test.ParallelMockFunSpec
         val className = "some.class.name"
         val methodName = "someMethodName"
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[MethodExitEventInfoProfile]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[MethodExitEventInfo]))
 
         (mockMethodExitProfile.tryGetOrCreateMethodExitRequest _).expects(
           className,
@@ -43,7 +43,7 @@ class MethodExitDSLWrapperSpec extends test.ParallelMockFunSpec
         val className = "some.class.name"
         val methodName = "someMethodName"
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[MethodExitEventInfoProfile])
+        val returnValue = Pipeline.newPipeline(classOf[MethodExitEventInfo])
 
         (mockMethodExitProfile.getOrCreateMethodExitRequest _).expects(
           className,
@@ -67,7 +67,7 @@ class MethodExitDSLWrapperSpec extends test.ParallelMockFunSpec
         val methodName = "someMethodName"
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(MethodExitEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(MethodExitEventInfo, Seq[JDIEventDataResult])]
         ))
 
         (mockMethodExitProfile.tryGetOrCreateMethodExitRequestWithData _).expects(
@@ -92,7 +92,7 @@ class MethodExitDSLWrapperSpec extends test.ParallelMockFunSpec
         val methodName = "someMethodName"
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(MethodExitEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(MethodExitEventInfo, Seq[JDIEventDataResult])]
         )
 
         (mockMethodExitProfile.getOrCreateMethodExitRequestWithData _).expects(

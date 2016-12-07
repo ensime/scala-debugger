@@ -22,11 +22,11 @@ object EventInfoTestClasses {
    *
    * All isNNNEvent yield false by default. Everything else throws an exception.
    */
-  class TestEventInfoProfile(
+  class TestEventInfo(
     val scalaVirtualMachine: ScalaVirtualMachine,
     val isJavaInfo: Boolean
-  ) extends EventInfoProfile {
-    override def toJavaInfo: EventInfoProfile = throwException()
+  ) extends EventInfo {
+    override def toJavaInfo: EventInfo = throwException()
     override def toJdiInstance: Event = throwException()
     override def requestArguments: Seq[JDIRequestArgument] = throwException()
     override def eventArguments: Seq[JDIEventArgument] = throwException()
@@ -51,26 +51,26 @@ object EventInfoTestClasses {
     override def isVMStartEvent: Boolean = false
     override def isWatchpointEvent: Boolean = false
     override def isPlainEvent: Boolean = false
-    override def toAccessWatchpointEvent: AccessWatchpointEventInfoProfile = throwException()
-    override def toBreakpointEvent: BreakpointEventInfoProfile = throwException()
-    override def toClassPrepareEvent: ClassPrepareEventInfoProfile = throwException()
-    override def toClassUnloadEvent: ClassUnloadEventInfoProfile = throwException()
-    override def toExceptionEvent: ExceptionEventInfoProfile = throwException()
-    override def toLocatableEvent: LocatableEventInfoProfile = throwException()
-    override def toMethodEntryEvent: MethodEntryEventInfoProfile = throwException()
-    override def toMethodExitEvent: MethodExitEventInfoProfile = throwException()
-    override def toModificationWatchpointEvent: ModificationWatchpointEventInfoProfile = throwException()
-    override def toMonitorEvent: MonitorEventInfoProfile = throwException()
-    override def toMonitorContendedEnteredEvent: MonitorContendedEnteredEventInfoProfile = throwException()
-    override def toMonitorContendedEnterEvent: MonitorContendedEnterEventInfoProfile = throwException()
-    override def toMonitorWaitedEvent: MonitorWaitedEventInfoProfile = throwException()
-    override def toMonitorWaitEvent: MonitorWaitEventInfoProfile = throwException()
-    override def toStepEvent: StepEventInfoProfile = throwException()
-    override def toThreadDeathEvent: ThreadDeathEventInfoProfile = throwException()
-    override def toThreadStartEvent: ThreadStartEventInfoProfile = throwException()
-    override def toVMDeathEvent: VMDeathEventInfoProfile = throwException()
-    override def toVMDisconnectEvent: VMDisconnectEventInfoProfile = throwException()
-    override def toVMStartEvent: VMStartEventInfoProfile = throwException()
-    override def toWatchpointEvent: WatchpointEventInfoProfile = throwException()
+    override def toAccessWatchpointEvent: AccessWatchpointEventInfo = throwException()
+    override def toBreakpointEvent: BreakpointEventInfo = throwException()
+    override def toClassPrepareEvent: ClassPrepareEventInfo = throwException()
+    override def toClassUnloadEvent: ClassUnloadEventInfo = throwException()
+    override def toExceptionEvent: ExceptionEventInfo = throwException()
+    override def toLocatableEvent: LocatableEventInfo = throwException()
+    override def toMethodEntryEvent: MethodEntryEventInfo = throwException()
+    override def toMethodExitEvent: MethodExitEventInfo = throwException()
+    override def toModificationWatchpointEvent: ModificationWatchpointEventInfo = throwException()
+    override def toMonitorEvent: MonitorEventInfo = throwException()
+    override def toMonitorContendedEnteredEvent: MonitorContendedEnteredEventInfo = throwException()
+    override def toMonitorContendedEnterEvent: MonitorContendedEnterEventInfo = throwException()
+    override def toMonitorWaitedEvent: MonitorWaitedEventInfo = throwException()
+    override def toMonitorWaitEvent: MonitorWaitEventInfo = throwException()
+    override def toStepEvent: StepEventInfo = throwException()
+    override def toThreadDeathEvent: ThreadDeathEventInfo = throwException()
+    override def toThreadStartEvent: ThreadStartEventInfo = throwException()
+    override def toVMDeathEvent: VMDeathEventInfo = throwException()
+    override def toVMDisconnectEvent: VMDisconnectEventInfo = throwException()
+    override def toVMStartEvent: VMStartEventInfo = throwException()
+    override def toWatchpointEvent: WatchpointEventInfo = throwException()
   }
 }

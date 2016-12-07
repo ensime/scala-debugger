@@ -2,20 +2,20 @@ package org.scaladebugger.api.profiles.scala210
 
 import com.sun.jdi.VirtualMachine
 import org.scaladebugger.api.lowlevel.ManagerContainer
-import org.scaladebugger.api.profiles.pure.requests.breakpoints.PureBreakpointProfile
-import org.scaladebugger.api.profiles.pure.requests.classes.{PureClassPrepareProfile, PureClassUnloadProfile}
-import org.scaladebugger.api.profiles.pure.requests.events.PureEventListenerProfile
-import org.scaladebugger.api.profiles.pure.requests.exceptions.PureExceptionProfile
-import org.scaladebugger.api.profiles.pure.info.{PureCreateInfoProfile, PureGrabInfoProfile, PureMiscInfoProfile}
-import org.scaladebugger.api.profiles.pure.requests.methods.{PureMethodEntryProfile, PureMethodExitProfile}
-import org.scaladebugger.api.profiles.pure.requests.monitors.{PureMonitorContendedEnterProfile, PureMonitorContendedEnteredProfile, PureMonitorWaitProfile, PureMonitorWaitedProfile}
-import org.scaladebugger.api.profiles.pure.requests.steps.PureStepProfile
-import org.scaladebugger.api.profiles.pure.requests.threads.{PureThreadDeathProfile, PureThreadStartProfile}
-import org.scaladebugger.api.profiles.pure.requests.vm.{PureVMDeathProfile, PureVMDisconnectProfile, PureVMStartProfile}
-import org.scaladebugger.api.profiles.pure.requests.watchpoints.{PureAccessWatchpointProfile, PureModificationWatchpointProfile}
-import org.scaladebugger.api.profiles.scala210.info.Scala210InfoProducerProfile
+import org.scaladebugger.api.profiles.pure.requests.breakpoints.PureBreakpointRequest
+import org.scaladebugger.api.profiles.pure.requests.classes.{PureClassPrepareRequest, PureClassUnloadRequest}
+import org.scaladebugger.api.profiles.pure.requests.events.PureEventListenerRequest
+import org.scaladebugger.api.profiles.pure.requests.exceptions.PureExceptionRequest
+import org.scaladebugger.api.profiles.pure.info.{PureCreateInfoProfile, PureGrabInfoProfile, PureMiscInfo}
+import org.scaladebugger.api.profiles.pure.requests.methods.{PureMethodEntryRequest, PureMethodExitRequest}
+import org.scaladebugger.api.profiles.pure.requests.monitors.{PureMonitorContendedEnterRequest, PureMonitorContendedEnteredRequest, PureMonitorWaitRequest, PureMonitorWaitedRequest}
+import org.scaladebugger.api.profiles.pure.requests.steps.PureStepRequest
+import org.scaladebugger.api.profiles.pure.requests.threads.{PureThreadDeathRequest, PureThreadStartRequest}
+import org.scaladebugger.api.profiles.pure.requests.vm.{PureVMDeathRequest, PureVMDisconnectRequest, PureVMStartRequest}
+import org.scaladebugger.api.profiles.pure.requests.watchpoints.{PureAccessWatchpointRequest, PureModificationWatchpointRequest}
+import org.scaladebugger.api.profiles.scala210.info.Scala210InfoProducer
 import org.scaladebugger.api.profiles.traits.ManagerContainerDebugProfile
-import org.scaladebugger.api.profiles.traits.info.InfoProducerProfile
+import org.scaladebugger.api.profiles.traits.info.InfoProducer
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -41,28 +41,28 @@ class Scala210DebugProfile(
 )(
   protected val _virtualMachine: VirtualMachine =
     scalaVirtualMachine.underlyingVirtualMachine,
-  protected val infoProducer: InfoProducerProfile =
-    new Scala210InfoProducerProfile
+  protected val infoProducer: InfoProducer =
+    new Scala210InfoProducer
 ) extends ManagerContainerDebugProfile
-  with PureAccessWatchpointProfile
-  with PureBreakpointProfile
-  with PureClassPrepareProfile
-  with PureClassUnloadProfile
+  with PureAccessWatchpointRequest
+  with PureBreakpointRequest
+  with PureClassPrepareRequest
+  with PureClassUnloadRequest
   with PureCreateInfoProfile
-  with PureEventListenerProfile
-  with PureExceptionProfile
+  with PureEventListenerRequest
+  with PureExceptionRequest
   with PureGrabInfoProfile
-  with PureMethodEntryProfile
-  with PureMethodExitProfile
-  with PureMiscInfoProfile
-  with PureModificationWatchpointProfile
-  with PureMonitorContendedEnteredProfile
-  with PureMonitorContendedEnterProfile
-  with PureMonitorWaitedProfile
-  with PureMonitorWaitProfile
-  with PureStepProfile
-  with PureThreadDeathProfile
-  with PureThreadStartProfile
-  with PureVMStartProfile
-  with PureVMDeathProfile
-  with PureVMDisconnectProfile
+  with PureMethodEntryRequest
+  with PureMethodExitRequest
+  with PureMiscInfo
+  with PureModificationWatchpointRequest
+  with PureMonitorContendedEnteredRequest
+  with PureMonitorContendedEnterRequest
+  with PureMonitorWaitedRequest
+  with PureMonitorWaitRequest
+  with PureStepRequest
+  with PureThreadDeathRequest
+  with PureThreadStartRequest
+  with PureVMStartRequest
+  with PureVMDeathRequest
+  with PureVMDisconnectRequest

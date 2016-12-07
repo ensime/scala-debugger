@@ -3,14 +3,14 @@ package org.scaladebugger.api.dsl.vm
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.info.events.VMDisconnectEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.vm.VMDisconnectProfile
+import org.scaladebugger.api.profiles.traits.info.events.VMDisconnectEventInfo
+import org.scaladebugger.api.profiles.traits.requests.vm.VMDisconnectRequest
 
 import scala.util.Success
 
 class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
 {
-  private val mockVMDisconnectProfile = mock[VMDisconnectProfile]
+  private val mockVMDisconnectProfile = mock[VMDisconnectRequest]
 
   describe("VMDisconnectDSLWrapper") {
     describe("#onVMDisconnect") {
@@ -18,7 +18,7 @@ class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.VMDisconnectDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[VMDisconnectEventInfoProfile]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[VMDisconnectEventInfo]))
 
         (mockVMDisconnectProfile.tryGetOrCreateVMDisconnectRequest _).expects(
           extraArguments
@@ -35,7 +35,7 @@ class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.VMDisconnectDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[VMDisconnectEventInfoProfile])
+        val returnValue = Pipeline.newPipeline(classOf[VMDisconnectEventInfo])
 
         (mockVMDisconnectProfile.getOrCreateVMDisconnectRequest _).expects(
           extraArguments
@@ -53,7 +53,7 @@ class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(VMDisconnectEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(VMDisconnectEventInfo, Seq[JDIEventDataResult])]
         ))
 
         (mockVMDisconnectProfile.tryGetOrCreateVMDisconnectRequestWithData _).expects(
@@ -72,7 +72,7 @@ class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(VMDisconnectEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(VMDisconnectEventInfo, Seq[JDIEventDataResult])]
         )
 
         (mockVMDisconnectProfile.getOrCreateVMDisconnectRequestWithData _).expects(

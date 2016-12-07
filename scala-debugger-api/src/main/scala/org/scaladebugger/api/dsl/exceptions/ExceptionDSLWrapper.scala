@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.exceptions
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionProfile
-import org.scaladebugger.api.profiles.traits.info.events.ExceptionEventInfoProfile
+import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionRequest
+import org.scaladebugger.api.profiles.traits.info.events.ExceptionEventInfo
 
 import scala.util.Try
 
@@ -14,18 +14,18 @@ import scala.util.Try
  * @param exceptionProfile The profile to wrap
  */
 class ExceptionDSLWrapper private[dsl] (
-  private val exceptionProfile: ExceptionProfile
+  private val exceptionProfile: ExceptionRequest
 ) {
   /** Represents a Exception event and any associated data. */
-  type ExceptionEventAndData = (ExceptionEventInfoProfile, Seq[JDIEventDataResult])
+  type ExceptionEventAndData = (ExceptionEventInfo, Seq[JDIEventDataResult])
 
-  /** @see ExceptionProfile#tryGetOrCreateExceptionRequest(String, Boolean, Boolean, JDIArgument*) */
+  /** @see ExceptionRequest#tryGetOrCreateExceptionRequest(String, Boolean, Boolean, JDIArgument*) */
   def onException(
     exceptionName: String,
     notifyCaught: Boolean,
     notifyUncaught: Boolean,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ExceptionEventInfoProfile]] =
+  ): Try[IdentityPipeline[ExceptionEventInfo]] =
     exceptionProfile.tryGetOrCreateExceptionRequest(
       exceptionName,
       notifyCaught,
@@ -33,13 +33,13 @@ class ExceptionDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ExceptionProfile#getOrCreateExceptionRequest(String, Boolean, Boolean, JDIArgument*) */
+  /** @see ExceptionRequest#getOrCreateExceptionRequest(String, Boolean, Boolean, JDIArgument*) */
   def onUnsafeException(
     exceptionName: String,
     notifyCaught: Boolean,
     notifyUncaught: Boolean,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ExceptionEventInfoProfile] =
+  ): IdentityPipeline[ExceptionEventInfo] =
     exceptionProfile.getOrCreateExceptionRequest(
       exceptionName,
       notifyCaught,
@@ -47,7 +47,7 @@ class ExceptionDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ExceptionProfile#getOrCreateExceptionRequestWithData(String, Boolean, Boolean, JDIArgument*) */
+  /** @see ExceptionRequest#getOrCreateExceptionRequestWithData(String, Boolean, Boolean, JDIArgument*) */
   def onUnsafeExceptionWithData(
     exceptionName: String,
     notifyCaught: Boolean,
@@ -61,7 +61,7 @@ class ExceptionDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ExceptionProfile#tryGetOrCreateExceptionRequestWithData(String, Boolean, Boolean, JDIArgument*) */
+  /** @see ExceptionRequest#tryGetOrCreateExceptionRequestWithData(String, Boolean, Boolean, JDIArgument*) */
   def onExceptionWithData(
     exceptionName: String,
     notifyCaught: Boolean,
@@ -75,31 +75,31 @@ class ExceptionDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ExceptionProfile#tryGetOrCreateAllExceptionsRequest(Boolean, Boolean, JDIArgument*) */
+  /** @see ExceptionRequest#tryGetOrCreateAllExceptionsRequest(Boolean, Boolean, JDIArgument*) */
   def onAllExceptions(
     notifyCaught: Boolean,
     notifyUncaught: Boolean,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ExceptionEventInfoProfile]] =
+  ): Try[IdentityPipeline[ExceptionEventInfo]] =
     exceptionProfile.tryGetOrCreateAllExceptionsRequest(
       notifyCaught,
       notifyUncaught,
       extraArguments: _*
     )
 
-  /** @see ExceptionProfile#getOrCreateAllExceptionsRequest(Boolean, Boolean, JDIArgument*) */
+  /** @see ExceptionRequest#getOrCreateAllExceptionsRequest(Boolean, Boolean, JDIArgument*) */
   def onUnsafeAllExceptions(
     notifyCaught: Boolean,
     notifyUncaught: Boolean,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ExceptionEventInfoProfile] =
+  ): IdentityPipeline[ExceptionEventInfo] =
     exceptionProfile.getOrCreateAllExceptionsRequest(
       notifyCaught,
       notifyUncaught,
       extraArguments: _*
     )
 
-  /** @see ExceptionProfile#getOrCreateAllExceptionsRequestWithData(Boolean, Boolean, JDIArgument*) */
+  /** @see ExceptionRequest#getOrCreateAllExceptionsRequestWithData(Boolean, Boolean, JDIArgument*) */
   def onUnsafeAllExceptionsWithData(
     notifyCaught: Boolean,
     notifyUncaught: Boolean,
@@ -111,7 +111,7 @@ class ExceptionDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ExceptionProfile#tryGetOrCreateAllExceptionsRequestWithData(Boolean, Boolean, JDIArgument*) */
+  /** @see ExceptionRequest#tryGetOrCreateAllExceptionsRequestWithData(Boolean, Boolean, JDIArgument*) */
   def onAllExceptionsWithData(
     notifyCaught: Boolean,
     notifyUncaught: Boolean,

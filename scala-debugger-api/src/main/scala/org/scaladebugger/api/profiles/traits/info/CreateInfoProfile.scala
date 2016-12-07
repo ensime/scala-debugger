@@ -13,7 +13,7 @@ trait CreateInfoProfile {
    * @param value The value to create (mirror) on the remote JVM
    * @return The information about the remote value
    */
-  def createRemotely(value: AnyVal): ValueInfoProfile
+  def createRemotely(value: AnyVal): ValueInfo
 
   /**
    * Creates the provided value on the remote JVM.
@@ -22,7 +22,7 @@ trait CreateInfoProfile {
    * @return Success containing the information about the remote value,
    *         otherwise a failure
    */
-  def tryCreateRemotely(value: AnyVal): Try[ValueInfoProfile] =
+  def tryCreateRemotely(value: AnyVal): Try[ValueInfo] =
     Try(createRemotely(value))
 
   /**
@@ -31,7 +31,7 @@ trait CreateInfoProfile {
    * @param value The value to create (mirror) on the remote JVM
    * @return The information about the remote value
    */
-  def createRemotely(value: String): ValueInfoProfile
+  def createRemotely(value: String): ValueInfo
 
   /**
    * Creates the provided value on the remote JVM.
@@ -40,6 +40,6 @@ trait CreateInfoProfile {
    * @return Success containing the information about the remote value,
    *         otherwise a failure
    */
-  def tryCreateRemotely(value: String): Try[ValueInfoProfile] =
+  def tryCreateRemotely(value: String): Try[ValueInfo] =
     Try(createRemotely(value))
 }

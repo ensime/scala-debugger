@@ -13,7 +13,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  */
 trait PureCreateInfoProfile extends CreateInfoProfile with JDIHelperMethods {
   protected val scalaVirtualMachine: ScalaVirtualMachine
-  protected val infoProducer: InfoProducerProfile
+  protected val infoProducer: InfoProducer
 
   /**
    * Creates the provided value on the remote JVM.
@@ -21,7 +21,7 @@ trait PureCreateInfoProfile extends CreateInfoProfile with JDIHelperMethods {
    * @param value The value to create (mirror) on the remote JVM
    * @return The information about the remote value
    */
-  override def createRemotely(value: AnyVal): ValueInfoProfile = {
+  override def createRemotely(value: AnyVal): ValueInfo = {
     import org.scaladebugger.api.lowlevel.wrappers.Implicits._
     createNewValueProfile(_virtualMachine.mirrorOf(value))
   }
@@ -32,10 +32,10 @@ trait PureCreateInfoProfile extends CreateInfoProfile with JDIHelperMethods {
    * @param value The value to create (mirror) on the remote JVM
    * @return The information about the remote value
    */
-  override def createRemotely(value: String): ValueInfoProfile = {
+  override def createRemotely(value: String): ValueInfo = {
     createNewValueProfile(_virtualMachine.mirrorOf(value))
   }
 
-  protected def createNewValueProfile(value: Value): ValueInfoProfile =
+  protected def createNewValueProfile(value: Value): ValueInfo =
     infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
 }

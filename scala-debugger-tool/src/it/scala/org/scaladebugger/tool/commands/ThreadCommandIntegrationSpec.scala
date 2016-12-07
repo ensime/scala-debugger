@@ -2,7 +2,7 @@ package org.scaladebugger.tool.commands
 
 import java.io.File
 
-import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfo
 import org.scaladebugger.api.utils.JDITools
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.Eventually
@@ -72,7 +72,7 @@ class ThreadCommandIntegrationSpec extends FunSpec with Matchers
           }
 
           // Set a fake active thread
-          sm.updateActiveThread(mock[ThreadInfoProfile])
+          sm.updateActiveThread(mock[ThreadInfo])
 
           // Clear the active thread
           vt.newInputLine("thread")

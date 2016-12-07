@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.vm
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.VMDeathEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.vm.VMDeathProfile
+import org.scaladebugger.api.profiles.traits.info.events.VMDeathEventInfo
+import org.scaladebugger.api.profiles.traits.requests.vm.VMDeathRequest
 
 import scala.util.Try
 
@@ -14,30 +14,30 @@ import scala.util.Try
  * @param vmDeathProfile The profile to wrap
  */
 class VMDeathDSLWrapper private[dsl] (
-  private val vmDeathProfile: VMDeathProfile
+  private val vmDeathProfile: VMDeathRequest
 ) {
   /** Represents a VMDeath event and any associated data. */
-  type VMDeathEventAndData = (VMDeathEventInfoProfile, Seq[JDIEventDataResult])
+  type VMDeathEventAndData = (VMDeathEventInfo, Seq[JDIEventDataResult])
 
-  /** @see VMDeathProfile#tryGetOrCreateVMDeathRequest(JDIArgument*) */
+  /** @see VMDeathRequest#tryGetOrCreateVMDeathRequest(JDIArgument*) */
   def onVMDeath(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMDeathEventInfoProfile]] =
+  ): Try[IdentityPipeline[VMDeathEventInfo]] =
     vmDeathProfile.tryGetOrCreateVMDeathRequest(extraArguments: _*)
 
-  /** @see VMDeathProfile#getOrCreateVMDeathRequest(JDIArgument*) */
+  /** @see VMDeathRequest#getOrCreateVMDeathRequest(JDIArgument*) */
   def onUnsafeVMDeath(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[VMDeathEventInfoProfile] =
+  ): IdentityPipeline[VMDeathEventInfo] =
     vmDeathProfile.getOrCreateVMDeathRequest(extraArguments: _*)
 
-  /** @see VMDeathProfile#getOrCreateVMDeathRequestWithData(JDIArgument*) */
+  /** @see VMDeathRequest#getOrCreateVMDeathRequestWithData(JDIArgument*) */
   def onUnsafeVMDeathWithData(
     extraArguments: JDIArgument*
   ): IdentityPipeline[VMDeathEventAndData] =
     vmDeathProfile.getOrCreateVMDeathRequestWithData(extraArguments: _*)
 
-  /** @see VMDeathProfile#tryGetOrCreateVMDeathRequestWithData(JDIArgument*) */
+  /** @see VMDeathRequest#tryGetOrCreateVMDeathRequestWithData(JDIArgument*) */
   def onVMDeathWithData(
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[VMDeathEventAndData]] =

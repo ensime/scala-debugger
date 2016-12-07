@@ -3,14 +3,14 @@ package org.scaladebugger.api.dsl.vm
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.info.events.VMDeathEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.vm.VMDeathProfile
+import org.scaladebugger.api.profiles.traits.info.events.VMDeathEventInfo
+import org.scaladebugger.api.profiles.traits.requests.vm.VMDeathRequest
 
 import scala.util.Success
 
 class VMDeathDSLWrapperSpec extends test.ParallelMockFunSpec
 {
-  private val mockVMDeathProfile = mock[VMDeathProfile]
+  private val mockVMDeathProfile = mock[VMDeathRequest]
 
   describe("VMDeathDSLWrapper") {
     describe("#onVMDeath") {
@@ -18,7 +18,7 @@ class VMDeathDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.VMDeathDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[VMDeathEventInfoProfile]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[VMDeathEventInfo]))
 
         (mockVMDeathProfile.tryGetOrCreateVMDeathRequest _).expects(
           extraArguments
@@ -35,7 +35,7 @@ class VMDeathDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.VMDeathDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[VMDeathEventInfoProfile])
+        val returnValue = Pipeline.newPipeline(classOf[VMDeathEventInfo])
 
         (mockVMDeathProfile.getOrCreateVMDeathRequest _).expects(
           extraArguments
@@ -53,7 +53,7 @@ class VMDeathDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(VMDeathEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(VMDeathEventInfo, Seq[JDIEventDataResult])]
         ))
 
         (mockVMDeathProfile.tryGetOrCreateVMDeathRequestWithData _).expects(
@@ -72,7 +72,7 @@ class VMDeathDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(VMDeathEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(VMDeathEventInfo, Seq[JDIEventDataResult])]
         )
 
         (mockVMDeathProfile.getOrCreateVMDeathRequestWithData _).expects(

@@ -2,7 +2,7 @@ package org.scaladebugger.tool.backend.functions
 import org.scaladebugger.api.lowlevel.events.filters.WildcardPatternFilter
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.lowlevel.exceptions.ExceptionRequestInfo
-import org.scaladebugger.api.profiles.traits.info.LocationInfoProfile
+import org.scaladebugger.api.profiles.traits.info.LocationInfo
 import org.scaladebugger.tool.backend.StateManager
 import org.scaladebugger.tool.backend.utils.Regex
 

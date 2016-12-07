@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.methods
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.MethodEntryEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.methods.MethodEntryProfile
+import org.scaladebugger.api.profiles.traits.info.events.MethodEntryEventInfo
+import org.scaladebugger.api.profiles.traits.requests.methods.MethodEntryRequest
 
 import scala.util.Try
 
@@ -14,36 +14,36 @@ import scala.util.Try
  * @param methodEntryProfile The profile to wrap
  */
 class MethodEntryDSLWrapper private[dsl] (
-  private val methodEntryProfile: MethodEntryProfile
+  private val methodEntryProfile: MethodEntryRequest
 ) {
   /** Represents a MethodEntry event and any associated data. */
-  type MethodEntryEventAndData = (MethodEntryEventInfoProfile, Seq[JDIEventDataResult])
+  type MethodEntryEventAndData = (MethodEntryEventInfo, Seq[JDIEventDataResult])
 
-  /** @see MethodEntryProfile#tryGetOrCreateMethodEntryRequest(String, String, JDIArgument*) */
+  /** @see MethodEntryRequest#tryGetOrCreateMethodEntryRequest(String, String, JDIArgument*) */
   def onMethodEntry(
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MethodEntryEventInfoProfile]] =
+  ): Try[IdentityPipeline[MethodEntryEventInfo]] =
     methodEntryProfile.tryGetOrCreateMethodEntryRequest(
       className,
       methodName,
       extraArguments: _*
     )
 
-  /** @see MethodEntryProfile#getOrCreateMethodEntryRequest(String, String, JDIArgument*) */
+  /** @see MethodEntryRequest#getOrCreateMethodEntryRequest(String, String, JDIArgument*) */
   def onUnsafeMethodEntry(
     className: String,
     methodName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MethodEntryEventInfoProfile] =
+  ): IdentityPipeline[MethodEntryEventInfo] =
     methodEntryProfile.getOrCreateMethodEntryRequest(
       className,
       methodName,
       extraArguments: _*
     )
 
-  /** @see MethodEntryProfile#getOrCreateMethodEntryRequestWithData(String, String, JDIArgument*) */
+  /** @see MethodEntryRequest#getOrCreateMethodEntryRequestWithData(String, String, JDIArgument*) */
   def onUnsafeMethodEntryWithData(
     className: String,
     methodName: String,
@@ -55,7 +55,7 @@ class MethodEntryDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see MethodEntryProfile#tryGetOrCreateMethodEntryRequestWithData(String, String, JDIArgument*) */
+  /** @see MethodEntryRequest#tryGetOrCreateMethodEntryRequestWithData(String, String, JDIArgument*) */
   def onMethodEntryWithData(
     className: String,
     methodName: String,

@@ -4,8 +4,8 @@ import com.sun.jdi.event.ClassUnloadEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.requests.classes.ClassUnloadProfile
-import org.scaladebugger.api.profiles.traits.info.events.ClassUnloadEventInfoProfile
+import org.scaladebugger.api.profiles.traits.requests.classes.ClassUnloadRequest
+import org.scaladebugger.api.profiles.traits.info.events.ClassUnloadEventInfo
 
 import scala.util.Try
 
@@ -15,24 +15,24 @@ import scala.util.Try
  * @param classUnloadProfile The profile to wrap
  */
 class ClassUnloadDSLWrapper private[dsl] (
-  private val classUnloadProfile: ClassUnloadProfile
+  private val classUnloadProfile: ClassUnloadRequest
 ) {
   /** Represents a ClassUnload event and any associated data. */
-  type ClassUnloadEventAndData = (ClassUnloadEventInfoProfile, Seq[JDIEventDataResult])
+  type ClassUnloadEventAndData = (ClassUnloadEventInfo, Seq[JDIEventDataResult])
 
-  /** @see ClassUnloadProfile#tryGetOrCreateClassUnloadRequest(JDIArgument*) */
+  /** @see ClassUnloadRequest#tryGetOrCreateClassUnloadRequest(JDIArgument*) */
   def onClassUnload(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ClassUnloadEventInfoProfile]] =
+  ): Try[IdentityPipeline[ClassUnloadEventInfo]] =
     classUnloadProfile.tryGetOrCreateClassUnloadRequest(extraArguments: _*)
 
-  /** @see ClassUnloadProfile#getOrCreateClassUnloadRequest(JDIArgument*) */
+  /** @see ClassUnloadRequest#getOrCreateClassUnloadRequest(JDIArgument*) */
   def onUnsafeClassUnload(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ClassUnloadEventInfoProfile] =
+  ): IdentityPipeline[ClassUnloadEventInfo] =
     classUnloadProfile.getOrCreateClassUnloadRequest(extraArguments: _*)
 
-  /** @see ClassUnloadProfile#getOrCreateClassUnloadRequestWithData(JDIArgument*) */
+  /** @see ClassUnloadRequest#getOrCreateClassUnloadRequestWithData(JDIArgument*) */
   def onUnsafeClassUnloadWithData(
     extraArguments: JDIArgument*
   ): IdentityPipeline[ClassUnloadEventAndData] =
@@ -40,7 +40,7 @@ class ClassUnloadDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ClassUnloadProfile#tryGetOrCreateClassUnloadRequestWithData(JDIArgument*) */
+  /** @see ClassUnloadRequest#tryGetOrCreateClassUnloadRequestWithData(JDIArgument*) */
   def onClassUnloadWithData(
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[ClassUnloadEventAndData]] =

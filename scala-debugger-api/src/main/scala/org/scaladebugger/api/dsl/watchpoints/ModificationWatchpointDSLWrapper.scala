@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.watchpoints
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.ModificationWatchpointEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.watchpoints.ModificationWatchpointProfile
+import org.scaladebugger.api.profiles.traits.info.events.ModificationWatchpointEventInfo
+import org.scaladebugger.api.profiles.traits.requests.watchpoints.ModificationWatchpointRequest
 
 import scala.util.Try
 
@@ -14,37 +14,37 @@ import scala.util.Try
  * @param modificationWatchpointProfile The profile to wrap
  */
 class ModificationWatchpointDSLWrapper private[dsl] (
-  private val modificationWatchpointProfile: ModificationWatchpointProfile
+  private val modificationWatchpointProfile: ModificationWatchpointRequest
 ) {
   /** Represents a ModificationWatchpoint event and any associated data. */
   type ModificationWatchpointEventAndData =
-    (ModificationWatchpointEventInfoProfile, Seq[JDIEventDataResult])
+    (ModificationWatchpointEventInfo, Seq[JDIEventDataResult])
 
-  /** @see ModificationWatchpointProfile#tryGetOrCreateModificationWatchpointRequest(String, String, JDIArgument*) */
+  /** @see ModificationWatchpointRequest#tryGetOrCreateModificationWatchpointRequest(String, String, JDIArgument*) */
   def onModificationWatchpoint(
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ModificationWatchpointEventInfoProfile]] =
+  ): Try[IdentityPipeline[ModificationWatchpointEventInfo]] =
     modificationWatchpointProfile.tryGetOrCreateModificationWatchpointRequest(
       className,
       fieldName,
       extraArguments: _*
     )
 
-  /** @see ModificationWatchpointProfile#getOrCreateModificationWatchpointRequest(String, String, JDIArgument*) */
+  /** @see ModificationWatchpointRequest#getOrCreateModificationWatchpointRequest(String, String, JDIArgument*) */
   def onUnsafeModificationWatchpoint(
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ModificationWatchpointEventInfoProfile] =
+  ): IdentityPipeline[ModificationWatchpointEventInfo] =
     modificationWatchpointProfile.getOrCreateModificationWatchpointRequest(
       className,
       fieldName,
       extraArguments: _*
     )
 
-  /** @see ModificationWatchpointProfile#getOrCreateModificationWatchpointRequestWithData(String, String, JDIArgument*) */
+  /** @see ModificationWatchpointRequest#getOrCreateModificationWatchpointRequestWithData(String, String, JDIArgument*) */
   def onUnsafeModificationWatchpointWithData(
     className: String,
     fieldName: String,
@@ -56,7 +56,7 @@ class ModificationWatchpointDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ModificationWatchpointProfile#tryGetOrCreateModificationWatchpointRequestWithData(String, String, JDIArgument*) */
+  /** @see ModificationWatchpointRequest#tryGetOrCreateModificationWatchpointRequestWithData(String, String, JDIArgument*) */
   def onModificationWatchpointWithData(
     className: String,
     fieldName: String,

@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import com.sun.jdi.ThreadReference
 import com.sun.jdi.event.{BreakpointEvent, StepEvent}
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
-import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfo
 import org.scaladebugger.api.utils.{JDITools, Logging}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scalatest.concurrent.Eventually
@@ -28,7 +28,6 @@ trait TestUtilities extends Eventually { this: Logging =>
    *
    * @param block The block of code to execute
    * @tparam T The return type of the block of code
-   *
    * @return The value returned from the block of code
    */
   def logTimeTaken[T](block: => T): T = {
@@ -51,7 +50,6 @@ trait TestUtilities extends Eventually { this: Logging =>
    * @param startingLine The line in the file to start on
    * @param expectedLine The line in the file to reach
    * @tparam T The return type of the step method
-   *
    * @return The function to execute to start the actual verification check
    */
   def lowlevelVerifyStepsFromTo[T](
@@ -113,7 +111,6 @@ trait TestUtilities extends Eventually { this: Logging =>
    *                       reached do not exactly match the lines provided
    * @param maxDuration The maximum duration (digit, unit) to wait
    * @tparam T The return type of the step method
-   *
    * @return The function to execute to start the actual verification check
    */
   def lowlevelVerifyStepsOnEach[T](
@@ -210,7 +207,7 @@ trait TestUtilities extends Eventually { this: Logging =>
     scalaVirtualMachine: ScalaVirtualMachine,
     startingLine: Int,
     expectedLine: Int
-  ): (ScalaVirtualMachine, () => Unit, (ThreadInfoProfile) => T) => Unit = {
+  ): (ScalaVirtualMachine, () => Unit, (ThreadInfo) => T) => Unit = {
     val testFile = JDITools.scalaClassStringToFileString(testClass)
     // Flag that indicates we reached the expected line
     val success = new AtomicBoolean(false)
@@ -220,7 +217,7 @@ trait TestUtilities extends Eventually { this: Logging =>
       .getOrCreateBreakpointRequest(testFile, startingLine)
 
     // Return a function used to begin the verification
-    (s: ScalaVirtualMachine, start: () => Unit, stepMethod: (ThreadInfoProfile) => T) => {
+    (s: ScalaVirtualMachine, start: () => Unit, stepMethod: (ThreadInfo) => T) => {
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateBreakpointRequest(testFile, startingLine)
         .map(_.thread)
@@ -266,7 +263,7 @@ trait TestUtilities extends Eventually { this: Logging =>
     expectedReachableLines: Seq[Int],
     failIfNotExact: Boolean = false,
     maxDuration: (Long, Units) = (EventuallyTimeout.toMillis, Milliseconds)
-  ): (ScalaVirtualMachine, () => Unit, (ThreadInfoProfile) => T) => Unit = {
+  ): (ScalaVirtualMachine, () => Unit, (ThreadInfo) => T) => Unit = {
     val testFile = JDITools.scalaClassStringToFileString(testClass)
     val expectedLines = collection.mutable.Stack(expectedReachableLines: _*)
 
@@ -281,7 +278,7 @@ trait TestUtilities extends Eventually { this: Logging =>
       .getOrCreateBreakpointRequest(testFile, startingLine)
 
     // Return a function used to begin the verification
-    (s: ScalaVirtualMachine, start: () => Unit, stepMethod: (ThreadInfoProfile) => T) => {
+    (s: ScalaVirtualMachine, start: () => Unit, stepMethod: (ThreadInfo) => T) => {
       // Add a breakpoint to get us in the right location for steps
       // On receiving a breakpoint, send a step request
       s.withProfile(PureDebugProfile.Name)

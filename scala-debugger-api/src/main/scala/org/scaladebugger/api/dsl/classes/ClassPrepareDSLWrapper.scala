@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.classes
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.requests.classes.ClassPrepareProfile
-import org.scaladebugger.api.profiles.traits.info.events.ClassPrepareEventInfoProfile
+import org.scaladebugger.api.profiles.traits.requests.classes.ClassPrepareRequest
+import org.scaladebugger.api.profiles.traits.info.events.ClassPrepareEventInfo
 
 import scala.util.Try
 
@@ -14,24 +14,24 @@ import scala.util.Try
  * @param classPrepareProfile The profile to wrap
  */
 class ClassPrepareDSLWrapper private[dsl] (
-  private val classPrepareProfile: ClassPrepareProfile
+  private val classPrepareProfile: ClassPrepareRequest
 ) {
   /** Represents a ClassPrepare event and any associated data. */
-  type ClassPrepareEventAndData = (ClassPrepareEventInfoProfile, Seq[JDIEventDataResult])
+  type ClassPrepareEventAndData = (ClassPrepareEventInfo, Seq[JDIEventDataResult])
 
-  /** @see ClassPrepareProfile#tryGetOrCreateClassPrepareRequest(JDIArgument*) */
+  /** @see ClassPrepareRequest#tryGetOrCreateClassPrepareRequest(JDIArgument*) */
   def onClassPrepare(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ClassPrepareEventInfoProfile]] =
+  ): Try[IdentityPipeline[ClassPrepareEventInfo]] =
     classPrepareProfile.tryGetOrCreateClassPrepareRequest(extraArguments: _*)
 
-  /** @see ClassPrepareProfile#getOrCreateClassPrepareRequest(JDIArgument*) */
+  /** @see ClassPrepareRequest#getOrCreateClassPrepareRequest(JDIArgument*) */
   def onUnsafeClassPrepare(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ClassPrepareEventInfoProfile] =
+  ): IdentityPipeline[ClassPrepareEventInfo] =
     classPrepareProfile.getOrCreateClassPrepareRequest(extraArguments: _*)
 
-  /** @see ClassPrepareProfile#getOrCreateClassPrepareRequestWithData(JDIArgument*) */
+  /** @see ClassPrepareRequest#getOrCreateClassPrepareRequestWithData(JDIArgument*) */
   def onUnsafeClassPrepareWithData(
     extraArguments: JDIArgument*
   ): IdentityPipeline[ClassPrepareEventAndData] =
@@ -39,7 +39,7 @@ class ClassPrepareDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ClassPrepareProfile#tryGetOrCreateClassPrepareRequestWithData(JDIArgument*) */
+  /** @see ClassPrepareRequest#tryGetOrCreateClassPrepareRequestWithData(JDIArgument*) */
   def onClassPrepareWithData(
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[ClassPrepareEventAndData]] =

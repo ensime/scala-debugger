@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.threads
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.ThreadStartEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.threads.ThreadStartProfile
+import org.scaladebugger.api.profiles.traits.info.events.ThreadStartEventInfo
+import org.scaladebugger.api.profiles.traits.requests.threads.ThreadStartRequest
 
 import scala.util.Try
 
@@ -14,24 +14,24 @@ import scala.util.Try
  * @param threadStartProfile The profile to wrap
  */
 class ThreadStartDSLWrapper private[dsl] (
-  private val threadStartProfile: ThreadStartProfile
+  private val threadStartProfile: ThreadStartRequest
 ) {
   /** Represents a ThreadStart event and any associated data. */
-  type ThreadStartEventAndData = (ThreadStartEventInfoProfile, Seq[JDIEventDataResult])
+  type ThreadStartEventAndData = (ThreadStartEventInfo, Seq[JDIEventDataResult])
 
-  /** @see ThreadStartProfile#tryGetOrCreateThreadStartRequest(JDIArgument*) */
+  /** @see ThreadStartRequest#tryGetOrCreateThreadStartRequest(JDIArgument*) */
   def onThreadStart(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ThreadStartEventInfoProfile]] =
+  ): Try[IdentityPipeline[ThreadStartEventInfo]] =
     threadStartProfile.tryGetOrCreateThreadStartRequest(extraArguments: _*)
 
-  /** @see ThreadStartProfile#getOrCreateThreadStartRequest(JDIArgument*) */
+  /** @see ThreadStartRequest#getOrCreateThreadStartRequest(JDIArgument*) */
   def onUnsafeThreadStart(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ThreadStartEventInfoProfile] =
+  ): IdentityPipeline[ThreadStartEventInfo] =
     threadStartProfile.getOrCreateThreadStartRequest(extraArguments: _*)
 
-  /** @see ThreadStartProfile#getOrCreateThreadStartRequestWithData(JDIArgument*) */
+  /** @see ThreadStartRequest#getOrCreateThreadStartRequestWithData(JDIArgument*) */
   def onUnsafeThreadStartWithData(
     extraArguments: JDIArgument*
   ): IdentityPipeline[ThreadStartEventAndData] =
@@ -39,7 +39,7 @@ class ThreadStartDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ThreadStartProfile#tryGetOrCreateThreadStartRequestWithData(JDIArgument*) */
+  /** @see ThreadStartRequest#tryGetOrCreateThreadStartRequestWithData(JDIArgument*) */
   def onThreadStartWithData(
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[ThreadStartEventAndData]] =

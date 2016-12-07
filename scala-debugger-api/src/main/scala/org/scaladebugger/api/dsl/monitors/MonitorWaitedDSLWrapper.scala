@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.monitors
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitedEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.monitors.MonitorWaitedProfile
+import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitedEventInfo
+import org.scaladebugger.api.profiles.traits.requests.monitors.MonitorWaitedRequest
 
 import scala.util.Try
 
@@ -14,24 +14,24 @@ import scala.util.Try
  * @param monitorWaitedProfile The profile to wrap
  */
 class MonitorWaitedDSLWrapper private[dsl] (
-  private val monitorWaitedProfile: MonitorWaitedProfile
+  private val monitorWaitedProfile: MonitorWaitedRequest
 ) {
   /** Represents a MonitorWaited event and any associated data. */
-  type MonitorWaitedEventAndData = (MonitorWaitedEventInfoProfile, Seq[JDIEventDataResult])
+  type MonitorWaitedEventAndData = (MonitorWaitedEventInfo, Seq[JDIEventDataResult])
 
-  /** @see MonitorWaitedProfile#tryGetOrCreateMonitorWaitedRequest(JDIArgument*) */
+  /** @see MonitorWaitedRequest#tryGetOrCreateMonitorWaitedRequest(JDIArgument*) */
   def onMonitorWaited(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MonitorWaitedEventInfoProfile]] =
+  ): Try[IdentityPipeline[MonitorWaitedEventInfo]] =
     monitorWaitedProfile.tryGetOrCreateMonitorWaitedRequest(extraArguments: _*)
 
-  /** @see MonitorWaitedProfile#getOrCreateMonitorWaitedRequest(JDIArgument*) */
+  /** @see MonitorWaitedRequest#getOrCreateMonitorWaitedRequest(JDIArgument*) */
   def onUnsafeMonitorWaited(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MonitorWaitedEventInfoProfile] =
+  ): IdentityPipeline[MonitorWaitedEventInfo] =
     monitorWaitedProfile.getOrCreateMonitorWaitedRequest(extraArguments: _*)
 
-  /** @see MonitorWaitedProfile#getOrCreateMonitorWaitedRequestWithData(JDIArgument*) */
+  /** @see MonitorWaitedRequest#getOrCreateMonitorWaitedRequestWithData(JDIArgument*) */
   def onUnsafeMonitorWaitedWithData(
     extraArguments: JDIArgument*
   ): IdentityPipeline[MonitorWaitedEventAndData] =
@@ -39,7 +39,7 @@ class MonitorWaitedDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see MonitorWaitedProfile#tryGetOrCreateMonitorWaitedRequestWithData(JDIArgument*) */
+  /** @see MonitorWaitedRequest#tryGetOrCreateMonitorWaitedRequestWithData(JDIArgument*) */
   def onMonitorWaitedWithData(
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[MonitorWaitedEventAndData]] =

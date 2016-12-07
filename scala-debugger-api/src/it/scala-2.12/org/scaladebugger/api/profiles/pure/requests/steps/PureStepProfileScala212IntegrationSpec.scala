@@ -1,6 +1,6 @@
 package org.scaladebugger.api.profiles.pure.requests.steps
 
-import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfo
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
 import org.scalatest.concurrent.Eventually
@@ -54,7 +54,7 @@ class PureStepProfileScala212IntegrationSpec extends FunSpec with Matchers
         // NOTE: Have to up the maximum duration due to the delay caused by
         //       the for comprehension
         withLazyVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s, f) =>
-          verify(s, f, s.stepOverLine(_: ThreadInfoProfile))
+          verify(s, f, s.stepOverLine(_: ThreadInfo))
         }
       }
     }

@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.watchpoints
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.AccessWatchpointEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.watchpoints.AccessWatchpointProfile
+import org.scaladebugger.api.profiles.traits.info.events.AccessWatchpointEventInfo
+import org.scaladebugger.api.profiles.traits.requests.watchpoints.AccessWatchpointRequest
 
 import scala.util.Try
 
@@ -14,37 +14,37 @@ import scala.util.Try
  * @param accessWatchpointProfile The profile to wrap
  */
 class AccessWatchpointDSLWrapper private[dsl] (
-  private val accessWatchpointProfile: AccessWatchpointProfile
+  private val accessWatchpointProfile: AccessWatchpointRequest
 ) {
   /** Represents a AccessWatchpoint event and any associated data. */
   type AccessWatchpointEventAndData =
-    (AccessWatchpointEventInfoProfile, Seq[JDIEventDataResult])
+    (AccessWatchpointEventInfo, Seq[JDIEventDataResult])
 
-  /** @see AccessWatchpointProfile#tryGetOrCreateAccessWatchpointRequest(String, String, JDIArgument*) */
+  /** @see AccessWatchpointRequest#tryGetOrCreateAccessWatchpointRequest(String, String, JDIArgument*) */
   def onAccessWatchpoint(
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[AccessWatchpointEventInfoProfile]] =
+  ): Try[IdentityPipeline[AccessWatchpointEventInfo]] =
     accessWatchpointProfile.tryGetOrCreateAccessWatchpointRequest(
       className,
       fieldName,
       extraArguments: _*
     )
 
-  /** @see AccessWatchpointProfile#getOrCreateAccessWatchpointRequest(String, String, JDIArgument*) */
+  /** @see AccessWatchpointRequest#getOrCreateAccessWatchpointRequest(String, String, JDIArgument*) */
   def onUnsafeAccessWatchpoint(
     className: String,
     fieldName: String,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[AccessWatchpointEventInfoProfile] =
+  ): IdentityPipeline[AccessWatchpointEventInfo] =
     accessWatchpointProfile.getOrCreateAccessWatchpointRequest(
       className,
       fieldName,
       extraArguments: _*
     )
 
-  /** @see AccessWatchpointProfile#getOrCreateAccessWatchpointRequestWithData(String, String, JDIArgument*) */
+  /** @see AccessWatchpointRequest#getOrCreateAccessWatchpointRequestWithData(String, String, JDIArgument*) */
   def onUnsafeAccessWatchpointWithData(
     className: String,
     fieldName: String,
@@ -56,7 +56,7 @@ class AccessWatchpointDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see AccessWatchpointProfile#tryGetOrCreateAccessWatchpointRequestWithData(String, String, JDIArgument*) */
+  /** @see AccessWatchpointRequest#tryGetOrCreateAccessWatchpointRequestWithData(String, String, JDIArgument*) */
   def onAccessWatchpointWithData(
     className: String,
     fieldName: String,

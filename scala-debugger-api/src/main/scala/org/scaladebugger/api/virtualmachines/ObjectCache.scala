@@ -2,7 +2,7 @@ package org.scaladebugger.api.virtualmachines
 
 import java.util.concurrent.ConcurrentHashMap
 
-import org.scaladebugger.api.profiles.traits.info.ObjectInfoProfile
+import org.scaladebugger.api.profiles.traits.info.ObjectInfo
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -11,7 +11,7 @@ import ObjectCache._
 
 object ObjectCache {
   type CacheId = Long
-  type CacheValue = ObjectInfoProfile
+  type CacheValue = ObjectInfo
 }
 
 /**

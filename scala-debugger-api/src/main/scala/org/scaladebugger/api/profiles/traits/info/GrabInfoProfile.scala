@@ -18,18 +18,19 @@ trait GrabInfoProfile {
    *                        a object info profile
    * @return Success containing the object profile, otherwise a failure
    */
-  def tryObject(objectReference: ObjectReference): Try[ObjectInfoProfile] =
+  def tryObject(objectReference: ObjectReference): Try[ObjectInfo] =
     Try(`object`(objectReference))
 
   /**
    * Retrieves a object profile for the given JDI object reference.
    *
    *                   object
+ *
    * @param objectReference The JDI object reference with which to wrap in
    *                        a object info profile
    * @return The new object info profile
    */
-  def `object`(objectReference: ObjectReference): ObjectInfoProfile =
+  def `object`(objectReference: ObjectReference): ObjectInfo =
     `object`(objectReference)
 
   /**
@@ -38,14 +39,14 @@ trait GrabInfoProfile {
    * @return Success containing the collection of thread info profiles,
    *         otherwise a failure
    */
-  def tryThreads: Try[Seq[ThreadInfoProfile]] = Try(threads)
+  def tryThreads: Try[Seq[ThreadInfo]] = Try(threads)
 
   /**
    * Retrieves all threads contained in the remote JVM.
    *
    * @return The collection of thread info profiles
    */
-  def threads: Seq[ThreadInfoProfile]
+  def threads: Seq[ThreadInfo]
 
   /**
    * Retrieves a thread profile for the given JDI thread reference.
@@ -54,7 +55,7 @@ trait GrabInfoProfile {
    *                        a thread info profile
    * @return Success containing the thread profile, otherwise a failure
    */
-  def tryThread(threadReference: ThreadReference): Try[ThreadInfoProfile] =
+  def tryThread(threadReference: ThreadReference): Try[ThreadInfo] =
     Try(thread(threadReference))
 
   /**
@@ -64,7 +65,7 @@ trait GrabInfoProfile {
    *                        a thread info profile
    * @return The new thread info profile
    */
-  def thread(threadReference: ThreadReference): ThreadInfoProfile
+  def thread(threadReference: ThreadReference): ThreadInfo
 
   /**
    * Retrieves a thread profile for the thread reference whose name matches
@@ -74,7 +75,7 @@ trait GrabInfoProfile {
    * @return Success containing the thread profile if found, otherwise
    *         a failure
    */
-  def tryThread(name: String): Try[ThreadInfoProfile] =
+  def tryThread(name: String): Try[ThreadInfo] =
     Try(thread(name))
 
   /**
@@ -84,7 +85,7 @@ trait GrabInfoProfile {
    * @param name The name of the thread
    * @return The profile of the matching thread, or throws an exception
    */
-  def thread(name: String): ThreadInfoProfile = {
+  def thread(name: String): ThreadInfo = {
     val t = threadOption(name)
 
     if (t.isEmpty)
@@ -100,7 +101,7 @@ trait GrabInfoProfile {
    * @param name The name of the thread
    * @return Some profile of the matching thread, or None
    */
-  def threadOption(name: String): Option[ThreadInfoProfile] = {
+  def threadOption(name: String): Option[ThreadInfo] = {
     threads.find(_.name == name)
   }
 
@@ -116,7 +117,7 @@ trait GrabInfoProfile {
   def tryThread(
     threadName: String,
     threadGroupName: String
-  ): Try[ThreadInfoProfile] = Try(thread(
+  ): Try[ThreadInfo] = Try(thread(
     threadGroupName = threadGroupName,
     threadName = threadName
   ))
@@ -132,7 +133,7 @@ trait GrabInfoProfile {
   def thread(
     threadName: String,
     threadGroupName: String
-  ): ThreadInfoProfile = {
+  ): ThreadInfo = {
     val t = threadOption(
       threadGroupName = threadGroupName,
       threadName = threadName
@@ -156,7 +157,7 @@ trait GrabInfoProfile {
   def threadOption(
     threadName: String,
     threadGroupName: String
-  ): Option[ThreadInfoProfile] = {
+  ): Option[ThreadInfo] = {
     threads.find(t =>
       t.name == threadName && t.threadGroup.name == threadGroupName
     )
@@ -170,7 +171,7 @@ trait GrabInfoProfile {
    * @return Success containing the thread profile if found, otherwise
    *         a failure
    */
-  def tryThread(threadId: Long): Try[ThreadInfoProfile] =
+  def tryThread(threadId: Long): Try[ThreadInfo] =
     Try(thread(threadId))
 
   /**
@@ -180,7 +181,7 @@ trait GrabInfoProfile {
    * @param threadId The id of the thread
    * @return The profile of the matching thread, or throws an exception
    */
-  def thread(threadId: Long): ThreadInfoProfile = {
+  def thread(threadId: Long): ThreadInfo = {
     val t = threadOption(threadId)
 
     if (t.isEmpty)
@@ -196,7 +197,7 @@ trait GrabInfoProfile {
    * @param threadId The id of the thread
    * @return Some profile of the matching thread, or None
    */
-  def threadOption(threadId: Long): Option[ThreadInfoProfile] = {
+  def threadOption(threadId: Long): Option[ThreadInfo] = {
     threads.find(_.uniqueId == threadId)
   }
 
@@ -211,7 +212,7 @@ trait GrabInfoProfile {
    */
   def tryThreadGroup(
     threadGroupReference: ThreadGroupReference
-  ): Try[ThreadGroupInfoProfile] = Try(threadGroup(threadGroupReference))
+  ): Try[ThreadGroupInfo] = Try(threadGroup(threadGroupReference))
 
   /**
    * Retrieves a threadGroup group profile for the thread group reference whose
@@ -223,7 +224,7 @@ trait GrabInfoProfile {
    */
   def threadGroup(
     threadGroupReference: ThreadGroupReference
-  ): ThreadGroupInfoProfile
+  ): ThreadGroupInfo
 
   /**
    * Retrieves a thread group profile for the thread group reference whose
@@ -233,7 +234,7 @@ trait GrabInfoProfile {
    * @return Success containing the thread group profile if found, otherwise
    *         a failure
    */
-  def tryThreadGroup(threadGroupId: Long): Try[ThreadGroupInfoProfile] =
+  def tryThreadGroup(threadGroupId: Long): Try[ThreadGroupInfo] =
     Try(threadGroup(threadGroupId))
 
   /**
@@ -243,7 +244,7 @@ trait GrabInfoProfile {
    * @param threadGroupId The id of the thread group
    * @return The profile of the matching thread group, or throws an exception
    */
-  def threadGroup(threadGroupId: Long): ThreadGroupInfoProfile = {
+  def threadGroup(threadGroupId: Long): ThreadGroupInfo = {
     val tg = threadGroupOption(threadGroupId)
 
     if (tg.isEmpty) throw new NoSuchElementException(
@@ -262,7 +263,7 @@ trait GrabInfoProfile {
    */
   def threadGroupOption(
     threadGroupId: Long
-  ): Option[ThreadGroupInfoProfile] = {
+  ): Option[ThreadGroupInfo] = {
     findThreadGroupByPredicate(threadGroups, _.uniqueId == threadGroupId)
   }
 
@@ -274,7 +275,7 @@ trait GrabInfoProfile {
    * @return Success containing the thread group profile if found, otherwise
    *         a failure
    */
-  def tryThreadGroup(name: String): Try[ThreadGroupInfoProfile] =
+  def tryThreadGroup(name: String): Try[ThreadGroupInfo] =
     Try(threadGroup(name))
 
   /**
@@ -284,7 +285,7 @@ trait GrabInfoProfile {
    * @param name The name of the thread group
    * @return The profile of the matching thread group, or throws an exception
    */
-  def threadGroup(name: String): ThreadGroupInfoProfile = {
+  def threadGroup(name: String): ThreadGroupInfo = {
     val tg = threadGroupOption(name)
 
     if (tg.isEmpty) throw new NoSuchElementException(
@@ -302,7 +303,7 @@ trait GrabInfoProfile {
    */
   def threadGroupOption(
     name: String
-  ): Option[ThreadGroupInfoProfile] = {
+  ): Option[ThreadGroupInfo] = {
     findThreadGroupByPredicate(threadGroups, _.name == name)
   }
 
@@ -315,9 +316,9 @@ trait GrabInfoProfile {
    * @return Some thread group if found, otherwise None
    */
   @tailrec private def findThreadGroupByPredicate(
-    threadGroups: Seq[ThreadGroupInfoProfile],
-    predicate: ThreadGroupInfoProfile => Boolean
-  ): Option[ThreadGroupInfoProfile] = {
+    threadGroups: Seq[ThreadGroupInfo],
+    predicate: ThreadGroupInfo => Boolean
+  ): Option[ThreadGroupInfo] = {
     if (threadGroups.nonEmpty) {
       val tg = threadGroups.find(predicate)
       if (tg.nonEmpty) {
@@ -339,14 +340,14 @@ trait GrabInfoProfile {
    * @return Success containing the collection of thread group info profiles,
    *         otherwise a failure
    */
-  def tryThreadGroups: Try[Seq[ThreadGroupInfoProfile]] = Try(threadGroups)
+  def tryThreadGroups: Try[Seq[ThreadGroupInfo]] = Try(threadGroups)
 
   /**
    * Retrieves all thread groups contained in the remote JVM.
    *
    * @return The collection of thread group info profiles
    */
-  def threadGroups: Seq[ThreadGroupInfoProfile]
+  def threadGroups: Seq[ThreadGroupInfo]
 
   /**
    * Retrieves all classes contained in the remote JVM in the form of
@@ -355,7 +356,7 @@ trait GrabInfoProfile {
    * @return Success containing the collection of reference type info profiles,
    *         otherwise a failure
    */
-  def tryClasses: Try[Seq[ReferenceTypeInfoProfile]] = Try(classes)
+  def tryClasses: Try[Seq[ReferenceTypeInfo]] = Try(classes)
 
   /**
    * Retrieves all classes contained in the remote JVM in the form of
@@ -363,14 +364,14 @@ trait GrabInfoProfile {
    *
    * @return The collection of reference type info profiles
    */
-  def classes: Seq[ReferenceTypeInfoProfile]
+  def classes: Seq[ReferenceTypeInfo]
 
   /**
    * Retrieves a reference type profile for the given JDI reference type.
    *
    * @return The reference type info profile wrapping the JDI instance
    */
-  def `class`(referenceType: ReferenceType): ReferenceTypeInfoProfile
+  def `class`(referenceType: ReferenceType): ReferenceTypeInfo
 
   /**
    * Retrieves reference information for the class with the specified name.
@@ -379,7 +380,7 @@ trait GrabInfoProfile {
    * @return Success containing the reference type info profile for the class,
    *         otherwise a failure
    */
-  def tryClass(name: String): Try[ReferenceTypeInfoProfile] = Try(`class`(name))
+  def tryClass(name: String): Try[ReferenceTypeInfo] = Try(`class`(name))
 
   /**
    * Retrieves reference information for the class with the specified name.
@@ -387,7 +388,7 @@ trait GrabInfoProfile {
    * @param name The fully-qualified name of the class
    * @return The reference type info profile for the class
    */
-  def `class`(name: String): ReferenceTypeInfoProfile = {
+  def `class`(name: String): ReferenceTypeInfo = {
     val c = classOption(name)
 
     if (c.isEmpty)
@@ -402,7 +403,7 @@ trait GrabInfoProfile {
    * @return Some reference type info profile for the class if found,
    *         otherwise None
    */
-  def classOption(name: String): Option[ReferenceTypeInfoProfile] = {
+  def classOption(name: String): Option[ReferenceTypeInfo] = {
     classes.find(_.name == name)
   }
 
@@ -417,7 +418,7 @@ trait GrabInfoProfile {
   def tryField(
     referenceType: ReferenceType,
     field: Field
-  ): Try[FieldVariableInfoProfile] = Try(this.field(referenceType, field))
+  ): Try[FieldVariableInfo] = Try(this.field(referenceType, field))
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -429,7 +430,7 @@ trait GrabInfoProfile {
   def field(
     referenceType: ReferenceType,
     field: Field
-  ): FieldVariableInfoProfile
+  ): FieldVariableInfo
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -441,9 +442,9 @@ trait GrabInfoProfile {
    *         otherwise a failure
    */
   def tryField(
-    referenceTypeInfo: ReferenceTypeInfoProfile,
+    referenceTypeInfo: ReferenceTypeInfo,
     field: Field
-  ): Try[FieldVariableInfoProfile] = Try(this.field(referenceTypeInfo, field))
+  ): Try[FieldVariableInfo] = Try(this.field(referenceTypeInfo, field))
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -454,9 +455,9 @@ trait GrabInfoProfile {
    * @return The variable profile representing the field
    */
   def field(
-    referenceTypeInfo: ReferenceTypeInfoProfile,
+    referenceTypeInfo: ReferenceTypeInfo,
     field: Field
-  ): FieldVariableInfoProfile =
+  ): FieldVariableInfo =
     this.field(referenceTypeInfo.toJdiInstance, field)
 
   /**
@@ -470,7 +471,7 @@ trait GrabInfoProfile {
   def tryField(
     objectReference: ObjectReference,
     field: Field
-  ): Try[FieldVariableInfoProfile] = Try(this.field(objectReference, field))
+  ): Try[FieldVariableInfo] = Try(this.field(objectReference, field))
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -482,7 +483,7 @@ trait GrabInfoProfile {
   def field(
     objectReference: ObjectReference,
     field: Field
-  ): FieldVariableInfoProfile
+  ): FieldVariableInfo
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -494,9 +495,9 @@ trait GrabInfoProfile {
    *         otherwise a failure
    */
   def tryField(
-    objectInfo: ObjectInfoProfile,
+    objectInfo: ObjectInfo,
     field: Field
-  ): Try[FieldVariableInfoProfile] = Try(this.field(objectInfo, field))
+  ): Try[FieldVariableInfo] = Try(this.field(objectInfo, field))
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -507,9 +508,9 @@ trait GrabInfoProfile {
    * @return The variable profile representing the field
    */
   def field(
-    objectInfo: ObjectInfoProfile,
+    objectInfo: ObjectInfo,
     field: Field
-  ): FieldVariableInfoProfile = this.field(objectInfo.toJdiInstance, field)
+  ): FieldVariableInfo = this.field(objectInfo.toJdiInstance, field)
 
   /**
    * Retrieves a local variable profile for the given JDI local variable.
@@ -524,7 +525,7 @@ trait GrabInfoProfile {
   def tryLocalVariable(
     stackFrame: StackFrame,
     localVariable: LocalVariable
-  ): Try[VariableInfoProfile] = Try(this.localVariable(
+  ): Try[VariableInfo] = Try(this.localVariable(
     stackFrame, localVariable
   ))
 
@@ -540,7 +541,7 @@ trait GrabInfoProfile {
   def localVariable(
     stackFrame: StackFrame,
     localVariable: LocalVariable
-  ): VariableInfoProfile
+  ): VariableInfo
 
   /**
    * Retrieves a localVariable profile for the given JDI local variable.
@@ -553,9 +554,9 @@ trait GrabInfoProfile {
    *         local variable, otherwise a failure
    */
   def tryLocalVariable(
-    stackFrameInfo: FrameInfoProfile,
+    stackFrameInfo: FrameInfo,
     localVariable: LocalVariable
-  ): Try[VariableInfoProfile] = Try(this.localVariable(
+  ): Try[VariableInfo] = Try(this.localVariable(
     stackFrameInfo, localVariable
   ))
 
@@ -569,9 +570,9 @@ trait GrabInfoProfile {
    * @return The variable profile representing the local variable
    */
   def localVariable(
-    stackFrameInfo: FrameInfoProfile,
+    stackFrameInfo: FrameInfo,
     localVariable: LocalVariable
-  ): VariableInfoProfile = this.localVariable(
+  ): VariableInfo = this.localVariable(
     stackFrameInfo.toJdiInstance,
     localVariable
   )
@@ -583,7 +584,7 @@ trait GrabInfoProfile {
    *                 info profile
    * @return The new location info profile
    */
-  def location(location: Location): LocationInfoProfile
+  def location(location: Location): LocationInfo
 
   /**
    * Retrieves a method profile for the given JDI method.
@@ -591,7 +592,7 @@ trait GrabInfoProfile {
    * @param method The JDI method with which to wrap in a method info profile
    * @return The new method info profile
    */
-  def method(method: Method): MethodInfoProfile
+  def method(method: Method): MethodInfo
 
   /**
    * Retrieves a stack frame profile for the given JDI stack frame.
@@ -600,7 +601,7 @@ trait GrabInfoProfile {
    *                   frame info profile
    * @return The new frame info profile
    */
-  def stackFrame(stackFrame: StackFrame): FrameInfoProfile
+  def stackFrame(stackFrame: StackFrame): FrameInfo
 
   /**
    * Retrieves a type info profile for the given JDI type info.
@@ -608,7 +609,7 @@ trait GrabInfoProfile {
    * @param _type The JDI type with which to wrap in a type info profile
    * @return The new type info profile
    */
-  def `type`(_type: Type): TypeInfoProfile
+  def `type`(_type: Type): TypeInfo
 
   /**
    * Retrieves a value info profile for the given JDI value info.
@@ -616,5 +617,5 @@ trait GrabInfoProfile {
    * @param value The JDI value with which to wrap in a value info profile
    * @return The new value info profile
    */
-  def value(value: Value): ValueInfoProfile
+  def value(value: Value): ValueInfo
 }

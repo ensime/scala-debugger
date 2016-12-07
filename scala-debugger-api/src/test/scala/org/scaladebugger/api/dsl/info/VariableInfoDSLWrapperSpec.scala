@@ -4,7 +4,7 @@ import com.sun.jdi.VirtualMachine
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.traits.DebugProfile
-import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, VariableInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{ObjectInfo, VariableInfo}
 import org.scaladebugger.api.virtualmachines.{ObjectCache, ScalaVirtualMachine, ScalaVirtualMachineManager}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
@@ -12,8 +12,8 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 class VariableInfoDSLWrapperSpec extends test.ParallelMockFunSpec
 {
   private val TestUniqueId = 1234L
-  private val mockObjectInfoProfile = mock[ObjectInfoProfile]
-  private val mockVariableInfoProfile = mock[VariableInfoProfile]
+  private val mockObjectInfoProfile = mock[ObjectInfo]
+  private val mockVariableInfoProfile = mock[VariableInfo]
 
   private val testObjectCache = new ObjectCache()
   private val testScalaVirtualMachine = new Object with ScalaVirtualMachine {

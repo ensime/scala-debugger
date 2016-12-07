@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.monitors
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnteredEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.monitors.MonitorContendedEnteredProfile
+import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnteredEventInfo
+import org.scaladebugger.api.profiles.traits.requests.monitors.MonitorContendedEnteredRequest
 
 import scala.util.Try
 
@@ -14,25 +14,25 @@ import scala.util.Try
  * @param monitorContendedEnteredProfile The profile to wrap
  */
 class MonitorContendedEnteredDSLWrapper private[dsl] (
-  private val monitorContendedEnteredProfile: MonitorContendedEnteredProfile
+  private val monitorContendedEnteredProfile: MonitorContendedEnteredRequest
 ) {
   /** Represents a MonitorContendedEntered event and any associated data. */
   type MonitorContendedEnteredEventAndData =
-    (MonitorContendedEnteredEventInfoProfile, Seq[JDIEventDataResult])
+    (MonitorContendedEnteredEventInfo, Seq[JDIEventDataResult])
 
-  /** @see MonitorContendedEnteredProfile#tryGetOrCreateMonitorContendedEnteredRequest(JDIArgument*) */
+  /** @see MonitorContendedEnteredRequest#tryGetOrCreateMonitorContendedEnteredRequest(JDIArgument*) */
   def onMonitorContendedEntered(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[MonitorContendedEnteredEventInfoProfile]] =
+  ): Try[IdentityPipeline[MonitorContendedEnteredEventInfo]] =
     monitorContendedEnteredProfile.tryGetOrCreateMonitorContendedEnteredRequest(extraArguments: _*)
 
-  /** @see MonitorContendedEnteredProfile#getOrCreateMonitorContendedEnteredRequest(JDIArgument*) */
+  /** @see MonitorContendedEnteredRequest#getOrCreateMonitorContendedEnteredRequest(JDIArgument*) */
   def onUnsafeMonitorContendedEntered(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[MonitorContendedEnteredEventInfoProfile] =
+  ): IdentityPipeline[MonitorContendedEnteredEventInfo] =
     monitorContendedEnteredProfile.getOrCreateMonitorContendedEnteredRequest(extraArguments: _*)
 
-  /** @see MonitorContendedEnteredProfile#getOrCreateMonitorContendedEnteredRequestWithData(JDIArgument*) */
+  /** @see MonitorContendedEnteredRequest#getOrCreateMonitorContendedEnteredRequestWithData(JDIArgument*) */
   def onUnsafeMonitorContendedEnteredWithData(
     extraArguments: JDIArgument*
   ): IdentityPipeline[MonitorContendedEnteredEventAndData] =
@@ -40,7 +40,7 @@ class MonitorContendedEnteredDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see MonitorContendedEnteredProfile#tryGetOrCreateMonitorContendedEnteredRequestWithData(JDIArgument*) */
+  /** @see MonitorContendedEnteredRequest#tryGetOrCreateMonitorContendedEnteredRequestWithData(JDIArgument*) */
   def onMonitorContendedEnteredWithData(
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[MonitorContendedEnteredEventAndData]] =

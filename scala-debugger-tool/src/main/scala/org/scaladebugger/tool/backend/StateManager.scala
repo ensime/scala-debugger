@@ -4,7 +4,7 @@ import java.nio.file.Path
 
 import com.sun.jdi.{ThreadGroupReference, ThreadReference}
 import org.scaladebugger.api.debuggers.Debugger
-import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfoProfile, ThreadInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfo, ThreadInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -90,7 +90,7 @@ class StateManager {
    *
    * @param thread The thread to serve as the active thread
    */
-  def updateActiveThread(thread: ThreadInfoProfile) = {
+  def updateActiveThread(thread: ThreadInfo) = {
     updateState(state.copy(activeThread = Some(thread)))
   }
 
@@ -104,7 +104,7 @@ class StateManager {
    *
    * @param threadGroup The thread group to serve as the active thread group
    */
-  def updateActiveThreadGroup(threadGroup: ThreadGroupInfoProfile) = {
+  def updateActiveThreadGroup(threadGroup: ThreadGroupInfo) = {
     updateState(state.copy(activeThreadGroup = Some(threadGroup)))
   }
 

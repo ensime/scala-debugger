@@ -14,7 +14,7 @@ import scala.util.{Success, Try}
  */
 trait PureGrabInfoProfile extends GrabInfoProfile {
   protected val scalaVirtualMachine: ScalaVirtualMachine
-  protected val infoProducer: InfoProducerProfile
+  protected val infoProducer: InfoProducer
   protected val _virtualMachine: VirtualMachine
   protected val classManager: ClassManager
 
@@ -25,7 +25,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    *                        a object info profile
    * @return The new object info profile
    */
-  override def `object`(objectReference: ObjectReference): ObjectInfoProfile =
+  override def `object`(objectReference: ObjectReference): ObjectInfo =
     newObjectProfile(objectReference)
 
   /**
@@ -33,7 +33,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    *
    * @return The collection of thread info profiles
    */
-  override def threads: Seq[ThreadInfoProfile] = {
+  override def threads: Seq[ThreadInfo] = {
     import scala.collection.JavaConverters._
     _virtualMachine.allThreads().asScala.map(newThreadProfile)
   }
@@ -47,14 +47,14 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    */
   override def thread(
     threadReference: ThreadReference
-  ): ThreadInfoProfile = newThreadProfile(threadReference)
+  ): ThreadInfo = newThreadProfile(threadReference)
 
   /**
    * Retrieves all thread groups contained in the remote JVM.
    *
    * @return The collection of thread group info profiles
    */
-  override def threadGroups: Seq[ThreadGroupInfoProfile] = {
+  override def threadGroups: Seq[ThreadGroupInfo] = {
     import scala.collection.JavaConverters._
     _virtualMachine.topLevelThreadGroups().asScala.map(newThreadGroupProfile)
   }
@@ -69,7 +69,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    */
   override def threadGroup(
     threadGroupReference: ThreadGroupReference
-  ): ThreadGroupInfoProfile = newThreadGroupProfile(threadGroupReference)
+  ): ThreadGroupInfo = newThreadGroupProfile(threadGroupReference)
 
   /**
    * Retrieves all classes contained in the remote JVM in the form of
@@ -77,7 +77,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    *
    * @return The collection of reference type info profiles
    */
-  override def classes: Seq[ReferenceTypeInfoProfile] = {
+  override def classes: Seq[ReferenceTypeInfo] = {
     classManager.allClasses.map(newReferenceTypeProfile)
   }
 
@@ -88,7 +88,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    */
   override def `class`(
     referenceType: ReferenceType
-  ): ReferenceTypeInfoProfile = newReferenceTypeProfile(referenceType)
+  ): ReferenceTypeInfo = newReferenceTypeProfile(referenceType)
 
   /**
    * Retrieves a location profile for the given JDI location.
@@ -97,7 +97,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    *                 info profile
    * @return The new location info profile
    */
-  override def location(location: Location): LocationInfoProfile =
+  override def location(location: Location): LocationInfo =
     newLocationProfile(location)
 
   /**
@@ -106,7 +106,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    * @param _type The JDI type with which to wrap in a type info profile
    * @return The new type info profile
    */
-  override def `type`(_type: Type): TypeInfoProfile = newTypeProfile(_type)
+  override def `type`(_type: Type): TypeInfo = newTypeProfile(_type)
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -118,7 +118,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   override def field(
     referenceType: ReferenceType,
     field: Field
-  ): FieldVariableInfoProfile = newFieldProfile(referenceType, field)
+  ): FieldVariableInfo = newFieldProfile(referenceType, field)
 
   /**
    * Retrieves a field profile for the given JDI field.
@@ -130,7 +130,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   override def field(
     objectReference: ObjectReference,
     field: Field
-  ): FieldVariableInfoProfile = newFieldProfile(objectReference, field)
+  ): FieldVariableInfo = newFieldProfile(objectReference, field)
 
   /**
    * Retrieves a localVariable profile for the given JDI local variable.
@@ -144,7 +144,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   override def localVariable(
     stackFrame: StackFrame,
     localVariable: LocalVariable
-  ): VariableInfoProfile = newLocalVariableProfile(stackFrame, localVariable)
+  ): VariableInfo = newLocalVariableProfile(stackFrame, localVariable)
 
   /**
    * Retrieves a stack frame profile for the given JDI stack frame.
@@ -153,7 +153,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    *                   frame info profile
    * @return The new frame info profile
    */
-  override def stackFrame(stackFrame: StackFrame): FrameInfoProfile =
+  override def stackFrame(stackFrame: StackFrame): FrameInfo =
     newFrameProfile(stackFrame)
 
   /**
@@ -162,7 +162,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    * @param method The JDI method with which to wrap in a method info profile
    * @return The new method info profile
    */
-  override def method(method: Method): MethodInfoProfile =
+  override def method(method: Method): MethodInfo =
     newMethodProfile(method)
 
   /**
@@ -171,48 +171,48 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
    * @param value The JDI value with which to wrap in a value info profile
    * @return The new value info profile
    */
-  override def value(value: Value): ValueInfoProfile = newValueProfile(value)
+  override def value(value: Value): ValueInfo = newValueProfile(value)
 
   protected def newThreadProfile(
     threadReference: ThreadReference
-  ): ThreadInfoProfile = infoProducer.newThreadInfoProfile(
+  ): ThreadInfo = infoProducer.newThreadInfoProfile(
     scalaVirtualMachine,
     threadReference
   )(virtualMachine = _virtualMachine)
 
   protected def newThreadGroupProfile(
     threadGroupReference: ThreadGroupReference
-  ): ThreadGroupInfoProfile = infoProducer.newThreadGroupInfoProfile(
+  ): ThreadGroupInfo = infoProducer.newThreadGroupInfoProfile(
     scalaVirtualMachine,
     threadGroupReference
   )(virtualMachine = _virtualMachine)
 
   protected def newReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfoProfile = infoProducer.newReferenceTypeInfoProfile(
+  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfoProfile(
     scalaVirtualMachine,
     referenceType
   )
 
-  protected def newTypeProfile(_type: Type): TypeInfoProfile =
+  protected def newTypeProfile(_type: Type): TypeInfo =
     infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
 
-  protected def newValueProfile(value: Value): ValueInfoProfile =
+  protected def newValueProfile(value: Value): ValueInfo =
     infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
 
-  protected def newLocationProfile(location: Location): LocationInfoProfile =
+  protected def newLocationProfile(location: Location): LocationInfo =
     infoProducer.newLocationInfoProfile(scalaVirtualMachine, location)
 
-  protected def newMethodProfile(method: Method): MethodInfoProfile =
+  protected def newMethodProfile(method: Method): MethodInfo =
     infoProducer.newMethodInfoProfile(scalaVirtualMachine, method)
 
-  protected def newFrameProfile(stackFrame: StackFrame): FrameInfoProfile =
+  protected def newFrameProfile(stackFrame: StackFrame): FrameInfo =
     infoProducer.newFrameInfoProfile(scalaVirtualMachine, stackFrame, -1)
 
   protected def newFieldProfile(
     objectReference: ObjectReference,
     field: Field
-  ): FieldVariableInfoProfile = infoProducer.newFieldInfoProfile(
+  ): FieldVariableInfo = infoProducer.newFieldInfoProfile(
     scalaVirtualMachine,
     Left(objectReference),
     field,
@@ -222,7 +222,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   protected def newFieldProfile(
     referenceType: ReferenceType,
     field: Field
-  ): FieldVariableInfoProfile = infoProducer.newFieldInfoProfile(
+  ): FieldVariableInfo = infoProducer.newFieldInfoProfile(
     scalaVirtualMachine,
     Right(referenceType),
     field,
@@ -232,7 +232,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   protected def newLocalVariableProfile(
     stackFrame: StackFrame,
     localVariable: LocalVariable
-  ): VariableInfoProfile = infoProducer.newLocalVariableInfoProfile(
+  ): VariableInfo = infoProducer.newLocalVariableInfoProfile(
     scalaVirtualMachine,
     newFrameProfile(stackFrame),
     localVariable,
@@ -241,7 +241,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
 
   protected def newObjectProfile(
     objectReference: ObjectReference
-  ): ObjectInfoProfile = infoProducer.newObjectInfoProfile(
+  ): ObjectInfo = infoProducer.newObjectInfoProfile(
     scalaVirtualMachine,
     objectReference
   )(

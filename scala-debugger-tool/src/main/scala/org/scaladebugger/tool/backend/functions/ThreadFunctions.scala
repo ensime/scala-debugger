@@ -1,5 +1,5 @@
 package org.scaladebugger.tool.backend.functions
-import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfo
 import org.scaladebugger.tool.backend.StateManager
 
 /**
@@ -139,7 +139,7 @@ class ThreadFunctions(
     }
   }
 
-  private def printFrameStack(threadInfo: ThreadInfoProfile) = {
+  private def printFrameStack(threadInfo: ThreadInfo) = {
     threadInfo.suspend()
 
     val f = threadInfo.frames.map(_.location).zipWithIndex.map { case (l, i) =>

@@ -1,6 +1,6 @@
 package org.scaladebugger.api.dsl.info
 
-import org.scaladebugger.api.profiles.traits.info.{ObjectInfoProfile, VariableInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{ObjectInfo, VariableInfo}
 import org.scaladebugger.api.virtualmachines.ObjectCache
 
 /**
@@ -9,7 +9,7 @@ import org.scaladebugger.api.virtualmachines.ObjectCache
  * @param variableInfo The profile to wrap
  */
 class VariableInfoDSLWrapper private[dsl] (
-  private val variableInfo: VariableInfoProfile
+  private val variableInfo: VariableInfo
 ) {
   /**
    * Caches the value of this variable in its associated JVM cache.
@@ -19,7 +19,7 @@ class VariableInfoDSLWrapper private[dsl] (
    */
   def cache()(
     implicit objectCache: ObjectCache = variableInfo.scalaVirtualMachine.cache
-  ): VariableInfoProfile = {
+  ): VariableInfo = {
     import org.scaladebugger.api.dsl.Implicits.ValueInfoDSL
     variableInfo.toValueInfo.cache()
 
@@ -34,7 +34,7 @@ class VariableInfoDSLWrapper private[dsl] (
    */
   def uncache()(
     implicit objectCache: ObjectCache = variableInfo.scalaVirtualMachine.cache
-  ): VariableInfoProfile = {
+  ): VariableInfo = {
     import org.scaladebugger.api.dsl.Implicits.ValueInfoDSL
     variableInfo.toValueInfo.uncache()
 

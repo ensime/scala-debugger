@@ -3,14 +3,14 @@ package org.scaladebugger.api.dsl.vm
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.info.events.VMStartEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.vm.VMStartProfile
+import org.scaladebugger.api.profiles.traits.info.events.VMStartEventInfo
+import org.scaladebugger.api.profiles.traits.requests.vm.VMStartRequest
 
 import scala.util.Success
 
 class VMStartDSLWrapperSpec extends test.ParallelMockFunSpec
 {
-  private val mockVMStartProfile = mock[VMStartProfile]
+  private val mockVMStartProfile = mock[VMStartRequest]
 
   describe("VMStartDSLWrapper") {
     describe("#onVMStart") {
@@ -18,7 +18,7 @@ class VMStartDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.VMStartDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[VMStartEventInfoProfile]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[VMStartEventInfo]))
 
         (mockVMStartProfile.tryGetOrCreateVMStartRequest _).expects(
           extraArguments
@@ -35,7 +35,7 @@ class VMStartDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.VMStartDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[VMStartEventInfoProfile])
+        val returnValue = Pipeline.newPipeline(classOf[VMStartEventInfo])
 
         (mockVMStartProfile.getOrCreateVMStartRequest _).expects(
           extraArguments
@@ -53,7 +53,7 @@ class VMStartDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(VMStartEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(VMStartEventInfo, Seq[JDIEventDataResult])]
         ))
 
         (mockVMStartProfile.tryGetOrCreateVMStartRequestWithData _).expects(
@@ -72,7 +72,7 @@ class VMStartDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(VMStartEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(VMStartEventInfo, Seq[JDIEventDataResult])]
         )
 
         (mockVMStartProfile.getOrCreateVMStartRequestWithData _).expects(

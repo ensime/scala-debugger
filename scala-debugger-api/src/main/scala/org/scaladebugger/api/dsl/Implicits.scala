@@ -11,17 +11,17 @@ import org.scaladebugger.api.dsl.steps.StepDSLWrapper
 import org.scaladebugger.api.dsl.threads.{ThreadDeathDSLWrapper, ThreadStartDSLWrapper}
 import org.scaladebugger.api.dsl.vm.{VMDeathDSLWrapper, VMDisconnectDSLWrapper, VMStartDSLWrapper}
 import org.scaladebugger.api.dsl.watchpoints.{AccessWatchpointDSLWrapper, ModificationWatchpointDSLWrapper}
-import org.scaladebugger.api.profiles.traits.requests.breakpoints.BreakpointProfile
-import org.scaladebugger.api.profiles.traits.requests.classes.{ClassPrepareProfile, ClassUnloadProfile}
-import org.scaladebugger.api.profiles.traits.requests.events.EventListenerProfile
-import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionProfile
+import org.scaladebugger.api.profiles.traits.requests.breakpoints.BreakpointRequest
+import org.scaladebugger.api.profiles.traits.requests.classes.{ClassPrepareRequest, ClassUnloadRequest}
+import org.scaladebugger.api.profiles.traits.requests.events.EventListenerRequest
+import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionRequest
 import org.scaladebugger.api.profiles.traits.info._
-import org.scaladebugger.api.profiles.traits.requests.methods.{MethodEntryProfile, MethodExitProfile}
-import org.scaladebugger.api.profiles.traits.requests.monitors.{MonitorContendedEnterProfile, MonitorContendedEnteredProfile, MonitorWaitProfile, MonitorWaitedProfile}
-import org.scaladebugger.api.profiles.traits.requests.steps.StepProfile
-import org.scaladebugger.api.profiles.traits.requests.threads.{ThreadDeathProfile, ThreadStartProfile}
-import org.scaladebugger.api.profiles.traits.requests.vm.{VMDeathProfile, VMDisconnectProfile, VMStartProfile}
-import org.scaladebugger.api.profiles.traits.requests.watchpoints.{AccessWatchpointProfile, ModificationWatchpointProfile}
+import org.scaladebugger.api.profiles.traits.requests.methods.{MethodEntryRequest, MethodExitRequest}
+import org.scaladebugger.api.profiles.traits.requests.monitors.{MonitorContendedEnterRequest, MonitorContendedEnteredRequest, MonitorWaitRequest, MonitorWaitedRequest}
+import org.scaladebugger.api.profiles.traits.requests.steps.StepRequest
+import org.scaladebugger.api.profiles.traits.requests.threads.{ThreadDeathRequest, ThreadStartRequest}
+import org.scaladebugger.api.profiles.traits.requests.vm.{VMDeathRequest, VMDisconnectRequest, VMStartRequest}
+import org.scaladebugger.api.profiles.traits.requests.watchpoints.{AccessWatchpointRequest, ModificationWatchpointRequest}
 
 /**
  * Contains implicit classes to provide DSL-like methods to the debugger API.
@@ -31,32 +31,32 @@ object Implicits {
 
   /** Converts breakpoint profile to implicit DSL wrapping. */
   implicit def BreakpointDSL(
-    breakpointProfile: BreakpointProfile
+    breakpointProfile: BreakpointRequest
   ): BreakpointDSLWrapper = new BreakpointDSLWrapper(breakpointProfile)
 
   /** Converts class prepare profile to implicit DSL wrapping. */
   implicit def ClassPrepareDSL(
-    classPrepareProfile: ClassPrepareProfile
+    classPrepareProfile: ClassPrepareRequest
   ): ClassPrepareDSLWrapper = new ClassPrepareDSLWrapper(classPrepareProfile)
 
   /** Converts class unload profile to implicit DSL wrapping. */
   implicit def ClassUnloadDSL(
-    classUnloadProfile: ClassUnloadProfile
+    classUnloadProfile: ClassUnloadRequest
   ): ClassUnloadDSLWrapper = new ClassUnloadDSLWrapper(classUnloadProfile)
 
   /** Converts event listener profile to implicit DSL wrapping. */
   implicit def EventListenerDSL(
-    eventListenerProfile: EventListenerProfile
+    eventListenerProfile: EventListenerRequest
   ): EventListenerDSLWrapper = new EventListenerDSLWrapper(eventListenerProfile)
 
   /** Converts exception profile to implicit DSL wrapping. */
   implicit def ExceptionDSL(
-    exceptionProfile: ExceptionProfile
+    exceptionProfile: ExceptionRequest
   ): ExceptionDSLWrapper = new ExceptionDSLWrapper(exceptionProfile)
 
   /** Converts frame info profile to implicit DSL wrapping. */
   implicit def FrameInfoDSL(
-    frameInfoProfile: FrameInfoProfile
+    frameInfoProfile: FrameInfo
   ): FrameInfoDSLWrapper = new FrameInfoDSLWrapper(frameInfoProfile)
 
   /** Converts grab info profile to implicit DSL wrapping. */
@@ -66,86 +66,86 @@ object Implicits {
 
   /** Converts method entry profile to implicit DSL wrapping. */
   implicit def MethodEntryDSL(
-    methodEntryProfile: MethodEntryProfile
+    methodEntryProfile: MethodEntryRequest
   ): MethodEntryDSLWrapper = new MethodEntryDSLWrapper(methodEntryProfile)
 
   /** Converts method exit profile to implicit DSL wrapping. */
   implicit def MethodExitDSL(
-    methodExitProfile: MethodExitProfile
+    methodExitProfile: MethodExitRequest
   ): MethodExitDSLWrapper = new MethodExitDSLWrapper(methodExitProfile)
 
   /** Converts monitor contended entered profile to implicit DSL wrapping. */
   implicit def MonitorContendedEnteredDSL(
-    monitorContendedEnteredProfile: MonitorContendedEnteredProfile
+    monitorContendedEnteredProfile: MonitorContendedEnteredRequest
   ): MonitorContendedEnteredDSLWrapper = new MonitorContendedEnteredDSLWrapper(monitorContendedEnteredProfile)
 
   /** Converts monitor contended enter profile to implicit DSL wrapping. */
   implicit def MonitorContendedEnterDSL(
-    monitorContendedEnterProfile: MonitorContendedEnterProfile
+    monitorContendedEnterProfile: MonitorContendedEnterRequest
   ): MonitorContendedEnterDSLWrapper = new MonitorContendedEnterDSLWrapper(monitorContendedEnterProfile)
 
   /** Converts monitor waited profile to implicit DSL wrapping. */
   implicit def MonitorWaitedDSL(
-    monitorWaitedProfile: MonitorWaitedProfile
+    monitorWaitedProfile: MonitorWaitedRequest
   ): MonitorWaitedDSLWrapper = new MonitorWaitedDSLWrapper(monitorWaitedProfile)
 
   /** Converts monitor wait profile to implicit DSL wrapping. */
   implicit def MonitorWaitDSL(
-    monitorWaitProfile: MonitorWaitProfile
+    monitorWaitProfile: MonitorWaitRequest
   ): MonitorWaitDSLWrapper = new MonitorWaitDSLWrapper(monitorWaitProfile)
 
   /** Converts object info profile to implicit DSL wrapping. */
-  implicit def ObjectInfoDSL[T <: ObjectInfoProfile](
+  implicit def ObjectInfoDSL[T <: ObjectInfo](
     objectInfoProfile: T
   ): ObjectInfoDSLWrapper[T] = new ObjectInfoDSLWrapper(objectInfoProfile)
 
   /** Converts step profile to implicit DSL wrapping. */
   implicit def StepDSL(
-    stepProfile: StepProfile
+    stepProfile: StepRequest
   ): StepDSLWrapper = new StepDSLWrapper(stepProfile)
 
   /** Converts thread death profile to implicit DSL wrapping. */
   implicit def ThreadDeathDSL(
-    threadDeathProfile: ThreadDeathProfile
+    threadDeathProfile: ThreadDeathRequest
   ): ThreadDeathDSLWrapper = new ThreadDeathDSLWrapper(threadDeathProfile)
 
   /** Converts thread start profile to implicit DSL wrapping. */
   implicit def ThreadStartDSL(
-    threadStartProfile: ThreadStartProfile
+    threadStartProfile: ThreadStartRequest
   ): ThreadStartDSLWrapper = new ThreadStartDSLWrapper(threadStartProfile)
 
   /** Converts value info profile to implicit DSL wrapping. */
-  implicit def ValueInfoDSL[T <: ValueInfoProfile](
+  implicit def ValueInfoDSL[T <: ValueInfo](
     valueInfoProfile: T
   ): ValueInfoDSLWrapper[T] = new ValueInfoDSLWrapper(valueInfoProfile)
 
   /** Converts variable info profile to implicit DSL wrapping. */
   implicit def VariableInfoDSL(
-    variableInfoProfile: VariableInfoProfile
+    variableInfoProfile: VariableInfo
   ): VariableInfoDSLWrapper = new VariableInfoDSLWrapper(variableInfoProfile)
 
   /** Converts vm death profile to implicit DSL wrapping. */
   implicit def VMDeathDSL(
-    vmDeathProfile: VMDeathProfile
+    vmDeathProfile: VMDeathRequest
   ): VMDeathDSLWrapper = new VMDeathDSLWrapper(vmDeathProfile)
 
   /** Converts vm disconnect profile to implicit DSL wrapping. */
   implicit def VMDisconnectDSL(
-    vmDisconnectProfile: VMDisconnectProfile
+    vmDisconnectProfile: VMDisconnectRequest
   ): VMDisconnectDSLWrapper = new VMDisconnectDSLWrapper(vmDisconnectProfile)
 
   /** Converts vm start profile to implicit DSL wrapping. */
   implicit def VMStartDSL(
-    vmStartProfile: VMStartProfile
+    vmStartProfile: VMStartRequest
   ): VMStartDSLWrapper = new VMStartDSLWrapper(vmStartProfile)
 
   /** Converts access watchpoint profile to implicit DSL wrapping. */
   implicit def AccessWatchpointDSL(
-    accessWatchpointProfile: AccessWatchpointProfile
+    accessWatchpointProfile: AccessWatchpointRequest
   ): AccessWatchpointDSLWrapper = new AccessWatchpointDSLWrapper(accessWatchpointProfile)
 
   /** Converts modification watchpoint profile to implicit DSL wrapping. */
   implicit def ModificationWatchpointDSL(
-    modificationWatchpointProfile: ModificationWatchpointProfile
+    modificationWatchpointProfile: ModificationWatchpointRequest
   ): ModificationWatchpointDSLWrapper = new ModificationWatchpointDSLWrapper(modificationWatchpointProfile)
 }

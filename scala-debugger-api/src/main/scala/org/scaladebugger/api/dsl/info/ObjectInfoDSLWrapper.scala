@@ -1,6 +1,6 @@
 package org.scaladebugger.api.dsl.info
 
-import org.scaladebugger.api.profiles.traits.info.ObjectInfoProfile
+import org.scaladebugger.api.profiles.traits.info.ObjectInfo
 import org.scaladebugger.api.virtualmachines.ObjectCache
 
 /**
@@ -8,7 +8,7 @@ import org.scaladebugger.api.virtualmachines.ObjectCache
  *
  * @param objectInfo The profile to wrap
  */
-class ObjectInfoDSLWrapper[T <: ObjectInfoProfile] private[dsl] (
+class ObjectInfoDSLWrapper[T <: ObjectInfo] private[dsl] (
   private val objectInfo: T
 ) {
   /**

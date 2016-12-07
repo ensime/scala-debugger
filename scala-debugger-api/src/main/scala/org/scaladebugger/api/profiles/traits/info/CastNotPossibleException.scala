@@ -10,7 +10,7 @@ package org.scaladebugger.api.profiles.traits.info
  */
 class CastNotPossibleException(
   private val value: Any,
-  private val typeInfo: TypeInfoProfile
+  private val typeInfo: TypeInfo
 ) extends Exception(
   s"Not possible to cast ${value.getClass.getName} to ${typeInfo.name}"
 )

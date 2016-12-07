@@ -13,7 +13,7 @@ import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.lowlevel.{JDIArgument, RequestInfo}
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
+import org.scaladebugger.api.profiles.traits.info.events.EventInfo
 import org.scaladebugger.api.utils.{Memoization, MultiMap}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
@@ -50,7 +50,7 @@ import scala.util.Try
  */
 class RequestHelper[
   E <: Event,
-  EI <: EventInfoProfile,
+  EI <: EventInfo,
   RequestArgs,
   CounterKey
 ](

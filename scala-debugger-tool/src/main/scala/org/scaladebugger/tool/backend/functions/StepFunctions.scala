@@ -9,8 +9,8 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scaladebugger.api.dsl.Implicits._
-import org.scaladebugger.api.profiles.traits.info.ThreadInfoProfile
-import org.scaladebugger.api.profiles.traits.info.events.StepEventInfoProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadInfo
+import org.scaladebugger.api.profiles.traits.info.events.StepEventInfo
 
 /**
  * Represents a collection of functions for managing steps.
@@ -148,8 +148,8 @@ class StepFunctions(
    * @param stepFunc The function to create the step request
    */
   private def performStep(
-    threadInfo: ThreadInfoProfile,
-    stepFunc: (ThreadInfoProfile, Seq[JDIEventArgument]) => Future[StepEventInfoProfile]
+    threadInfo: ThreadInfo,
+    stepFunc: (ThreadInfo, Seq[JDIEventArgument]) => Future[StepEventInfo]
   ): Unit = {
     val resumeCount = threadInfo.status.suspendCount
 

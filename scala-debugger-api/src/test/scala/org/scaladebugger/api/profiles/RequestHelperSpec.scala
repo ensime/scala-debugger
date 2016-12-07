@@ -12,7 +12,7 @@ import org.scaladebugger.api.lowlevel.events.filters.UniqueIdPropertyFilter
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
+import org.scaladebugger.api.profiles.traits.info.events.EventInfo
 import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager}
 
 import scala.util.{Failure, Success, Try}
@@ -24,7 +24,7 @@ class RequestHelperSpec extends test.ParallelMockFunSpec {
   // RequestArgs: (Test String, Test Int, JDI Request Args)
   // CounterKey: (Test String, Test Int)
   private type E = Event
-  private type EI = EventInfoProfile
+  private type EI = EventInfo
   private type RequestArgs = (String, Int, Seq[JDIRequestArgument])
   private type CounterKey = (String, Int)
 

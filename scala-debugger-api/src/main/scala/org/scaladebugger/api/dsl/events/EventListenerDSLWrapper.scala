@@ -5,8 +5,8 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.requests.events.EventListenerProfile
-import org.scaladebugger.api.profiles.traits.info.events.EventInfoProfile
+import org.scaladebugger.api.profiles.traits.requests.events.EventListenerRequest
+import org.scaladebugger.api.profiles.traits.info.events.EventInfo
 
 import scala.util.Try
 
@@ -16,32 +16,32 @@ import scala.util.Try
  * @param eventListenerProfile The profile to wrap
  */
 class EventListenerDSLWrapper private[dsl] (
-  private val eventListenerProfile: EventListenerProfile
+  private val eventListenerProfile: EventListenerRequest
 ) {
   /** Represents a Event event and any associated data. */
-  type EventEventAndData = (EventInfoProfile, Seq[JDIEventDataResult])
+  type EventEventAndData = (EventInfo, Seq[JDIEventDataResult])
 
-  /** @see EventListenerProfile#tryCreateEventListener(EventType, JDIArgument*) */
+  /** @see EventListenerRequest#tryCreateEventListener(EventType, JDIArgument*) */
   def onEvent(
     eventType: EventType,
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[EventInfoProfile]] =
+  ): Try[IdentityPipeline[EventInfo]] =
     eventListenerProfile.tryCreateEventListener(
       eventType,
       extraArguments: _*
     )
 
-  /** @see EventListenerProfile#createEventListener(EventType, JDIArgument*) */
+  /** @see EventListenerRequest#createEventListener(EventType, JDIArgument*) */
   def onUnsafeEvent(
     eventType: EventType,
     extraArguments: JDIArgument*
-  ): IdentityPipeline[EventInfoProfile] =
+  ): IdentityPipeline[EventInfo] =
     eventListenerProfile.createEventListener(
       eventType,
       extraArguments: _*
     )
 
-  /** @see EventListenerProfile#createEventListenerWithData(EventType, JDIArgument*) */
+  /** @see EventListenerRequest#createEventListenerWithData(EventType, JDIArgument*) */
   def onUnsafeEventWithData(
     eventType: EventType,
     extraArguments: JDIArgument*
@@ -51,7 +51,7 @@ class EventListenerDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see EventListenerProfile#tryCreateEventListenerWithData(EventType, JDIArgument*) */
+  /** @see EventListenerRequest#tryCreateEventListenerWithData(EventType, JDIArgument*) */
   def onEventWithData(
     eventType: EventType,
     extraArguments: JDIArgument*

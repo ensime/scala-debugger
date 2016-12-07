@@ -1,7 +1,7 @@
 package org.scaladebugger.tool.backend.functions
 import org.scaladebugger.api.lowlevel.wrappers.Implicits._
 import org.scaladebugger.api.lowlevel.wrappers.ValueWrapper
-import org.scaladebugger.api.profiles.traits.info.{ThreadInfoProfile, VariableInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{ThreadInfo, VariableInfo}
 import org.scaladebugger.tool.backend.StateManager
 
 import scala.collection.JavaConverters._
@@ -120,9 +120,9 @@ class ExpressionFunctions(
   }
 
   private def lookupVariable(
-    thread: ThreadInfoProfile,
+    thread: ThreadInfo,
     expression: String
-  ): Option[VariableInfoProfile] = {
+  ): Option[VariableInfo] = {
     // Support myObject.myObjField.myField notation
     val variableChain = expression.split('.').map(_.trim)
     if (variableChain.isEmpty)

@@ -3,14 +3,14 @@ package org.scaladebugger.api.dsl.watchpoints
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.info.events.ModificationWatchpointEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.watchpoints.ModificationWatchpointProfile
+import org.scaladebugger.api.profiles.traits.info.events.ModificationWatchpointEventInfo
+import org.scaladebugger.api.profiles.traits.requests.watchpoints.ModificationWatchpointRequest
 
 import scala.util.Success
 
 class ModificationWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
 {
-  private val mockModificationWatchpointProfile = mock[ModificationWatchpointProfile]
+  private val mockModificationWatchpointProfile = mock[ModificationWatchpointRequest]
 
   describe("ModificationWatchpointDSLWrapper") {
     describe("#onModificationWatchpoint") {
@@ -20,7 +20,7 @@ class ModificationWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val className = "some.class.name"
         val fieldName = "someFieldName"
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[ModificationWatchpointEventInfoProfile]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[ModificationWatchpointEventInfo]))
 
         (mockModificationWatchpointProfile.tryGetOrCreateModificationWatchpointRequest _).expects(
           className,
@@ -43,7 +43,7 @@ class ModificationWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val className = "some.class.name"
         val fieldName = "someFieldName"
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[ModificationWatchpointEventInfoProfile])
+        val returnValue = Pipeline.newPipeline(classOf[ModificationWatchpointEventInfo])
 
         (mockModificationWatchpointProfile.getOrCreateModificationWatchpointRequest _).expects(
           className,
@@ -67,7 +67,7 @@ class ModificationWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val fieldName = "someFieldName"
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(ModificationWatchpointEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(ModificationWatchpointEventInfo, Seq[JDIEventDataResult])]
         ))
 
         (mockModificationWatchpointProfile.tryGetOrCreateModificationWatchpointRequestWithData _).expects(
@@ -92,7 +92,7 @@ class ModificationWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
         val fieldName = "someFieldName"
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(ModificationWatchpointEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(ModificationWatchpointEventInfo, Seq[JDIEventDataResult])]
         )
 
         (mockModificationWatchpointProfile.getOrCreateModificationWatchpointRequestWithData _).expects(

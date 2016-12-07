@@ -4,15 +4,15 @@ import java.nio.file.Path
 
 import ammonite.util.Bind
 import org.scaladebugger.api.debuggers.Debugger
-import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfoProfile, ThreadInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{ThreadGroupInfo, ThreadInfo}
 import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine}
 
 case class State(
   activeDebugger: Option[Debugger],
   scalaVirtualMachines: Seq[ScalaVirtualMachine],
   dummyScalaVirtualMachine: DummyScalaVirtualMachine,
-  activeThread: Option[ThreadInfoProfile],
-  activeThreadGroup: Option[ThreadGroupInfoProfile],
+  activeThread: Option[ThreadInfo],
+  activeThreadGroup: Option[ThreadGroupInfo],
   sourcePaths: Seq[Path],
   activeProfileName: String
 ) {

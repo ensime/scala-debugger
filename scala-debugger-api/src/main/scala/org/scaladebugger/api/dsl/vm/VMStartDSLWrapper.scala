@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.vm
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.VMStartEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.vm.VMStartProfile
+import org.scaladebugger.api.profiles.traits.info.events.VMStartEventInfo
+import org.scaladebugger.api.profiles.traits.requests.vm.VMStartRequest
 
 import scala.util.Try
 
@@ -14,30 +14,30 @@ import scala.util.Try
  * @param vmStartProfile The profile to wrap
  */
 class VMStartDSLWrapper private[dsl] (
-  private val vmStartProfile: VMStartProfile
+  private val vmStartProfile: VMStartRequest
 ) {
   /** Represents a VMStart event and any associated data. */
-  type VMStartEventAndData = (VMStartEventInfoProfile, Seq[JDIEventDataResult])
+  type VMStartEventAndData = (VMStartEventInfo, Seq[JDIEventDataResult])
 
-  /** @see VMStartProfile#tryGetOrCreateVMStartRequest(JDIArgument*) */
+  /** @see VMStartRequest#tryGetOrCreateVMStartRequest(JDIArgument*) */
   def onVMStart(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[VMStartEventInfoProfile]] =
+  ): Try[IdentityPipeline[VMStartEventInfo]] =
     vmStartProfile.tryGetOrCreateVMStartRequest(extraArguments: _*)
 
-  /** @see VMStartProfile#getOrCreateVMStartRequest(JDIArgument*) */
+  /** @see VMStartRequest#getOrCreateVMStartRequest(JDIArgument*) */
   def onUnsafeVMStart(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[VMStartEventInfoProfile] =
+  ): IdentityPipeline[VMStartEventInfo] =
     vmStartProfile.getOrCreateVMStartRequest(extraArguments: _*)
 
-  /** @see VMStartProfile#getOrCreateVMStartRequestWithData(JDIArgument*) */
+  /** @see VMStartRequest#getOrCreateVMStartRequestWithData(JDIArgument*) */
   def onUnsafeVMStartWithData(
     extraArguments: JDIArgument*
   ): IdentityPipeline[VMStartEventAndData] =
     vmStartProfile.getOrCreateVMStartRequestWithData(extraArguments: _*)
 
-  /** @see VMStartProfile#tryGetOrCreateVMStartRequestWithData(JDIArgument*) */
+  /** @see VMStartRequest#tryGetOrCreateVMStartRequestWithData(JDIArgument*) */
   def onVMStartWithData(
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[VMStartEventAndData]] =

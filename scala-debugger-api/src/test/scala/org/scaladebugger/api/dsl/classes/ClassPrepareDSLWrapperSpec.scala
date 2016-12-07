@@ -3,14 +3,14 @@ package org.scaladebugger.api.dsl.classes
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.requests.classes.ClassPrepareProfile
-import org.scaladebugger.api.profiles.traits.info.events.ClassPrepareEventInfoProfile
+import org.scaladebugger.api.profiles.traits.requests.classes.ClassPrepareRequest
+import org.scaladebugger.api.profiles.traits.info.events.ClassPrepareEventInfo
 
 import scala.util.Success
 
 class ClassPrepareDSLWrapperSpec extends test.ParallelMockFunSpec
 {
-  private val mockClassPrepareProfile = mock[ClassPrepareProfile]
+  private val mockClassPrepareProfile = mock[ClassPrepareRequest]
 
   describe("ClassPrepareDSLWrapper") {
     describe("#onClassPrepare") {
@@ -18,7 +18,7 @@ class ClassPrepareDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.ClassPrepareDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Success(Pipeline.newPipeline(classOf[ClassPrepareEventInfoProfile]))
+        val returnValue = Success(Pipeline.newPipeline(classOf[ClassPrepareEventInfo]))
 
         (mockClassPrepareProfile.tryGetOrCreateClassPrepareRequest _).expects(
           extraArguments
@@ -35,7 +35,7 @@ class ClassPrepareDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.ClassPrepareDSL
 
         val extraArguments = Seq(mock[JDIRequestArgument])
-        val returnValue = Pipeline.newPipeline(classOf[ClassPrepareEventInfoProfile])
+        val returnValue = Pipeline.newPipeline(classOf[ClassPrepareEventInfo])
 
         (mockClassPrepareProfile.getOrCreateClassPrepareRequest _).expects(
           extraArguments
@@ -53,7 +53,7 @@ class ClassPrepareDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Success(Pipeline.newPipeline(
-          classOf[(ClassPrepareEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(ClassPrepareEventInfo, Seq[JDIEventDataResult])]
         ))
 
         (mockClassPrepareProfile.tryGetOrCreateClassPrepareRequestWithData _).expects(
@@ -72,7 +72,7 @@ class ClassPrepareDSLWrapperSpec extends test.ParallelMockFunSpec
 
         val extraArguments = Seq(mock[JDIRequestArgument])
         val returnValue = Pipeline.newPipeline(
-          classOf[(ClassPrepareEventInfoProfile, Seq[JDIEventDataResult])]
+          classOf[(ClassPrepareEventInfo, Seq[JDIEventDataResult])]
         )
 
         (mockClassPrepareProfile.getOrCreateClassPrepareRequestWithData _).expects(

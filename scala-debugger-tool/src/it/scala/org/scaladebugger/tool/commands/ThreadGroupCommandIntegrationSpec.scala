@@ -2,7 +2,7 @@ package org.scaladebugger.tool.commands
 
 import java.io.File
 
-import org.scaladebugger.api.profiles.traits.info.ThreadGroupInfoProfile
+import org.scaladebugger.api.profiles.traits.info.ThreadGroupInfo
 import org.scaladebugger.api.utils.JDITools
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.Eventually
@@ -40,7 +40,7 @@ class ThreadGroupCommandIntegrationSpec extends FunSpec with Matchers
           }
 
           // Set a fake active thread group
-          sm.updateActiveThreadGroup(mock[ThreadGroupInfoProfile])
+          sm.updateActiveThreadGroup(mock[ThreadGroupInfo])
 
           // Clear our thread group
           vt.newInputLine(s"threadgroup")

@@ -1,41 +1,41 @@
 package org.scaladebugger.api.profiles.traits
 
-import org.scaladebugger.api.profiles.traits.requests.breakpoints.BreakpointProfile
-import org.scaladebugger.api.profiles.traits.requests.classes.{ClassPrepareProfile, ClassUnloadProfile}
-import org.scaladebugger.api.profiles.traits.requests.events.EventListenerProfile
-import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionProfile
-import org.scaladebugger.api.profiles.traits.info.{CreateInfoProfile, GrabInfoProfile, MiscInfoProfile}
-import org.scaladebugger.api.profiles.traits.requests.methods.{MethodEntryProfile, MethodExitProfile}
-import org.scaladebugger.api.profiles.traits.requests.monitors.{MonitorContendedEnterProfile, MonitorContendedEnteredProfile, MonitorWaitProfile, MonitorWaitedProfile}
-import org.scaladebugger.api.profiles.traits.requests.steps.StepProfile
-import org.scaladebugger.api.profiles.traits.requests.threads.{ThreadDeathProfile, ThreadStartProfile}
-import org.scaladebugger.api.profiles.traits.requests.vm.{VMDeathProfile, VMDisconnectProfile, VMStartProfile}
-import org.scaladebugger.api.profiles.traits.requests.watchpoints.{AccessWatchpointProfile, ModificationWatchpointProfile}
+import org.scaladebugger.api.profiles.traits.requests.breakpoints.BreakpointRequest
+import org.scaladebugger.api.profiles.traits.requests.classes.{ClassPrepareRequest, ClassUnloadRequest}
+import org.scaladebugger.api.profiles.traits.requests.events.EventListenerRequest
+import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionRequest
+import org.scaladebugger.api.profiles.traits.info.{CreateInfoProfile, GrabInfoProfile, MiscInfo}
+import org.scaladebugger.api.profiles.traits.requests.methods.{MethodEntryRequest, MethodExitRequest}
+import org.scaladebugger.api.profiles.traits.requests.monitors.{MonitorContendedEnterRequest, MonitorContendedEnteredRequest, MonitorWaitRequest, MonitorWaitedRequest}
+import org.scaladebugger.api.profiles.traits.requests.steps.StepRequest
+import org.scaladebugger.api.profiles.traits.requests.threads.{ThreadDeathRequest, ThreadStartRequest}
+import org.scaladebugger.api.profiles.traits.requests.vm.{VMDeathRequest, VMDisconnectRequest, VMStartRequest}
+import org.scaladebugger.api.profiles.traits.requests.watchpoints.{AccessWatchpointRequest, ModificationWatchpointRequest}
 
 /**
  * Represents the interface that needs to be implemented to provide
  * functionality for a specific debug profile.
  */
 trait DebugProfile
-  extends AccessWatchpointProfile
-  with BreakpointProfile
-  with ClassPrepareProfile
-  with ClassUnloadProfile
+  extends AccessWatchpointRequest
+  with BreakpointRequest
+  with ClassPrepareRequest
+  with ClassUnloadRequest
   with CreateInfoProfile
-  with EventListenerProfile
-  with ExceptionProfile
+  with EventListenerRequest
+  with ExceptionRequest
   with GrabInfoProfile
-  with MethodEntryProfile
-  with MethodExitProfile
-  with MiscInfoProfile
-  with ModificationWatchpointProfile
-  with MonitorContendedEnteredProfile
-  with MonitorContendedEnterProfile
-  with MonitorWaitedProfile
-  with MonitorWaitProfile
-  with StepProfile
-  with ThreadDeathProfile
-  with ThreadStartProfile
-  with VMStartProfile
-  with VMDeathProfile
-  with VMDisconnectProfile
+  with MethodEntryRequest
+  with MethodExitRequest
+  with MiscInfo
+  with ModificationWatchpointRequest
+  with MonitorContendedEnteredRequest
+  with MonitorContendedEnterRequest
+  with MonitorWaitedRequest
+  with MonitorWaitRequest
+  with StepRequest
+  with ThreadDeathRequest
+  with ThreadStartRequest
+  with VMStartRequest
+  with VMDeathRequest
+  with VMDisconnectRequest

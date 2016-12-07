@@ -3,8 +3,8 @@ package org.scaladebugger.api.dsl.threads
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
-import org.scaladebugger.api.profiles.traits.info.events.ThreadDeathEventInfoProfile
-import org.scaladebugger.api.profiles.traits.requests.threads.ThreadDeathProfile
+import org.scaladebugger.api.profiles.traits.info.events.ThreadDeathEventInfo
+import org.scaladebugger.api.profiles.traits.requests.threads.ThreadDeathRequest
 
 import scala.util.Try
 
@@ -14,24 +14,24 @@ import scala.util.Try
  * @param threadDeathProfile The profile to wrap
  */
 class ThreadDeathDSLWrapper private[dsl] (
-  private val threadDeathProfile: ThreadDeathProfile
+  private val threadDeathProfile: ThreadDeathRequest
 ) {
   /** Represents a ThreadDeath event and any associated data. */
-  type ThreadDeathEventAndData = (ThreadDeathEventInfoProfile, Seq[JDIEventDataResult])
+  type ThreadDeathEventAndData = (ThreadDeathEventInfo, Seq[JDIEventDataResult])
 
-  /** @see ThreadDeathProfile#tryGetOrCreateThreadDeathRequest(JDIArgument*) */
+  /** @see ThreadDeathRequest#tryGetOrCreateThreadDeathRequest(JDIArgument*) */
   def onThreadDeath(
     extraArguments: JDIArgument*
-  ): Try[IdentityPipeline[ThreadDeathEventInfoProfile]] =
+  ): Try[IdentityPipeline[ThreadDeathEventInfo]] =
     threadDeathProfile.tryGetOrCreateThreadDeathRequest(extraArguments: _*)
 
-  /** @see ThreadDeathProfile#getOrCreateThreadDeathRequest(JDIArgument*) */
+  /** @see ThreadDeathRequest#getOrCreateThreadDeathRequest(JDIArgument*) */
   def onUnsafeThreadDeath(
     extraArguments: JDIArgument*
-  ): IdentityPipeline[ThreadDeathEventInfoProfile] =
+  ): IdentityPipeline[ThreadDeathEventInfo] =
     threadDeathProfile.getOrCreateThreadDeathRequest(extraArguments: _*)
 
-  /** @see ThreadDeathProfile#getOrCreateThreadDeathRequestWithData(JDIArgument*) */
+  /** @see ThreadDeathRequest#getOrCreateThreadDeathRequestWithData(JDIArgument*) */
   def onUnsafeThreadDeathWithData(
     extraArguments: JDIArgument*
   ): IdentityPipeline[ThreadDeathEventAndData] =
@@ -39,7 +39,7 @@ class ThreadDeathDSLWrapper private[dsl] (
       extraArguments: _*
     )
 
-  /** @see ThreadDeathProfile#tryGetOrCreateThreadDeathRequestWithData(JDIArgument*) */
+  /** @see ThreadDeathRequest#tryGetOrCreateThreadDeathRequestWithData(JDIArgument*) */
   def onThreadDeathWithData(
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[ThreadDeathEventAndData]] =

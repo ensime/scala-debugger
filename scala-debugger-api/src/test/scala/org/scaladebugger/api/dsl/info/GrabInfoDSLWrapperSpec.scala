@@ -1,7 +1,7 @@
 package org.scaladebugger.api.dsl.info
 
 import com.sun.jdi.ThreadReference
-import org.scaladebugger.api.profiles.traits.info.{ThreadInfoProfile, GrabInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{ThreadInfo, GrabInfoProfile}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
@@ -17,7 +17,7 @@ class GrabInfoDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.GrabInfoDSL
 
         val threadReference = mock[ThreadReference]
-        val returnValue = Success(mock[ThreadInfoProfile])
+        val returnValue = Success(mock[ThreadInfo])
 
         (mockGrabInfoProfile.tryThread(_: ThreadReference))
           .expects(threadReference)
@@ -32,7 +32,7 @@ class GrabInfoDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.GrabInfoDSL
 
         val threadReference = mock[ThreadReference]
-        val returnValue = mock[ThreadInfoProfile]
+        val returnValue = mock[ThreadInfo]
 
         (mockGrabInfoProfile.thread(_: ThreadReference))
           .expects(threadReference)
@@ -47,7 +47,7 @@ class GrabInfoDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.GrabInfoDSL
 
         val threadId = 999L
-        val returnValue = Success(mock[ThreadInfoProfile])
+        val returnValue = Success(mock[ThreadInfo])
 
         (mockGrabInfoProfile.tryThread(_: Long))
           .expects(threadId)
@@ -62,7 +62,7 @@ class GrabInfoDSLWrapperSpec extends test.ParallelMockFunSpec
         import org.scaladebugger.api.dsl.Implicits.GrabInfoDSL
 
         val threadId = 999L
-        val returnValue = mock[ThreadInfoProfile]
+        val returnValue = mock[ThreadInfo]
 
         (mockGrabInfoProfile.thread(_: Long))
           .expects(threadId)
