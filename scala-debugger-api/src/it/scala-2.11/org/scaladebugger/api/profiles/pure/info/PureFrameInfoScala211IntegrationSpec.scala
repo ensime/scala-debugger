@@ -8,11 +8,11 @@ import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{TestUtilities, VirtualMachineFixtures}
 
-class PureFrameInfoProfileScala210IntegrationSpec extends FunSpec with Matchers
+class PureFrameInfoScala211IntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
   with TestUtilities
 {
-  describe("PureFrameInfo for 2.10") {
+  describe("PureFrameInfo for 2.11") {
     it("should be able to get variables from a closure") {
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)

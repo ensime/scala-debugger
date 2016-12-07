@@ -9,7 +9,7 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{TestUtilities, VirtualMachineFixtures}
 
-class PureObjectInfoProfileScala211IntegrationSpec extends FunSpec with Matchers
+class PureObjectInfoScala211IntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
   with TestUtilities with Eventually
 {

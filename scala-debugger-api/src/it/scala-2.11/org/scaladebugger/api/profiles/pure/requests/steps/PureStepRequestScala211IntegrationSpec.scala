@@ -7,11 +7,11 @@ import org.scalatest.time.Seconds
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{TestUtilities, VirtualMachineFixtures}
 
-class PureStepProfileScala211IntegrationSpec extends FunSpec with Matchers
+class PureStepRequestScala211IntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
   with TestUtilities with Eventually
 {
-  describe("PureStepProfile for 2.11") {
+  describe("PureStepRequest for 2.11") {
     describe("stepping over") {
       it("should skip over each iteration") {
         val testClass = "org.scaladebugger.test.steps.BasicIterations"

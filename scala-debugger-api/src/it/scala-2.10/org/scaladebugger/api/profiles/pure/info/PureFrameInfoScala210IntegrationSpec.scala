@@ -8,11 +8,11 @@ import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{TestUtilities, VirtualMachineFixtures}
 
-class PureFrameInfoProfileScala212IntegrationSpec extends FunSpec with Matchers
+class PureFrameInfoScala210IntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
   with TestUtilities
 {
-  describe("PureFrameInfo for 2.12") {
+  describe("PureFrameInfo for 2.10") {
     it("should be able to get variables from a closure") {
       val testClass = "org.scaladebugger.test.info.Variables"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
@@ -33,7 +33,8 @@ class PureFrameInfoProfileScala212IntegrationSpec extends FunSpec with Matchers
           //       variables seen within the closure
           variableNames should contain theSameElementsAs Seq(
             "h$1", "b$1",
-            "$this" // Scala 2.12 specific variable
+
+            "serialVersionUID"
           )
         })
       }

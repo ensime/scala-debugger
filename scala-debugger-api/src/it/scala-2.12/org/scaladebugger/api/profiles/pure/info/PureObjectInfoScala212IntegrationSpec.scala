@@ -9,11 +9,11 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{TestUtilities, VirtualMachineFixtures}
 
-class PureObjectInfoProfileScala210IntegrationSpec extends FunSpec with Matchers
+class PureObjectInfoScala212IntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
   with TestUtilities with Eventually
 {
-  describe("PureObjectInfo for 2.10") {
+  describe("PureObjectInfo for 2.12") {
     it("should be able to get a list of methods for the object") {
       val testClass = "org.scaladebugger.test.info.Methods"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
@@ -40,6 +40,8 @@ class PureObjectInfoProfileScala210IntegrationSpec extends FunSpec with Matchers
             "zeroArgMethod",
             "functionMethod", // Scala provides a method for the function
                               // object since it would be treated as a field
+            "$anonfun$functionMethod$1", // Scala 2.12
+            "$deserializeLambda$", // Scala 2.12
 
             // Inherited methods
             "<clinit>",

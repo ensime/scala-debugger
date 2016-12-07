@@ -10,12 +10,13 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{TestUtilities, VirtualMachineFixtures}
 
-class PureFieldInfoProfileScala210IntegrationSpec extends FunSpec with Matchers
+class PureFieldInfoScala211IntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with VirtualMachineFixtures
   with TestUtilities with Eventually
 {
-  describe("PureFieldInfo for 2.10") {
-    it("should not expand $outer to its underlying fields") {
+  describe("PureFieldInfo for 2.11") {
+    // $outer does not appear in this scenario for Scala 2.11
+    ignore("should not expand $outer to its underlying fields") {
       val testClass = "org.scaladebugger.test.info.OuterScope"
       val testFile = JDITools.scalaClassStringToFileString(testClass)
 
@@ -37,6 +38,11 @@ class PureFieldInfoProfileScala210IntegrationSpec extends FunSpec with Matchers
 
           // Should expand $outer field of closure into outer fields
           variableNames should contain theSameElementsAs Seq(
+            "MODULE$",
+            "x",
+            "executionStart",
+            "scala$App$$_Args",
+            "scala$App$$initCode",
             "$outer",
             "newValue"
           )
