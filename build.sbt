@@ -40,6 +40,15 @@ lazy val scalaDebuggerMacros = project
   .settings(name := "scala-debugger-macros")
 
 //
+// DEBUGGER DOC PROJECT CONFIGURATION
+//
+lazy val scalaDebuggerDocs = project
+  .in(file("scala-debugger-docs"))
+  .settings(Common.settings: _*)
+  .settings(Docs.settings: _*)
+  .settings(name := "scala-debugger-docs")
+
+//
 // LANGUAGE PROJECT CONFIGURATION
 //
 lazy val scalaDebuggerLanguage = project
