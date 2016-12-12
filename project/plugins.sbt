@@ -4,12 +4,6 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 resolvers += Resolver.sonatypeRepo("releases")
 
-// Used for formatting source to certain style
-addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")
-
-// Used for style notes
-addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.6.0")
-
 // Used for signing in order to publish jars
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")
 
@@ -30,3 +24,4 @@ addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-M14-3")
 
 // Use to respect cross-compilation settings
 addSbtPlugin("com.eed3si9n" % "sbt-doge" % "0.1.5")
+

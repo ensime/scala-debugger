@@ -15,6 +15,18 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some(false)
   )
 
+  /** Represents whether or not to generate the docs. */
+  val generate = opt[Boolean](
+    descr = "If true, regenerates the docs",
+    default = Some(false)
+  )
+
+  /** Represents whether or not to serve the docs using a local server. */
+  val serve = opt[Boolean](
+    descr = "If true, serves the generated docs",
+    default = Some(false)
+  )
+
   // Display our default values in our help menu
   appendDefaultToDescription = true
 
