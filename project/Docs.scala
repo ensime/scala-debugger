@@ -15,6 +15,8 @@ object Docs {
       "com.lihaoyi" %% "scalatags" % "0.6.2", // Main doc generator
       "org.rogach" %% "scallop" % "2.0.5", // CLI Support
 
+      "commons-codec" % "commons-codec" % "1.10", // Base64 encoding support
+
       // For hosting local server containing generated sources
       "ws.unfiltered" %% "unfiltered" % unfilteredVersion.value,
       "ws.unfiltered" %% "unfiltered-filter" % unfilteredVersion.value,

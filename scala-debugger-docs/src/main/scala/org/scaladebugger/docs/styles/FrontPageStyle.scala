@@ -7,9 +7,6 @@ import scalatags.stylesheet._
  * Represents stylesheet for front page.
  */
 object FrontPageStyle extends CascadingStyleSheet {
-  private val PrimaryBackgroundColor = "#60B5CC"
-  private val PrimaryForegroundColor = "#34495E"
-
   // Affects everything but html, to be placed on html
   val global = cls(
     body(margin := 0),
@@ -23,9 +20,9 @@ object FrontPageStyle extends CascadingStyleSheet {
 
   val tabs = cls(
     padding := "1em",
-    backgroundColor := PrimaryBackgroundColor,
+    backgroundColor := Colors.EnsimeNormalRed,
     a(
-      color := PrimaryForegroundColor,
+      color := Colors.EnsimeBlack,
       textDecoration := "none"
     ),
     ul(
@@ -41,7 +38,7 @@ object FrontPageStyle extends CascadingStyleSheet {
 
   val tab = cls(
     textDecoration := "none",
-    color := PrimaryForegroundColor,
+    color := Colors.EnsimeBlack,
     paddingBottom := "13px",
     margin := "0 1.5em",
     fontSize := "20px"
@@ -49,14 +46,14 @@ object FrontPageStyle extends CascadingStyleSheet {
 
   val splash = cls(
     padding := "1em",
-    backgroundColor := PrimaryBackgroundColor,
+    backgroundColor := Colors.EnsimeNormalRed,
     color := "white",
     textAlign := "center"
   )
 
   val getStarted = cls(
     a(
-      backgroundColor := PrimaryForegroundColor,
+      backgroundColor := Colors.EnsimePaleRed,
       borderRadius := "6px",
       minWidth := "120px",
       padding := "12px 12px",
