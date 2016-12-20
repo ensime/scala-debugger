@@ -18,7 +18,9 @@ lazy val scalaDebuggerApi = project
 //
 lazy val scalaDebuggerTest = project
   .in(file("scala-debugger-test"))
+  .configs(IntegrationTest)
   .settings(Common.settings: _*)
+  .settings(Defaults.itSettings: _*)
   .settings(
     // Do not publish the test project
     publishArtifact := false,
@@ -30,7 +32,9 @@ lazy val scalaDebuggerTest = project
 //
 lazy val scalaDebuggerMacros = project
   .in(file("scala-debugger-macros"))
+  .configs(IntegrationTest)
   .settings(Common.settings: _*)
+  .settings(Defaults.itSettings: _*)
   .settings(Macros.settings: _*)
   .settings(name := "scala-debugger-macros")
 
@@ -66,7 +70,9 @@ lazy val scalaDebuggerTool = project
 //
 lazy val sbtScalaDebuggerPlugin = project
   .in(file("sbt-scala-debugger-plugin"))
+  .configs(IntegrationTest)
   .settings(Common.settings: _*)
+  .settings(Defaults.itSettings: _*)
   .settings(SbtPlugin.settings: _*)
   .settings(name := "sbt-scala-debugger")
   .enablePlugins(CrossPerProjectPlugin)
