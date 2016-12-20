@@ -3,7 +3,6 @@ import Keys._
 
 import scala.util.Try
 
-
 object Common {
   lazy val scalaTestSpanScaleFactor = settingKey[Double](
     "Sets scaling factor of running tests that are wrapped in scale(...)"
