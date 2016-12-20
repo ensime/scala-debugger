@@ -67,7 +67,7 @@ lazy val scalaDebuggerTool = project
 lazy val sbtScalaDebuggerPlugin = project
   .in(file("sbt-scala-debugger-plugin"))
   .settings(Common.settings: _*)
-  .settings(name := "sbt-scala-debugger-plugin")
+  .settings(name := "sbt-scala-debugger")
   .settings(sbtPlugin := true)
 
 //

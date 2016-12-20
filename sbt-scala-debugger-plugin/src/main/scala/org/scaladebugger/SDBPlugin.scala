@@ -3,7 +3,7 @@ package org.scaladebugger
 import sbt.Attributed._
 import sbt._
 import Keys._
-import sbt.Project.Initialize
+import sbt.Def.Initialize
 
 object SDBPlugin extends AutoPlugin {
 
@@ -75,8 +75,12 @@ object SDBPlugin extends AutoPlugin {
       /* Overriding run and runMain defined by compileSettings so that they use fullClasspath of this scope (ScalaDebugger),
        * taking into account the extra libraryDependencies above, and we can also supply default arguments
        * (initialCommands as predef). */
-      run <<= runTask(fullClasspath, mainClass in run, runner in run, (initialCommands in console).map(defaultArgs)),
-      runMain <<= Defaults.runMainTask(fullClasspath, runner in run),
+      run := {
+        runTask(fullClasspath, mainClass in run, runner in run, (initialCommands in console).map(defaultArgs)).evaluated
+      },
+      runMain := {
+        Defaults.runMainTask(fullClasspath, runner in run).evaluated
+      },
 
       mainClass := Some("org.scaladebugger.tool.Main"),
 
