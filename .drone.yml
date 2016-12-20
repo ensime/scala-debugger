@@ -20,5 +20,5 @@ build:
   commands:
     - host `curl -s http://httpbin.org/ip | jq -r '.origin'` || true
     - javac -version
-    - /usr/bin/sbt ;+++ $SCALA_VERSION $TEST_SUITE ;+++ $SCALA_VERSION $IT_TEST_SUITE
+    - /usr/bin/sbt ";+++ $SCALA_VERSION $TEST_SUITE ;+++ $SCALA_VERSION $IT_TEST_SUITE"
 
