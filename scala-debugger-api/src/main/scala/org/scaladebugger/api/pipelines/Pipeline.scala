@@ -1,9 +1,10 @@
 package org.scaladebugger.api.pipelines
 
 import java.io.Closeable
+import java.util.concurrent.ConcurrentLinkedQueue
 
 import scala.collection.GenTraversableOnce
-import scala.concurrent.{Promise, Future}
+import scala.concurrent.{Future, Promise}
 import scala.util.Try
 
 /**
@@ -389,6 +390,30 @@ class Pipeline[A, B] private[pipelines] (
     })
 
     pipelinePromise.future
+  }
+
+  /**
+   * Transforms the pipeline into an iterable of data that appears as it is fed
+   * into the pipeline.
+   *
+   * @note Once invoked, an internal queue will continue to grow with each new
+   *       piece of data funneled through the pipeline. The only way to stop
+   *       the structure from expanding is to close the pipeline entirely.
+   *
+   * @return The iterable representing this pipeline; this is always the same
+   *         iterable and continues to grow as new data is funneled through the
+   *         pipeline (only once toIterable is invoked)
+   */
+  def toIterable: Iterable[B] = pipelineIterable
+
+  /** Represents the internal iterable for this pipeline. */
+  private lazy val pipelineIterable: Iterable[B] = {
+    import scala.collection.JavaConverters._
+    val queue = new ConcurrentLinkedQueue[B]()
+
+    foreach(value => queue.offer(value))
+
+    queue.asScala
   }
 }
 

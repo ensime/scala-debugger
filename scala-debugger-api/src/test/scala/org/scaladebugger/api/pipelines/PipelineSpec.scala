@@ -588,6 +588,54 @@ class PipelineSpec extends FunSpec with Matchers with ParallelTestExecution
       }
     }
 
+    describe("#toIterable") {
+      it("should return an iterable containing data as it funnels through the pipeline") {
+        val mockOperation = mock[Operation[Int, Int]]
+        val pipeline = new Pipeline(mockOperation)
+
+        (mockOperation.process _).expects(Seq(1, 2, 3))
+          .returning(Seq(1, 2, 3)).once()
+
+        val iterable = pipeline.toIterable
+
+        pipeline.process(1, 2, 3)
+
+        iterable.toSeq should contain theSameElementsInOrderAs Seq(1, 2, 3)
+      }
+
+      it("should not containing any data prior to first invoking the method") {
+        val mockOperation = mock[Operation[Int, Int]]
+        val pipeline = new Pipeline(mockOperation)
+
+        (mockOperation.process _).expects(Seq(1)).returning(Seq(1)).once()
+        (mockOperation.process _).expects(Seq(2, 3)).returning(Seq(2, 3)).once()
+
+        pipeline.process(1)
+
+        val iterable = pipeline.toIterable
+
+        pipeline.process(2, 3)
+
+        iterable.toSeq should contain theSameElementsInOrderAs Seq(2, 3)
+      }
+
+      it("should not contain any new data after the pipeline is closed") {
+        val mockOperation = mock[Operation[Int, Int]]
+        val pipeline = new Pipeline(mockOperation)
+
+        (mockOperation.process _).expects(Seq(1, 2, 3))
+          .returning(Seq(1, 2, 3)).once()
+
+        val iterable = pipeline.toIterable
+
+        pipeline.process(1, 2, 3)
+        pipeline.close()
+        pipeline.process(4, 5, 6)
+
+        iterable.toSeq should contain theSameElementsInOrderAs Seq(1, 2, 3)
+      }
+    }
+
     describe("#noop") {
       it("should create a new child pipeline using a no-op") {
         val pipeline = new Pipeline(mock[Operation[Int, Int]])
