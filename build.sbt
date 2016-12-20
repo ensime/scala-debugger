@@ -62,6 +62,15 @@ lazy val scalaDebuggerTool = project
   .dependsOn(scalaDebuggerTest % "test->compile;it->compile")
 
 //
+// SBT SCALA DEBUGGER PLUGIN
+//
+lazy val sbtScalaDebuggerPlugin = project
+  .in(file("sbt-scala-debugger-plugin"))
+  .settings(Common.settings: _*)
+  .settings(name := "sbt-scala-debugger-plugin")
+  .settings(sbtPlugin := true)
+
+//
 // MAIN PROJECT CONFIGURATION
 //
 lazy val root = project
@@ -81,6 +90,7 @@ lazy val root = project
     scalaDebuggerTest,
     scalaDebuggerMacros,
     scalaDebuggerLanguage,
-    scalaDebuggerTool
+    scalaDebuggerTool,
+    sbtScalaDebuggerPlugin
   )
 
