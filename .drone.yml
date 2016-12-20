@@ -4,7 +4,9 @@ matrix:
     - 2.11.8
     - 2.12.1
   TEST_SUITE:
-    - test it:test
+    - test
+  IT_TEST_SUITE:
+    - it:test
 
 build:
   image: chipsenkbeil/scala-debugger:latest
@@ -18,5 +20,5 @@ build:
   commands:
     - host `curl -s http://httpbin.org/ip | jq -r '.origin'` || true
     - javac -version
-    - /usr/bin/sbt +++$SCALA_VERSION $TEST_SUITE
+    - /usr/bin/sbt ;+++ $SCALA_VERSION $TEST_SUITE ;+++ $SCALA_VERSION $IT_TEST_SUITE
 

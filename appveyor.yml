@@ -1,7 +1,8 @@
 environment:
   global:
     COMPILE: compile test:compile it:compile
-    TEST_SUITE: test "it:testOnly -- -l NoWindows"
+    TEST_SUITE: test
+    IT_TEST_SUITE: "it:testOnly -- -l NoWindows"
   matrix:
     - SCALA_VERSION: 2.10.6
     - SCALA_VERSION: 2.11.8
@@ -32,9 +33,9 @@ install:
   - cmd: SET SCALATEST_PARALLEL_TESTS=2
   - cmd: SET SCALATEST_SLEEP_SCALE_FACTOR=2.0
 build_script:
-  - sbt +++%SCALA_VERSION% %COMPILE%
+  - sbt +++ %SCALA_VERSION% %COMPILE%
 test_script:
-  - sbt +++%SCALA_VERSION% %TEST_SUITE%
+  - sbt ;+++ %SCALA_VERSION% %TEST_SUITE% ;+++ %SCALA_VERSION% %IT_TEST_SUITE%
 cache:
   - C:\Program Files\Java\jdk1.8.0\src.zip
   - C:\sbt\sbt-launcher-packaging-0.13.13
