@@ -8,7 +8,6 @@ import org.scaladebugger.docs.layouts.FrontPage
 object Main {
   def main(args: Array[String]): Unit = {
     val config = new Config(args)
-    println("STYLES: " + org.scaladebugger.docs.styles.FrontPageStyle.styleSheetText)
 
     // Generate before other actions if indicated
     if (config.generate()) {
@@ -25,7 +24,7 @@ object Main {
     if (config.serve()) {
       import unfiltered.request.{Path => UFPath, _}
       import unfiltered.response._
-      val hello = unfiltered.filter.Planify {
+      val hostedContent = unfiltered.filter.Planify {
         case GET(UFPath(path)) => pages.get(path) match {
           case Some(page) => ResponseString(page)
           case None => ResponseString(s"Unknown page: $path")
@@ -33,7 +32,7 @@ object Main {
         case _ =>
           ResponseString("Unknown request")
       }
-      unfiltered.jetty.Server.http(8080).plan(hello).run()
+      unfiltered.jetty.Server.http(8080).plan(hostedContent).run()
     } else if (config.publish()) {
       // TODO: Implement publish using Scala process to run git
     } else {
