@@ -7,4 +7,7 @@ object Colors {
   val EnsimePaleRed = "#f1626b"
   val EnsimeNormalRed = "#ef4551"
   val EnsimeBlack = "#232f3f"
+
+  val FooterBorderLine = "1px solid #eeeeee"
+  val FooterTextGrey = "#bbbbbb"
 }

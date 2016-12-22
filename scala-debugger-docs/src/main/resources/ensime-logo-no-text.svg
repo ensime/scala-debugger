@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+Copyright: 2016 Victoria Leontieva
+Licence: https://creativecommons.org/licenses/by-sa/3.0/
+-->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Ensime_Logo"
+   x="0px"
+   y="0px"
+   viewBox="-33 -60 100.2 114"
+   xml:space="preserve"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="ensime-logo-no-text.svg"
+   width="100.2"
+   height="114"><metadata
+     id="metadata3450"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+     id="defs3448" /><sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1320"
+     inkscape:window-height="820"
+     id="namedview3446"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="3.3112245"
+     inkscape:cx="86.64037"
+     inkscape:cy="74.420493"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Ensime_Logo" /><style
+     type="text/css"
+     id="style3393">
+        .st0{fill:#223140;}
+        .st1{fill:none;}
+        .st2{fill:#232F3F;}
+        .st3{fill:#F1626B;}
+        .st4{fill:#EF4551;}
+</style><g
+     id="Logo_Sign"
+     transform="translate(-11.1,-10.1)"><path
+       id="Rectangle-2"
+       class="st1"
+       d="m 53.1,-11 -25,13.1 -25,-13.1 25,-12.9 25,12.9 z"
+       inkscape:connector-curvature="0"
+       style="fill:none" /><path
+       id="Path-73-Copy-3"
+       class="st2"
+       d="m 28.1,-49.9 0,0 0,0 50,25.9 0,26.1 -50,-26.1 -50,26.1 0,-26.1 25.1,-13 0,0 24.9,-12.9 0,0 z"
+       inkscape:connector-curvature="0"
+       style="fill:#232f3f" /><path
+       id="Path-73-Copy-2"
+       class="st3"
+       d="m 28.1,2.1 -50,-25.9 0,25.9 50,26.1 50,-26.1 0,-25.9 -50,25.9 z"
+       inkscape:connector-curvature="0"
+       style="fill:#f1626b" /><g
+       id="Group-5"
+       transform="matrix(-1,0,0,1,102,75)"><path
+         id="Path-73-Copy-2_1_"
+         class="st4"
+         d="M 48.9,-49.9 99,-24 l -25.2,13.1 -50.1,-26 25.2,-13 z"
+         inkscape:connector-curvature="0"
+         style="fill:#ef4551" /></g><path
+       id="Path-73-Copy-2_2_"
+       class="st3"
+       d="m -21.9,12.1 50,25.9 0,26.1 -50,-26.1 0,-25.9 z"
+       inkscape:connector-curvature="0"
+       style="fill:#f1626b" /></g></svg>

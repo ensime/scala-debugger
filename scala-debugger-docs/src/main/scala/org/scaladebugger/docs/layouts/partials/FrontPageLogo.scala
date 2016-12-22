@@ -9,7 +9,7 @@ import scalatags.Text.all._
  */
 object FrontPageLogo {
   lazy val AHref = "/"
-  lazy val ImgSrc = "data:image/png;base64," + ImageLoader.imageBase64("ensime-logo.png")
+  lazy val ImgSrc = "data:image/svg+xml;utf8," + ImageLoader.imageText("ensime-logo.svg")
   lazy val ImgWidth = "24px"
 
   def apply(): Modifier = {

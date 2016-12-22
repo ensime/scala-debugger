@@ -9,6 +9,18 @@ object ImageLoader {
   private lazy val cl = getClass.getClassLoader
 
   /**
+    * Retrieves the image as a text representation. This is only useful for
+    * SVGs, which are naturally XML documents.
+    * @param name The name of the image
+    * @param rootPath The root path in resources containing the image
+    * @return The string representing the image
+    */
+  def imageText(name: String, rootPath: String = ""): String = {
+    val byteArray = imageBytes(name, rootPath)
+    new String(byteArray)
+  }
+
+  /**
    * Retrieves an image as a byte array.
    * @param name The name of the image
    * @param rootPath The root path in resources containing the image

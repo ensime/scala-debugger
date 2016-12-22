@@ -76,11 +76,11 @@ object FrontPageStyle extends CascadingStyleSheet {
   val footerCls = cls(
     textAlign := "center",
     marginTop := "6em",
-    borderTop := "1px solid #eeeeee",
+    borderTop := Colors.FooterBorderLine,
     padding := "2em 0",
-    color := "#bbbbbb",
+    color := Colors.FooterTextGrey,
     a(
-      color := "#bbbbbb",
+      color := Colors.FooterTextGrey,
       textDecoration := "underline",
       cursor := "pointer"
     )
