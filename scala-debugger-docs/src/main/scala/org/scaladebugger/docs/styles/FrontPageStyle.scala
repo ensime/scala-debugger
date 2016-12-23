@@ -7,6 +7,8 @@ import scalatags.stylesheet._
  * Represents stylesheet for front page.
  */
 object FrontPageStyle extends CascadingStyleSheet {
+  import scalatags.Text.styles2.{content => afterContent}
+
   // Affects everything but html, to be placed on html
   val global = cls(
     body(margin := 0),
@@ -18,59 +20,40 @@ object FrontPageStyle extends CascadingStyleSheet {
     )
   )
 
-  val tabs = cls(
-    padding := "1em",
-    backgroundColor := Colors.EnsimeNormalRed,
-    a(
-      color := Colors.EnsimeBlack,
-      textDecoration := "none"
-    ),
-    ul(
-      margin := 0,
-      padding := 0,
-      listStyleType := "none",
-      textAlign := "center"
-    ),
-    li(
-      display := "inline-block"
-    )
+  /**
+   * Horizontal list.
+   */
+  val menu = cls(
+    display := "inline-block",
+    listStyle := "none",
+    padding := "0",
+    margin := "0",
+    verticalAlign := "baseline",
+    color := Colors.MenuItemTextColor
   )
 
-  val tab = cls(
-    textDecoration := "none",
-    color := Colors.EnsimeBlack,
-    paddingBottom := "13px",
-    margin := "0 1.5em",
-    fontSize := "20px"
-  )
-
-  val splash = cls(
-    padding := "1em",
-    backgroundColor := Colors.EnsimeNormalRed,
-    color := "white",
-    textAlign := "center"
-  )
-
-  val getStarted = cls(
-    a(
-      backgroundColor := Colors.EnsimePaleRed,
-      borderRadius := "6px",
-      minWidth := "120px",
-      padding := "12px 12px",
-      margin := "12px",
+  val menuItem = cls(
+    display := "block",
+    float := "left",
+    padding := "0 0.6em",
+    lineHeight := "60px",
+    //fontFamily := "\"Proxima Nova Regular\", Arial, sans-serif",
+    &.pseudoExtend(":after")(
       display := "inline-block",
-      color := "white",
-      fontSize := "1.5em"
+      afterContent := "'\\f107'",
+      opacity := 0.5,
+      color := "#102429",
+      //font := "normal normal normal 14px/1 FontAwesome",
+      fontSize := "inherit"
     )
   )
 
-  val homeSection = cls(
-    h1(
-      textAlign := "center",
-      fontSize := "3em",
-      marginTop := "100px",
-      marginBottom := "0px"
-    )
+  val headerCls = cls(
+    fontSize := "1.6em",
+    height := "60px",
+    position := "relative",
+    margin := "0 auto",
+    padding := "0 10px"
   )
 
   val footerCls = cls(

@@ -1,6 +1,7 @@
 package org.scaladebugger.docs
 
 import org.scaladebugger.docs.layouts.FrontPage
+import org.scaladebugger.docs.styles.FrontPageStyle
 
 /**
  * Main entrypoint for generating and serving docs.

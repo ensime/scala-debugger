@@ -1,6 +1,6 @@
 package org.scaladebugger.docs.layouts.partials
 
-import org.scaladebugger.docs.ImageLoader
+import org.scaladebugger.docs.extras.Images
 
 import scalatags.Text.all._
 
@@ -9,12 +9,35 @@ import scalatags.Text.all._
  */
 object FrontPageLogo {
   lazy val AHref = "/"
-  lazy val ImgSrc = "data:image/svg+xml;utf8," + ImageLoader.imageText("ensime-logo.svg")
-  lazy val ImgWidth = "24px"
+  lazy val ImgSrc = Images.inlineEnsimeLogoNoText
+  lazy val ImgWidth = "110px"
+  lazy val ImgHeight = "30px"
 
   def apply(): Modifier = {
-    a(href := AHref, position := "absolute", left := "1em", top := "1em")(
-      img(src := ImgSrc, width := ImgWidth)()
+    val q = "\""
+    a(
+      href := AHref,
+      position := "relative",
+      display := "inline-block",
+      lineHeight := "60px",
+      overflow := "hidden",
+      textIndent := "-9999px",
+      width := "123px",
+      verticalAlign := "top",
+      marginRight := "20px"
+    )(
+      img(
+        src := ImgSrc,
+        display := "block",
+        width := ImgWidth,
+        height := ImgHeight,
+        position := "absolute",
+        left := "0",
+        right := "0",
+        top := "0",
+        bottom := "0",
+        margin := "auto"
+      )()
     )
   }
 }
