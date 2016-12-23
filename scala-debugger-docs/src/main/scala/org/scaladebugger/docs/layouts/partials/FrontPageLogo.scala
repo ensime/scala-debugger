@@ -19,9 +19,6 @@ object FrontPageLogo {
       href := AHref,
       position := "relative",
       display := "inline-block",
-      lineHeight := "60px",
-      overflow := "hidden",
-      textIndent := "-9999px",
       width := "123px",
       verticalAlign := "top",
       marginRight := "20px"

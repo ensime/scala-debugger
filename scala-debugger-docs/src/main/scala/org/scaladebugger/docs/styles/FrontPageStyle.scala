@@ -20,6 +20,11 @@ object FrontPageStyle extends CascadingStyleSheet {
     )
   )
 
+  val menuBar = cls(
+    display := flex.cssName,
+    alignItems := "center"
+  )
+
   /**
    * Horizontal list.
    */
@@ -37,13 +42,18 @@ object FrontPageStyle extends CascadingStyleSheet {
     float := "left",
     padding := "0 0.6em",
     lineHeight := "60px",
-    //fontFamily := "\"Proxima Nova Regular\", Arial, sans-serif",
+    fontFamily := "'Proxima Nova Regular', Arial, sans-serif",
+    fontSize := "16px",
+    a(
+      color := "#626161",
+      textDecoration := "none"
+    ),
     &.pseudoExtend(":after")(
       display := "inline-block",
       afterContent := "'\\f107'",
       opacity := 0.5,
       color := "#102429",
-      //font := "normal normal normal 14px/1 FontAwesome",
+      font := "normal normal normal 14px/1 FontAwesome",
       fontSize := "inherit"
     )
   )

@@ -14,23 +14,21 @@ object FrontPage extends Layout {
     html(FrontPageStyle.global)(
       head(
         meta(charset := "utf-8"),
-        tag("style")({
-          println(FrontPageStyle.styleSheetText)
-          FrontPageStyle.styleSheetText
-        })
+        FontAwesome(),
+        tag("style")(FrontPageStyle.styleSheetText)
       ),
       body()(
         FrontPageHeader(
-          FrontPageLogo(),
-          FrontPageMenu(
-            MenuItem(name = "test1"),
-            MenuItem(name = "test2"),
-            MenuItem(name = "test3")
+          FrontPageMenuBar(
+            FrontPageLogo(),
+            FrontPageMenu(
+              MenuItem(name = "test1"),
+              MenuItem(name = "test2"),
+              MenuItem(name = "test3")
+            )
           )
         ),
-        FrontPageContent(
-          img(src := Images.inlineEnsimeLogoNoText)
-        ),
+        FrontPageContent(),
         FrontPageFooter()
       )
     )
