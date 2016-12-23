@@ -34,7 +34,8 @@ object FrontPageLogo {
         top := "0",
         bottom := "0",
         margin := "auto"
-      )()
+      )(),
+      span("Scala Debugger")
     )
   }
 }

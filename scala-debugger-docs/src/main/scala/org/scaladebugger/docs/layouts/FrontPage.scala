@@ -22,9 +22,11 @@ object FrontPage extends Layout {
           FrontPageMenuBar(
             FrontPageLogo(),
             FrontPageMenu(
-              MenuItem(name = "test1"),
-              MenuItem(name = "test2"),
-              MenuItem(name = "test3")
+              MenuItem(name = "Products"),
+              MenuItem(name = "Why Fitbit"),
+              MenuItem(name = "Get Motivated"),
+              MenuItem(name = "App & Dashboard"),
+              MenuItem(name = "Help")
             )
           )
         ),
