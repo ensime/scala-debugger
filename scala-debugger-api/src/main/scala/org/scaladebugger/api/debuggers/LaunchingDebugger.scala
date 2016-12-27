@@ -155,8 +155,15 @@ class LaunchingDebugger private[api] (
     // Kill the process associated with the local virtual machine
     logger.info("Shutting down process: " +
       (className +: commandLineArguments).mkString(" "))
-    scalaVirtualMachine.map(_.underlyingVirtualMachine)
-      .foreach(_.process().destroy())
+    scalaVirtualMachine.map(_.underlyingVirtualMachine.process()).foreach(p => {
+      p.destroy()
+
+      // NOTE: Hack to force process shutdown
+      // TODO: This uses JDK8 method (waitFor), so need to remove
+      import java.util.concurrent.TimeUnit
+      val exitVal = p.waitFor(10, TimeUnit.SECONDS)
+      if (!exitVal) println("XXXXX failed to shut down nicely ")
+    })
 
     // Wipe our reference to the old virtual machine
     scalaVirtualMachine.foreach(scalaVirtualMachineManager.remove)

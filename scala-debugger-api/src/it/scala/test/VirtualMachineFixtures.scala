@@ -1,28 +1,17 @@
 package test
 
-import java.io.{BufferedReader, InputStreamReader}
-import java.util.concurrent.atomic.AtomicBoolean
-
-import com.sun.jdi.event.VMStartEvent
 import org.scaladebugger.api.debuggers.LaunchingDebugger
-import org.scaladebugger.api.lowlevel.ManagerContainer
-import org.scaladebugger.api.lowlevel.events.EventType
-import org.scaladebugger.api.profiles.ProfileManager
-import org.scaladebugger.api.utils.{JDITools, Logging, LoopingTaskRunner}
-import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, StandardScalaVirtualMachine}
-import EventType._
-import com.sun.jdi.VirtualMachine
-import org.scalatest.concurrent.Eventually
-
-import scala.concurrent.Future
-import scala.io.Source
-import scala.util.Try
+import org.scaladebugger.api.utils.{JDITools, Logging}
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ControlledParallelSuite
 
 /**
  * Provides fixture methods to provide virtual machines running specified
  * files.
  */
 trait VirtualMachineFixtures extends ApiTestUtilities with Logging {
+  this: ControlledParallelSuite =>
+
   /**
    * Creates a new virtual machine with the specified class and arguments.
    *
@@ -66,7 +55,7 @@ trait VirtualMachineFixtures extends ApiTestUtilities with Logging {
     pendingScalaVirtualMachines: Seq[ScalaVirtualMachine] = Nil
   )(
     testCode: (ScalaVirtualMachine, () => Unit) => Any
-  ): Unit = {
+  ): Unit = semaSync("withLazyVirtualMachine") {
     val launchingDebugger = LaunchingDebugger(
       className             = className,
       commandLineArguments  = arguments,
@@ -85,6 +74,9 @@ trait VirtualMachineFixtures extends ApiTestUtilities with Logging {
 
         testCode(s, startFunc)
       } finally {
+        // NOTE: Hack to get processes to exit
+        // TODO: Doesn't seem to affect overall test run via it:test
+        Thread.sleep(1000)
         launchingDebugger.stop()
       }
     })

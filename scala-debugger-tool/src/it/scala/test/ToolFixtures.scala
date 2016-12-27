@@ -4,6 +4,7 @@ import java.io.IOException
 
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.utils.{JDITools, Logging}
+import org.scaladebugger.test.helpers.ControlledParallelSuite
 import org.scaladebugger.tool.Repl
 import org.scaladebugger.tool.backend.StateManager
 import org.scaladebugger.tool.frontend.VirtualTerminal
@@ -14,7 +15,9 @@ import scala.util.Try
 /**
  * Provides fixture methods to provide CLI tools connecting to remote JVMs.
  */
-trait ToolFixtures extends ToolTestUtilities with Logging { this: Matchers =>
+trait ToolFixtures extends ToolTestUtilities with Logging {
+  this: Matchers with ControlledParallelSuite =>
+
   private lazy val sleepScaleFactor =
     Try(System.getenv("SCALATEST_SLEEP_SCALE_FACTOR").toDouble).getOrElse(1.0)
 
@@ -31,7 +34,7 @@ trait ToolFixtures extends ToolTestUtilities with Logging { this: Matchers =>
     className: String,
     arguments: Seq[String] = Nil,
     suspend: Boolean = true
-  )(testCode: (Int) => Any): Unit = {
+  )(testCode: (Int) => Any): Unit = semaSync("withProcessPort") {
     var process: Option[Process] = None
     try {
       val port = JDITools.findOpenPort()
@@ -76,7 +79,7 @@ trait ToolFixtures extends ToolTestUtilities with Logging { this: Matchers =>
   def withProcessPid(
     className: String,
     arguments: Seq[String] = Nil
-  )(testCode: (Int) => Any): Unit = {
+  )(testCode: (Int) => Any): Unit = semaSync("withProcessPid") {
     var process: Option[Process] = None
     try {
       val (pid, proc) = JDITools.spawnAndGetPid(
