@@ -10,7 +10,7 @@ object FrontPageStyle extends CascadingStyleSheet {
   import scalatags.Text.styles2.{content => afterContent}
 
   // Affects everything but html, to be placed on html
-  val global = cls(
+  lazy val global: Cls = cls(
     body(margin := 0),
     a(textDecoration := "none"),
     h1(
@@ -20,15 +20,12 @@ object FrontPageStyle extends CascadingStyleSheet {
     )
   )
 
-  val menuBar = cls(
+  lazy val menuBar: Cls = cls(
     display := flex.cssName,
     alignItems := "center"
   )
 
-  /**
-   * Horizontal list.
-   */
-  val menu = cls(
+  lazy val menu: Cls = cls(
     display := "inline-block",
     listStyle := "none",
     padding := "0",
@@ -37,17 +34,31 @@ object FrontPageStyle extends CascadingStyleSheet {
     color := Colors.MenuItemTextColor
   )
 
-  val menuItem = cls(
+  lazy val menuItem: Cls = cls(
     display := "block",
+    position := "relative",
+
+    textTransform := "uppercase",
+    whiteSpace := "nowrap",
     float := "left",
     padding := "0 0.6em",
-    lineHeight := "60px",
     fontFamily := "'Proxima Nova Regular', Arial, sans-serif",
-    fontSize := "16px",
+    fontSize := "0.6em",
     a(
       color := "#626161",
-      textDecoration := "none"
+      textDecoration := "none",
+      &.hover(
+        color := "#00afb8"
+      )
     ),
+    &.hover(
+      clsSelector(menuItemExpand)(
+        display := "block"
+      )
+    )
+  )
+
+  lazy val menuItemWithChildren: Cls = cls(
     &.pseudoExtend(":after")(
       display := "inline-block",
       afterContent := "'\\f107'",
@@ -58,7 +69,23 @@ object FrontPageStyle extends CascadingStyleSheet {
     )
   )
 
-  val headerCls = cls(
+  lazy val menuItemExpand: Cls = cls(
+    position := "absolute",
+    display := "none",
+    border := "1px solid #102429",
+    borderRadius := "5px",
+    top := "1em",
+    left := "0em",
+
+    zIndex := "9999",
+    backgroundColor := "#fff",
+    lineHeight := "1.1em",
+    margin := "0",
+    padding := "0",
+    verticalAlign := "baseline"
+  )
+
+  lazy val headerCls: Cls = cls(
     fontSize := "1.6em",
     height := "60px",
     position := "relative",
@@ -66,7 +93,7 @@ object FrontPageStyle extends CascadingStyleSheet {
     padding := "0 10px"
   )
 
-  val footerCls = cls(
+  lazy val footerCls: Cls = cls(
     textAlign := "center",
     marginTop := "6em",
     borderTop := Colors.FooterBorderLine,

@@ -1,6 +1,7 @@
 package org.scaladebugger.docs.layouts.partials
 
 import org.scaladebugger.docs.extras.Images
+import org.scaladebugger.docs.styles.Colors
 
 import scalatags.Text.all._
 
@@ -10,32 +11,29 @@ import scalatags.Text.all._
 object FrontPageLogo {
   lazy val AHref = "/"
   lazy val ImgSrc = Images.inlineEnsimeLogoNoText
-  lazy val ImgWidth = "110px"
-  lazy val ImgHeight = "30px"
 
   def apply(): Modifier = {
     val q = "\""
     a(
+      display := flex.cssName,
+      alignItems := "center",
+      justifyContent := "space-around",
+
       href := AHref,
       position := "relative",
-      display := "inline-block",
-      width := "123px",
+      width := "250px",
       verticalAlign := "top",
-      marginRight := "20px"
+      marginRight := "20px",
+
+      color := Colors.EnsimeBlack,
+      textDecoration := "none"
     )(
       img(
         src := ImgSrc,
         display := "block",
-        width := ImgWidth,
-        height := ImgHeight,
-        position := "absolute",
-        left := "0",
-        right := "0",
-        top := "0",
-        bottom := "0",
-        margin := "auto"
+        height := "2em"
       )(),
-      span("Scala Debugger")
+      span(whiteSpace := "nowrap", height := "1em")("Scala Debugger")
     )
   }
 }
