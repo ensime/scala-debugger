@@ -1,10 +1,11 @@
 package org.scaladebugger.api.lowlevel.requests.filters
 
 import com.sun.jdi.ThreadReference
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class ThreadFilterSpec extends test.ParallelMockFunSpec
+class ThreadFilterSpec extends ParallelMockFunSpec
 {
   private val mockThreadReference = mock[ThreadReference]
   private val threadFilter = ThreadFilter(threadReference = mockThreadReference)

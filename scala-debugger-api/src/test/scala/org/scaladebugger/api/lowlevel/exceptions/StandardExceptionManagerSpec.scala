@@ -2,12 +2,14 @@ package org.scaladebugger.api.lowlevel.exceptions
 
 import com.sun.jdi.{ReferenceType, VirtualMachine}
 import com.sun.jdi.request.{EventRequest, EventRequestManager, ExceptionRequest}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success}
 
-class StandardExceptionManagerSpec extends test.ParallelMockFunSpec
+class StandardExceptionManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockReferenceType = mock[ReferenceType]

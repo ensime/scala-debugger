@@ -1,13 +1,14 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.{ObjectReference, ThreadGroupReference, ThreadReference}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestGrabInfoProfile
 
 import scala.util.Success
 
-class GrabInfoSpec extends test.ParallelMockFunSpec
+class GrabInfoSpec extends ParallelMockFunSpec
 {
   describe("GrabInfoProfile") {
     describe("#tryObject(objectReference)") {

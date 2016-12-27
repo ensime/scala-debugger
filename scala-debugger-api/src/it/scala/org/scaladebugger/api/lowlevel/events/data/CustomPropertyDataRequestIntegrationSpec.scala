@@ -1,22 +1,19 @@
 package org.scaladebugger.api.lowlevel.events.data
 
 import com.sun.jdi.event.BreakpointEvent
-import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.EventType
+import org.scaladebugger.api.lowlevel.events.EventType._
 import org.scaladebugger.api.lowlevel.events.data.requests.CustomPropertyDataRequest
 import org.scaladebugger.api.lowlevel.events.data.results.CustomPropertyDataResult
-import org.scaladebugger.api.lowlevel.events.filters.CustomPropertyFilter
 import org.scaladebugger.api.lowlevel.requests.properties.CustomProperty
+import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
-import EventType._
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class CustomPropertyDataRequestIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class CustomPropertyDataRequestIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("CustomPropertyDataRequest") {
     it("should retrieve the custom property if available") {

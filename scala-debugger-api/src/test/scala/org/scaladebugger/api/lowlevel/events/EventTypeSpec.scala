@@ -2,11 +2,11 @@ package org.scaladebugger.api.lowlevel.events
 
 import com.sun.jdi.event._
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{Matchers, FunSpec}
-
+import org.scalatest.{FunSpec, Matchers}
 import EventType._
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class EventTypeSpec extends FunSpec with Matchers with MockFactory {
+class EventTypeSpec extends ParallelMockFunSpec {
   describe("EventType") {
     describe("#eventToEventType") {
       it("should convert a VMStartEvent to Some(VMStartEventType)") {

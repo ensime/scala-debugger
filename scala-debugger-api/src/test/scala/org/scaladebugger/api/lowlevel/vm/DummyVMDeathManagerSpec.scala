@@ -3,8 +3,9 @@ package org.scaladebugger.api.lowlevel.vm
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.DummyOperationException
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class DummyVMDeathManagerSpec extends test.ParallelMockFunSpec
+class DummyVMDeathManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val vmDeathManager = new DummyVMDeathManager

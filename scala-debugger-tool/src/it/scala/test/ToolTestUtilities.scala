@@ -9,7 +9,7 @@ import org.scalatest.{Assertion, Matchers}
 /**
  * Contains helper methods for testing.
  */
-trait TestUtilities { this: Logging with Matchers =>
+trait ToolTestUtilities { this: Logging with Matchers =>
   /**
    * Executes the block of code and logs the time taken to evaluate it.
    *
@@ -35,9 +35,9 @@ trait TestUtilities { this: Logging with Matchers =>
    * @return The new virtual terminal instance
    */
   def newVirtualTerminal(): VirtualTerminal = new VirtualTerminal(
-    inputQueue = new ArrayBlockingQueue[String](Constants.DefaultMaxInputQueueSize),
-    outputQueue = new ArrayBlockingQueue[String](Constants.DefaultMaxOutputQueueSize),
-    waitTime = Constants.NewInputLineTimeout.millisPart
+    inputQueue = new ArrayBlockingQueue[String](ToolConstants.DefaultMaxInputQueueSize),
+    outputQueue = new ArrayBlockingQueue[String](ToolConstants.DefaultMaxOutputQueueSize),
+    waitTime = ToolConstants.NewInputLineTimeout.millisPart
   )
 
   /**
@@ -47,7 +47,7 @@ trait TestUtilities { this: Logging with Matchers =>
    * @return Some line of text if found in time, otherwise None
    */
   def nextLine(vt: VirtualTerminal): Option[String] = {
-    val waitTime = Constants.NextOutputLineTimeout.millisPart
+    val waitTime = ToolConstants.NextOutputLineTimeout.millisPart
     vt.nextOutputLine(waitTime = waitTime)
   }
 

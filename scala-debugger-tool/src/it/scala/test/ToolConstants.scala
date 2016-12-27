@@ -4,9 +4,9 @@ import org.scalatest.Tag
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 
 /**
- * Constants for our tests.
+ * ToolConstants for our tests.
  */
-object Constants {
+object ToolConstants {
   val DefaultMaxInputQueueSize = 50000
   val DefaultMaxOutputQueueSize = 50000
   val AccumulationTimeout = Span(500, Milliseconds)

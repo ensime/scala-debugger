@@ -4,11 +4,12 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.utils.{ActionInfo, PendingActionManager}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.{JDIMockHelpers, TestAccessWatchpointManager}
 
 import scala.util.{Failure, Success}
 
-class PendingAccessWatchpointSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PendingAccessWatchpointSupportSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockAccessWatchpointManager = mock[AccessWatchpointManager]

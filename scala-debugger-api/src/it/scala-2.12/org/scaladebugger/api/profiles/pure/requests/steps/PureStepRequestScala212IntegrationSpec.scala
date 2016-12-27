@@ -1,16 +1,16 @@
 package org.scaladebugger.api.profiles.pure.requests.steps
 
 import org.scaladebugger.api.profiles.traits.info.ThreadInfo
-import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.Seconds
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureStepRequestScala212IntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+class PureStepRequestScala212IntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
+  with Eventually
 {
   describe("PureStepRequest for 2.12") {
     describe("stepping over") {

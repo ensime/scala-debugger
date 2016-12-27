@@ -4,8 +4,9 @@ import com.sun.jdi.request._
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.properties.EnabledProperty
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class EnabledPropertyProcessorSpec extends test.ParallelMockFunSpec
+class EnabledPropertyProcessorSpec extends ParallelMockFunSpec
 {
   private val testValue = false
   private val enabledProperty = EnabledProperty(value = testValue)

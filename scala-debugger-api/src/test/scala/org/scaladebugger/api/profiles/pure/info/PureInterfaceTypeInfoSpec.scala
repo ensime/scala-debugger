@@ -3,10 +3,11 @@ package org.scaladebugger.api.profiles.pure.info
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info.{ClassTypeInfo, InfoProducer, InterfaceTypeInfo, TypeInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class PureInterfaceTypeInfoSpec extends test.ParallelMockFunSpec
+class PureInterfaceTypeInfoSpec extends ParallelMockFunSpec
 {
   private val mockNewInterfaceTypeProfile = mockFunction[InterfaceType, InterfaceTypeInfo]
   private val mockNewClassTypeProfile = mockFunction[ClassType, ClassTypeInfo]

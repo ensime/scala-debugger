@@ -1,12 +1,9 @@
 package org.scaladebugger.api.profiles
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
 import org.scaladebugger.api.profiles.traits.DebugProfile
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class StandardProfileManagerSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class StandardProfileManagerSpec extends ParallelMockFunSpec {
 
   private val profileManager = new StandardProfileManager
 

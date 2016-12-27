@@ -1,21 +1,20 @@
 package org.scaladebugger.tool.commands
 
-import java.net.URI
 import java.nio.file.Paths
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scaladebugger.tool.Repl
-import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
+import test.{ToolConstants, ToolFixtures, ToolTestUtilities}
 
-class SourcepathClearCommandIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with ToolFixtures with MockFactory
-  with TestUtilities with Eventually with FixedParallelSuite
+class SourcepathClearCommandIntegrationSpec extends ParallelMockFunSpec
+  with ToolFixtures
+  with ToolTestUtilities
+  with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Constants.EventuallyTimeout),
-    interval = scaled(Constants.EventuallyInterval)
+    timeout = scaled(ToolConstants.EventuallyTimeout),
+    interval = scaled(ToolConstants.EventuallyInterval)
   )
 
   describe("SourcepathCommand") {

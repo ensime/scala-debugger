@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitEventInfo
 import org.scaladebugger.api.profiles.traits.requests.monitors.MonitorWaitRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class MonitorWaitDSLWrapperSpec extends test.ParallelMockFunSpec
+class MonitorWaitDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockMonitorWaitProfile = mock[MonitorWaitRequest]
 

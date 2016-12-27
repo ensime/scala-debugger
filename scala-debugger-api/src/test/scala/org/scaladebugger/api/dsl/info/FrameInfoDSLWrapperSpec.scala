@@ -3,12 +3,13 @@ package org.scaladebugger.api.dsl.info
 import com.sun.jdi.StackFrame
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.{Success, Try}
 
-class FrameInfoDSLWrapperSpec extends test.ParallelMockFunSpec
+class FrameInfoDSLWrapperSpec extends ParallelMockFunSpec
 {
   // NOTE: Cannot mock Function0 with no parentheses
   //private val mockFrameInfoProfile = mock[FrameInfo]

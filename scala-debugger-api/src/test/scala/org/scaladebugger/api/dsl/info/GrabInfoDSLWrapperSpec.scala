@@ -1,13 +1,14 @@
 package org.scaladebugger.api.dsl.info
 
 import com.sun.jdi.ThreadReference
-import org.scaladebugger.api.profiles.traits.info.{ThreadInfo, GrabInfoProfile}
+import org.scaladebugger.api.profiles.traits.info.{GrabInfoProfile, ThreadInfo}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.Success
 
-class GrabInfoDSLWrapperSpec extends test.ParallelMockFunSpec
+class GrabInfoDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockGrabInfoProfile = mock[GrabInfoProfile]
 

@@ -3,11 +3,12 @@ package org.scaladebugger.api.lowlevel.exceptions
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.TestExceptionManager
 
 import scala.util.Success
 
-class ExceptionManagerSpec extends test.ParallelMockFunSpec
+class ExceptionManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockExceptionManager = mock[ExceptionManager]

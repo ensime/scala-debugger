@@ -3,11 +3,12 @@ package org.scaladebugger.api.lowlevel.classes
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.TestClassPrepareManager
 
 import scala.util.Success
 
-class ClassPrepareManagerSpec extends test.ParallelMockFunSpec
+class ClassPrepareManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockClassPrepareManager = mock[ClassPrepareManager]

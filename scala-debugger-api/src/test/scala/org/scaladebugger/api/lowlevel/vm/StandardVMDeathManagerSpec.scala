@@ -7,10 +7,11 @@ import com.sun.jdi.request.{EventRequest, EventRequestManager, VMDeathRequest}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.{JDIRequestArgument, JDIRequestProcessor}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success}
 
-class StandardVMDeathManagerSpec extends test.ParallelMockFunSpec
+class StandardVMDeathManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

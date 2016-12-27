@@ -1,20 +1,13 @@
 package org.scaladebugger.api.profiles.pure.requests.steps
-import java.util.concurrent.atomic.AtomicBoolean
-
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.profiles.traits.info.ThreadInfo
-import org.scaladebugger.api.utils.JDITools
-import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine}
-import org.scalatest.concurrent.Eventually
-import org.scalatest.concurrent.PatienceConfiguration.{Interval, Timeout}
-import org.scalatest.time.{Milliseconds, Seconds, Span, Units}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.Constants._
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import org.scalatest.time.Seconds
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureStepRequestIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class PureStepRequestIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("PureStepRequest") {
     describe("stepping out of") {

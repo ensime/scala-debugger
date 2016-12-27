@@ -5,8 +5,9 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.JDIEventArgument
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class JDIArgumentGroupSpec extends test.ParallelMockFunSpec
+class JDIArgumentGroupSpec extends ParallelMockFunSpec
 {
   describe("JDIArgumentGroup") {
     describe("#apply") {

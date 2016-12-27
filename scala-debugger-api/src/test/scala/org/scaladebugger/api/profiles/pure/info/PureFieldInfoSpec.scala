@@ -3,11 +3,12 @@ package org.scaladebugger.api.profiles.pure.info
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestMiscInfoTrait
 
-class PureFieldInfoSpec extends test.ParallelMockFunSpec
+class PureFieldInfoSpec extends ParallelMockFunSpec
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfo]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]

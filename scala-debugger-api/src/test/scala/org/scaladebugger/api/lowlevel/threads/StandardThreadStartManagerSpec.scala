@@ -5,11 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.sun.jdi.request.{EventRequest, EventRequestManager, ThreadStartRequest}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.requests.{JDIRequestProcessor, JDIRequestArgument}
+import org.scaladebugger.api.lowlevel.requests.{JDIRequestArgument, JDIRequestProcessor}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success}
 
-class StandardThreadStartManagerSpec extends test.ParallelMockFunSpec
+class StandardThreadStartManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

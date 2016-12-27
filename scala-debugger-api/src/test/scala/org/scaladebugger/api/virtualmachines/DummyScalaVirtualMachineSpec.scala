@@ -2,20 +2,21 @@ package org.scaladebugger.api.virtualmachines
 
 import org.scaladebugger.api.profiles.traits.DebugProfile
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
-import org.scaladebugger.api.lowlevel.breakpoints.{PendingBreakpointSupport, DummyBreakpointManager}
-import org.scaladebugger.api.lowlevel.classes.{PendingClassUnloadSupport, DummyClassUnloadManager, PendingClassPrepareSupport, DummyClassPrepareManager}
-import org.scaladebugger.api.lowlevel.events.{PendingEventHandlerSupport, DummyEventManager}
-import org.scaladebugger.api.lowlevel.exceptions.{PendingExceptionSupport, DummyExceptionManager}
-import org.scaladebugger.api.lowlevel.methods.{PendingMethodExitSupport, DummyMethodExitManager, PendingMethodEntrySupport, DummyMethodEntryManager}
+import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.api.lowlevel.breakpoints.{DummyBreakpointManager, PendingBreakpointSupport}
+import org.scaladebugger.api.lowlevel.classes.{DummyClassPrepareManager, DummyClassUnloadManager, PendingClassPrepareSupport, PendingClassUnloadSupport}
+import org.scaladebugger.api.lowlevel.events.{DummyEventManager, PendingEventHandlerSupport}
+import org.scaladebugger.api.lowlevel.exceptions.{DummyExceptionManager, PendingExceptionSupport}
+import org.scaladebugger.api.lowlevel.methods.{DummyMethodEntryManager, DummyMethodExitManager, PendingMethodEntrySupport, PendingMethodExitSupport}
 import org.scaladebugger.api.lowlevel.monitors._
-import org.scaladebugger.api.lowlevel.steps.{PendingStepSupport, DummyStepManager}
-import org.scaladebugger.api.lowlevel.threads.{PendingThreadStartSupport, DummyThreadStartManager, PendingThreadDeathSupport, DummyThreadDeathManager}
-import org.scaladebugger.api.lowlevel.vm.{PendingVMDeathSupport, DummyVMDeathManager}
-import org.scaladebugger.api.lowlevel.watchpoints.{PendingModificationWatchpointSupport, DummyModificationWatchpointManager, PendingAccessWatchpointSupport, DummyAccessWatchpointManager}
+import org.scaladebugger.api.lowlevel.steps.{DummyStepManager, PendingStepSupport}
+import org.scaladebugger.api.lowlevel.threads.{DummyThreadDeathManager, DummyThreadStartManager, PendingThreadDeathSupport, PendingThreadStartSupport}
+import org.scaladebugger.api.lowlevel.vm.{DummyVMDeathManager, PendingVMDeathSupport}
+import org.scaladebugger.api.lowlevel.watchpoints.{DummyAccessWatchpointManager, DummyModificationWatchpointManager, PendingAccessWatchpointSupport, PendingModificationWatchpointSupport}
 import org.scaladebugger.api.profiles.ProfileManager
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class DummyScalaVirtualMachineSpec extends test.ParallelMockFunSpec
+class DummyScalaVirtualMachineSpec extends ParallelMockFunSpec
 {
   private val mockScalaVirtualMachineManager = mock[ScalaVirtualMachineManager]
   private val mockProfileManager = mock[ProfileManager]

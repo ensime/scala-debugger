@@ -2,19 +2,20 @@ package org.scaladebugger.tool.commands
 
 import java.nio.file.Paths
 
+import org.scaladebugger.test.helpers.FixedParallelSuite
 import org.scaladebugger.tool.Repl
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
+import test.{ToolConstants, ToolTestUtilities, ToolFixtures}
 
 class SourcepathCommandIntegrationSpec extends FunSpec with Matchers
   with ParallelTestExecution with ToolFixtures with MockFactory
-  with TestUtilities with Eventually with FixedParallelSuite
+  with ToolTestUtilities with Eventually with FixedParallelSuite
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Constants.EventuallyTimeout),
-    interval = scaled(Constants.EventuallyInterval)
+    timeout = scaled(ToolConstants.EventuallyTimeout),
+    interval = scaled(ToolConstants.EventuallyInterval)
   )
 
   describe("SourcepathCommand") {
@@ -64,7 +65,7 @@ class SourcepathCommandIntegrationSpec extends FunSpec with Matchers
       vt.newInputLine("sourcepath")
 
       val line = vt.nextOutputLine(
-        waitTime = Constants.NextOutputLineTimeout.millisPart
+        waitTime = ToolConstants.NextOutputLineTimeout.millisPart
       )
       val s = java.io.File.pathSeparator
       line.get should be (s"Source paths: a${s}b${s}c\n")

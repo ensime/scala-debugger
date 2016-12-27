@@ -1,6 +1,8 @@
 package org.scaladebugger.api.profiles.pure.info
 
-class PureInfoProducerSpec extends test.ParallelMockFunSpec {
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+
+class PureInfoProducerSpec extends ParallelMockFunSpec {
   private val pureInfoProducerProfile = new PureInfoProducer
 
   describe("PureInfoProducer") {

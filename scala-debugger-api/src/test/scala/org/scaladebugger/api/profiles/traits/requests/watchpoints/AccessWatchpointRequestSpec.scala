@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.watchpoints.AccessWatchpointRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.AccessWatchpointEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class AccessWatchpointRequestSpec extends test.ParallelMockFunSpec
+class AccessWatchpointRequestSpec extends ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

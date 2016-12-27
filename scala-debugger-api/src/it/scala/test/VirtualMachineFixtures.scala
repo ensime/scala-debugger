@@ -22,7 +22,7 @@ import scala.util.Try
  * Provides fixture methods to provide virtual machines running specified
  * files.
  */
-trait VirtualMachineFixtures extends TestUtilities with Logging {
+trait VirtualMachineFixtures extends ApiTestUtilities with Logging {
   /**
    * Creates a new virtual machine with the specified class and arguments.
    *

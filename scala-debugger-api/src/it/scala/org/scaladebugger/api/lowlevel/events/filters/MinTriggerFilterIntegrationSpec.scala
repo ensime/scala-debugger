@@ -1,18 +1,16 @@
 package org.scaladebugger.api.lowlevel.events.filters
 
 import com.sun.jdi.event.BreakpointEvent
-import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.EventType
+import org.scaladebugger.api.lowlevel.events.EventType._
+import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
-import EventType._
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class MinTriggerFilterIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class MinTriggerFilterIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("MinTriggerFilter") {
     it("should ignore the first N events for a handler using MinTriggerFilter(N)") {

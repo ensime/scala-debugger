@@ -1,12 +1,13 @@
 package org.scaladebugger.api.lowlevel.methods
 import com.sun.jdi.request.{EventRequest, EventRequestManager, MethodExitRequest}
 import org.scaladebugger.api.lowlevel.classes.ClassManager
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.util.{Failure, Success}
 
-class StandardMethodExitManagerSpec extends test.ParallelMockFunSpec
+class StandardMethodExitManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

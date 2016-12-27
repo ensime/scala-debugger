@@ -1,13 +1,14 @@
 package org.scaladebugger.api.lowlevel.utils
 
 import com.sun.jdi._
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
-class JDIHelperMethodsSpec extends test.ParallelMockFunSpec
+class JDIHelperMethodsSpec extends ParallelMockFunSpec
 {
   private val mockReferenceType = mock[ReferenceType]
   private val mockThreadReference = mock[ThreadReference]

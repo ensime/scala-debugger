@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.MethodEntryEventInfo
 import org.scaladebugger.api.profiles.traits.requests.methods.MethodEntryRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class MethodEntryDSLWrapperSpec extends test.ParallelMockFunSpec
+class MethodEntryDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockMethodEntryProfile = mock[MethodEntryRequest]
 

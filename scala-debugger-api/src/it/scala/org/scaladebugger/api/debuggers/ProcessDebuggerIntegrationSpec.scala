@@ -1,46 +1,47 @@
 package org.scaladebugger.api.debuggers
 import java.io.IOException
-
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{BeforeAndAfter, FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class ProcessDebuggerIntegrationSpec extends FunSpec with Matchers
-  with BeforeAndAfter with VirtualMachineFixtures
-  with TestUtilities
-  with ParallelTestExecution
+import scala.util.Try
+
+class ProcessDebuggerIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
-  @volatile private var jvmProcess: (Int, Process) = _
-
-  before {
-    jvmProcess = createProcess()
-  }
-
-  after {
-    if (jvmProcess != null) destroyProcess(jvmProcess._2)
-  }
-
   describe("ProcessDebugger") {
     it("should be able to attach to a running JVM process") {
-      val processDebugger = ProcessDebugger(jvmProcess._1)
+      withProcess((pid, process) => {
+        val processDebugger = ProcessDebugger(pid)
 
-      val attachedToVirtualMachine = new AtomicBoolean(false)
+        val attachedToVirtualMachine = new AtomicBoolean(false)
 
-      // Need to keep retrying until process is ready to be attached to
-      // NOTE: If unable to connect, ensure that hostname is "localhost"
-      eventually {
-        processDebugger.start(_ => attachedToVirtualMachine.set(true))
-      }
+        // Need to keep retrying until process is ready to be attached to
+        // NOTE: If unable to connect, ensure that hostname is "localhost"
+        eventually {
+          processDebugger.start(_ => attachedToVirtualMachine.set(true))
+        }
 
-      // Keep checking back until we have successfully attached
-      eventually {
-        attachedToVirtualMachine.get() should be (true)
-      }
+        // Keep checking back until we have successfully attached
+        eventually {
+          attachedToVirtualMachine.get() should be (true)
+        }
+      })
     }
+  }
+
+  /** Pid, Process */
+  private def withProcess[T](testCode: (Int, Process) => T): T = {
+    val jvmProcess = createProcess()
+
+    val result = Try(testCode(jvmProcess._1, jvmProcess._2))
+
+    destroyProcess(jvmProcess._2)
+
+    result.get
   }
 
   private def createProcess(): (Int, Process) = {

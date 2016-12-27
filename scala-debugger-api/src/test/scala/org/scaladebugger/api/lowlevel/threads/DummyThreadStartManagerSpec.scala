@@ -3,8 +3,9 @@ package org.scaladebugger.api.lowlevel.threads
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.DummyOperationException
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class DummyThreadStartManagerSpec extends test.ParallelMockFunSpec
+class DummyThreadStartManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val threadStartManager = new DummyThreadStartManager

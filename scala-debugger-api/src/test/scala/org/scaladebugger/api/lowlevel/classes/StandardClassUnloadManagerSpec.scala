@@ -2,14 +2,15 @@ package org.scaladebugger.api.lowlevel.classes
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.sun.jdi.request.{EventRequest, EventRequestManager, ClassUnloadRequest}
+import com.sun.jdi.request.{ClassUnloadRequest, EventRequest, EventRequestManager}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.{JDIRequestArgument, JDIRequestProcessor}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success}
 
-class StandardClassUnloadManagerSpec extends test.ParallelMockFunSpec
+class StandardClassUnloadManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

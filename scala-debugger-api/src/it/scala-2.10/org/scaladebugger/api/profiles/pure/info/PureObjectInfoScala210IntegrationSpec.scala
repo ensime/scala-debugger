@@ -5,13 +5,14 @@ import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.profiles.traits.info.ThreadInfo
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureObjectInfoScala210IntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+class PureObjectInfoScala210IntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
+  with Eventually
 {
   describe("PureObjectInfo for 2.10") {
     it("should be able to get a list of methods for the object") {

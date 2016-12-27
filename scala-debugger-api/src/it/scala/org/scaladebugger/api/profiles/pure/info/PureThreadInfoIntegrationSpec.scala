@@ -1,18 +1,16 @@
 package org.scaladebugger.api.profiles.pure.info
 
-import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.profiles.traits.info.{IndexedVariableInfo, ThreadInfo}
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureThreadInfoIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class PureThreadInfoIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("PureThreadInfo") {
     it("should be able to get a list of frames for the suspended thread") {

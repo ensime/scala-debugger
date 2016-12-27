@@ -6,8 +6,9 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.filters._
 import org.scaladebugger.api.lowlevel.requests.properties.{CustomProperty, EnabledProperty, SuspendPolicyProperty}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class JDIRequestArgumentProcessorSpec extends test.ParallelMockFunSpec
+class JDIRequestArgumentProcessorSpec extends ParallelMockFunSpec
 {
   // Create three mock filters to provide to the main filter processor
   private val mockArgumentsAndProcessors = Seq(

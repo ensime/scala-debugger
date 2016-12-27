@@ -2,13 +2,13 @@ package org.scaladebugger.api.lowlevel.steps
 
 import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.time.Seconds
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class StandardStepManagerScala210IntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class StandardStepManagerScala210IntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("StandardStepManager for 2.10") {
     describe("stepping over") {

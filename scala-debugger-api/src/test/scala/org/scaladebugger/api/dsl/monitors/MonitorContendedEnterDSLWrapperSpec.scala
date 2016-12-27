@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnterEventInfo
 import org.scaladebugger.api.profiles.traits.requests.monitors.MonitorContendedEnterRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class MonitorContendedEnterDSLWrapperSpec extends test.ParallelMockFunSpec
+class MonitorContendedEnterDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockMonitorContendedEnterProfile = mock[MonitorContendedEnterRequest]
 

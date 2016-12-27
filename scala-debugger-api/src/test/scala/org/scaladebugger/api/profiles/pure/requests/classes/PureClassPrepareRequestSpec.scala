@@ -11,15 +11,12 @@ import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.InfoProducer
 import org.scaladebugger.api.profiles.traits.info.events.{ClassPrepareEventInfo, EventInfoProducer}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.{JDIMockHelpers, TestRequestHelper}
 
 import scala.util.Success
 
-class PureClassPrepareRequestSpec extends FunSpec with Matchers
-with ParallelTestExecution with MockFactory with JDIMockHelpers
-{
+class PureClassPrepareRequestSpec extends ParallelMockFunSpec with JDIMockHelpers {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockClassPrepareManager = mock[ClassPrepareManager]
   private val mockEventManager = mock[EventManager]

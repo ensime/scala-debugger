@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionRequest
 import org.scaladebugger.api.profiles.traits.info.events.ExceptionEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class ExceptionDSLWrapperSpec extends test.ParallelMockFunSpec
+class ExceptionDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockExceptionProfile = mock[ExceptionRequest]
 

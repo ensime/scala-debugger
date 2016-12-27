@@ -1,17 +1,15 @@
 package org.scaladebugger.api.profiles.pure.info
 
-import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureReferenceTypeInfoIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class PureReferenceTypeInfoIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("PureReferenceTypeInfo") {
     it("should look up the source path using the Java package name") {

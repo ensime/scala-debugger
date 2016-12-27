@@ -1,20 +1,17 @@
 package org.scaladebugger.api.profiles.pure.requests.vm
-import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
+import java.util.concurrent.atomic.AtomicBoolean
 
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution, Tag}
-import org.scaladebugger.api.lowlevel.events.EventType._
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{Constants, TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiConstants, ApiTestUtilities, VirtualMachineFixtures}
 
-class PureVMDeathRequestIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class PureVMDeathRequestIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("PureVMDeathRequest") {
-    it("should trigger when a virtual machine dies", Constants.NoWindows) {
+    it("should trigger when a virtual machine dies", ApiConstants.NoWindows) {
       val testClass = "org.scaladebugger.test.misc.MainUsingApp"
 
       val detectedDeath = new AtomicBoolean(false)

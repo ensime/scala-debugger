@@ -5,11 +5,12 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.profiles.traits.info.{InfoProducer, ReferenceTypeInfo, ValueInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.JDIMockHelpers
 
 import scala.util.{Failure, Success}
 
-class PureMiscInfoSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PureMiscInfoSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockInfoProducerProfile = mock[InfoProducer]

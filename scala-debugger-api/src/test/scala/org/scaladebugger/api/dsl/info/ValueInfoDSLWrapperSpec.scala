@@ -6,10 +6,11 @@ import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.traits.DebugProfile
 import org.scaladebugger.api.profiles.traits.info.{ObjectInfo, ValueInfo}
 import org.scaladebugger.api.virtualmachines.{ObjectCache, ScalaVirtualMachine, ScalaVirtualMachineManager}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class ValueInfoDSLWrapperSpec extends test.ParallelMockFunSpec
+class ValueInfoDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val TestUniqueId = 1234L
   private val mockObjectInfoProfile = mock[ObjectInfo]

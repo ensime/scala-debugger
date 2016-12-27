@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.ThreadStartEventInfo
 import org.scaladebugger.api.profiles.traits.requests.threads.ThreadStartRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class ThreadStartDSLWrapperSpec extends test.ParallelMockFunSpec
+class ThreadStartDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockThreadStartProfile = mock[ThreadStartRequest]
 

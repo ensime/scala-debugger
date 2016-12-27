@@ -1,13 +1,14 @@
 package org.scaladebugger.api.lowlevel.breakpoints
 
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
+import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.TestBreakpointManager
 
 import scala.util.Success
 
-class BreakpointManagerSpec extends test.ParallelMockFunSpec
+class BreakpointManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockBreakpointManager = mock[BreakpointManager]

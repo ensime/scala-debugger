@@ -1,21 +1,16 @@
 package org.scaladebugger.api.profiles.pure.requests.methods
 
-import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean}
+import java.util.concurrent.atomic.AtomicBoolean
 
-import com.sun.jdi.event.{BreakpointEvent, MethodEntryEvent}
-import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.events.EventType._
-import org.scaladebugger.api.lowlevel.events.filters.MethodNameFilter
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureMethodEntryRequestIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class PureMethodEntryRequestIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("PureMethodEntryRequest") {
     it("should be able to detect entering a specific method in a class") {

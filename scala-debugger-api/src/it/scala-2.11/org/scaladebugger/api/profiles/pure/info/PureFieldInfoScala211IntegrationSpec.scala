@@ -1,18 +1,18 @@
 package org.scaladebugger.api.profiles.pure.info
 
-import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.profiles.traits.info.ThreadInfo
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureFieldInfoScala211IntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+class PureFieldInfoScala211IntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
+  with Eventually
 {
   describe("PureFieldInfo for 2.11") {
     // $outer does not appear in this scenario for Scala 2.11

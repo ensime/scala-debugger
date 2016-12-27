@@ -2,16 +2,14 @@ package org.scaladebugger.api.profiles.pure.requests.monitors
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureMonitorContendedEnteredRequestIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class PureMonitorContendedEnteredRequestIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("PureMonitorContendedEnteredRequest") {
     it("should trigger when a thread enters a monitor after waiting for it to be released by another thread") {

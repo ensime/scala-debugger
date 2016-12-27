@@ -2,21 +2,15 @@ package org.scaladebugger.api.profiles.pure.requests.breakpoints
 
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
 
-import com.sun.jdi.event.BreakpointEvent
-import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.breakpoints.PendingBreakpointSupport
-import org.scaladebugger.api.lowlevel.events.EventType
-import org.scaladebugger.api.lowlevel.events.EventType._
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureBreakpointRequestIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class PureBreakpointRequestIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("PureBreakpointRequest") {
     it("should be able to set breakpoints within while loops") {

@@ -11,11 +11,12 @@ import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.InfoProducer
 import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducer, VMStartEventInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.{JDIMockHelpers, TestRequestHelper}
 
 import scala.util.Success
 
-class PureVMStartRequestSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PureVMStartRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val mockEventManager = mock[EventManager]
   private val mockInfoProducer = mock[InfoProducer]

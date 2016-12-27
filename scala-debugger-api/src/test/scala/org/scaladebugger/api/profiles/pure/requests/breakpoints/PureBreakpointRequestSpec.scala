@@ -14,11 +14,12 @@ import org.scaladebugger.api.profiles.Constants
 import org.scaladebugger.api.profiles.traits.info.InfoProducer
 import org.scaladebugger.api.profiles.traits.info.events.{BreakpointEventInfo, EventInfoProducer}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.{JDIMockHelpers, TestRequestHelper}
 
 import scala.util.{Failure, Success}
 
-class PureBreakpointRequestSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PureBreakpointRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val stubClassManager = stub[ClassManager]

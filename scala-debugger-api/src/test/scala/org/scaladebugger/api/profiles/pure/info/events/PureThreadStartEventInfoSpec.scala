@@ -8,8 +8,9 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.profiles.traits.info.events._
 import org.scaladebugger.api.profiles.traits.info.{InfoProducer, ThreadInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class PureThreadStartEventInfoSpec extends test.ParallelMockFunSpec {
+class PureThreadStartEventInfoSpec extends ParallelMockFunSpec {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockInfoProducer = mock[InfoProducer]
   private val mockThreadStartEvent = mock[ThreadStartEvent]

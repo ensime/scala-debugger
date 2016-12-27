@@ -3,9 +3,10 @@ package org.scaladebugger.api.lowlevel.watchpoints
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.DummyOperationException
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.JDIMockHelpers
 
-class DummyModificationWatchpointManagerSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class DummyModificationWatchpointManagerSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val modificationWatchpointManager = new DummyModificationWatchpointManager

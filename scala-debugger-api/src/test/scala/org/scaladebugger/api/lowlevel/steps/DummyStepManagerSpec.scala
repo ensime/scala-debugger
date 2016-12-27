@@ -5,11 +5,12 @@ import com.sun.jdi.request.{EventRequest, EventRequestManager, StepRequest}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.DummyOperationException
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.JDIMockHelpers
 
 import scala.util.{Failure, Success}
 
-class DummyStepManagerSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class DummyStepManagerSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val stepManager = new DummyStepManager

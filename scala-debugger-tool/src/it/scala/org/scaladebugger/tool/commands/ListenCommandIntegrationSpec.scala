@@ -1,18 +1,19 @@
 package org.scaladebugger.tool.commands
 
 import org.scaladebugger.api.utils.JDITools
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scaladebugger.tool.Repl
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
+import test.{ToolConstants, ToolFixtures, ToolTestUtilities}
 
-class ListenCommandIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with ToolFixtures
-  with TestUtilities with Eventually with FixedParallelSuite
+class ListenCommandIntegrationSpec extends ParallelMockFunSpec
+  with ToolFixtures
+  with ToolTestUtilities
+  with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Constants.EventuallyTimeout),
-    interval = scaled(Constants.EventuallyInterval)
+    timeout = scaled(ToolConstants.EventuallyTimeout),
+    interval = scaled(ToolConstants.EventuallyInterval)
   )
 
   describe("ListenCommand") {

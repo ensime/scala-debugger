@@ -11,7 +11,7 @@ lazy val scalaDebuggerApi = project
   .settings(Api.settings: _*)
   .settings(name := "scala-debugger-api")
   .dependsOn(scalaDebuggerMacros % "compile->compile;test->compile;it->compile")
-  .dependsOn(scalaDebuggerTest % "test->compile;it->compile")
+  .dependsOn(scalaDebuggerTest % "test->compile;it->compile;test->test;it->test")
 
 //
 // DEBUGGER TEST CODE PROJECT CONFIGURATION
@@ -21,6 +21,7 @@ lazy val scalaDebuggerTest = project
   .configs(IntegrationTest)
   .settings(Common.settings: _*)
   .settings(Defaults.itSettings: _*)
+  .settings(Test.settings: _*)
   .settings(
     // Do not publish the test project
     publishArtifact := false,
@@ -63,7 +64,7 @@ lazy val scalaDebuggerTool = project
   .settings(name := "scala-debugger-tool")
   .dependsOn(scalaDebuggerApi % "compile->compile;test->compile;it->compile")
   .dependsOn(scalaDebuggerLanguage % "compile->compile;test->compile;it->compile")
-  .dependsOn(scalaDebuggerTest % "test->compile;it->compile")
+  .dependsOn(scalaDebuggerTest % "test->compile;it->compile;test->test;it->test")
 
 //
 // SBT SCALA DEBUGGER PLUGIN

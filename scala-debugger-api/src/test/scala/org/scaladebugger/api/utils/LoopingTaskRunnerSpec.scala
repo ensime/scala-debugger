@@ -3,12 +3,13 @@ package org.scaladebugger.api.utils
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Milliseconds, Span}
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class LoopingTaskRunnerSpec extends test.ParallelMockFunSpec with Eventually
+class LoopingTaskRunnerSpec extends ParallelMockFunSpec with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
     timeout = scaled(Span(300, Milliseconds)),

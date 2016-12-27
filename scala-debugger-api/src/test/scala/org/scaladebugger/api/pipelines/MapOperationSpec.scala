@@ -1,11 +1,8 @@
 package org.scaladebugger.api.pipelines
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class MapOperationSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class MapOperationSpec extends ParallelMockFunSpec {
   describe("MapOperation") {
     describe("#process") {
       it("should map all elements to other values") {

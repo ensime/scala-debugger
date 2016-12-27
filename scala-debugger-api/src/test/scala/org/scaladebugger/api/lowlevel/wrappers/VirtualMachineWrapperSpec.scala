@@ -1,15 +1,14 @@
 package org.scaladebugger.api.lowlevel.wrappers
 
 import com.sun.jdi._
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.JDIMockHelpers
 
 import scala.collection.JavaConverters._
 
-class VirtualMachineWrapperSpec extends FunSpec with Matchers with MockFactory
-  with JDIMockHelpers with ParallelTestExecution
-{
+class VirtualMachineWrapperSpec extends ParallelMockFunSpec with JDIMockHelpers {
   private val mockVirtualMachine = mock[VirtualMachine]
   private val virtualMachineWrapper =
     new VirtualMachineWrapper(mockVirtualMachine)

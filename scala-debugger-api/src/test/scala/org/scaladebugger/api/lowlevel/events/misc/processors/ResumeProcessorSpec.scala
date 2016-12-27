@@ -2,10 +2,11 @@ package org.scaladebugger.api.lowlevel.events.misc.processors
 
 import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.misc.{NoResume, YesResume}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
+import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class ResumeProcessorSpec extends test.ParallelMockFunSpec
+class ResumeProcessorSpec extends ParallelMockFunSpec
 {
   describe("ResumeProcessor") {
     describe("#process") {

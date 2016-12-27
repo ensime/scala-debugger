@@ -4,18 +4,18 @@ import java.io.File
 
 import org.scaladebugger.api.profiles.traits.info.ThreadGroupInfo
 import org.scaladebugger.api.utils.JDITools
-import org.scalamock.scalatest.MockFactory
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
+import test.{ToolConstants, ToolFixtures, ToolTestUtilities}
 
-class ThreadGroupCommandIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with ToolFixtures with MockFactory
-  with TestUtilities with Eventually with FixedParallelSuite
+class ThreadGroupCommandIntegrationSpec extends ParallelMockFunSpec
+  with ToolFixtures
+  with ToolTestUtilities
+  with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Constants.EventuallyTimeout),
-    interval = scaled(Constants.EventuallyInterval)
+    timeout = scaled(ToolConstants.EventuallyTimeout),
+    interval = scaled(ToolConstants.EventuallyInterval)
   )
 
   describe("ThreadGroupCommand") {

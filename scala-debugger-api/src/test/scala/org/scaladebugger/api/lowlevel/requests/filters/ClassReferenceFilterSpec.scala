@@ -1,10 +1,11 @@
 package org.scaladebugger.api.lowlevel.requests.filters
 
 import com.sun.jdi.ReferenceType
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class ClassReferenceFilterSpec extends test.ParallelMockFunSpec
+class ClassReferenceFilterSpec extends ParallelMockFunSpec
 {
   private val mockReferenceType = mock[ReferenceType]
   private val classReferenceFilter = ClassReferenceFilter(

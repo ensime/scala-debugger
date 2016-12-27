@@ -1,11 +1,8 @@
 package org.scaladebugger.api.pipelines
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class ForeachOperationSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class ForeachOperationSpec extends ParallelMockFunSpec {
   describe("ForeachOperation") {
     describe("#process") {
       it("should apply the operation's function to each data element") {

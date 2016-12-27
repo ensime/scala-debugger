@@ -1,9 +1,10 @@
 package org.scaladebugger.api.lowlevel.events.misc
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class YesResumeSpec extends test.ParallelMockFunSpec
+class YesResumeSpec extends ParallelMockFunSpec
 {
   describe("YesResume") {
     describe("#value") {

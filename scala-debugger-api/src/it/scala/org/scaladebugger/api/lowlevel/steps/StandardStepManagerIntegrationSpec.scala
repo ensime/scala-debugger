@@ -1,22 +1,14 @@
 package org.scaladebugger.api.lowlevel.steps
 
-import java.util.concurrent.atomic.AtomicBoolean
 import com.sun.jdi.ThreadReference
-import com.sun.jdi.event.{StepEvent, BreakpointEvent}
-import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.concurrent.PatienceConfiguration.{Timeout, Interval}
-import org.scalatest.time.{Units, Milliseconds, Seconds, Span}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.events.EventType
-import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine, StandardScalaVirtualMachine}
-import test.{TestUtilities, VirtualMachineFixtures}
-import test.Constants._
-import EventType._
+import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import org.scalatest.time.Seconds
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class StandardStepManagerIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class StandardStepManagerIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("StandardStepManager") {
     describe("stepping out of") {

@@ -3,11 +3,12 @@ package org.scaladebugger.api.lowlevel.monitors
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.TestMonitorContendedEnteredManager
 
 import scala.util.Success
 
-class MonitorContendedEnteredManagerSpec extends test.ParallelMockFunSpec
+class MonitorContendedEnteredManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMonitorContendedEnteredManager = mock[MonitorContendedEnteredManager]

@@ -2,17 +2,16 @@ package org.scaladebugger.api.lowlevel.watchpoints
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import com.sun.jdi.event.{ModificationWatchpointEvent, ClassPrepareEvent}
-import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import com.sun.jdi.event.ModificationWatchpointEvent
 import org.scaladebugger.api.lowlevel.events.EventType._
+import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class StandardModificationWatchpointManagerIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class StandardModificationWatchpointManagerIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("StandardModificationWatchpointManager") {
     it("should be able to detect modification to a field") {

@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.classes.ClassManager
 import org.scaladebugger.api.lowlevel.wrappers.ReferenceTypeWrapper
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class PureGrabInfoSpec extends test.ParallelMockFunSpec
+class PureGrabInfoSpec extends ParallelMockFunSpec
 {
   private val mockNewObjectProfile = mockFunction[ObjectReference, ObjectInfo]
   private val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfo]

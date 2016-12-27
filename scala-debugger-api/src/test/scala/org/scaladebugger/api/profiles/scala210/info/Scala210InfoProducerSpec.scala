@@ -1,8 +1,9 @@
 package org.scaladebugger.api.profiles.scala210.info
 
 import org.scaladebugger.api.profiles.pure.info.PureInfoProducer
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class Scala210InfoProducerSpec extends test.ParallelMockFunSpec {
+class Scala210InfoProducerSpec extends ParallelMockFunSpec {
   private val scala210InfoProducerProfile = new Scala210InfoProducer
 
   describe("Scala210InfoProducer") {

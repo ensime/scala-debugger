@@ -1,10 +1,11 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestPrimitiveInfo
 
-class PrimitiveInfoSpec extends test.ParallelMockFunSpec
+class PrimitiveInfoSpec extends ParallelMockFunSpec
 {
   describe("PrimitiveInfo") {
     describe("#tryToLocalValue") {

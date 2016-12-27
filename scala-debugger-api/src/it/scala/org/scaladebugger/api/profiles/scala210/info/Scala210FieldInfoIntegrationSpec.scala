@@ -1,18 +1,16 @@
 package org.scaladebugger.api.profiles.scala210.info
 
-import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.events.misc.NoResume
 import org.scaladebugger.api.profiles.scala210.Scala210DebugProfile
 import org.scaladebugger.api.profiles.traits.info.ThreadInfo
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class Scala210FieldInfoIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class Scala210FieldInfoIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("Scala210FieldInfo") {
     it("should fix Scala-specific field names like org$scaladebugger$test$bugs$BugFromGitter$$name") {

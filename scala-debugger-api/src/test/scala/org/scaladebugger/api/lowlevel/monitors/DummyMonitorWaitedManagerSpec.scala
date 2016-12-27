@@ -3,8 +3,9 @@ package org.scaladebugger.api.lowlevel.monitors
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.DummyOperationException
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class DummyMonitorWaitedManagerSpec extends test.ParallelMockFunSpec
+class DummyMonitorWaitedManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val monitorWaitedManager = new DummyMonitorWaitedManager

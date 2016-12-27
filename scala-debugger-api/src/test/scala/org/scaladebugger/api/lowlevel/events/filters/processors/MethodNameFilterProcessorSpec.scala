@@ -1,12 +1,13 @@
 package org.scaladebugger.api.lowlevel.events.filters.processors
 
 import com.sun.jdi.{Location, Method}
-import com.sun.jdi.event.{Event, LocatableEvent, MethodExitEvent, MethodEntryEvent}
+import com.sun.jdi.event.{Event, LocatableEvent, MethodEntryEvent, MethodExitEvent}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.filters.MethodNameFilter
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class MethodNameFilterProcessorSpec extends test.ParallelMockFunSpec
+class MethodNameFilterProcessorSpec extends ParallelMockFunSpec
 {
   private val testName = "some name"
   private val methodNameFilter = MethodNameFilter(name = testName)

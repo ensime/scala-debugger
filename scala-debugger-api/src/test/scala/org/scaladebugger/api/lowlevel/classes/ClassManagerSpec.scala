@@ -1,16 +1,13 @@
 package org.scaladebugger.api.lowlevel.classes
 
 import com.sun.jdi.{Field, Method, ReferenceType, VirtualMachine}
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{BeforeAndAfter, FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.JDIMockHelpers
 
 import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 
-class ClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
-  with MockFactory with ParallelTestExecution with JDIMockHelpers
-{
+class ClassManagerSpec extends ParallelMockFunSpec with JDIMockHelpers {
   private val stubVirtualMachine = stub[VirtualMachine]
 
   // TODO: Initialize with an abstracted class manager

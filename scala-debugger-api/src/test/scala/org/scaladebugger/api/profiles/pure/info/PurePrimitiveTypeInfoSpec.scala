@@ -4,8 +4,9 @@ import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info.InfoProducer
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scaladebugger.api.profiles.traits.info.PrimitiveTypeInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class PurePrimitiveTypeInfoSpec extends test.ParallelMockFunSpec
+class PurePrimitiveTypeInfoSpec extends ParallelMockFunSpec
 {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockInfoProducerProfile = mock[InfoProducer]

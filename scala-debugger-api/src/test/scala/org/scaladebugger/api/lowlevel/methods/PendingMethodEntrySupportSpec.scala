@@ -4,11 +4,12 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.utils.{ActionInfo, PendingActionManager}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.{JDIMockHelpers, TestMethodEntryManager}
 
 import scala.util.{Failure, Success}
 
-class PendingMethodEntrySupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PendingMethodEntrySupportSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMethodEntryManager = mock[MethodEntryManager]

@@ -4,10 +4,11 @@ import com.sun.jdi.request.{EventRequest, EventRequestManager, MethodEntryReques
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.DummyOperationException
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success}
 
-class DummyMethodEntryManagerSpec extends test.ParallelMockFunSpec
+class DummyMethodEntryManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val methodEntryManager = new DummyMethodEntryManager

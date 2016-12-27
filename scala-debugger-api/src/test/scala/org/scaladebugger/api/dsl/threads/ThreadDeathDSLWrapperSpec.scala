@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.ThreadDeathEventInfo
 import org.scaladebugger.api.profiles.traits.requests.threads.ThreadDeathRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class ThreadDeathDSLWrapperSpec extends test.ParallelMockFunSpec
+class ThreadDeathDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockThreadDeathProfile = mock[ThreadDeathRequest]
 

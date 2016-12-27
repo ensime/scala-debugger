@@ -1,12 +1,11 @@
 package org.scaladebugger.api.lowlevel.wrappers
 
 import com.sun.jdi.ThreadReference
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{Matchers, FunSpec}
+import org.scalatest.{FunSpec, Matchers}
 
-class ThreadReferenceWrapperSpec extends FunSpec with Matchers
-  with MockFactory
-{
+class ThreadReferenceWrapperSpec extends ParallelMockFunSpec {
   describe("ThreadReferenceWrapper") {
     describe("constructor") {
       it("should throw an exception if wrapping a null pointer") {

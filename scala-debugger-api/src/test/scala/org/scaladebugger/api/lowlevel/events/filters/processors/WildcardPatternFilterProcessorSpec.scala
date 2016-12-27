@@ -3,10 +3,11 @@ package org.scaladebugger.api.lowlevel.events.filters.processors
 import com.sun.jdi.event._
 import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.events.filters.WildcardPatternFilter
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class WildcardPatternFilterProcessorSpec extends test.ParallelMockFunSpec
+class WildcardPatternFilterProcessorSpec extends ParallelMockFunSpec
 {
   private val testPattern = "some*pattern"
   private val wildcardPatternFilter = WildcardPatternFilter(

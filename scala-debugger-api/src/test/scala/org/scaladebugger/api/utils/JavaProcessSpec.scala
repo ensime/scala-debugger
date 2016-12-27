@@ -1,8 +1,8 @@
 package org.scaladebugger.api.utils
 
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class JavaProcessSpec extends FunSpec with Matchers with ParallelTestExecution {
+class JavaProcessSpec extends ParallelMockFunSpec {
   describe("JavaProcess") {
     describe("#fromJpsString") {
       it("should not allow null input") {

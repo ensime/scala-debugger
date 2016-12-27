@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.monitors.MonitorWaitedRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.MonitorWaitedEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class MonitorWaitedRequestSpec extends test.ParallelMockFunSpec
+class MonitorWaitedRequestSpec extends ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

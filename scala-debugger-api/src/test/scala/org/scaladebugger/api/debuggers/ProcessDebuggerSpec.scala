@@ -4,10 +4,11 @@ import com.sun.jdi.{VirtualMachine, VirtualMachineManager}
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.utils.LoopingTaskRunner
 import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager, StandardScalaVirtualMachine}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.collection.JavaConverters._
 
-class ProcessDebuggerSpec extends test.ParallelMockFunSpec {
+class ProcessDebuggerSpec extends ParallelMockFunSpec {
   private def createConnectorArgumentMock(
     setter: Boolean = false,
     getter: Option[String] = None

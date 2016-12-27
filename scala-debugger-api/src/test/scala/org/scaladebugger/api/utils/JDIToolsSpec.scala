@@ -3,12 +3,11 @@ package org.scaladebugger.api.utils
 import java.io.ByteArrayInputStream
 import java.net.{URL, URLClassLoader}
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
+import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class JDIToolsSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class JDIToolsSpec extends ParallelMockFunSpec {
   private val jdiTools = new JDITools
 
   describe("JDITools") {

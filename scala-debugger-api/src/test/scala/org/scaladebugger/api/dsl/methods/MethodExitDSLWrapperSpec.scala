@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.MethodExitEventInfo
 import org.scaladebugger.api.profiles.traits.requests.methods.MethodExitRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class MethodExitDSLWrapperSpec extends test.ParallelMockFunSpec
+class MethodExitDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockMethodExitProfile = mock[MethodExitRequest]
 

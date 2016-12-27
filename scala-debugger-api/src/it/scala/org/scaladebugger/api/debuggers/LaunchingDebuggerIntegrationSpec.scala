@@ -2,15 +2,12 @@ package org.scaladebugger.api.debuggers
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{ParallelTestExecution, FunSpec, Matchers}
 import org.scaladebugger.api.utils.{JDITools, Logging}
-import test.TestUtilities
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.ApiTestUtilities
 
-class LaunchingDebuggerIntegrationSpec  extends FunSpec with Matchers
-   with TestUtilities with Logging
-  with ParallelTestExecution
+class LaunchingDebuggerIntegrationSpec extends ParallelMockFunSpec
+   with ApiTestUtilities with Logging
 {
   describe("LaunchingDebugger") {
     it("should be able to start a JVM and connect to it") {

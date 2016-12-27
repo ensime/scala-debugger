@@ -6,10 +6,11 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.utils.LoopingTaskRunner
 import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager, StandardScalaVirtualMachine}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.collection.JavaConverters._
 
-class LaunchingDebuggerSpec extends test.ParallelMockFunSpec
+class LaunchingDebuggerSpec extends ParallelMockFunSpec
 {
   private def createConnectorArgumentMock(
     setter: Boolean = false,

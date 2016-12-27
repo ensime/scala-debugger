@@ -5,8 +5,9 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.data.{JDIEventDataProcessor, JDIEventDataRequest, JDIEventDataResult, JDIEventDataUnknownError}
 import org.scaladebugger.api.lowlevel.events.filters.{JDIEventFilter, JDIEventFilterProcessor}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class JDIEventArgumentProcessorSpec extends test.ParallelMockFunSpec
+class JDIEventArgumentProcessorSpec extends ParallelMockFunSpec
 {
   describe("JDIEventArgumentProcessor") {
     describe("#processAll") {

@@ -1,9 +1,10 @@
 package org.scaladebugger.api.lowlevel.events.filters
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class AndFilterSpec extends test.ParallelMockFunSpec
+class AndFilterSpec extends ParallelMockFunSpec
 {
   private val andFilter = AndFilter()
 

@@ -4,10 +4,11 @@ import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.{InvokeNonVirtualArgument, InvokeSingleThreadedArgument, JDIArgument}
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class PureObjectInfoSpec extends test.ParallelMockFunSpec
+class PureObjectInfoSpec extends ParallelMockFunSpec
 {
   private val mockNewFieldProfile = mockFunction[Field, Int, FieldVariableInfo]
   private val mockNewMethodProfile = mockFunction[Method, MethodInfo]

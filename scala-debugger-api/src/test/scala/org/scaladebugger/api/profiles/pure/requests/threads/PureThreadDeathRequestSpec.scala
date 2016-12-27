@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.pure.requests.threads
 import com.sun.jdi.event.ThreadDeathEvent
-import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.events.EventType.ThreadDeathEventType
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
+import org.scaladebugger.api.lowlevel.events.{EventManager, JDIEventArgument}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.threads.{PendingThreadDeathSupportLike, ThreadDeathManager, ThreadDeathRequestInfo}
 import org.scaladebugger.api.pipelines.Pipeline
@@ -10,15 +10,12 @@ import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.InfoProducer
 import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducer, ThreadDeathEventInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.{JDIMockHelpers, TestRequestHelper}
 
-import scala.util.{Failure, Success}
+import scala.util.Success
 
-class PureThreadDeathRequestSpec extends FunSpec with Matchers
-with ParallelTestExecution with MockFactory with JDIMockHelpers
-{
+class PureThreadDeathRequestSpec extends ParallelMockFunSpec with JDIMockHelpers {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockThreadDeathManager = mock[ThreadDeathManager]
   private val mockEventManager = mock[EventManager]

@@ -1,21 +1,19 @@
 package org.scaladebugger.api.lowlevel.wrappers
 
-import org.scaladebugger.api.lowlevel.events.EventType
-import EventType.BreakpointEventType
 import com.sun.jdi.Value
 import com.sun.jdi.event.BreakpointEvent
+import org.scaladebugger.api.lowlevel.events.EventType
+import org.scaladebugger.api.lowlevel.events.EventType.BreakpointEventType
 import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
 import scala.util.Try
 
-class StackFrameWrapperIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class StackFrameWrapperIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("StackFrameWrapper") {
     it("should be able to analyze this object variables") {

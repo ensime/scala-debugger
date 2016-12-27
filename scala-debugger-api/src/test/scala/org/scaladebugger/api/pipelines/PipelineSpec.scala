@@ -1,15 +1,12 @@
 package org.scaladebugger.api.pipelines
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.collection.GenTraversableOnce
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success}
 
-class PipelineSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class PipelineSpec extends ParallelMockFunSpec {
   describe("Pipeline") {
     describe("#process") {
       it("should perform the pipeline's operation on the provided data") {

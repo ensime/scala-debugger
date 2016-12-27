@@ -5,9 +5,10 @@ import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.EventManager.EventHandler
 import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.utils.{ActionInfo, PendingActionManager}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.{JDIMockHelpers, TestEventManager}
 
-class PendingEventHandlerSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PendingEventHandlerSupportSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestHandlerId = java.util.UUID.randomUUID().toString
   private val mockEventManager = mock[EventManager]

@@ -1,12 +1,13 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.{TestArrayInfo, TestTypeInfo}
 
 import scala.util.{Failure, Success, Try}
 
-class TypeInfoSpec extends test.ParallelMockFunSpec
+class TypeInfoSpec extends ParallelMockFunSpec
 {
   describe("TypeInfo") {
     describe("#isBooleanType") {

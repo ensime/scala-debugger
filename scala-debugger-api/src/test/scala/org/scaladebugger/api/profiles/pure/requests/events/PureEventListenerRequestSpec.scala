@@ -9,15 +9,16 @@ import org.scaladebugger.api.lowlevel.events.{EventHandlerInfo, EventManager, JD
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.InfoProducer
-import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducer, EventInfo}
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfo, EventInfoProducer}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.{Futures, ScalaFutures}
 import org.scalatest.time.{Milliseconds, Span}
 import test.JDIMockHelpers
 
 import scala.util.Success
 
-class PureEventListenerRequestSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PureEventListenerRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
   with Futures with ScalaFutures
 {
   private val TestEventHandlerId = java.util.UUID.randomUUID().toString

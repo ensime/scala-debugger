@@ -3,8 +3,9 @@ package org.scaladebugger.api.profiles.scala210.info
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class Scala210LocalVariableInfoSpec extends test.ParallelMockFunSpec
+class Scala210LocalVariableInfoSpec extends ParallelMockFunSpec
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfo]
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]

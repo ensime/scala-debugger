@@ -6,9 +6,10 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.RequestInfoBuilder
 
-class SwappableMonitorContendedEnteredRequestSpec extends test.ParallelMockFunSpec
+class SwappableMonitorContendedEnteredRequestSpec extends ParallelMockFunSpec
 {
   private val mockDebugProfile = mock[DebugProfile]
   private val mockProfileManager = mock[ProfileManager]

@@ -4,11 +4,12 @@ import com.sun.jdi.ThreadReference
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.TestStepManager
 
-import scala.util.{Try, Success}
+import scala.util.{Success, Try}
 
-class StepManagerSpec extends test.ParallelMockFunSpec
+class StepManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockStepManager = mock[StepManager]

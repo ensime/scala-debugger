@@ -3,18 +3,18 @@ package org.scaladebugger.tool.commands
 import java.io.File
 
 import org.scaladebugger.api.utils.JDITools
-import org.scaladebugger.tool.frontend.VirtualTerminal
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
+import test.{ToolConstants, ToolFixtures, ToolTestUtilities}
 
-class BreakpointCommandIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with ToolFixtures
-  with TestUtilities with Eventually with FixedParallelSuite
+class BreakpointCommandIntegrationSpec extends ParallelMockFunSpec
+  with ToolFixtures
+  with ToolTestUtilities
+  with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Constants.EventuallyTimeout),
-    interval = scaled(Constants.EventuallyInterval)
+    timeout = scaled(ToolConstants.EventuallyTimeout),
+    interval = scaled(ToolConstants.EventuallyInterval)
   )
 
   describe("BreakpointCommand") {

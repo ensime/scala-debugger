@@ -1,14 +1,15 @@
 package org.scaladebugger.api.virtualmachines
 
 import org.scaladebugger.api.utils.JDITools
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
 /** Specific to Scala 2.12 */
-class ScalaVirtualMachine212IntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities with Eventually
+class ScalaVirtualMachine212IntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
+  with Eventually
 {
   describe("ScalaVirtualMachine for 2.12") {
     it("should return the breakpointable line numbers for the file") {

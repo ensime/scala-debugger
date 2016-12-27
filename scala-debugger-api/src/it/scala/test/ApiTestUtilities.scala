@@ -16,11 +16,11 @@ import org.scaladebugger.api.lowlevel.events.EventType._
 /**
  * Contains helper methods for testing.
  */
-trait TestUtilities extends Eventually { this: Logging =>
-  import test.Constants.EventuallyTimeout
+trait ApiTestUtilities extends Eventually { this: Logging =>
+  import test.ApiConstants.EventuallyTimeout
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(test.Constants.EventuallyTimeout),
-    interval = scaled(test.Constants.EventuallyInterval)
+    timeout = scaled(test.ApiConstants.EventuallyTimeout),
+    interval = scaled(test.ApiConstants.EventuallyInterval)
   )
 
   /**
@@ -179,7 +179,7 @@ trait TestUtilities extends Eventually { this: Logging =>
       // NOTE: Using asserts to provide more helpful failure messages
       logTimeTaken(eventually(
         timeout = Timeout(scaled(Span(maxDuration._1, maxDuration._2))),
-        interval = Interval(scaled(test.Constants.EventuallyInterval))
+        interval = Interval(scaled(test.ApiConstants.EventuallyInterval))
       ) {
         // If marked to fail early, use that message for better reporting
         assert(!failEarly.get(), failEarlyMessage)
@@ -323,7 +323,7 @@ trait TestUtilities extends Eventually { this: Logging =>
       // NOTE: Using asserts to provide more helpful failure messages
       logTimeTaken(eventually(
         timeout = Timeout(scaled(Span(maxDuration._1, maxDuration._2))),
-        interval = Interval(scaled(test.Constants.EventuallyInterval))
+        interval = Interval(scaled(test.ApiConstants.EventuallyInterval))
       ) {
         // If marked to fail early, use that message for better reporting
         assert(!failEarly.get(), failEarlyMessage)

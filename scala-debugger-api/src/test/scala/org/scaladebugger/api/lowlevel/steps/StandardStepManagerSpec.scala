@@ -1,14 +1,15 @@
 package org.scaladebugger.api.lowlevel.steps
 
 import com.sun.jdi.ThreadReference
-import com.sun.jdi.request.{EventRequest, StepRequest, EventRequestManager}
+import com.sun.jdi.request.{EventRequest, EventRequestManager, StepRequest}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.JDIMockHelpers
 
 import scala.util.{Failure, Success}
 
-class StandardStepManagerSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class StandardStepManagerSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockThreadReference = mock[ThreadReference]

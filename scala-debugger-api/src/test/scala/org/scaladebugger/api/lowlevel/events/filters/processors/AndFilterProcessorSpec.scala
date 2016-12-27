@@ -3,9 +3,10 @@ package org.scaladebugger.api.lowlevel.events.filters.processors
 import com.sun.jdi.event.Event
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.events.filters.{JDIEventFilter, JDIEventFilterProcessor, AndFilter}
+import org.scaladebugger.api.lowlevel.events.filters.{AndFilter, JDIEventFilter, JDIEventFilterProcessor}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class AndFilterProcessorSpec extends test.ParallelMockFunSpec
+class AndFilterProcessorSpec extends ParallelMockFunSpec
 {
   describe("AndFilterProcessor") {
     describe("#process") {

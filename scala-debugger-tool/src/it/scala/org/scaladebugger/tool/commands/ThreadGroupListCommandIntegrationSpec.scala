@@ -3,17 +3,19 @@ package org.scaladebugger.tool.commands
 import java.io.File
 
 import org.scaladebugger.api.utils.JDITools
+import org.scaladebugger.test.helpers.FixedParallelSuite
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
+import test.{ToolConstants, ToolTestUtilities, ToolFixtures}
 
-class ThreadGroupListCommandIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with ToolFixtures
-  with TestUtilities with Eventually with FixedParallelSuite
+class ThreadGroupListCommandIntegrationSpec extends ParallelMockFunSpec
+  with ToolFixtures
+  with ToolTestUtilities
+  with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Constants.EventuallyTimeout),
-    interval = scaled(Constants.EventuallyInterval)
+    timeout = scaled(ToolConstants.EventuallyTimeout),
+    interval = scaled(ToolConstants.EventuallyInterval)
   )
 
   describe("ThreadGroupListCommand") {

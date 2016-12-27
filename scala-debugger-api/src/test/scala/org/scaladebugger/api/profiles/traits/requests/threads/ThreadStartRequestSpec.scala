@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.threads.ThreadStartRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.ThreadStartEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class ThreadStartRequestSpec extends test.ParallelMockFunSpec
+class ThreadStartRequestSpec extends ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

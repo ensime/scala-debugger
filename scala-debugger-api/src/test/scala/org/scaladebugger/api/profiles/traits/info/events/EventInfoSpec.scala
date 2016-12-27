@@ -3,9 +3,10 @@ package org.scaladebugger.api.profiles.traits.info.events
 import org.scaladebugger.api.lowlevel.events.JDIEventArgument
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.EventInfoTestClasses.TestEventInfo
 
-class EventInfoSpec extends test.ParallelMockFunSpec {
+class EventInfoSpec extends ParallelMockFunSpec {
   private val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
   private val mockJdiRequestArguments = Seq(mock[JDIRequestArgument])
   private val mockJdiEventArguments = Seq(mock[JDIEventArgument])

@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.ModificationWatchpointEventInfo
 import org.scaladebugger.api.profiles.traits.requests.watchpoints.ModificationWatchpointRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class ModificationWatchpointDSLWrapperSpec extends test.ParallelMockFunSpec
+class ModificationWatchpointDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockModificationWatchpointProfile = mock[ModificationWatchpointRequest]
 

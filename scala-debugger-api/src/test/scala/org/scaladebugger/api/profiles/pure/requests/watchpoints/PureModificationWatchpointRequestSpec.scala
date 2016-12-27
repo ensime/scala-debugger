@@ -14,13 +14,14 @@ import org.scaladebugger.api.profiles.Constants
 import org.scaladebugger.api.profiles.traits.info.InfoProducer
 import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducer, ModificationWatchpointEventInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.{JDIMockHelpers, TestRequestHelper}
 
 import scala.util.{Failure, Success}
 
-class PureModificationWatchpointRequestSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PureModificationWatchpointRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val stubClassManager = stub[ClassManager]

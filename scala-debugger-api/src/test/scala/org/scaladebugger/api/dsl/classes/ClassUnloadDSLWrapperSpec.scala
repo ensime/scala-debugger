@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.requests.classes.ClassUnloadRequest
 import org.scaladebugger.api.profiles.traits.info.events.ClassUnloadEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class ClassUnloadDSLWrapperSpec extends test.ParallelMockFunSpec
+class ClassUnloadDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockClassUnloadProfile = mock[ClassUnloadRequest]
 

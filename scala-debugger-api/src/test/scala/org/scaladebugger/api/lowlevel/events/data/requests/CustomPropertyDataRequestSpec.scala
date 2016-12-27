@@ -1,9 +1,10 @@
 package org.scaladebugger.api.lowlevel.events.data.requests
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class CustomPropertyDataRequestSpec extends test.ParallelMockFunSpec
+class CustomPropertyDataRequestSpec extends ParallelMockFunSpec
 {
   private val testKey = "some key"
   private val customPropertyDataRequest =

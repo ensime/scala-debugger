@@ -3,10 +3,11 @@ package org.scaladebugger.api.profiles.pure.info
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info.{InfoProducer, LocationInfo, MethodInfo, ReferenceTypeInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class PureLocationInfoSpec extends test.ParallelMockFunSpec
+class PureLocationInfoSpec extends ParallelMockFunSpec
 {
   private val mockNewMethodProfile = mockFunction[Method, MethodInfo]
   private val mockNewReferenceTypeProfile = mockFunction[ReferenceType, ReferenceTypeInfo]

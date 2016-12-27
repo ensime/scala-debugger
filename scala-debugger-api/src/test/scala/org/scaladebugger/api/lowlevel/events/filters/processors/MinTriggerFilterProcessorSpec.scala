@@ -4,8 +4,9 @@ import com.sun.jdi.event.Event
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.filters.MinTriggerFilter
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class MinTriggerFilterProcessorSpec extends test.ParallelMockFunSpec
+class MinTriggerFilterProcessorSpec extends ParallelMockFunSpec
 {
   private val testCount = 3
   private val minTriggerFilter = MinTriggerFilter(count = testCount)

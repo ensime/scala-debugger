@@ -1,11 +1,8 @@
 package org.scaladebugger.api.pipelines
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class FilterOperationSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class FilterOperationSpec extends ParallelMockFunSpec {
   describe("FilterOperation") {
     describe("#process") {
       it("should filter data to include only predicates resolving to true") {

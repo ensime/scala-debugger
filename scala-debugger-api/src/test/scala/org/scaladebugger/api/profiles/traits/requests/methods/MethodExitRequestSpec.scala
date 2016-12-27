@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.methods.MethodExitRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.MethodExitEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class MethodExitRequestSpec extends test.ParallelMockFunSpec
+class MethodExitRequestSpec extends ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

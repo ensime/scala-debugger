@@ -1,14 +1,11 @@
 package org.scaladebugger.api.lowlevel.events
 
-import com.sun.jdi.event.{EventIterator, EventSet, Event}
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import com.sun.jdi.event.{Event, EventIterator, EventSet}
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import EventType.EventType
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class EventSetProcessorSpec extends FunSpec with Matchers with MockFactory
-  with ParallelTestExecution
-{
+class EventSetProcessorSpec extends ParallelMockFunSpec {
   // TODO: This is a workaround for a log statement that is causing a test to
   //       fail if we don't mock the toString function
   private val mockEventType = EventType.AccessWatchpointEventType // mock[EventType]

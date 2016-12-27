@@ -1,9 +1,10 @@
 package org.scaladebugger.api.lowlevel.events.filters
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class NotFilterSpec extends test.ParallelMockFunSpec
+class NotFilterSpec extends ParallelMockFunSpec
 {
   private val notFilter = NotFilter(mock[JDIEventFilter])
 

@@ -1,13 +1,12 @@
-package test
+package org.scaladebugger.test.helpers
 
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.{ExecutorService, Executors, ThreadFactory}
+import java.util.concurrent.atomic.AtomicInteger
 
+import ControlledParallelSuite._
 import org.scalatest.{Args, Distributor, Status, Suite}
 
 import scala.util.Try
-
-import ControlledParallelSuite._
 
 object ControlledParallelSuite {
   lazy val EnvironmentPoolSize: Try[Int] =

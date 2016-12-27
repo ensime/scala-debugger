@@ -4,10 +4,11 @@ import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.VMStartEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class VMStartRequestSpec extends test.ParallelMockFunSpec
+class VMStartRequestSpec extends ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

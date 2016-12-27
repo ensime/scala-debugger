@@ -4,11 +4,12 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.utils.{ActionInfo, PendingActionManager}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.{JDIMockHelpers, TestMonitorContendedEnterManager}
 
 import scala.util.{Failure, Success}
 
-class PendingMonitorContendedEnterSupportSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PendingMonitorContendedEnterSupportSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockMonitorContendedEnterManager = mock[MonitorContendedEnterManager]

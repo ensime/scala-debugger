@@ -3,11 +3,12 @@ package org.scaladebugger.api.lowlevel.vm
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.TestVMDeathManager
 
 import scala.util.Success
 
-class VMDeathManagerSpec extends test.ParallelMockFunSpec
+class VMDeathManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockVMDeathManager = mock[VMDeathManager]

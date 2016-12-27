@@ -8,9 +8,10 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.lowlevel.requests.filters.ThreadFilter
 import org.scaladebugger.api.lowlevel.steps.{PendingStepSupportLike, StepManager, StepRequestInfo}
 import org.scaladebugger.api.pipelines.Pipeline
-import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducer, EventInfo, StepEventInfo}
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfo, EventInfoProducer, StepEventInfo}
 import org.scaladebugger.api.profiles.traits.info.{InfoProducer, ThreadInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.{Futures, ScalaFutures}
 import org.scalatest.time.{Milliseconds, Span}
 import test.{JDIMockHelpers, Workarounds}
@@ -18,7 +19,7 @@ import test.{JDIMockHelpers, Workarounds}
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class PureStepRequestSpec extends test.ParallelMockFunSpec with JDIMockHelpers with Futures
+class PureStepRequestSpec extends ParallelMockFunSpec with JDIMockHelpers with Futures
   with ScalaFutures
 {
   implicit override val patienceConfig = PatienceConfig(

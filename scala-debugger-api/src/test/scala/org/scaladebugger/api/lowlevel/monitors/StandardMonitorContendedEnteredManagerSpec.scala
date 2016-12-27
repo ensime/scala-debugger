@@ -2,14 +2,15 @@ package org.scaladebugger.api.lowlevel.monitors
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.sun.jdi.request.{MonitorContendedEnteredRequest, EventRequest, EventRequestManager}
+import com.sun.jdi.request.{EventRequest, EventRequestManager, MonitorContendedEnteredRequest}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.{JDIRequestArgument, JDIRequestProcessor}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success}
 
-class StandardMonitorContendedEnteredManagerSpec extends test.ParallelMockFunSpec
+class StandardMonitorContendedEnteredManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

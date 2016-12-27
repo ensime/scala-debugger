@@ -6,8 +6,9 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.ProfileManager
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class ScalaVirtualMachineSpec extends test.ParallelMockFunSpec
+class ScalaVirtualMachineSpec extends ParallelMockFunSpec
 {
   private class TestManagerContainer extends ManagerContainer(
     null, null, null, null, null, null, null, null, null, null, null, null,

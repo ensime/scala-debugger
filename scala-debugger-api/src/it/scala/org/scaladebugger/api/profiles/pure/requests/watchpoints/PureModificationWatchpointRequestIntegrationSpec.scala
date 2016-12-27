@@ -2,16 +2,15 @@ package org.scaladebugger.api.profiles.pure.requests.watchpoints
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureModificationWatchpointRequestIntegrationSpec
-  extends FunSpec with Matchers with ParallelTestExecution
-  with VirtualMachineFixtures with TestUtilities
+class PureModificationWatchpointRequestIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("PureModificationWatchpointRequest") {
     it("should be able to detect modification to a field") {

@@ -1,11 +1,8 @@
 package org.scaladebugger.api.pipelines
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class CloseOperationSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class CloseOperationSpec extends ParallelMockFunSpec {
   describe("CloseOperation") {
     describe("#process") {
       it("should invoke the constructor-provided close function") {

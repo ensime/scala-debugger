@@ -7,8 +7,9 @@ import org.scaladebugger.api.lowlevel.events.EventType.EventType
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class SwappableEventListenerRequestSpec extends test.ParallelMockFunSpec
+class SwappableEventListenerRequestSpec extends ParallelMockFunSpec
 {
   private val mockDebugProfile = mock[DebugProfile]
   private val mockProfileManager = mock[ProfileManager]

@@ -6,10 +6,11 @@ import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.ThreadInfo
 import org.scaladebugger.api.profiles.traits.info.events.StepEventInfo
 import org.scaladebugger.api.profiles.traits.requests.steps.StepRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class StepDSLWrapperSpec extends test.ParallelMockFunSpec
+class StepDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockStepProfile = mock[StepRequest]
 

@@ -1,13 +1,12 @@
 package org.scaladebugger.api.lowlevel.wrappers
 
 import com.sun.jdi._
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers}
 import test.JDIMockHelpers
 
-class StackFrameWrapperSpec extends FunSpec with Matchers with MockFactory
-  with JDIMockHelpers
-{
+class StackFrameWrapperSpec extends ParallelMockFunSpec with JDIMockHelpers {
   describe("StackFrameWrapper") {
     describe("constructor") {
       it("should throw an exception if wrapping a null pointer") {

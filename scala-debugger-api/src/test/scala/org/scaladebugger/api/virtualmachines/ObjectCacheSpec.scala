@@ -2,10 +2,11 @@ package org.scaladebugger.api.virtualmachines
 
 import com.sun.jdi.{ObjectReference, VMCannotBeModifiedException}
 import org.scaladebugger.api.profiles.traits.info.ObjectInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class ObjectCacheSpec extends test.ParallelMockFunSpec
+class ObjectCacheSpec extends ParallelMockFunSpec
 {
   private val TestUniqueId = 1234L
   private val internalCache =

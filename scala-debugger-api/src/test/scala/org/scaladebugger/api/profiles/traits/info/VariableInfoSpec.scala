@@ -1,12 +1,13 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.{TestValueInfo, TestVariableInfo}
 
 import scala.util.{Failure, Success, Try}
 
-class VariableInfoSpec extends test.ParallelMockFunSpec
+class VariableInfoSpec extends ParallelMockFunSpec
 {
   describe("VariableInfo") {
     describe("#hasOffsetIndex") {

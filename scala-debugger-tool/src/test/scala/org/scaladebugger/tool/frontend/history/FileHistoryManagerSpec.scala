@@ -2,7 +2,9 @@ package org.scaladebugger.tool.frontend.history
 
 import java.io.{File, PrintWriter, Writer}
 
-class FileHistoryManagerSpec extends test.ParallelMockFunSpec {
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+
+class FileHistoryManagerSpec extends ParallelMockFunSpec {
   private class TestFile extends File("")
   private val stubFile = stub[TestFile]
 

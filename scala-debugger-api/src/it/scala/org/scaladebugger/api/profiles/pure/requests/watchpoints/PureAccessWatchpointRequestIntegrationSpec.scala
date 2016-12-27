@@ -2,18 +2,15 @@ package org.scaladebugger.api.profiles.pure.requests.watchpoints
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import com.sun.jdi.event.AccessWatchpointEvent
-import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.events.EventType._
 import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class PureAccessWatchpointRequestIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class PureAccessWatchpointRequestIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("PureAccessWatchpointRequest") {
     it("should be able to detect access to a field") {

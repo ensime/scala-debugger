@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.events.EventManager
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.traits.DebugProfile
 import org.scaladebugger.api.utils.LoopingTaskRunner
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class StandardScalaVirtualMachineSpec extends test.ParallelMockFunSpec
+class StandardScalaVirtualMachineSpec extends ParallelMockFunSpec
 {
   private val mockIsInitialized = mockFunction[Boolean]
   private val mockProcessOwnPendingRequests = mockFunction[Unit]

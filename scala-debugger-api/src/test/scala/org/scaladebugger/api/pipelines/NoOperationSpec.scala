@@ -1,14 +1,8 @@
 package org.scaladebugger.api.pipelines
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-import scala.collection.GenTraversableOnce
-import scala.reflect.ClassTag
-
-class NoOperationSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class NoOperationSpec extends ParallelMockFunSpec {
   describe("NoOperation") {
     describe("#process") {
       it("should return the input as the output") {

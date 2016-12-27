@@ -1,9 +1,10 @@
 package org.scaladebugger.api.lowlevel.events.misc
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
+import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class NoResumeSpec extends test.ParallelMockFunSpec
+class NoResumeSpec extends ParallelMockFunSpec
 {
   describe("NoResume") {
     describe("#value") {

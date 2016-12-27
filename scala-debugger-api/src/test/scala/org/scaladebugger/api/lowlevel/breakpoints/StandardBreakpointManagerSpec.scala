@@ -1,17 +1,18 @@
 package org.scaladebugger.api.lowlevel.breakpoints
 
 import com.sun.jdi.{Location, VirtualMachine}
-import com.sun.jdi.request.{EventRequest, BreakpointRequest, EventRequestManager}
+import com.sun.jdi.request.{BreakpointRequest, EventRequest, EventRequestManager}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.classes.ClassManager
-import org.scaladebugger.api.lowlevel.requests.{JDIRequestProcessor, JDIRequestArgumentProcessor, JDIRequestArgument}
+import org.scaladebugger.api.lowlevel.requests.{JDIRequestArgument, JDIRequestArgumentProcessor, JDIRequestProcessor}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.JDIMockHelpers
 
-import scala.util.{Success, Failure}
+import scala.util.{Failure, Success}
 
-class StandardBreakpointManagerSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class StandardBreakpointManagerSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

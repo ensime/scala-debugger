@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.VMDeathEventInfo
 import org.scaladebugger.api.profiles.traits.requests.vm.VMDeathRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class VMDeathDSLWrapperSpec extends test.ParallelMockFunSpec
+class VMDeathDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockVMDeathProfile = mock[VMDeathRequest]
 

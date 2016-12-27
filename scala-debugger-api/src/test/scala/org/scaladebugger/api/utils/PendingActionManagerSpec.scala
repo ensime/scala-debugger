@@ -5,8 +5,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.utils.ActionInfo.ActionId
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class PendingActionManagerSpec extends test.ParallelMockFunSpec
+class PendingActionManagerSpec extends ParallelMockFunSpec
 {
   private val TestActionId = java.util.UUID.randomUUID().toString
 

@@ -15,13 +15,12 @@ import org.scaladebugger.api.lowlevel.steps._
 import org.scaladebugger.api.lowlevel.threads._
 import org.scaladebugger.api.lowlevel.vm._
 import org.scaladebugger.api.lowlevel.watchpoints._
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.PendingManagers._
 
-class ManagerContainerSpec extends FunSpec with Matchers
-  with MockFactory with ParallelTestExecution
-{
+class ManagerContainerSpec extends ParallelMockFunSpec {
   describe("ManagerContainer") {
     describe("#processPendingRequests") {
       it("should create breakpoint requests if some are pending") {

@@ -1,11 +1,10 @@
 package org.scaladebugger.api.utils
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class JDILoaderSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class JDILoaderSpec extends ParallelMockFunSpec {
   private val jdiLoader = new JDILoader()
 
   describe("JDILoader") {

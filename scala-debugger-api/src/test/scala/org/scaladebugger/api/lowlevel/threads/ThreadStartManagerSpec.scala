@@ -3,11 +3,12 @@ package org.scaladebugger.api.lowlevel.threads
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.TestThreadStartManager
 
 import scala.util.Success
 
-class ThreadStartManagerSpec extends test.ParallelMockFunSpec
+class ThreadStartManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockThreadStartManager = mock[ThreadStartManager]

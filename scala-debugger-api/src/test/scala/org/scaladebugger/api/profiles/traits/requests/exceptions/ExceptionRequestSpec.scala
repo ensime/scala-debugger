@@ -1,19 +1,15 @@
 package org.scaladebugger.api.profiles.traits.requests.exceptions
-import com.sun.jdi.event.ExceptionEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.exceptions.ExceptionRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.ExceptionEventInfo
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class ExceptionRequestSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class ExceptionRequestSpec extends ParallelMockFunSpec {
   private val TestThrowable = new Throwable
 
   // Pipeline that is parent to the one that just streams the event

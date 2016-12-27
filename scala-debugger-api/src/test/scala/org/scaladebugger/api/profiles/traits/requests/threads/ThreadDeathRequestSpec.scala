@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.threads.ThreadDeathRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.ThreadDeathEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class ThreadDeathRequestSpec extends test.ParallelMockFunSpec
+class ThreadDeathRequestSpec extends ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

@@ -5,10 +5,11 @@ import com.sun.jdi.{VirtualMachine, VirtualMachineManager}
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.utils.LoopingTaskRunner
 import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, StandardScalaVirtualMachine}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.collection.JavaConverters._
 
-class MemoryHistoryManagerSpec extends test.ParallelMockFunSpec {
+class MemoryHistoryManagerSpec extends ParallelMockFunSpec {
   describe("MemoryHistoryManager") {
     describe("#newInstance") {
       it("should set the maximum lines to the provided value") {

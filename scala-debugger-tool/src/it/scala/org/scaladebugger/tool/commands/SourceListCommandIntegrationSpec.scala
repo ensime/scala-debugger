@@ -1,19 +1,20 @@
 package org.scaladebugger.tool.commands
 
 import java.io.File
-import org.scaladebugger.api.utils.JDITools
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
 
-class SourceListCommandIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with ToolFixtures with MockFactory
-  with TestUtilities with Eventually with FixedParallelSuite
+import org.scaladebugger.api.utils.JDITools
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import org.scalatest.concurrent.Eventually
+import test.{ToolConstants, ToolFixtures, ToolTestUtilities}
+
+class SourceListCommandIntegrationSpec extends ParallelMockFunSpec
+  with ToolFixtures
+  with ToolTestUtilities
+  with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Constants.EventuallyTimeout),
-    interval = scaled(Constants.EventuallyInterval)
+    timeout = scaled(ToolConstants.EventuallyTimeout),
+    interval = scaled(ToolConstants.EventuallyInterval)
   )
 
   describe("SourceListCommand") {
@@ -56,7 +57,7 @@ class SourceListCommandIntegrationSpec extends FunSpec with Matchers
           vt.newInputLine("list")
 
           // Accumulate source text (delay to allow accumulation of all text)
-          val waitTime = Constants.AccumulationTimeout.millisPart
+          val waitTime = ToolConstants.AccumulationTimeout.millisPart
           val lines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim)
 
@@ -116,7 +117,7 @@ class SourceListCommandIntegrationSpec extends FunSpec with Matchers
           vt.newInputLine(s"list size=$testSize")
 
           // Accumulate source text (delay to allow accumulation of all text)
-          val waitTime = Constants.AccumulationTimeout.millisPart
+          val waitTime = ToolConstants.AccumulationTimeout.millisPart
           val lines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim)
 

@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.ClassPrepareEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class ClassPrepareRequestSpec extends test.ParallelMockFunSpec
+class ClassPrepareRequestSpec extends ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

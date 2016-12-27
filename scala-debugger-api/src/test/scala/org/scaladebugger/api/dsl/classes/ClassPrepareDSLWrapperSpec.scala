@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.requests.classes.ClassPrepareRequest
 import org.scaladebugger.api.profiles.traits.info.events.ClassPrepareEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class ClassPrepareDSLWrapperSpec extends test.ParallelMockFunSpec
+class ClassPrepareDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockClassPrepareProfile = mock[ClassPrepareRequest]
 

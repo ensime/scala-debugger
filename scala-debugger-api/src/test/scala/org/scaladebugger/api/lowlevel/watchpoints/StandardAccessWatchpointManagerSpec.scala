@@ -1,16 +1,17 @@
 package org.scaladebugger.api.lowlevel.watchpoints
 
-import com.sun.jdi.{ReferenceType, VirtualMachine, Field}
-import com.sun.jdi.request.{EventRequest, EventRequestManager, AccessWatchpointRequest}
+import com.sun.jdi.{Field, ReferenceType, VirtualMachine}
+import com.sun.jdi.request.{AccessWatchpointRequest, EventRequest, EventRequestManager}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.classes.ClassManager
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.JDIMockHelpers
-import scala.collection.JavaConverters._
 
+import scala.collection.JavaConverters._
 import scala.util.{Failure, Success}
 
-class StandardAccessWatchpointManagerSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class StandardAccessWatchpointManagerSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]

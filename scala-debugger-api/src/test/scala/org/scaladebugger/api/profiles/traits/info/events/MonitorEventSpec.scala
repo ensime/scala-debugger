@@ -3,8 +3,9 @@ package org.scaladebugger.api.profiles.traits.info.events
 import com.sun.jdi.{Location, ObjectReference, ThreadReference, VirtualMachine}
 import com.sun.jdi.event._
 import com.sun.jdi.request.EventRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class MonitorEventSpec extends test.ParallelMockFunSpec {
+class MonitorEventSpec extends ParallelMockFunSpec {
   describe("MonitorEvent") {
     describe("#constructor") {
       it("should throw an exception if locatable is not a monitor event type") {

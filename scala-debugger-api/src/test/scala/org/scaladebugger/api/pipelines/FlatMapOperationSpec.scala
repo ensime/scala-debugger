@@ -1,11 +1,8 @@
 package org.scaladebugger.api.pipelines
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class FlatMapOperationSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory
-{
+class FlatMapOperationSpec extends ParallelMockFunSpec {
   describe("FlatMapOperation") {
     describe("#process") {
       it("should map all elements to other values and then flatten them") {

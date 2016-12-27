@@ -14,10 +14,11 @@ import org.scaladebugger.api.lowlevel.requests.properties.UniqueIdProperty
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.EventInfo
 import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class RequestHelperSpec extends test.ParallelMockFunSpec {
+class RequestHelperSpec extends ParallelMockFunSpec {
   // Define types for request helper
   // E: Event Type
   // EI: Event Info Type

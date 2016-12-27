@@ -2,18 +2,16 @@ package org.scaladebugger.api.lowlevel.watchpoints
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import com.sun.jdi.event.{ClassPrepareEvent, BreakpointEvent, AccessWatchpointEvent}
-import org.scaladebugger.api.utils.JDITools
-import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import com.sun.jdi.event.AccessWatchpointEvent
 import org.scaladebugger.api.lowlevel.events.EventType._
-import org.scaladebugger.api.lowlevel.events.filters.MethodNameFilter
+import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.api.virtualmachines.DummyScalaVirtualMachine
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class StandardAccessWatchpointManagerIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class StandardAccessWatchpointManagerIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("StandardAccessWatchpointManager") {
     it("should be able to detect access to a field") {

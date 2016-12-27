@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.requests.JDIRequestArgument
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.profiles.traits.info.events.VMDisconnectEventInfo
 import org.scaladebugger.api.profiles.traits.requests.vm.VMDisconnectRequest
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.Success
 
-class VMDisconnectDSLWrapperSpec extends test.ParallelMockFunSpec
+class VMDisconnectDSLWrapperSpec extends ParallelMockFunSpec
 {
   private val mockVMDisconnectProfile = mock[VMDisconnectRequest]
 

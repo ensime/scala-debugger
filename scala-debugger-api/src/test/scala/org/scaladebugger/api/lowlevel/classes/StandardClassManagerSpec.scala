@@ -1,15 +1,12 @@
 package org.scaladebugger.api.lowlevel.classes
 
-import com.sun.jdi.{Location, ReferenceType, VirtualMachine}
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{BeforeAndAfter, FunSpec, Matchers, ParallelTestExecution}
+import com.sun.jdi.{ReferenceType, VirtualMachine}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.JDIMockHelpers
 
 import scala.collection.JavaConverters._
 
-class StandardClassManagerSpec extends FunSpec with Matchers with BeforeAndAfter
-  with MockFactory with ParallelTestExecution with JDIMockHelpers
-{
+class StandardClassManagerSpec extends ParallelMockFunSpec with JDIMockHelpers {
   private val TotalMockReferenceTypes = 5
 
   private def indexToExtension(index: Int) =

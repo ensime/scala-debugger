@@ -1,10 +1,11 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestThreadStatusInfo
 
-class ThreadStatusInfoSpec extends test.ParallelMockFunSpec
+class ThreadStatusInfoSpec extends ParallelMockFunSpec
 {
   private val StateMonitor = 0
   private val StateUnknown = 1

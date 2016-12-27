@@ -1,4 +1,4 @@
-package test
+package org.scaladebugger.test.helpers
 
 import java.util.concurrent.{ExecutorService, Executors, ThreadFactory}
 

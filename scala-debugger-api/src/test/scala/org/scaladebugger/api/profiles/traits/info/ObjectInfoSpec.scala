@@ -2,11 +2,12 @@ package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.ThreadReference
 import org.scaladebugger.api.lowlevel.{InvokeNonVirtualArgument, InvokeSingleThreadedArgument, JDIArgument}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestObjectInfo
 
-class ObjectInfoSpec extends test.ParallelMockFunSpec
+class ObjectInfoSpec extends ParallelMockFunSpec
 {
   describe("ObjectInfo") {
     describe("#uniqueIdHexString") {

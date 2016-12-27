@@ -1,14 +1,12 @@
 package org.scaladebugger.api.lowlevel.wrappers
 
-import com.sun.jdi.{Field, ClassNotPreparedException, ReferenceType}
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ParallelTestExecution, Matchers, FunSpec}
+import com.sun.jdi.{ClassNotPreparedException, Field, ReferenceType}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.JDIMockHelpers
 
 import scala.collection.JavaConverters._
 
-class ReferenceTypeWrapperSpec extends FunSpec with Matchers with MockFactory
-  with JDIMockHelpers with ParallelTestExecution
+class ReferenceTypeWrapperSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val mockReferenceType = mock[ReferenceType]
   private val referenceTypeWrapper =

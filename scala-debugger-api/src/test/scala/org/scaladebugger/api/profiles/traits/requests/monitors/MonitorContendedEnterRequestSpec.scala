@@ -5,10 +5,11 @@ import org.scaladebugger.api.lowlevel.monitors.MonitorContendedEnterRequestInfo
 import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.events.MonitorContendedEnterEventInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success, Try}
 
-class MonitorContendedEnterRequestSpec extends test.ParallelMockFunSpec
+class MonitorContendedEnterRequestSpec extends ParallelMockFunSpec
 {
   private val TestThrowable = new Throwable
 

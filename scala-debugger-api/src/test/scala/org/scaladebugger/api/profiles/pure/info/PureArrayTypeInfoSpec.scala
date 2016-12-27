@@ -4,8 +4,9 @@ import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info.{ArrayInfo, InfoProducer, TypeInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scaladebugger.api.profiles.traits.info.ArrayTypeInfo
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class PureArrayTypeInfoSpec extends test.ParallelMockFunSpec
+class PureArrayTypeInfoSpec extends ParallelMockFunSpec
 {
   private val mockNewTypeProfile = mockFunction[Type, TypeInfo]
   private val mockNewArrayProfile = mockFunction[ArrayReference, ArrayInfo]

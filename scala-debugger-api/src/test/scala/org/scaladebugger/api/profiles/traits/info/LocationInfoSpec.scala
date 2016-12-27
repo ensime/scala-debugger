@@ -1,12 +1,13 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import test.InfoTestClasses.TestLocationInfo
 
 import scala.util.{Failure, Success, Try}
 
-class LocationInfoSpec extends test.ParallelMockFunSpec
+class LocationInfoSpec extends ParallelMockFunSpec
 {
   describe("LocationInfo") {
     describe("#toPrettyString") {

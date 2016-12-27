@@ -3,18 +3,18 @@ package org.scaladebugger.tool.commands
 import java.io.File
 
 import org.scaladebugger.api.utils.JDITools
-import org.scalamock.scalatest.MockFactory
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
+import test.{ToolConstants, ToolFixtures, ToolTestUtilities}
 
-class ThreadWhereCommandIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with ToolFixtures with MockFactory
-  with TestUtilities with Eventually with FixedParallelSuite
+class ThreadWhereCommandIntegrationSpec extends ParallelMockFunSpec
+  with ToolFixtures
+  with ToolTestUtilities
+  with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Constants.EventuallyTimeout),
-    interval = scaled(Constants.EventuallyInterval)
+    timeout = scaled(ToolConstants.EventuallyTimeout),
+    interval = scaled(ToolConstants.EventuallyInterval)
   )
 
   describe("ThreadWhereCommand") {
@@ -49,7 +49,7 @@ class ThreadWhereCommandIntegrationSpec extends FunSpec with Matchers
           vt.newInputLine("where")
 
           // Accumulate other text (delay to allow accumulation of all text)
-          val waitTime = Constants.AccumulationTimeout.millisPart
+          val waitTime = ToolConstants.AccumulationTimeout.millisPart
           val lines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).mkString("\n")
 
@@ -87,7 +87,7 @@ class ThreadWhereCommandIntegrationSpec extends FunSpec with Matchers
           vt.newInputLine(s"where $q$threadName$q")
 
           // Accumulate other text (delay to allow accumulation of all text)
-          val waitTime = Constants.AccumulationTimeout.millisPart
+          val waitTime = ToolConstants.AccumulationTimeout.millisPart
           val lines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).mkString("\n")
 

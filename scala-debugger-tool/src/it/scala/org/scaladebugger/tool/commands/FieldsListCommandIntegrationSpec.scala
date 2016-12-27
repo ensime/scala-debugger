@@ -3,17 +3,18 @@ package org.scaladebugger.tool.commands
 import java.io.File
 
 import org.scaladebugger.api.utils.JDITools
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{Constants, FixedParallelSuite, TestUtilities, ToolFixtures}
+import test.{ToolConstants, ToolFixtures, ToolTestUtilities}
 
-class FieldsListCommandIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with ToolFixtures
-  with TestUtilities with Eventually with FixedParallelSuite
+class FieldsListCommandIntegrationSpec extends ParallelMockFunSpec
+  with ToolFixtures
+  with ToolTestUtilities
+  with Eventually
 {
   implicit override val patienceConfig = PatienceConfig(
-    timeout = scaled(Constants.EventuallyTimeout),
-    interval = scaled(Constants.EventuallyInterval)
+    timeout = scaled(ToolConstants.EventuallyTimeout),
+    interval = scaled(ToolConstants.EventuallyInterval)
   )
 
   describe("FieldsListCommand") {
@@ -47,7 +48,7 @@ class FieldsListCommandIntegrationSpec extends FunSpec with Matchers
 
           // Gather all fields after (delay to allow accumulation of all text)
           val prefix = "-> "
-          val waitTime = Constants.AccumulationTimeout.millisPart
+          val waitTime = ToolConstants.AccumulationTimeout.millisPart
           val fieldLines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).map(_.drop(prefix.length))
 
@@ -92,7 +93,7 @@ class FieldsListCommandIntegrationSpec extends FunSpec with Matchers
 
           // Gather all fields after (delay to allow accumulation of all text)
           val prefix = "-> "
-          val waitTime = Constants.AccumulationTimeout.millisPart
+          val waitTime = ToolConstants.AccumulationTimeout.millisPart
           val fieldLines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).map(_.drop(prefix.length))
 
@@ -137,7 +138,7 @@ class FieldsListCommandIntegrationSpec extends FunSpec with Matchers
 
           // Gather all fields after (delay to allow accumulation of all text)
           val prefix = "-> "
-          val waitTime = Constants.AccumulationTimeout.millisPart
+          val waitTime = ToolConstants.AccumulationTimeout.millisPart
           val fieldLines = Stream.continually(vt.nextOutputLine(waitTime = waitTime))
             .takeWhile(_.nonEmpty).flatten.map(_.trim).map(_.drop(prefix.length))
 

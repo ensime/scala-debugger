@@ -3,8 +3,9 @@ package org.scaladebugger.api.lowlevel.events.filters
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 import org.scaladebugger.api.lowlevel.events.filters.processors.CustomPropertyFilterProcessor
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class UniqueIdPropertyFilterSpec extends test.ParallelMockFunSpec
+class UniqueIdPropertyFilterSpec extends ParallelMockFunSpec
 {
   private val testId = java.util.UUID.randomUUID().toString
   private val uniqueIdPropertyFilter = UniqueIdPropertyFilter(id = testId)

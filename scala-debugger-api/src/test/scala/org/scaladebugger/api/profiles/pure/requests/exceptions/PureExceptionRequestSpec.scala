@@ -13,11 +13,12 @@ import org.scaladebugger.api.profiles.Constants
 import org.scaladebugger.api.profiles.traits.info.InfoProducer
 import org.scaladebugger.api.profiles.traits.info.events.{EventInfoProducer, ExceptionEventInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.{JDIMockHelpers, TestRequestHelper}
 
 import scala.util.{Failure, Success}
 
-class PureExceptionRequestSpec extends test.ParallelMockFunSpec with JDIMockHelpers
+class PureExceptionRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockExceptionManager = mock[ExceptionManager]

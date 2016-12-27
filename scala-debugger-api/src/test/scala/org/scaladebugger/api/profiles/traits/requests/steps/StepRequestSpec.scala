@@ -1,5 +1,4 @@
 package org.scaladebugger.api.profiles.traits.requests.steps
-import com.sun.jdi.event.StepEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.lowlevel.events.data.JDIEventDataResult
 import org.scaladebugger.api.lowlevel.steps.StepRequestInfo
@@ -7,16 +6,13 @@ import org.scaladebugger.api.pipelines.Pipeline
 import org.scaladebugger.api.pipelines.Pipeline.IdentityPipeline
 import org.scaladebugger.api.profiles.traits.info.ThreadInfo
 import org.scaladebugger.api.profiles.traits.info.events.StepEventInfo
-import org.scalamock.scalatest.MockFactory
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
 import scala.concurrent._
 import scala.util.{Failure, Success, Try}
 
-class StepRequestSpec extends FunSpec with Matchers with ParallelTestExecution
-  with MockFactory with ScalaFutures
-{
+class StepRequestSpec extends ParallelMockFunSpec with ScalaFutures {
   private val mockThreadInfoProfile = mock[ThreadInfo]
 
   private val TestThrowable = new Throwable

@@ -1,8 +1,8 @@
 package org.scaladebugger.api.utils
 
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
-class MultiMapSpec extends FunSpec with Matchers with ParallelTestExecution {
+class MultiMapSpec extends ParallelMockFunSpec {
 
   private val TestId = java.util.UUID.randomUUID().toString
   private val TestKey = (java.util.UUID.randomUUID().toString, 999)

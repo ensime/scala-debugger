@@ -7,9 +7,10 @@ import org.scaladebugger.api.lowlevel.JDIArgument
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import test.RequestInfoBuilder
 
-class SwappableStepRequestSpec extends test.ParallelMockFunSpec
+class SwappableStepRequestSpec extends ParallelMockFunSpec
 {
   private val mockThreadInfoProfile = mock[ThreadInfo]
   private val mockDebugProfile = mock[DebugProfile]

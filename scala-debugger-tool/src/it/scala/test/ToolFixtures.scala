@@ -14,7 +14,7 @@ import scala.util.Try
 /**
  * Provides fixture methods to provide CLI tools connecting to remote JVMs.
  */
-trait ToolFixtures extends TestUtilities with Logging { this: Matchers =>
+trait ToolFixtures extends ToolTestUtilities with Logging { this: Matchers =>
   private lazy val sleepScaleFactor =
     Try(System.getenv("SCALATEST_SLEEP_SCALE_FACTOR").toDouble).getOrElse(1.0)
 

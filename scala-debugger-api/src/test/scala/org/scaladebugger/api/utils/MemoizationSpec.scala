@@ -1,9 +1,10 @@
 package org.scaladebugger.api.utils
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{ParallelTestExecution, FunSpec, Matchers}
+import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class MemoizationSpec extends test.ParallelMockFunSpec
+class MemoizationSpec extends ParallelMockFunSpec
 {
   describe("Memoization") {
     describe("#apply") {

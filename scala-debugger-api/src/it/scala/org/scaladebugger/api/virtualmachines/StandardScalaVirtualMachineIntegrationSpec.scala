@@ -1,13 +1,11 @@
 package org.scaladebugger.api.virtualmachines
 
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Seconds, Span, Milliseconds}
-import org.scalatest.{ParallelTestExecution, FunSpec, Matchers}
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class StandardScalaVirtualMachineIntegrationSpec extends FunSpec with Matchers
-  with ParallelTestExecution with VirtualMachineFixtures
-  with TestUtilities
+class StandardScalaVirtualMachineIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   describe("StandardScalaVirtualMachine") {
     it("should indicate that it has started upon receiving the start event") {

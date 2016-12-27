@@ -1,6 +1,8 @@
 package org.scaladebugger.tool.frontend.history
 
-class HistoryManagerSpec extends test.ParallelMockFunSpec {
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+
+class HistoryManagerSpec extends ParallelMockFunSpec {
   private val mockLines = mockFunction[Seq[String]]
   private val mockWriteLine = mockFunction[String, Unit]
   private val historyManager = new HistoryManager {

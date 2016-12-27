@@ -1,16 +1,13 @@
 package org.scaladebugger.api.utils
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.Paths
 
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{BeforeAndAfter, FunSpec, Matchers, ParallelTestExecution}
-import test.{TestUtilities, VirtualMachineFixtures}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
+import test.{ApiTestUtilities, VirtualMachineFixtures}
 
-class FileSearcherIntegrationSpec extends FunSpec with Matchers
-  with BeforeAndAfter with VirtualMachineFixtures
-  with TestUtilities
-  with ParallelTestExecution
+class FileSearcherIntegrationSpec extends ParallelMockFunSpec
+  with VirtualMachineFixtures
+  with ApiTestUtilities
 {
   private val fileSearcher = new FileSearcher
   private lazy val searchPath = Paths.get(

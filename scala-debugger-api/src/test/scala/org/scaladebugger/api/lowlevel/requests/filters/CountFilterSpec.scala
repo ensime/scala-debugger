@@ -1,9 +1,10 @@
 package org.scaladebugger.api.lowlevel.requests.filters
 
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
 
-class CountFilterSpec extends test.ParallelMockFunSpec
+class CountFilterSpec extends ParallelMockFunSpec
 {
   private val testCount = 3
   private val countFilter = CountFilter(count = testCount)

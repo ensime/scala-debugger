@@ -5,11 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.sun.jdi.request.{EventRequest, EventRequestManager, ThreadDeathRequest}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import org.scaladebugger.api.lowlevel.requests.{JDIRequestProcessor, JDIRequestArgumentProcessor, JDIRequestArgument}
+import org.scaladebugger.api.lowlevel.requests.{JDIRequestArgument, JDIRequestArgumentProcessor, JDIRequestProcessor}
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 
 import scala.util.{Failure, Success}
 
-class StandardThreadDeathManagerSpec extends test.ParallelMockFunSpec
+class StandardThreadDeathManagerSpec extends ParallelMockFunSpec
 {
   private val TestRequestId = java.util.UUID.randomUUID().toString
   private val mockEventRequestManager = mock[EventRequestManager]
