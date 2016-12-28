@@ -1,8 +1,4 @@
 matrix:
-    DRONE_TIMEOUT:
-        - 60
-    DRONE_TIMEOUT_INACTIVITY:
-        - 45
     SCALA_VERSION:
         - 2.10.6
         - 2.11.8
@@ -22,6 +18,8 @@ pipeline:
             - SCALATEST_SLEEP_SCALE_FACTOR=2.0
             - CACHE_DIR="/drone"
             - SCALATEST_SPAN_SCALE_FACTOR=20
+            - DRONE_TIMEOUT=1h
+            - DRONE_TIMEOUT_INACTIVITY=1h
         commands:
             - host `curl -s http://httpbin.org/ip | jq -r '.origin'` || true
             - javac -version
