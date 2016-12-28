@@ -1,24 +1,25 @@
 matrix:
-  SCALA_VERSION:
-    - 2.10.6
-    - 2.11.8
-    - 2.12.1
-  TEST_SUITE:
-    - test
-  IT_TEST_SUITE:
-    - it:test
+    SCALA_VERSION:
+        - 2.10.6
+        - 2.11.8
+        - 2.12.1
+    TEST_SUITE:
+        - test
+    IT_TEST_SUITE:
+        - it:test
 
-build:
-  image: chipsenkbeil/scala-debugger:latest
-  pull: true
-  environment:
-    - SBT_TASK_LIMIT=4
-    - SCALATEST_PARALLEL_TESTS=2
-    - SCALATEST_SLEEP_SCALE_FACTOR=2.0
-    - CACHE_DIR="/drone"
-    - SCALATEST_SPAN_SCALE_FACTOR=20
-  commands:
-    - host `curl -s http://httpbin.org/ip | jq -r '.origin'` || true
-    - javac -version
-    - /usr/bin/sbt ";+++ $SCALA_VERSION $TEST_SUITE ;+++ $SCALA_VERSION $IT_TEST_SUITE"
+pipeline:
+    build:
+        image: chipsenkbeil/scala-debugger:latest
+        pull: true
+        environment:
+            - SBT_TASK_LIMIT=4
+            - SCALATEST_PARALLEL_TESTS=2
+            - SCALATEST_SLEEP_SCALE_FACTOR=2.0
+            - CACHE_DIR="/drone"
+            - SCALATEST_SPAN_SCALE_FACTOR=20
+        commands:
+            - host `curl -s http://httpbin.org/ip | jq -r '.origin'` || true
+            - javac -version
+            - /usr/bin/sbt ";+++ $SCALA_VERSION $TEST_SUITE ;+++ $SCALA_VERSION $IT_TEST_SUITE"
 
