@@ -72,7 +72,6 @@ trait ControlledParallelSuite extends Suite {
     val semaphore = semaMap.getOrElseUpdate(id, new Semaphore(poolSize))
 
     semaphore.acquire()
-    println(s"==========> Running $id")
     val result = Try(thunk)
     semaphore.release()
     result.get

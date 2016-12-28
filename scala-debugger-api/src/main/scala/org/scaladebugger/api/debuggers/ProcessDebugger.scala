@@ -137,7 +137,9 @@ class ProcessDebugger private[api] (
     loopingTaskRunner.stop()
 
     // Free up the connection to the JVM
-    scalaVirtualMachine.map(_.underlyingVirtualMachine).foreach(_.dispose())
+    // NOTE: Can throw VMDisconnectException, so swallow it
+    scalaVirtualMachine.map(_.underlyingVirtualMachine)
+      .foreach(vm => Try(vm.dispose()))
 
     // Wipe our reference to the old virtual machine
     scalaVirtualMachine.foreach(scalaVirtualMachineManager.remove)

@@ -6,6 +6,7 @@ import org.scaladebugger.api.utils.{Logging, LoopingTaskRunner}
 import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager, StandardScalaVirtualMachine}
 
 import scala.collection.JavaConverters._
+import scala.util.Try
 
 object AttachingDebugger {
   /**
@@ -146,7 +147,9 @@ class AttachingDebugger private[api] (
     loopingTaskRunner.stop()
 
     // Free up the connection to the JVM
-    scalaVirtualMachine.map(_.underlyingVirtualMachine).foreach(_.dispose())
+    // NOTE: Can throw VMDisconnectException, so swallow it
+    scalaVirtualMachine.map(_.underlyingVirtualMachine)
+      .foreach(vm => Try(vm.dispose()))
 
     // Wipe our reference to the old virtual machine
     scalaVirtualMachine.foreach(scalaVirtualMachineManager.remove)

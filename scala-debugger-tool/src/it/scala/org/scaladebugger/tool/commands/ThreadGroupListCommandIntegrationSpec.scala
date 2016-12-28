@@ -3,10 +3,9 @@ package org.scaladebugger.tool.commands
 import java.io.File
 
 import org.scaladebugger.api.utils.JDITools
-import org.scaladebugger.test.helpers.FixedParallelSuite
+import org.scaladebugger.test.helpers.ParallelMockFunSpec
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
-import test.{ToolConstants, ToolTestUtilities, ToolFixtures}
+import test.{ToolConstants, ToolFixtures, ToolTestUtilities}
 
 class ThreadGroupListCommandIntegrationSpec extends ParallelMockFunSpec
   with ToolFixtures

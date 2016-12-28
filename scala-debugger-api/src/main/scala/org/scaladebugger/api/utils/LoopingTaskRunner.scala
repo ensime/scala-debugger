@@ -136,7 +136,10 @@ class LoopingTaskRunner(
     assert(isRunning, "Runner not started!")
 
     setDesiredTotalWorkers(0)
-    executorService.get.shutdown()
+    executorService.foreach(es => {
+      es.shutdown()
+      es.awaitTermination(10, TimeUnit.SECONDS)
+    })
     executorService = None
 
     if (removeAllTasks) {

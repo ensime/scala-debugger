@@ -74,9 +74,6 @@ trait VirtualMachineFixtures extends ApiTestUtilities with Logging {
 
         testCode(s, startFunc)
       } finally {
-        // NOTE: Hack to get processes to exit
-        // TODO: Doesn't seem to affect overall test run via it:test
-        Thread.sleep(1000)
         launchingDebugger.stop()
       }
     })

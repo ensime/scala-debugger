@@ -1,11 +1,14 @@
 package org.scaladebugger.api.debuggers
+import java.util.concurrent.Future
+
 import com.sun.jdi._
 import com.sun.jdi.connect.LaunchingConnector
 import org.scaladebugger.api.profiles.{ProfileManager, StandardProfileManager}
-import org.scaladebugger.api.utils.{Logging, LoopingTaskRunner}
+import org.scaladebugger.api.utils.{AdvancedProcess, Logging, LoopingTaskRunner}
 import org.scaladebugger.api.virtualmachines.{ScalaVirtualMachine, ScalaVirtualMachineManager, StandardScalaVirtualMachine}
 
 import scala.collection.JavaConverters._
+import scala.util.Try
 
 object LaunchingDebugger {
   /**
@@ -148,21 +151,22 @@ class LaunchingDebugger private[api] (
     // Stop the looping task runner processing events
     loopingTaskRunner.stop()
 
-    // TODO: Investigate why dispose throws a VMDisconnectedException
-    // Invalidate the virtual machine mirror
-    //virtualMachine.get.dispose()
-
     // Kill the process associated with the local virtual machine
     logger.info("Shutting down process: " +
       (className +: commandLineArguments).mkString(" "))
-    scalaVirtualMachine.map(_.underlyingVirtualMachine.process()).foreach(p => {
-      p.destroy()
+    scalaVirtualMachine.map(_.underlyingVirtualMachine).foreach(vm => {
+      // Invalidate the virtual machine mirror
+      // NOTE: Can throw VMDisconnectException, so swallow it
+      Try(vm.dispose())
 
-      // NOTE: Hack to force process shutdown
-      // TODO: This uses JDK8 method (waitFor), so need to remove
-      import java.util.concurrent.TimeUnit
-      val exitVal = p.waitFor(10, TimeUnit.SECONDS)
-      if (!exitVal) println("XXXXX failed to shut down nicely ")
+      // Destroy the process if it is still hanging around
+      Try {
+        val p = vm.process()
+        p.destroy()
+
+        val ap = new AdvancedProcess(p)
+        ap.waitForLimit(1000) // Wait 1 second for process to finish
+      }
     })
 
     // Wipe our reference to the old virtual machine
