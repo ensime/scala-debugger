@@ -1,4 +1,8 @@
 matrix:
+    DRONE_TIMEOUT:
+        - 60
+    DRONE_TIMEOUT_INACTIVITY:
+        - 45
     SCALA_VERSION:
         - 2.10.6
         - 2.11.8
