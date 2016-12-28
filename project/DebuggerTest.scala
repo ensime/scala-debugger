@@ -1,7 +1,7 @@
 import sbt.Keys._
 import sbt._
 
-object Test {
+object DebuggerTest {
   /** Test-specific project settings. */
   val settings = Seq(
     libraryDependencies ++= Seq(

@@ -21,7 +21,7 @@ lazy val scalaDebuggerTest = project
   .configs(IntegrationTest)
   .settings(Common.settings: _*)
   .settings(Defaults.itSettings: _*)
-  .settings(Test.settings: _*)
+  .settings(DebuggerTest.settings: _*)
   .settings(
     // Do not publish the test project
     publishArtifact := false,
