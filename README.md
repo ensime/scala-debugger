@@ -2,7 +2,7 @@ Scala Debugger
 ==============
 
 [![Stories in Ready](https://badge.waffle.io/ensime/scala-debugger.svg?label=ready&title=Ready)](http://waffle.io/ensime/scala-debugger)
-[![Build Status](http://ci.fommil.com/api/badges/ensime/scala-debugger/status.svg)](http://ci.fommil.com/ensime/scala-debugger)
+[![Build Status](https://ci.senkbeil.org/api/badges/ensime/scala-debugger/status.svg)](https://ci.senkbeil.org/ensime/scala-debugger)
 [![Build status](https://ci.appveyor.com/api/projects/status/8mcnhcm1jofomg2f/branch/master?svg=true)](https://ci.appveyor.com/project/chipsenkbeil/scala-debugger/branch/master)
 [![Scaladex](https://index.scala-lang.org/ensime/scala-debugger/scala-debugger-api/latest.svg?color=orange)](https://index.scala-lang.org/ensime/scala-debugger)
 [![Scaladoc 2.10](https://img.shields.io/badge/Scaladoc-2.10-34B6A8.svg?style=flat)](http://www.javadoc.io/doc/org.scala-debugger/scala-debugger-api_2.10)
