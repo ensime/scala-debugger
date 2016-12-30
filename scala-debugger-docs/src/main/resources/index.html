@@ -1,0 +1,368 @@
+<html>
+    <head>
+        <title>Scala Debugger - Front Page</title>
+        <meta charset="utf-8">
+        <link 
+            rel="stylesheet" 
+            href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" 
+            integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" 
+            crossorigin="anonymous">
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+}
+.navbar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+    height: auto;
+
+    background: #3B3E43;
+    color: #EBF0F1;
+
+    padding: 0.1em 1em;
+
+    font-size: 1.5em;
+}
+.nav-logo {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 25%;
+}
+.nav-logo img {
+    height: 3em;
+    padding-right: 0.5em;
+}
+.nav-logo span {
+    font-size: 1em;
+}
+.nav-links {
+    width: 65%;
+}
+.nav-links ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+
+    list-style-type: none;
+}
+.nav-links li {
+    padding: 0em 0.5em;
+}
+.nav-links a {
+    color: #EBF0F1;
+    font-size: 0.65em;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-bottom: 1px solid #EBF0F1;
+}
+.nav-search {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 10%;
+
+    font-size: 2em;
+}
+.clickable {
+    cursor: pointer;
+}
+</style>
+    </head>
+    <body>
+        <header class="navbar">
+            <!-- Logo -->
+            <div class="nav-logo">
+                <img src="img/ensime-logo-no-text.svg" alt="Ensime Logo" />
+                <span>Scala Debugger</span>
+            </div>
+
+            <!-- Navigation links -->
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="/docs/api">api</a></li>
+                    <li><a href="/docs/language">language</a></li>
+                    <li><a href="/docs/sdb">sdb</a></li>
+                    <li><a href="/docs/visual_debugger">visual debugger</a></li>
+                    <li><a href="/docs/sbt_plugin">sbt plugin</a></li>
+                    <li><a href="/docs/about">about</a></li>
+                </ul>
+            </nav>
+
+            <!-- Search icon -->
+            <div class="nav-search">
+                <span class="clickable"><i class="fa fa-search" aria-hidden="true"></i></span>
+            </div>
+        </header>
+
+        <!-- Hero -->
+        <section>
+            <h1>
+                <img src="img/ensime-logo-no-text.svg" alt="Ensime Logo" />
+                <span>Scala Debugger</span>
+            </h1>
+            <span>Scala abstractions and tooling around the Java Debugger Interface.</span>
+            <div><a href="/docs/about">Learn More</a></div>
+        </section>
+
+        <!-- Installation -->
+        <section>
+            <h1>
+                <i class="fa fa-laptop" aria-hidden="true"></i>
+                <span>Installation</span>
+            </h1>
+            <ul class="tabs" role="tablist">
+                <li>
+                    <input type="radio" name="installation-tabs" id="installation-tab-1" checked />
+                    <label 
+                        for="installation-tab-1" 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="installation-panel"
+                        tabindex="0">api</label>
+                    <div
+                        id="installation-tab-content-1"
+                        class="tab-content"
+                        role="tabpanel"
+                        aria-labelledby="api"
+                        aria-hidden="false">
+                        <!-- Grouping of marker and text box -->
+                        <div>
+                            <!-- Marker for sbt library installation -->
+                            <span>sbt</span>
+
+                            <!-- Text box for sbt library installation -->
+                            <span><pre><code>libraryDependencies += "org.scala-debugger" %% "scala-debugger-api" % "1.1.0-M3"</code></pre></span>
+                        </div>
+
+                        <div>
+                            <!-- Marker for sbt plugin installation -->
+                            <span>sbt plugin</span>
+
+                            <!-- Text box for sbt plugin installation -->
+                            <span><pre><code>addSbtPlugin("org.scala-debugger" % "sbt-jdi-tools" % "1.0.0")</code></pre></span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" name="installation-tabs" id="installation-tab-2" />
+                    <label 
+                        for="installation-tab-2" 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="installation-panel"
+                        tabindex="1">sdb</label>
+                    <div
+                        id="installation-tab-content-2"
+                        class="tab-content"
+                        role="tabpanel"
+                        aria-labelledby="sdb"
+                        aria-hidden="false">
+                        <!-- Grouping of marker and text box -->
+                        <div>
+                            <!-- Marker for sdb download -->
+                            <span>download 2.10 binary</span>
+
+                            <!-- Download link -->
+                            <span><a href="/downloads/sdb/1.1.0-M3/sdb-2.10.jar">sdb 2.10</a></span>
+                        </div>
+
+                        <div>
+                            <!-- Marker for sdb download -->
+                            <span>download 2.11 binary</span>
+
+                            <!-- Download link -->
+                            <span><a href="/downloads/sdb/1.1.0-M3/sdb-2.11.jar">sdb 2.11</a></span>
+                        </div>
+
+                        <div>
+                            <!-- Marker for sdb download -->
+                            <span>download 2.12 binary</span>
+
+                            <!-- Download link -->
+                            <span><a href="/downloads/sdb/1.1.0-M3/sdb-2.12.jar">sdb 2.12</a></span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" name="installation-tabs" id="installation-tab-3" />
+                    <label 
+                        for="installation-tab-3" 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="installation-panel"
+                        tabindex="2">visual debugger</label>
+                    <div
+                        id="installation-tab-content-3"
+                        class="tab-content"
+                        role="tabpanel"
+                        aria-labelledby="visual debugger"
+                        aria-hidden="false">
+                        <!-- Grouping of marker and text box -->
+                        <div>
+                            <!-- Marker for visual debugger download -->
+                            <span>download 2.10 binary</span>
+
+                            <!-- Download link -->
+                            <span><a href="/downloads/visual-debugger/1.1.0-M3/vsdb-2.10.jar">vsdb 2.10</a></span>
+                        </div>
+
+                        <div>
+                            <!-- Marker for visual debugger download -->
+                            <span>download 2.11 binary</span>
+
+                            <!-- Download link -->
+                            <span><a href="/downloads/visual-debugger/1.1.0-M3/vsdb-2.11.jar">vsdb 2.11</a></span>
+                        </div>
+
+                        <div>
+                            <!-- Marker for visual debugger download -->
+                            <span>download 2.12 binary</span>
+
+                            <!-- Download link -->
+                            <span><a href="/downloads/visual-debugger/1.1.0-M3/vsdb-2.12.jar">vsdb 2.12</a></span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" name="installation-tabs" id="installation-tab-4" />
+                    <label 
+                        for="installation-tab-4" 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="installation-panel"
+                        tabindex="3">sbt plugin</label>
+                    <div
+                        id="installation-tab-content-4"
+                        class="tab-content"
+                        role="tabpanel"
+                        aria-labelledby="sbt plugin"
+                        aria-hidden="false">
+                        <!-- Grouping of marker and text box -->
+                        <div>
+                            <!-- Marker for sbt plugin installation -->
+                            <span>sbt plugin</span>
+
+                            <!-- Text box for sbt plugin installation -->
+                            <span><pre><code>addSbtPlugin("org.scala-debugger" % "sbt-scala-debugger" % "1.1.0-M3")</code></pre></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Examples -->
+        <section>
+            <h1>
+                <i class="fa fa-gears" aria-hidden="true"></i>
+                <span>Examples</span>
+            </h1>
+            <ul class="tabs" role="tablist">
+                <li>
+                    <input type="radio" name="example-tabs" id="examples-tab-1" checked />
+                    <label 
+                        for="examples-tab-1" 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="examples-panel"
+                        tabindex="0">api</label>
+                    <div
+                        id="examples-tab-content-1"
+                        class="tab-content"
+                        role="tabpanel"
+                        aria-labelledby="api"
+                        aria-hidden="false">
+                        <!-- Source code example that fills tab -->
+                        <span><pre><code>TODO: Add source code here</code></pre></span>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" name="tabs" id="examples-tab-2" />
+                    <label 
+                        for="examples-tab-2" 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="examples-panel"
+                        tabindex="1">sdb</label>
+                    <div
+                        id="examples-tab-content-2"
+                        class="tab-content"
+                        role="tabpanel"
+                        aria-labelledby="sdb"
+                        aria-hidden="false">
+                        <!-- Video example of usage -->
+                        <video width="480" controls poster="/videos/examples/sdb.gif">
+                            <source src="/videos/examples/sdb.webm" type="video/webm" />
+                            <source src="/videos/examples/sdb.mp4" type="video/mp4" />
+                            <source src="/videos/examples/sdb.ogv" type="video/ogg" />
+                            Your browser doesn't support HTML5 video tag.
+                        </video>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" name="tabs" id="examples-tab-3" />
+                    <label 
+                        for="examples-tab-3" 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="examples-panel"
+                        tabindex="2">visual debugger</label>
+                    <div
+                        id="examples-tab-content-3"
+                        class="tab-content"
+                        role="tabpanel"
+                        aria-labelledby="visual debugger"
+                        aria-hidden="false">
+                        <!-- Video example of usage -->
+                        <video width="480" controls poster="/videos/examples/visual-debugger.gif">
+                            <source src="/videos/examples/visual-debugger.webm" type="video/webm" />
+                            <source src="/videos/examples/visual-debugger.mp4" type="video/mp4" />
+                            <source src="/videos/examples/visual-debugger.ogv" type="video/ogg" />
+                            Your browser doesn't support HTML5 video tag.
+                        </video>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" name="tabs" id="examples-tab-4" />
+                    <label 
+                        for="examples-tab-4" 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="examples-panel"
+                        tabindex="3">sbt plugin</label>
+                    <div
+                        id="examples-tab-content-4"
+                        class="tab-content"
+                        role="tabpanel"
+                        aria-labelledby="sbt plugin"
+                        aria-hidden="false">
+                        <!-- Video example of usage -->
+                        <video width="480" controls poster="/videos/examples/sbt-plugin.gif">
+                            <source src="/videos/examples/sbt-plugin.webm" type="video/webm" />
+                            <source src="/videos/examples/sbt-plugin.mp4" type="video/mp4" />
+                            <source src="/videos/examples/sbt-plugin.ogv" type="video/ogg" />
+                            Your browser doesn't support HTML5 video tag.
+                        </video>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Thin footer to display copyright -->
+        <footer>
+            <span>Site contents <i class="fa fa-copyright" aria-hidden="true"></i> Chip Senkbeil, 2015-2017.</span>
+        </footer>
+    </body>
+</html>
+
