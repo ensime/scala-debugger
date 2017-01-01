@@ -13,6 +13,28 @@ html, body {
     padding: 0;
     font-size: 1em;
 }
+.section-dark {
+    background: #3B3E43;
+    color: #EBF0F1;
+}
+.section-light {
+    background: #EAEAEC;
+    color: #3B3E43;
+}
+.section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 33vh;
+    padding: 3em;
+}
+.section h1 {
+    font-size: 5em;
+    margin: 0;
+}
+</style>
+<style>
 .navbar {
     display: flex;
     flex-direction: row;
@@ -22,9 +44,6 @@ html, body {
 
     width: 100%;
     height: auto;
-
-    background: #3B3E43;
-    color: #EBF0F1;
 
     padding: 0.1em 1em;
 
@@ -79,9 +98,80 @@ html, body {
     cursor: pointer;
 }
 </style>
+<style>
+.tabs {
+    width: 100%;
+    list-style: none;
+    float: none;
+    position: relative;
+    text-align: left;
+}
+.tabs li {
+    float: left;
+    display: block;
+}
+.tabs input[type="radio"] {
+    position: absolute;
+    visibility: hidden;
+}
+.tabs label {
+    display: block;
+    padding: 14px 21px;
+    font-size: 20px;
+    font-weight: normal;
+    text-transform: uppercase;
+    color: #ECF0F1;
+    background: #F1626B;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+    top: 4px;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+.tabs li:first-child > label {
+    border-radius: 8px 0px 0px 0px;
+}
+.tabs li:last-child > label {
+    border-radius: 0px 8px 0px 0px;
+}
+.tabs label:hover {
+    background: #EF4551;
+}
+.tabs .tab-content {
+    z-index: 2;
+    display: none;
+    overflow: hidden;
+    width: 100%;
+    font-size: 17px;
+    line-height: 25px;
+    padding: 25px;
+    position: absolute;
+    top: 53px;
+    left: 0;
+}
+.tabs-dark .tab-content {
+    background: #3B3E43;
+    color: #EBF0F1;
+}
+.tabs-light .tab-content {
+    background: #EAEAEC;
+    color: #3B3E43;
+}
+.tabs [id^="tab"]:checked + label {
+    top: 0;
+    padding-top: 17px;
+    background: #EF4551;
+}
+.tabs [id^="tab"]:checked ~ [id^="tab-content"] {
+    display: block;
+}
+</style>
     </head>
     <body>
-        <header class="navbar">
+        <header class="navbar section-dark">
             <!-- Logo -->
             <div class="nav-logo">
                 <img src="img/ensime-logo-no-text.svg" alt="Ensime Logo" />
@@ -107,7 +197,7 @@ html, body {
         </header>
 
         <!-- Hero -->
-        <section>
+        <section class="section section-light">
             <h1>
                 <img src="img/ensime-logo-no-text.svg" alt="Ensime Logo" />
                 <span>Scala Debugger</span>
@@ -117,22 +207,22 @@ html, body {
         </section>
 
         <!-- Installation -->
-        <section>
+        <section class="section section-dark">
             <h1>
                 <i class="fa fa-laptop" aria-hidden="true"></i>
                 <span>Installation</span>
             </h1>
-            <ul class="tabs" role="tablist">
+            <ul class="tabs tabs-light" role="tablist">
                 <li>
-                    <input type="radio" name="installation-tabs" id="installation-tab-1" checked />
+                    <input type="radio" name="tabs-installation" id="tab-installation-1" checked />
                     <label 
-                        for="installation-tab-1" 
+                        for="tab-installation-1" 
                         role="tab" 
                         aria-selected="true" 
                         aria-controls="installation-panel"
                         tabindex="0">api</label>
                     <div
-                        id="installation-tab-content-1"
+                        id="tab-content-installation-1"
                         class="tab-content"
                         role="tabpanel"
                         aria-labelledby="api"
@@ -156,15 +246,15 @@ html, body {
                     </div>
                 </li>
                 <li>
-                    <input type="radio" name="installation-tabs" id="installation-tab-2" />
+                    <input type="radio" name="tabs-installation" id="tab-installation-2" />
                     <label 
-                        for="installation-tab-2" 
+                        for="tab-installation-2" 
                         role="tab" 
                         aria-selected="true" 
                         aria-controls="installation-panel"
                         tabindex="1">sdb</label>
                     <div
-                        id="installation-tab-content-2"
+                        id="tab-content-installation-2"
                         class="tab-content"
                         role="tabpanel"
                         aria-labelledby="sdb"
@@ -196,15 +286,15 @@ html, body {
                     </div>
                 </li>
                 <li>
-                    <input type="radio" name="installation-tabs" id="installation-tab-3" />
+                    <input type="radio" name="tabs-installation" id="tab-installation-3" />
                     <label 
-                        for="installation-tab-3" 
+                        for="tab-installation-3" 
                         role="tab" 
                         aria-selected="true" 
                         aria-controls="installation-panel"
                         tabindex="2">visual debugger</label>
                     <div
-                        id="installation-tab-content-3"
+                        id="tab-content-installation-3"
                         class="tab-content"
                         role="tabpanel"
                         aria-labelledby="visual debugger"
@@ -236,15 +326,15 @@ html, body {
                     </div>
                 </li>
                 <li>
-                    <input type="radio" name="installation-tabs" id="installation-tab-4" />
+                    <input type="radio" name="tabs-installation" id="tab-installation-4" />
                     <label 
-                        for="installation-tab-4" 
+                        for="tab-installation-4" 
                         role="tab" 
                         aria-selected="true" 
                         aria-controls="installation-panel"
                         tabindex="3">sbt plugin</label>
                     <div
-                        id="installation-tab-content-4"
+                        id="tab-content-installation-4"
                         class="tab-content"
                         role="tabpanel"
                         aria-labelledby="sbt plugin"
@@ -263,22 +353,22 @@ html, body {
         </section>
 
         <!-- Examples -->
-        <section>
+        <section class="section section-light">
             <h1>
                 <i class="fa fa-gears" aria-hidden="true"></i>
                 <span>Examples</span>
             </h1>
-            <ul class="tabs" role="tablist">
+            <ul class="tabs tabs-dark" role="tablist">
                 <li>
-                    <input type="radio" name="example-tabs" id="examples-tab-1" checked />
+                    <input type="radio" name="tabs-examples" id="tab-examples-1" checked />
                     <label 
-                        for="examples-tab-1" 
+                        for="tab-examples-1" 
                         role="tab" 
                         aria-selected="true" 
                         aria-controls="examples-panel"
                         tabindex="0">api</label>
                     <div
-                        id="examples-tab-content-1"
+                        id="tab-content-examples-1"
                         class="tab-content"
                         role="tabpanel"
                         aria-labelledby="api"
@@ -288,15 +378,15 @@ html, body {
                     </div>
                 </li>
                 <li>
-                    <input type="radio" name="tabs" id="examples-tab-2" />
+                    <input type="radio" name="tabs-examples" id="tab-examples-2" />
                     <label 
-                        for="examples-tab-2" 
+                        for="tab-examples-2" 
                         role="tab" 
                         aria-selected="true" 
                         aria-controls="examples-panel"
                         tabindex="1">sdb</label>
                     <div
-                        id="examples-tab-content-2"
+                        id="tab-content-examples-2"
                         class="tab-content"
                         role="tabpanel"
                         aria-labelledby="sdb"
@@ -311,15 +401,15 @@ html, body {
                     </div>
                 </li>
                 <li>
-                    <input type="radio" name="tabs" id="examples-tab-3" />
+                    <input type="radio" name="tabs-examples" id="tab-examples-3" />
                     <label 
-                        for="examples-tab-3" 
+                        for="tab-examples-3" 
                         role="tab" 
                         aria-selected="true" 
                         aria-controls="examples-panel"
                         tabindex="2">visual debugger</label>
                     <div
-                        id="examples-tab-content-3"
+                        id="tab-content-examples-3"
                         class="tab-content"
                         role="tabpanel"
                         aria-labelledby="visual debugger"
@@ -334,15 +424,15 @@ html, body {
                     </div>
                 </li>
                 <li>
-                    <input type="radio" name="tabs" id="examples-tab-4" />
+                    <input type="radio" name="tabs-examples" id="tab-examples-4" />
                     <label 
-                        for="examples-tab-4" 
+                        for="tab-examples-4" 
                         role="tab" 
                         aria-selected="true" 
                         aria-controls="examples-panel"
                         tabindex="3">sbt plugin</label>
                     <div
-                        id="examples-tab-content-4"
+                        id="tab-content-examples-4"
                         class="tab-content"
                         role="tabpanel"
                         aria-labelledby="sbt plugin"
