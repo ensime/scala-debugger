@@ -12,6 +12,7 @@ html, body {
     margin: 0;
     padding: 0;
     font-size: 1em;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
 }
 .section-dark {
     background: #3B3E43;
@@ -52,6 +53,35 @@ html, body {
 }
 .video {
     width: 100%;
+}
+.marker {
+    position: relative;
+    padding: 1em;
+    background: #3B3E43;
+    color: #ECF0F1;
+    text-transform: uppercase;
+}
+.marker::after {
+    position: absolute;
+    top: calc(50% - 1.59em);
+    left: 100%;
+
+    content: "";
+
+    width: 0px;
+    height: 0px;
+    background: transparent;
+
+    border-left: 1.59em solid #3B3E43;
+    border-top: 1.59em solid transparent;
+    border-bottom: 1.59em solid transparent;
+    clear: both;
+}
+.textbox {
+    display: inline-block;
+    background: #ECF0F1;
+    border: 1px solid #979797;
+    border-radius: 8px;
 }
 </style>
 <style>
@@ -269,18 +299,18 @@ ul.tabs {
                             <!-- Grouping of marker and text box -->
                             <div>
                                 <!-- Marker for sbt library installation -->
-                                <span>sbt</span>
+                                <span class="marker">sbt</span>
 
                                 <!-- Text box for sbt library installation -->
-                                <span><pre><code>libraryDependencies += "org.scala-debugger" %% "scala-debugger-api" % "1.1.0-M3"</code></pre></span>
+                                <span class="textbox"><pre><code>libraryDependencies += "org.scala-debugger" %% "scala-debugger-api" % "1.1.0-M3"</code></pre></span>
                             </div>
 
                             <div>
                                 <!-- Marker for sbt plugin installation -->
-                                <span>sbt plugin</span>
+                                <span class="marker">sbt plugin</span>
 
                                 <!-- Text box for sbt plugin installation -->
-                                <span><pre><code>addSbtPlugin("org.scala-debugger" % "sbt-jdi-tools" % "1.0.0")</code></pre></span>
+                                <span class="textbox"><pre><code>addSbtPlugin("org.scala-debugger" % "sbt-jdi-tools" % "1.0.0")</code></pre></span>
                             </div>
                         </div>
                     </li>
@@ -291,36 +321,20 @@ ul.tabs {
                             role="tab" 
                             aria-selected="true" 
                             aria-controls="installation-panel"
-                            tabindex="1">sdb</label>
+                            tabindex="1">language</label>
                         <div
                             id="tab-content-installation-2"
                             class="tab-content"
                             role="tabpanel"
-                            aria-labelledby="sdb"
+                            aria-labelledby="language"
                             aria-hidden="false">
                             <!-- Grouping of marker and text box -->
                             <div>
-                                <!-- Marker for sdb download -->
-                                <span>download 2.10 binary</span>
+                                <!-- Marker for sbt library installation -->
+                                <span class="marker">sbt</span>
 
-                                <!-- Download link -->
-                                <span><a href="/downloads/sdb/1.1.0-M3/sdb-2.10.jar">sdb 2.10</a></span>
-                            </div>
-
-                            <div>
-                                <!-- Marker for sdb download -->
-                                <span>download 2.11 binary</span>
-
-                                <!-- Download link -->
-                                <span><a href="/downloads/sdb/1.1.0-M3/sdb-2.11.jar">sdb 2.11</a></span>
-                            </div>
-
-                            <div>
-                                <!-- Marker for sdb download -->
-                                <span>download 2.12 binary</span>
-
-                                <!-- Download link -->
-                                <span><a href="/downloads/sdb/1.1.0-M3/sdb-2.12.jar">sdb 2.12</a></span>
+                                <!-- Text box for sbt library installation -->
+                                <span class="textbox"><pre><code>libraryDependencies += "org.scala-debugger" %% "scala-debugger-language" % "1.1.0-M3"</code></pre></span>
                             </div>
                         </div>
                     </li>
@@ -331,36 +345,36 @@ ul.tabs {
                             role="tab" 
                             aria-selected="true" 
                             aria-controls="installation-panel"
-                            tabindex="2">visual debugger</label>
+                            tabindex="2">sdb</label>
                         <div
                             id="tab-content-installation-3"
                             class="tab-content"
                             role="tabpanel"
-                            aria-labelledby="visual debugger"
+                            aria-labelledby="sdb"
                             aria-hidden="false">
                             <!-- Grouping of marker and text box -->
                             <div>
-                                <!-- Marker for visual debugger download -->
-                                <span>download 2.10 binary</span>
+                                <!-- Marker for sdb download -->
+                                <span class="marker">download 2.10 binary</span>
 
                                 <!-- Download link -->
-                                <span><a href="/downloads/visual-debugger/1.1.0-M3/vsdb-2.10.jar">vsdb 2.10</a></span>
+                                <span class="textbox"><a href="/downloads/sdb/1.1.0-M3/sdb-2.10.jar">sdb 2.10</a></span>
                             </div>
 
                             <div>
-                                <!-- Marker for visual debugger download -->
-                                <span>download 2.11 binary</span>
+                                <!-- Marker for sdb download -->
+                                <span class="marker">download 2.11 binary</span>
 
                                 <!-- Download link -->
-                                <span><a href="/downloads/visual-debugger/1.1.0-M3/vsdb-2.11.jar">vsdb 2.11</a></span>
+                                <span class="textbox"><a href="/downloads/sdb/1.1.0-M3/sdb-2.11.jar">sdb 2.11</a></span>
                             </div>
 
                             <div>
-                                <!-- Marker for visual debugger download -->
-                                <span>download 2.12 binary</span>
+                                <!-- Marker for sdb download -->
+                                <span class="marker">download 2.12 binary</span>
 
                                 <!-- Download link -->
-                                <span><a href="/downloads/visual-debugger/1.1.0-M3/vsdb-2.12.jar">vsdb 2.12</a></span>
+                                <span class="textbox"><a href="/downloads/sdb/1.1.0-M3/sdb-2.12.jar">sdb 2.12</a></span>
                             </div>
                         </div>
                     </li>
@@ -371,9 +385,49 @@ ul.tabs {
                             role="tab" 
                             aria-selected="true" 
                             aria-controls="installation-panel"
-                            tabindex="3">sbt plugin</label>
+                            tabindex="3">visual debugger</label>
                         <div
                             id="tab-content-installation-4"
+                            class="tab-content"
+                            role="tabpanel"
+                            aria-labelledby="visual debugger"
+                            aria-hidden="false">
+                            <!-- Grouping of marker and text box -->
+                            <div>
+                                <!-- Marker for visual debugger download -->
+                                <span class="marker">download 2.10 binary</span>
+
+                                <!-- Download link -->
+                                <span class="textbox"><a href="/downloads/visual-debugger/1.1.0-M3/vsdb-2.10.jar">vsdb 2.10</a></span>
+                            </div>
+
+                            <div>
+                                <!-- Marker for visual debugger download -->
+                                <span class="marker">download 2.11 binary</span>
+
+                                <!-- Download link -->
+                                <span class="textbox"><a href="/downloads/visual-debugger/1.1.0-M3/vsdb-2.11.jar">vsdb 2.11</a></span>
+                            </div>
+
+                            <div>
+                                <!-- Marker for visual debugger download -->
+                                <span class="marker">download 2.12 binary</span>
+
+                                <!-- Download link -->
+                                <span class="textbox"><a href="/downloads/visual-debugger/1.1.0-M3/vsdb-2.12.jar">vsdb 2.12</a></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <input type="radio" name="tabs-installation" id="tab-installation-5" />
+                        <label 
+                            for="tab-installation-5" 
+                            role="tab" 
+                            aria-selected="true" 
+                            aria-controls="installation-panel"
+                            tabindex="4">sbt plugin</label>
+                        <div
+                            id="tab-content-installation-5"
                             class="tab-content"
                             role="tabpanel"
                             aria-labelledby="sbt plugin"
@@ -381,10 +435,10 @@ ul.tabs {
                             <!-- Grouping of marker and text box -->
                             <div>
                                 <!-- Marker for sbt plugin installation -->
-                                <span>sbt plugin</span>
+                                <span class="marker">sbt plugin</span>
 
                                 <!-- Text box for sbt plugin installation -->
-                                <span><pre><code>addSbtPlugin("org.scala-debugger" % "sbt-scala-debugger" % "1.1.0-M3")</code></pre></span>
+                                <span class="textbox"><pre><code>addSbtPlugin("org.scala-debugger" % "sbt-scala-debugger" % "1.1.0-M3")</code></pre></span>
                             </div>
                         </div>
                     </li>
@@ -425,9 +479,27 @@ ul.tabs {
                             role="tab" 
                             aria-selected="true" 
                             aria-controls="examples-panel"
-                            tabindex="1">sdb</label>
+                            tabindex="1">language</label>
                         <div
                             id="tab-content-examples-2"
+                            class="tab-content"
+                            role="tabpanel"
+                            aria-labelledby="language"
+                            aria-hidden="false">
+                            <!-- Source code example that fills tab -->
+                            <span><pre><code>TODO: Add source code here</code></pre></span>
+                        </div>
+                    </li>
+                    <li>
+                        <input type="radio" name="tabs-examples" id="tab-examples-3" />
+                        <label 
+                            for="tab-examples-3" 
+                            role="tab" 
+                            aria-selected="true" 
+                            aria-controls="examples-panel"
+                            tabindex="2">sdb</label>
+                        <div
+                            id="tab-content-examples-3"
                             class="tab-content"
                             role="tabpanel"
                             aria-labelledby="sdb"
@@ -442,15 +514,15 @@ ul.tabs {
                         </div>
                     </li>
                     <li>
-                        <input type="radio" name="tabs-examples" id="tab-examples-3" />
+                        <input type="radio" name="tabs-examples" id="tab-examples-4" />
                         <label 
-                            for="tab-examples-3" 
+                            for="tab-examples-4" 
                             role="tab" 
                             aria-selected="true" 
                             aria-controls="examples-panel"
-                            tabindex="2">visual debugger</label>
+                            tabindex="3">visual debugger</label>
                         <div
-                            id="tab-content-examples-3"
+                            id="tab-content-examples-4"
                             class="tab-content"
                             role="tabpanel"
                             aria-labelledby="visual debugger"
@@ -465,15 +537,15 @@ ul.tabs {
                         </div>
                     </li>
                     <li>
-                        <input type="radio" name="tabs-examples" id="tab-examples-4" />
+                        <input type="radio" name="tabs-examples" id="tab-examples-5" />
                         <label 
-                            for="tab-examples-4" 
+                            for="tab-examples-5" 
                             role="tab" 
                             aria-selected="true" 
                             aria-controls="examples-panel"
-                            tabindex="3">sbt plugin</label>
+                            tabindex="4">sbt plugin</label>
                         <div
-                            id="tab-content-examples-4"
+                            id="tab-content-examples-5"
                             class="tab-content"
                             role="tabpanel"
                             aria-labelledby="sbt plugin"
