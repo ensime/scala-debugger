@@ -9,100 +9,197 @@ import scalatags.stylesheet._
 object FrontPageStyle extends CascadingStyleSheet {
   import scalatags.Text.styles2.{content => afterContent}
 
-  // Affects everything but html, to be placed on html
+  /** To be placed on <html>. */
   lazy val global: Cls = cls(
-    body(margin := 0),
-    a(textDecoration := "none"),
-    h1(
-      marginTop := "1.2em",
-      marginBottom := "0.8em",
-      fontWeight := "normal"
-    )
+    html(globalSettings: _*),
+    body(globalSettings: _*),
+    pre(globalSettings: _*)
+  )
+  private lazy val globalSettings: Seq[StyleSheetFrag] = Seq(
+    margin := "0em",
+    padding := "0em",
+    fontSize := "1em",
+    fontFamily := "'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif",
+    minWidth := "880px"
   )
 
-  lazy val menuBar: Cls = cls(
-    display := flex.cssName,
-    alignItems := "center"
-  )
+  //
+  // HERO CSS
+  //
 
-  lazy val menu: Cls = cls(
-    display := "inline-block",
-    listStyle := "none",
-    padding := "0",
-    margin := "0",
-    verticalAlign := "baseline",
-    color := Colors.MenuItemTextColor
-  )
-
-  lazy val menuItem: Cls = cls(
-    display := "block",
-    position := "relative",
-
-    textTransform := "uppercase",
+  lazy val heroTitle: Cls = cls(
+    display := "flex",
+    alignItems := "center",
+    justifyContent := "space-around",
+    fontSize := "5em",
     whiteSpace := "nowrap",
-    float := "left",
-    padding := "0 0.6em",
-    fontFamily := "'Proxima Nova Regular', Arial, sans-serif",
-    fontSize := "0.6em",
-    a(
-      color := "#626161",
-      textDecoration := "none",
-      &.hover(
-        color := "#00afb8"
-      )
-    ),
-    &.hover(
-      clsSelector(menuItemExpand)(
-        display := "block"
-      )
+
+    img(
+      padding := "0.5em"
     )
   )
 
-  lazy val menuItemWithChildren: Cls = cls(
-    &.pseudoExtend(":after")(
-      display := "inline-block",
-      afterContent := "'\\f107'",
-      opacity := 0.5,
-      color := "#102429",
-      font := "normal normal normal 14px/1 FontAwesome",
-      fontSize := "inherit"
+  lazy val heroSubtitle: Cls = cls(
+    fontFamily := "Baskerville, 'Baskerville Old Face', 'Hoefler Text', Garamond, 'Times New Roman', serif",
+    fontSize := "2em",
+    fontStyle := "italic",
+    margin := "0em 0em 1.5em 0em",
+    whiteSpace := "nowrap"
+  )
+
+  //
+  // SECTION CSS
+  //
+
+  lazy val sectionDark: Cls = cls(
+    background := "#3B3E43",
+    color := "#EBF0F1"
+  )
+
+  lazy val sectionLight: Cls = cls(
+    background := "#EAEAEC",
+    color := "#3B3E43"
+  )
+
+  lazy val section: Cls = cls(
+    width := "100%",
+    minHeight := "33vh"
+  )
+
+  lazy val sectionContent: Cls = cls(
+    display := "flex",
+    flexDirection := "column",
+    alignItems := "center",
+    padding := "3em 2em",
+    //height := "calc(100% - 6em)",
+
+    h1(
+      fontSize := "5em",
+      margin := "0em"
     )
   )
 
-  lazy val menuItemExpand: Cls = cls(
-    position := "absolute",
-    display := "none",
-    border := "1px solid #102429",
-    borderRadius := "5px",
-    top := "1em",
-    left := "0em",
-
-    zIndex := "9999",
-    backgroundColor := "#fff",
-    lineHeight := "1.1em",
-    margin := "0",
-    padding := "0",
-    verticalAlign := "baseline"
-  )
-
-  lazy val headerCls: Cls = cls(
-    fontSize := "1.6em",
-    height := "60px",
-    position := "relative",
-    margin := "0 auto",
-    padding := "0 10px"
-  )
+  //
+  // FOOTER CSS
+  //
 
   lazy val footerCls: Cls = cls(
-    textAlign := "center",
-    marginTop := "6em",
-    borderTop := Colors.FooterBorderLine,
-    padding := "2em 0",
-    color := Colors.FooterTextGrey,
+    width := "100%",
+    height := "auto"
+  )
+
+  lazy val footerContent: Cls = cls(
+    display := "flex",
+    flexDirection := "row",
+    flexWrap := "nowrap",
+    justifyContent := "flex-end",
+    alignItems := "center",
+
+    padding := "1em 1em",
+    fontSize := "0.7em"
+  )
+
+  //
+  // MISC CSS
+  //
+
+  lazy val buttonCls: Cls = cls(
+    background := "#232F3F",
+    color := "#ECF0F1",
+    padding := "1em 1.5em",
+    borderRadius := "8px",
+    overflow := "hidden",
+    textOverflow := "ellipsis",
+    whiteSpace := "nowrap",
+
     a(
-      color := Colors.FooterTextGrey,
-      textDecoration := "underline",
-      cursor := "pointer"
+      color := "#ECF0F1",
+      textDecoration := "none"
     )
+  )
+
+  lazy val videoCls: Cls = cls(
+    width := "100%"
+  )
+
+  lazy val fitContainer: Cls = cls(
+    width := "100%",
+    height := "100%"
+  )
+
+  //
+  // LINED CONTENT CSS
+  //
+
+  lazy val linedContent: Cls = cls(
+    display := "flex",
+    flexWrap := "nowrap",
+    flexDirection := "row",
+    alignItems := "center",
+    justifyContent := "space-between",
+    alignContent := "space-between",
+    padding := "0.5em"
+  )
+
+  lazy val linedContentLeft: Cls = cls(
+    display := "flex",
+    flexWrap := "nowrap",
+    justifyContent := "flex-start",
+    alignItems := "center",
+    width := "22%"
+  )
+
+  lazy val linedContentRight: Cls = cls(
+    display := "flex",
+    flexWrap := "nowrap",
+    justifyContent := "flex-end",
+    alignItems := "center",
+    width := "58%"
+  )
+
+  //
+  // MARKER CSS
+  //
+
+  lazy val marker: Cls = cls(
+    display := "inline-block",
+    position := "relative",
+    padding := "1em",
+    background := "#3B3E43",
+    color := "#ECF0F1",
+    textAlign := "center",
+    textTransform := "uppercase",
+    whiteSpace := "nowrap",
+
+    &.pseudoExtend(":after")(
+      position := "absolute",
+      top := "calc(50% - 1.59em)",
+      left := "100%",
+
+      afterContent := "''",
+
+      width := "0px",
+      height := "0px",
+      background := "transparent",
+
+      borderLeft := "1.59em solid #3B3E43",
+      borderTop := "1.59em solid transparent",
+      borderBottom := "1.59em solid transparent",
+      clear := "both"
+    )
+  )
+
+  //
+  // TEXTBOX CSS
+  //
+
+  lazy val textbox: Cls = cls(
+    display := "inline-block",
+    background := "#ECF0F1",
+    color := "#3B3E43",
+    border := "1px solid #979797",
+    borderRadius := "8px",
+    overflow := "scroll",
+    padding := "1em 0.5em 1em"
   )
 }

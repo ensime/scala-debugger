@@ -1,6 +1,6 @@
 package org.scaladebugger.docs.layouts.partials
 
-import org.scaladebugger.docs.styles.FrontPageStyle
+import org.scaladebugger.docs.styles.{FrontPageStyle, MainNavStyle}
 
 import scalatags.Text.all._
 
@@ -9,6 +9,6 @@ import scalatags.Text.all._
  */
 object FrontPageHeader {
   def apply(content: Modifier*): Modifier = {
-    tag("header")(FrontPageStyle.headerCls)(content)
+    tag("header")(MainNavStyle.headerCls, FrontPageStyle.sectionDark)(content)
   }
 }

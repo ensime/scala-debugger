@@ -2,7 +2,7 @@ package org.scaladebugger.docs.layouts
 
 import org.scaladebugger.docs.extras.Images
 import org.scaladebugger.docs.layouts.partials._
-import org.scaladebugger.docs.styles.FrontPageStyle
+import org.scaladebugger.docs.styles.{FrontPageStyle, MainNavStyle, TabsStyle}
 
 import scalatags.Text.all._
 
@@ -15,39 +15,49 @@ object FrontPage extends Layout {
       head(
         meta(charset := "utf-8"),
         FontAwesome(),
-        tag("style")(FrontPageStyle.styleSheetText)
+        tag("style")(FrontPageStyle.styleSheetText),
+        tag("style")(MainNavStyle.styleSheetText),
+        tag("style")(TabsStyle.styleSheetText)
       ),
       body()(
         FrontPageHeader(
           FrontPageMenuBar(
             FrontPageLogo(),
             FrontPageMenu(
-              MenuItem(name = "Api", children = Seq(
-                MenuItem(name = "Installing & Getting Started"),
-                MenuItem(name = "Advanced Topics"),
-                MenuItem(name = "Cookbook")
-              )),
-              MenuItem(name = "Sdb", children = Seq(
-                MenuItem(name = "Installing & Getting Started"),
-                MenuItem(name = "Methods"),
-                MenuItem(name = "CLI Options")
-              )),
-              MenuItem(name = "Sbt", children = Seq(
-                MenuItem(name = "Installing & Getting Started")
-              )),
-              MenuItem(name = "Visual Debugger", children = Seq(
-                MenuItem(name = "Installing & Getting Started")
-              )),
-              MenuItem(name = "About", children = Seq(
-                MenuItem(name = "Roadmap"),
-                MenuItem(name = "Release Notes"),
-                MenuItem(name = "Contributing"),
-                MenuItem(name = "License")
-              ))
+              MenuItem(name = "Api", link = "/docs/api"),
+              MenuItem(name = "Sdb", link = "/docs/sdb"),
+              MenuItem(name = "Sbt", link = "/docs/sbt"),
+              MenuItem(name = "Visual Debugger", link = "/docs/visual_debugger"),
+              MenuItem(name = "About", link = "/about")
             )
           )
         ),
-        FrontPageContent(),
+        FrontPageContent(
+          tag("section")(FrontPageStyle.section, FrontPageStyle.sectionLight)(
+            div(FrontPageStyle.sectionContent)(
+              h1(FrontPageStyle.heroTitle)(
+                EnsimeLogo(),
+                span("Scala Debugger")
+              ),
+              span(FrontPageStyle.heroSubtitle)(
+                "Scala abstractions and tooling around the Java Debugger Interface."
+              ),
+              div(FrontPageStyle.buttonCls)(
+                a(href := "/about")("Learn More")
+              )
+            )
+          ),
+          tag("section")(FrontPageStyle.section, FrontPageStyle.sectionDark)(
+            div(FrontPageStyle.sectionContent)(
+
+            )
+          ),
+          tag("section")(FrontPageStyle.section, FrontPageStyle.sectionLight)(
+            div(FrontPageStyle.sectionContent)(
+
+            )
+          )
+        ),
         FrontPageFooter()
       )
     )
