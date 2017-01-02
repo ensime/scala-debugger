@@ -13,6 +13,24 @@ html, body, pre {
     padding: 0;
     font-size: 1em;
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    min-width: 880px;
+}
+.hero-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 5em;
+    white-space: nowrap;
+}
+.hero-title img {
+    padding: 0.5em;
+}
+.hero-subtitle {
+    font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
+    font-size: 2em;
+    font-style: italic;
+    margin: 0 0 1.5em 0;
+    white-space: nowrap;
 }
 .section-dark {
     background: #3B3E43;
@@ -56,6 +74,9 @@ html, body, pre {
     color: #ECF0F1;
     padding: 1em 1.5em;
     border-radius: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 a.button, .button a {
     color: #ECF0F1;
@@ -156,9 +177,10 @@ a.button, .button a {
 }
 .nav-logo span {
     font-size: 1em;
+    white-space: nowrap;
 }
 .nav-links {
-    width: 65%;
+    width: 70%;
 }
 .nav-links ul {
     display: flex;
@@ -177,6 +199,9 @@ a.button, .button a {
     text-decoration: none;
     text-transform: uppercase;
     border-bottom: 1px solid #EBF0F1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .nav-search {
     display: flex;
@@ -302,20 +327,22 @@ ul.tabs {
                 </nav>
 
                 <!-- Search icon -->
+                <!--
                 <div class="nav-search">
                     <span class="clickable"><i class="fa fa-search" aria-hidden="true"></i></span>
                 </div>
+                -->
             </div>
         </header>
 
         <!-- Hero -->
         <section class="section section-light">
             <div class="section-content">
-                <h1>
+                <h1 class="hero-title">
                     <img src="img/ensime-logo-no-text.svg" alt="Ensime Logo" />
                     <span>Scala Debugger</span>
                 </h1>
-                <span>Scala abstractions and tooling around the Java Debugger Interface.</span>
+                <span class="hero-subtitle">Scala abstractions and tooling around the Java Debugger Interface.</span>
                 <div class="button"><a href="/docs/about">Learn More</a></div>
             </div>
         </section>
