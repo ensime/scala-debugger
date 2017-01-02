@@ -63,11 +63,11 @@ html, body, pre {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
 
-    padding: 0.1em 1em;
-    font-size: 1.5em;
+    padding: 1em 1em;
+    font-size: 0.7em;
 }
 .button {
     background: #232F3F;
@@ -531,6 +531,14 @@ ul.tabs {
                                     <!-- Text box for sbt plugin installation -->
                                     <span class="textbox lined-content-right"><pre><code>addSbtPlugin("org.scala-debugger" % "sbt-scala-debugger" % "1.1.0-M3")</code></pre></span>
                                 </div>
+
+                                <div class="lined-content">
+                                    <!-- Marker for sbt plugin execution -->
+                                    <span class="marker lined-content-left">run</span>
+
+                                    <!-- Text box for sbt plugin installation -->
+                                    <span class="textbox lined-content-right"><pre><code>sbt sdb:run</code></pre></span>
+                                </div>
                             </div>
                         </div>
                     </li>
@@ -605,10 +613,10 @@ ul.tabs {
                             aria-labelledby="sdb"
                             aria-hidden="false">
                             <!-- Video example of usage -->
-                            <video class="video" poster="/videos/examples/sdb.gif" loop muted>
-                                <source src="/videos/examples/sdb.webm" type="video/webm" />
-                                <source src="/videos/examples/sdb.mp4" type="video/mp4" />
-                                <source src="/videos/examples/sdb.ogv" type="video/ogg" />
+                            <video class="video" poster="videos/examples/sdb.jpg" preload="none" controls loop muted>
+                                <source src="videos/examples/sdb.webm" type="video/webm" />
+                                <source src="videos/examples/sdb.mp4" type="video/mp4" />
+                                <source src="videos/examples/sdb.ogv" type="video/ogg" />
                                 Your browser doesn't support HTML5 video tag.
                             </video>
                         </div>
@@ -628,10 +636,10 @@ ul.tabs {
                             aria-labelledby="visual debugger"
                             aria-hidden="false">
                             <!-- Video example of usage -->
-                            <video class="video" poster="/videos/examples/visual-debugger.gif" loop muted>
-                                <source src="/videos/examples/visual-debugger.webm" type="video/webm" />
-                                <source src="/videos/examples/visual-debugger.mp4" type="video/mp4" />
-                                <source src="/videos/examples/visual-debugger.ogv" type="video/ogg" />
+                            <video class="video" poster="videos/examples/visual-debugger.jgp" preload="none" controls loop muted>
+                                <source src="videos/examples/visual-debugger.webm" type="video/webm" />
+                                <source src="videos/examples/visual-debugger.mp4" type="video/mp4" />
+                                <source src="videos/examples/visual-debugger.ogv" type="video/ogg" />
                                 Your browser doesn't support HTML5 video tag.
                             </video>
                         </div>
@@ -651,10 +659,10 @@ ul.tabs {
                             aria-labelledby="sbt plugin"
                             aria-hidden="false">
                             <!-- Video example of usage -->
-                            <video class="video" poster="/videos/examples/sbt-plugin.gif" loop muted>
-                                <source src="/videos/examples/sbt-plugin.webm" type="video/webm" />
-                                <source src="/videos/examples/sbt-plugin.mp4" type="video/mp4" />
-                                <source src="/videos/examples/sbt-plugin.ogv" type="video/ogg" />
+                            <video class="video" poster="videos/examples/sbt-plugin.jpg" preload="none" controls loop muted>
+                                <source src="videos/examples/sbt-plugin.webm" type="video/webm" />
+                                <source src="videos/examples/sbt-plugin.mp4" type="video/mp4" />
+                                <source src="videos/examples/sbt-plugin.ogv" type="video/ogg" />
                                 Your browser doesn't support HTML5 video tag.
                             </video>
                         </div>
