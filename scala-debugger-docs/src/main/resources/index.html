@@ -141,10 +141,18 @@ a.button, .button a {
 .textbox {
     display: inline-block;
     background: #ECF0F1;
+    color: #3B3E43;
     border: 1px solid #979797;
     border-radius: 8px;
     overflow: scroll;
     padding: 1em 0.5em 1em;
+}
+.tab-inner-content .textbox {
+    max-height: 300px;
+}
+.fit-container {
+    width: 100%;
+    height: 100%;
 }
 </style>
 <style>
@@ -274,6 +282,7 @@ ul.tabs {
 
     width: 100%;
     min-height: 305px;
+    max-height: 400px;
 
     font-size: 1.3em;
     line-height: 25px;
@@ -551,8 +560,12 @@ ul.tabs {
                             role="tabpanel"
                             aria-labelledby="api"
                             aria-hidden="false">
-                            <!-- Source code example that fills tab -->
-                            <span><pre><code>TODO: Add source code here</code></pre></span>
+                            <div class="tab-inner-content">
+                                <div class="lined-content">
+                                <!-- Source code example that fills tab -->
+                                    <div class="textbox fit-container"><pre><code>TODO: Add source code here</code></pre></div>
+                                </div>
+                            </div>
                         </div>
                     </li>
                     <li>
@@ -569,8 +582,12 @@ ul.tabs {
                             role="tabpanel"
                             aria-labelledby="language"
                             aria-hidden="false">
-                            <!-- Source code example that fills tab -->
-                            <span><pre><code>TODO: Add source code here</code></pre></span>
+                            <div class="tab-inner-content">
+                                <div class="lined-content">
+                                    <!-- Source code example that fills tab -->
+                                    <div class="textbox fit-container"><pre><code>TODO: Add source code here</code></pre></div>
+                                </div>
+                            </div>
                         </div>
                     </li>
                     <li>
