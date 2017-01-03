@@ -21,10 +21,26 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some(false)
   )
 
+  /** Represents the output directory of generated content. */
+  val outputDir: ScallopOption[String] = opt[String](
+    descr = "The output directory where content is generated and served",
+    default = Some("out")
+  )
+
   /** Represents whether or not to serve the docs using a local server. */
   val serve: ScallopOption[Boolean] = opt[Boolean](
     descr = "If true, serves the generated docs",
     default = Some(false)
+  )
+
+  /**
+   * Represents files that serve as defaults when accessing a directory.
+   *
+   * E.g. '/my/path/' becomes '/my/path/index.html'
+   */
+  val indexFiles: ScallopOption[List[String]] = opt[List[String]](
+    descr = "Files that serve as defaults when accessing a directory",
+    default = Some(List("index.html", "index.htm"))
   )
 
   // Display our default values in our help menu
