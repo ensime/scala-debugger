@@ -1,6 +1,6 @@
 package org.scaladebugger.docs
 
-import java.nio.file.{Files, Path, Paths, StandardOpenOption}
+import java.nio.file._
 
 import org.scaladebugger.docs.layouts.FrontPage
 
@@ -10,6 +10,14 @@ import scala.util.Try
  * Main entrypoint for generating and serving docs.
  */
 object Main {
+  private def log(text: String): Unit = {
+    import java.util.Calendar
+    import java.text.SimpleDateFormat
+    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS")
+    val timestamp = format.format(Calendar.getInstance().getTime)
+    println(s"[$timestamp] $text")
+  }
+
   private def directoryContents(path: Path): Iterable[Path] = {
     import scala.collection.JavaConverters._
     Files.newDirectoryStream(path).asScala
@@ -71,6 +79,12 @@ object Main {
       val staticDirPath = Paths.get(inputDir, staticDir)
       copyDirectoryContents(staticDirPath, outputDirPath)
 
+      // Process all markdown files
+      /*
+        val mdMatcher = FileSystems.getDefault.getPathMatcher("glob:*.md")
+        if (mdMatcher.matches(mdPath)) // Do something
+       */
+
       // TODO: Create auto generator of content
       // Create front page
       val frontPageText = FrontPage().toString
@@ -93,11 +107,15 @@ object Main {
           val fileBytes = (rawPath +: indexPaths).filter(p =>
             Try(Files.exists(p)).getOrElse(false)
           ).map(p =>
-            Try(Files.readAllBytes(p))
-          ).filter(_.isSuccess).map(_.get).headOption
+            (p, Try(Files.readAllBytes(p)))
+          ).filter(_._2.isSuccess).map(t => (t._1, t._2.get)).headOption
           fileBytes match {
-            case Some(bytes)  => ResponseBytes(bytes)
-            case None         => ResponseString(s"Unknown page: $path")
+            case Some(result) =>
+              val (filePath, fileBytes) = result
+
+              log(s"GET '$path' -> $filePath")
+              ResponseBytes(fileBytes)
+            case None => ResponseString(s"Unknown page: $path")
           }
         case _ =>
           ResponseString("Unknown request")
