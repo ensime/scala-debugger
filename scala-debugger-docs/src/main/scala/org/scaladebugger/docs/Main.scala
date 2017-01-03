@@ -10,20 +10,54 @@ import scala.util.Try
  * Main entrypoint for generating and serving docs.
  */
 object Main {
-  private def deleteDirectories(path: Path): Unit = {
+  private def directoryContents(path: Path): Iterable[Path] = {
     import scala.collection.JavaConverters._
+    Files.newDirectoryStream(path).asScala
+  }
+
+  private def deleteDirectories(path: Path): Unit = {
     if (Files.exists(path)) {
       if (Files.isDirectory(path))
-        Files.newDirectoryStream(path).asScala.foreach(deleteDirectories)
+        directoryContents(path).foreach(deleteDirectories)
       else
         Files.delete(path)
     }
   }
 
+  private def copyDirectoryContents(
+    inputDir: Path,
+    outputDir: Path,
+    copyRoot: Boolean = false
+  ): Unit = {
+    val rootDir = inputDir
+
+    def copyContents(inputPath: Path, outputDir: Path): Unit = {
+      val relativeInputPath = rootDir.relativize(inputPath)
+      val outputPath = outputDir.resolve(relativeInputPath)
+
+      if (!Files.isDirectory(inputPath)) Files.copy(inputPath, outputPath)
+      else {
+        Files.createDirectories(outputPath)
+        directoryContents(inputPath).foreach(p => copyContents(p, outputDir))
+      }
+    }
+
+    if (Files.isDirectory(inputDir)) {
+      directoryContents(inputDir).foreach(p => copyContents(p, outputDir))
+    } else {
+      copyContents(inputDir, outputDir)
+    }
+  }
+
   def main(args: Array[String]): Unit = {
     val config = new Config(args)
+
     val outputDir = config.outputDir()
     val indexFiles = config.indexFiles()
+
+    val inputDir = config.inputDir()
+    val srcDir = config.srcDir()
+    val staticDir = config.staticDir()
 
     // Generate before other actions if indicated
     if (config.generate()) {
@@ -34,10 +68,8 @@ object Main {
       Files.createDirectories(outputDirPath)
 
       // Copy all static content
-      // TODO: Implement by providing an input directory with
-      //       subdirectories of 'src' and 'static' where static
-      //       files are copied directly and src files are
-      //       transformed (parse markdown, run through template, etc)
+      val staticDirPath = Paths.get(inputDir, staticDir)
+      copyDirectoryContents(staticDirPath, outputDirPath)
 
       // TODO: Create auto generator of content
       // Create front page

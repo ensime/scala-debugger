@@ -27,6 +27,24 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some("out")
   )
 
+  /** Represents the input directory of static and source content. */
+  val inputDir: ScallopOption[String] = opt[String](
+    descr = "The root input directory where source and static content is found",
+    default = Some("docs")
+  )
+
+  /** Represents the directory of source content. */
+  val srcDir: ScallopOption[String] = opt[String](
+    descr = "The source directory (relative to input directory) where source content is found",
+    default = Some("src")
+  )
+
+  /** Represents the directory of static content. */
+  val staticDir: ScallopOption[String] = opt[String](
+    descr = "The static directory (relative to input directory) where static content is found",
+    default = Some("static")
+  )
+
   /** Represents whether or not to serve the docs using a local server. */
   val serve: ScallopOption[Boolean] = opt[Boolean](
     descr = "If true, serves the generated docs",
