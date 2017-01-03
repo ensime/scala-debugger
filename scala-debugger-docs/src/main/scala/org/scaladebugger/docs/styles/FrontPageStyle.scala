@@ -9,19 +9,20 @@ import scalatags.stylesheet._
 object FrontPageStyle extends CascadingStyleSheet {
   import scalatags.Text.styles2.{content => afterContent}
 
-  /** To be placed on <html>. */
-  lazy val global: Cls = cls(
-    html(globalSettings: _*),
-    body(globalSettings: _*),
-    pre(globalSettings: _*)
-  )
-  private lazy val globalSettings: Seq[StyleSheetFrag] = Seq(
-    margin := "0em",
-    padding := "0em",
-    fontSize := "1em",
-    fontFamily := "'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif",
-    minWidth := "880px"
-  )
+  /** To be placed in a <style> tag. */
+  lazy val global: String =
+    """
+      |* {
+      |  margin: 0;
+      |  padding: 0;
+      |}
+      |
+      |html, body {
+      |  font-size: 1em;
+      |  font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
+      |  min-width: 880px;
+      |}
+    """.stripMargin
 
   //
   // HERO CSS
@@ -53,12 +54,14 @@ object FrontPageStyle extends CascadingStyleSheet {
 
   lazy val sectionDark: Cls = cls(
     background := "#3B3E43",
-    color := "#EBF0F1"
+    color := "#EBF0F1",
+    a(color := "#EBF0F1")
   )
 
   lazy val sectionLight: Cls = cls(
     background := "#EAEAEC",
-    color := "#3B3E43"
+    color := "#3B3E43",
+    a(color := "#3B3E43")
   )
 
   lazy val section: Cls = cls(
@@ -199,7 +202,7 @@ object FrontPageStyle extends CascadingStyleSheet {
     color := "#3B3E43",
     border := "1px solid #979797",
     borderRadius := "8px",
-    overflow := "scroll",
+    overflow := "auto",
     padding := "1em 0.5em 1em"
   )
 }

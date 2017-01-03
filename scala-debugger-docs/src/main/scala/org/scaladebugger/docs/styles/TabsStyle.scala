@@ -55,19 +55,6 @@ object TabsStyle extends CascadingStyleSheet {
       )
     ),
 
-    li(
-      &.firstChild(
-        &.>(label)(
-          borderRadius := "8px 0px 0px 0px"
-        )
-      ),
-      &.lastChild(
-        &.>(label)(
-          borderRadius := "0px 8px 0px 0px"
-        )
-      )
-    ),
-
     // .tabs [id^="tab"]:checked + label
     (new Selector(Selector("[id^='tab']").checked.built ++ Seq("+") ++ label.built))(
       top := "0",
@@ -78,6 +65,20 @@ object TabsStyle extends CascadingStyleSheet {
     // .tabs [id^="tab"]:checked ~ [id^="tab-content"]
     (new Selector(Selector("[id^='tab']").checked.built ++ Seq("~") ++ Selector("[id^='tab-content']").built))(
       visibility := "visible"
+    )
+  )
+
+  lazy val firstTab: Cls = cls(
+    label(
+      borderRadius := "8px 0px 0px 0px"
+    )
+  )
+
+  lazy val normalTab: Cls = cls()
+
+  lazy val lastTab: Cls = cls(
+    label(
+      borderRadius := "0px 8px 0px 0px"
     )
   )
 
