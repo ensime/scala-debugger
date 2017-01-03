@@ -11,6 +11,27 @@ import scalatags.Text.all._
  * Represents the layout for the front page of the site.
  */
 object FrontPage extends Layout {
+  private val ApiExampleCode =
+    s"""
+      |val fileName = "file.scala"
+      |val lineNumber = 37
+      |
+      |scalaVirtualMachine.getOrCreateBreakpointRequest(
+      |  fileName,
+      |  lineNumber
+      |).foreach(breakpointEvent => {
+      |  val f = breakpointEvent.fileName
+      |  val l = breakpointEvent.lineNumber
+      |
+      |  println(s"Reached breakpoint $$f:$$l")
+      |})
+    """.stripMargin
+
+  private val LanguageExampleCode =
+    """
+      |TODO: Implement language example here
+    """.stripMargin
+
   override def render(content: Seq[Modifier]): Modifier = {
     html(
       head(
@@ -22,10 +43,10 @@ object FrontPage extends Layout {
         tag("style")(TabsStyle.styleSheetText)
       ),
       body()(
-        FrontPageHeader(
-          FrontPageMenuBar(
-            FrontPageLogo(),
-            FrontPageMenu(
+        Header(
+          MainMenuBar(
+            MainMenuLogo(),
+            MainMenu(
               MenuItem(name = "Api", link = "/docs/api"),
               MenuItem(name = "Language", link = "/docs/language"),
               MenuItem(name = "Sdb", link = "/docs/sdb"),
@@ -157,7 +178,7 @@ object FrontPage extends Layout {
                 Tabs.Tab(
                   name = "api",
                   LinedContent.Raw(
-                    ScalaCodeBlock("TODO: Write some code",
+                    ScalaCodeBlock(ApiExampleCode,
                       fitContainer = true, trim = true)
                   )
                 ),
@@ -166,7 +187,7 @@ object FrontPage extends Layout {
                 Tabs.Tab(
                   name = "language",
                   LinedContent.Raw(
-                    ScalaCodeBlock("TODO: Write some code",
+                    ScalaCodeBlock(LanguageExampleCode,
                       fitContainer = true, trim = true)
                   )
                 ),

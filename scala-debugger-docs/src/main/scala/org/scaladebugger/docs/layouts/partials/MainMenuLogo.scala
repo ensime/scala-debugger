@@ -5,9 +5,9 @@ import org.scaladebugger.docs.styles.MainNavStyle
 import scalatags.Text.all._
 
 /**
- * Generates a logo for the Scala debugger project.
+ * Generates the menu logo for the Scala debugger project.
  */
-object FrontPageLogo {
+object MainMenuLogo {
   def apply(): Modifier = {
     div(MainNavStyle.navLogo)(
       EnsimeLogo(),

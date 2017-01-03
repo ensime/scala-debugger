@@ -5,9 +5,9 @@ import org.scaladebugger.docs.styles.{FrontPageStyle, MainNavStyle}
 import scalatags.Text.all._
 
 /**
- * Generates front page header.
+ * Generates the header.
  */
-object FrontPageHeader {
+object Header {
   def apply(content: Modifier*): Modifier = {
     tag("header")(MainNavStyle.headerCls, FrontPageStyle.sectionDark)(content)
   }

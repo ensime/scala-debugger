@@ -5,9 +5,9 @@ import org.scaladebugger.docs.styles.MainNavStyle
 import scalatags.Text.all._
 
 /**
- * Generates front page menu.
+ * Generates main menu.
  */
-object FrontPageMenu {
+object MainMenu {
   def apply(menuItems: MenuItem*): Modifier = {
     @inline def toListItem(menuItem: MenuItem): Modifier = {
       li(
