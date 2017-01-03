@@ -92,12 +92,12 @@ object FrontPage extends Layout {
                   LinedContent("sbt", ScalaCodeBlock(
                     """
                       |libraryDependencies += "org.scala-debugger" %% "scala-debugger-api" % "1.1.0-M3"
-                    """.stripMargin, trim = true)
+                    """.stripMargin, fitContainer = true, trim = true)
                   ),
                   LinedContent("sbt plugin", ScalaCodeBlock(
                     """
                       |addSbtPlugin("org.scala-debugger" % "sbt-jdi-tools" % "1.0.0")
-                    """.stripMargin, trim = true)
+                    """.stripMargin, fitContainer = true, trim = true)
                   )
                 ),
 
@@ -107,7 +107,7 @@ object FrontPage extends Layout {
                   LinedContent("sbt", ScalaCodeBlock(
                     """
                       |libraryDependencies += "org.scala-debugger" %% "scala-debugger-language" % "1.1.0-M3"
-                    """.stripMargin, trim = true)
+                    """.stripMargin, fitContainer = true, trim = true)
                   )
                 ),
 
@@ -151,9 +151,10 @@ object FrontPage extends Layout {
                   LinedContent("sbt plugin", ScalaCodeBlock(
                     """
                       |addSbtPlugin("org.scala-debugger" % "sbt-scala-debugger" % "1.1.0-M3")
-                    """.stripMargin, trim = true)
+                    """.stripMargin, fitContainer = true, trim = true)
                   ),
-                  LinedContent("run", ScalaCodeBlock("sbt sdb:run"))
+                  LinedContent("run", ScalaCodeBlock("sbt sdb:run",
+                    fitContainer = true, trim = true))
                 )
               )
             )
