@@ -1,8 +1,7 @@
 package org.scaladebugger.docs.layouts
 
-import org.scaladebugger.docs.layouts.partials.common._
-import org.scaladebugger.docs.styles.{PageStyle, SidebarNavStyle}
 import org.scaladebugger.docs.styles.Implicits._
+import org.scaladebugger.docs.styles.SidebarNavStyle
 
 import scalatags.Text.all._
 
@@ -20,7 +19,11 @@ class DocPage extends Page(
    */
   override def render(content: Seq[Modifier] = Nil): Modifier = {
     super.render(Seq(
-      div()(),
+      div(SidebarNavStyle.navbar)(
+        tag("nav")(SidebarNavStyle.navLinks)(
+
+        )
+      ),
       div()(content: _*)
     ))
   }

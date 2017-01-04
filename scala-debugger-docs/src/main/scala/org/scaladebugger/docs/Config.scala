@@ -56,6 +56,12 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some(false)
   )
 
+  /** Represents whether or not to live regen docs when changed. */
+  val liveReload: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If true, re-generates files while being served",
+    default = Some(true)
+  )
+
   /**
    * Represents files that serve as defaults when accessing a directory.
    *
@@ -64,6 +70,15 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
   val indexFiles: ScallopOption[List[String]] = opt[List[String]](
     descr = "Files that serve as defaults when accessing a directory",
     default = Some(List("index.html", "index.htm"))
+  )
+
+  /** Represents the maximum stack trace to print out when errors occur. */
+  val stackTraceDepth: ScallopOption[Int] = opt[Int](
+    descr = Seq(
+      "The maximum depth of the stack trace to print out for errors",
+      "(less than zero uses full stack)"
+    ).mkString(" "),
+    default = Some(-1)
   )
 
   // Display our default values in our help menu

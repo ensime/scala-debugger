@@ -27,10 +27,15 @@ class Generator(private val config: Config) {
   private lazy val MarkdownMatcher =
     FileSystems.getDefault.getPathMatcher("glob:**.md")
 
-  // Set up markdown parser and renderer
+  /** Represents extensions for the parser and renderer. */
   private lazy val extensions = Seq(YamlFrontMatterExtension.create()).asJava
+
+  /** Represents the Markdown parser. */
   private lazy val parser = Parser.builder().extensions(extensions).build()
-  private lazy val renderer = HtmlRenderer.builder().extensions(extensions).build()
+
+  /** Represents the Markdown => HTML renderer. */
+  private lazy val renderer =
+    HtmlRenderer.builder().extensions(extensions).build()
 
   /**
    * Runs the generator.
@@ -70,7 +75,8 @@ class Generator(private val config: Config) {
           .map(createLinkedMenuItem)
       )
     }
-    val linkedMenuItems = directoryPaths.filter(_.getParent == srcDirPath)
+    val linkedMenuItems = directoryPaths
+      .filter(_.getParent == srcDirPath)
       .map(createLinkedMenuItem)
 
     // Create our layout context
@@ -137,15 +143,14 @@ class Generator(private val config: Config) {
       // Load layout for file
       val layoutName = documentFrontMatter.get("layout")
         .flatMap(_.asScala.headOption)
-      layoutName match {
+      val layout = layoutName match {
         case Some(name) =>
           logger.log(s"\tLoading layout $name")
+          layoutFromClassName(name, context)
         case None =>
           logger.log(s"\tLoading default layout")
+          defaultLayout(context)
       }
-      val layout = layoutName
-        .map(layoutFromClassName(_: String, context))
-        .getOrElse(defaultLayout(context))
 
       // Render markdown content to html
       logger.log(s"\tRendering markdown as html")
@@ -158,7 +163,18 @@ class Generator(private val config: Config) {
       // Write the md file as html to a file
       logger.log(s"\tWriting to ${htmlFilePath.toString}")
       writeText(htmlFilePath, htmlDocumentContent)
-    }).failed.foreach(logger.error)
+    }).failed.foreach(t => {
+      val errorName = t.getClass.getName
+      val errorMessage = Option(t.getLocalizedMessage).getOrElse("<none>")
+      val depth = config.stackTraceDepth()
+      val stackTrace =
+        if (depth < 0) t.getStackTrace
+        else t.getStackTrace.take(depth)
+
+      logger.error(s"\t!!! Failed: " + errorName)
+      logger.error(s"\t!!! Message: " + errorMessage)
+      stackTrace.foreach(ste => logger.error(s"\t!!! $ste"))
+    })
 
     val endTime = System.nanoTime()
 
@@ -297,7 +313,7 @@ class Generator(private val config: Config) {
   ): Seq[Path] = {
     import scala.collection.mutable
     val pathQueue = mutable.Queue[Path]()
-    var directories = mutable.Buffer[Path]()
+    val directories = mutable.Buffer[Path]()
 
     pathQueue.enqueue(path)
     while (pathQueue.nonEmpty) {
