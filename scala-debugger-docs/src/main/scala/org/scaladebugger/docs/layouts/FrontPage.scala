@@ -30,8 +30,14 @@ object FrontPage extends Page {
       |TODO: Implement language example here
     """.stripMargin
 
+  /**
+   * Renders the front page.
+   *
+   * @param content Unused
+   * @return The rendered content
+   */
   override def render(content: Seq[Modifier]): Modifier = {
-    Page(Seq(
+    super.render(Seq(
       tag("section")(PageStyle.section, PageStyle.sectionLight)(
         div(PageStyle.sectionContent)(
           h1(PageStyle.heroTitle)(

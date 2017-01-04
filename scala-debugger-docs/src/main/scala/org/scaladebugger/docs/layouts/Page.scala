@@ -40,19 +40,20 @@ class Page(
   val bodyModifiers: Seq[Modifier] = Nil,
   val selectedMenuItems: Seq[String] = Nil
 ) extends Layout {
-  private val headContent =
+  import org.scaladebugger.docs.styles.Implicits._
+  private lazy val headContent =
     preHeadContent ++
     Seq(
       meta(charset := "utf-8"),
       FontAwesome(),
-      tag("style")(PageStyle.global),
-      tag("style")(PageStyle.styleSheetText),
-      tag("style")(MainNavStyle.styleSheetText),
-      tag("style")(TabsStyle.styleSheetText)
+      PageStyle.global.toStyleTag,
+      PageStyle.styleSheetText.toStyleTag,
+      MainNavStyle.styleSheetText.toStyleTag,
+      TabsStyle.styleSheetText.toStyleTag
     ) ++
     postHeadContent
 
-  private val bodyContent = (content: Seq[Modifier]) =>
+  private lazy val bodyContent = (content: Seq[Modifier]) =>
     preBodyContent ++
     Seq(
       Header(
@@ -105,6 +106,12 @@ class Page(
   @inline private def isMenuItemSelected(name: String): Boolean =
     selectedMenuItems.map(_.toLowerCase).contains(name)
 
+  /**
+   * Renders a generic page.
+   *
+   * @param content The content to render as HTML using this layout
+   * @return The rendered content
+   */
   override def render(content: Seq[Modifier]): Modifier = {
     html(htmlModifiers: _*)(
       head(headContent: _*),
