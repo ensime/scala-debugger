@@ -5,11 +5,10 @@ import java.nio.file._
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
 import org.scaladebugger.docs.layouts.partials.common.MenuItem
-import org.scaladebugger.docs.layouts.{FrontPage, Layout}
+import org.scaladebugger.docs.layouts.{DocPage, FrontPage, Layout}
 
 import scala.annotation.tailrec
 import scala.util.Try
-import scala.collection.JavaConverters._
 
 /**
  * Represents a generator of content based on a configuration.
@@ -77,34 +76,41 @@ class Generator(private val config: Config) {
     // For each markdown file, generate its content and produce a file
     mdFiles.foreach(mdFile => Try {
       val relativePath = srcDirPath.relativize(mdFile)
+      val fileName = mdFile.getFileName.toString.replaceFirst("[.][^.]+$", "")
 
       // Create the output path to the new html file's directory
       val outputPath = Option(relativePath.getParent)
         .map(outputDirPath.resolve)
         .getOrElse(outputDirPath)
-      Files.createDirectories(outputPath)
+      val htmlDirPath = outputPath.resolve(fileName)
+      Files.createDirectories(htmlDirPath)
 
       // Create the path to the html file itself
-      val fileName = mdFile.getFileName.toString.replaceFirst("[.][^.]+$", "")
-      val htmlFileName = fileName + ".html"
-      val htmlFilePath = outputPath.resolve(htmlFileName)
+      val htmlFilePath = htmlDirPath.resolve("index.html")
 
       // Parse the md file into a node
       logger.log(s"Parsing ${mdFile.toString}")
       val markdownDocument = parser.parseReader(
         Files.newBufferedReader(mdFile)
       )
-      //logger.log(s"${mdFile.toString} == " + renderer.render(markdownDocument))
+
+      // Render markdown content to html
+      logger.log(s"Rendering ${mdFile.toString}")
+      val markdownContent = renderer.render(markdownDocument)
+
+      // Load layout for file
+      // TODO: Get layout loading to work
+      //val layout = DefaultLayout
+      val layout = new DocPage(linkedMenuItems)
+
+      // Apply associated layout
+      logger.log(s"Applying layout ${layout.getClass.getName} to ${mdFile.toString}")
+      val htmlDocumentContent = layout.toString(markdownContent)
 
       // Write the md file as html to a file
       logger.log(s"Writing to ${htmlFilePath.toString}")
-      writeText(htmlFilePath, renderer.render(markdownDocument))
-      /*renderer.render(markdownDocument, Files.newBufferedWriter(
-        htmlFilePath,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.WRITE
-      ))*/
-    })
+      writeText(htmlFilePath, htmlDocumentContent)
+    }.failed.foreach(logger.error))
 
     // TODO: Create auto generator of content
     // Create front page
