@@ -1,5 +1,3 @@
-import UnidocKeys._
-
 //
 // DEBUGGER API PROJECT CONFIGURATION
 //
@@ -93,15 +91,11 @@ lazy val sbtScalaDebuggerPlugin = project
 lazy val root = project
   .in(file("."))
   .settings(Common.settings: _*)
-  .settings(unidocSettings: _*)
   .settings(
     name := "scala-debugger",
     // Do not publish the aggregation project
     publishArtifact := false,
-    publishLocal := {},
-    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(
-      scalaDebuggerTest
-    )
+    publishLocal := {}
   ).aggregate(
     scalaDebuggerApi,
     scalaDebuggerTest,
