@@ -8,11 +8,8 @@ import scalatags.Text.all._
 
 /**
  * Represents the layout for the front page of the site.
- *
- * @param sidebarMenuItems The collection of menu items representing the
- *                         sidebar
  */
-class DocPage(val sidebarMenuItems: Seq[MenuItem]) extends Page(
+class DocPage extends Page(
   postHeadContent = Seq(SidebarNavStyle.styleSheetText.toStyleTag)
 ) {
   /**

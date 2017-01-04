@@ -20,7 +20,7 @@ import scalatags.Text.all._
  * @param selectedMenuItems Will mark each menu item whose name is provided
  *                          as selected
  */
-class Page(
+abstract class Page(
   val preHeadContent: Seq[Modifier] = Nil,
   val postHeadContent: Seq[Modifier] = Nil,
   val preBodyContent: Seq[Modifier] = Nil,
@@ -49,36 +49,9 @@ class Page(
         MainMenuBar(
           MainMenuLogo(),
           MainMenu(
-            MenuItem(
-              name = "Api",
-              link = "/docs/api",
-              selected = isMenuItemSelected("Api")
-            ),
-            MenuItem(
-              name = "Language",
-              link = "/docs/language",
-              selected = isMenuItemSelected("Language")
-            ),
-            MenuItem(
-              name = "Sdb",
-              link = "/docs/sdb",
-              selected = isMenuItemSelected("Sdb")
-            ),
-            MenuItem(
-              name = "Visual Debugger",
-              link = "/docs/visual_debugger",
-              selected = isMenuItemSelected("Visual Debugger")
-            ),
-            MenuItem(
-              name = "Sbt Plugin",
-              link = "/docs/sbt_plugin",
-              selected = isMenuItemSelected("Sbt Plugin")
-            ),
-            MenuItem(
-              name = "About",
-              link = "/about",
-              selected = isMenuItemSelected("About")
-            )
+            context.mainMenuItems.map(m => m.copy(
+              selected = isMenuItemSelected(m.name)
+            )): _*
           )
         )
       ),

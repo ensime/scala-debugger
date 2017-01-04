@@ -5,7 +5,7 @@ import java.nio.file._
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
 import org.scaladebugger.docs.layouts.partials.common.MenuItem
-import org.scaladebugger.docs.layouts.{DocPage, FrontPage, Layout}
+import org.scaladebugger.docs.layouts.{Context, DocPage, FrontPage, Layout}
 
 import scala.annotation.tailrec
 import scala.util.Try
@@ -22,10 +22,6 @@ class Generator(private val config: Config) {
   /** Represents a matcher for markdown paths. */
   private lazy val MarkdownMatcher =
     FileSystems.getDefault.getPathMatcher("glob:**.md")
-
-  /** Represents the default layout. */
-  private lazy val DefaultLayout: Layout =
-    layoutFromClassName(config.defaultLayout())
 
   /**
    * Runs the generator.
@@ -53,8 +49,7 @@ class Generator(private val config: Config) {
     val mdFiles = markdownFiles(srcDirPath)
 
     // Find all directories of src dir
-    val directoryPaths = mdFiles.flatMap(p =>
-      Option(p.getParent)).toSeq.distinct
+    val directoryPaths = directories(srcDirPath)
 
     // Generate top-level menu items based on src dir
     def createLinkedMenuItem(path: Path): MenuItem = {
@@ -68,6 +63,12 @@ class Generator(private val config: Config) {
     }
     val linkedMenuItems = directoryPaths.filter(_.getParent == srcDirPath)
       .map(createLinkedMenuItem)
+
+    // Create our layout context
+    val context = Context(
+      mainMenuItems = linkedMenuItems,
+      sideMenuItems = linkedMenuItems
+    )
 
     // Set up markdown parser and renderer
     val parser = Parser.builder().build()
@@ -99,9 +100,8 @@ class Generator(private val config: Config) {
       val markdownContent = renderer.render(markdownDocument)
 
       // Load layout for file
-      // TODO: Get layout loading to work
-      //val layout = DefaultLayout
-      val layout = new DocPage(linkedMenuItems)
+      // TODO: Parse correct layout to use
+      val layout = defaultLayout(context)
 
       // Apply associated layout
       logger.log(s"Applying layout ${layout.getClass.getName} to ${mdFile.toString}")
@@ -114,22 +114,39 @@ class Generator(private val config: Config) {
 
     // TODO: Create auto generator of content
     // Create front page
-    val frontPageText = new FrontPage().toString
+    val frontPage = new FrontPage
+    frontPage.context = context
+    val frontPageText = frontPage.toString
     val frontPagePath = Paths.get(outputDir, "index.html")
     writeText(frontPagePath, frontPageText)
+  }
+
+  /**
+   * Retrieves the default layout.
+   *
+   * @param context The context to provide to the default layout
+   * @return The default layout instance
+   */
+  private def defaultLayout(context: Context): Layout = {
+    val defaultLayoutClassName = config.defaultLayout()
+    layoutFromClassName(defaultLayoutClassName, context)
   }
 
   /**
    * Creates a new instance of the specified layout class.
    *
    * @param className The fully-qualified class name
+   * @param context The context to provide to the layout
    * @return The new layout instance
    * @throws ClassNotFoundException If the class is missing
    * @throws RuntimeException If the specified class is not a layout
    */
   @throws[ClassNotFoundException]
   @throws[RuntimeException]
-  private def layoutFromClassName(className: String): Layout = {
+  private def layoutFromClassName(
+    className: String,
+    context: Context
+  ): Layout = {
     // Retrieve the layout class
     val layoutClass = Class.forName(className)
 
@@ -140,7 +157,9 @@ class Generator(private val config: Config) {
       throw new RuntimeException(s"$dn is not an instance of $n")
     }
 
-    layoutClass.newInstance().asInstanceOf[Layout]
+    val layout = layoutClass.newInstance().asInstanceOf[Layout]
+    layout.context_=(context)
+    layout
   }
 
   /**
@@ -184,11 +203,44 @@ class Generator(private val config: Config) {
    * Lists the contents of a directory.
    *
    * @param path The path to the directory
-   * @return An iterable collection of paths to content
+   * @return An iterable collection of paths to content, or empty if
+   *         the provided path is not a directory
    */
   private def directoryContents(path: Path): Iterable[Path] = {
     import scala.collection.JavaConverters._
-    Files.newDirectoryStream(path).asScala
+
+    if (!Files.isDirectory(path)) Nil
+    else Files.newDirectoryStream(path).asScala
+  }
+
+  /**
+   * Retrieves directories from the specified path.
+   *
+   * @param path The path whose directories to retrieve
+   * @param recursive If true, also retrieves subdirectories
+   * @return An iterable collection of paths to directories, or empty if
+   *         the provided path is not a directory
+   */
+  private def directories(
+    path: Path,
+    recursive: Boolean = true
+  ): Seq[Path] = {
+    import scala.collection.mutable
+    val pathQueue = mutable.Queue[Path]()
+    var directories = mutable.Buffer[Path]()
+
+    pathQueue.enqueue(path)
+    while (pathQueue.nonEmpty) {
+      val p = pathQueue.dequeue()
+
+      if (Files.isDirectory(p)) {
+        directories.append(p)
+        pathQueue.enqueue(directoryContents(p).toSeq: _*)
+      }
+    }
+
+    // Remove provided directory
+    directories.distinct.filterNot(_ == path)
   }
 
   /**

@@ -18,6 +18,32 @@ object Layout {
  * Represents the base interface that a layout must implement.
  */
 trait Layout {
+  private var _context: Context = _
+
+  /**
+   * Sets the layout's context. One-time use only.
+   *
+   * @param context The layout's context
+   * @throws AssertionError If the context has already been set
+   */
+  @throws[AssertionError]
+  def context_=(context: Context): Unit = {
+    assert(_context == null, "Context has already been set!")
+    _context = context
+  }
+
+  /**
+   * Represents the context provided to the layout.
+   *
+   * @return The layout's context
+   * @throws AssertionError If the context has not been set
+   */
+  @throws[AssertionError]
+  def context: Context = {
+    assert(_context != null, "Context has not been set!")
+    _context
+  }
+
   /**
    * Renders the provided content as HTML using this layout.
    *
