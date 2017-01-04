@@ -1,6 +1,6 @@
-package org.scaladebugger.docs.layouts.partials
+package org.scaladebugger.docs.layouts.partials.common
 
-import org.scaladebugger.docs.styles.FrontPageStyle
+import org.scaladebugger.docs.styles.PageStyle
 
 import scalatags.Text.all._
 
@@ -9,11 +9,11 @@ import scalatags.Text.all._
  */
 object LinedContent {
   def apply(markerText: String, content: Modifier): Modifier = Raw(
-    span(FrontPageStyle.marker, FrontPageStyle.linedContentLeft)(markerText),
-    span(FrontPageStyle.linedContentRight)(content)
+    span(PageStyle.marker, PageStyle.linedContentLeft)(markerText),
+    span(PageStyle.linedContentRight)(content)
   )
 
   /** Takes raw content to place inside a lined content block. */
   def Raw(content: Modifier*): Modifier =
-    div(FrontPageStyle.linedContent)(content: _*)
+    div(PageStyle.linedContent)(content: _*)
 }

@@ -1,19 +1,19 @@
-package org.scaladebugger.docs.layouts.partials
+package org.scaladebugger.docs.layouts.partials.common
 
 import java.net.URL
 import java.util.Calendar
 
-import org.scaladebugger.docs.styles.FrontPageStyle
+import org.scaladebugger.docs.styles.PageStyle
 
 import scalatags.Text.all._
 
 /**
  * Generates front page footer.
  */
-object FrontPageFooter {
+object Footer {
   def apply(authorName: String, authorUrl: URL, startYear: Int): Modifier = {
-    tag("footer")(FrontPageStyle.footerCls, FrontPageStyle.sectionDark)(
-      div(FrontPageStyle.footerContent)(
+    tag("footer")(PageStyle.footerCls, PageStyle.sectionDark)(
+      div(PageStyle.footerContent)(
         span(
           raw("Site contents "),
           i(`class` := "fa fa-copyright", attr("aria-hidden") := "true"),

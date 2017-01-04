@@ -120,7 +120,7 @@ object TabsStyle extends CascadingStyleSheet {
   /** To be placed on inner content element. */
   lazy val tabInnerContent: Cls = cls(
     padding := "1em", {
-      import FrontPageStyle.textbox
+      import PageStyle.textbox
       textbox(
         maxHeight := "300px"
       )

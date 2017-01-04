@@ -4,9 +4,9 @@ import scalatags.Text.all._
 import scalatags.stylesheet._
 
 /**
- * Represents stylesheet for front page.
+ * Represents stylesheet for all pages.
  */
-object FrontPageStyle extends CascadingStyleSheet {
+object PageStyle extends CascadingStyleSheet {
   import scalatags.Text.styles2.{content => afterContent}
 
   /** To be placed in a <style> tag. */

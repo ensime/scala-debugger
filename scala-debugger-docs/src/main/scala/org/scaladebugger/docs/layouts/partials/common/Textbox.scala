@@ -1,6 +1,6 @@
-package org.scaladebugger.docs.layouts.partials
+package org.scaladebugger.docs.layouts.partials.common
 
-import org.scaladebugger.docs.styles.FrontPageStyle
+import org.scaladebugger.docs.styles.PageStyle
 
 import scalatags.Text.all._
 
@@ -10,9 +10,9 @@ import scalatags.Text.all._
 object Textbox {
   def apply(fitContainer: Boolean, content: Modifier*): Modifier = {
     if (fitContainer)
-      span(FrontPageStyle.textbox, FrontPageStyle.fitContainer)(content)
+      span(PageStyle.textbox, PageStyle.fitContainer)(content)
     else
-      span(FrontPageStyle.textbox)(content)
+      span(PageStyle.textbox)(content)
   }
 
   def apply(content: Modifier*): Modifier = apply(false, content: _*)

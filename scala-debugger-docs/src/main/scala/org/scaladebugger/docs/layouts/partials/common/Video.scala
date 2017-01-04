@@ -1,6 +1,6 @@
-package org.scaladebugger.docs.layouts.partials
+package org.scaladebugger.docs.layouts.partials.common
 
-import org.scaladebugger.docs.styles.FrontPageStyle
+import org.scaladebugger.docs.styles.PageStyle
 
 import scalatags.Text.all._
 
@@ -12,7 +12,7 @@ object Video {
     val vidUrl = (ext: String) => buildUrl(rootPath, fileName, ext)
 
     video(
-      FrontPageStyle.videoCls,
+      PageStyle.videoCls,
       attr("poster") := vidUrl("jpg"),
       attr("preload") := "none",
       attr("controls") := "true",

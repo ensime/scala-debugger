@@ -1,4 +1,4 @@
-package org.scaladebugger.docs.layouts.partials
+package org.scaladebugger.docs.layouts.partials.common.vendor
 
 import scalatags.Text.all._
 
