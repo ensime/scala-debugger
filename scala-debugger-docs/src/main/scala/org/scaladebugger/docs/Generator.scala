@@ -2,16 +2,17 @@ package org.scaladebugger.docs
 
 import java.nio.charset.Charset
 import java.nio.file._
+import java.util.concurrent.TimeUnit
 
-import com.vladsch.flexmark.ext.front.matter.{AbstractYamlFrontMatterVisitor, YamlFrontMatterExtension, YamlFrontMatterVisitor}
+import com.vladsch.flexmark.ext.front.matter.{AbstractYamlFrontMatterVisitor, YamlFrontMatterExtension}
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
 import org.scaladebugger.docs.layouts.partials.common.MenuItem
-import org.scaladebugger.docs.layouts.{Context, DocPage, FrontPage, Layout}
+import org.scaladebugger.docs.layouts.{Context, Layout}
 
 import scala.annotation.tailrec
-import scala.util.Try
 import scala.collection.JavaConverters._
+import scala.util.Try
 
 /**
  * Represents a generator of content based on a configuration.
@@ -25,6 +26,11 @@ class Generator(private val config: Config) {
   /** Represents a matcher for markdown paths. */
   private lazy val MarkdownMatcher =
     FileSystems.getDefault.getPathMatcher("glob:**.md")
+
+  // Set up markdown parser and renderer
+  private lazy val extensions = Seq(YamlFrontMatterExtension.create()).asJava
+  private lazy val parser = Parser.builder().extensions(extensions).build()
+  private lazy val renderer = HtmlRenderer.builder().extensions(extensions).build()
 
   /**
    * Runs the generator.
@@ -73,13 +79,34 @@ class Generator(private val config: Config) {
       sideMenuItems = linkedMenuItems
     )
 
-    // Set up markdown parser and renderer
-    val extensions = Seq(YamlFrontMatterExtension.create()).asJava
-    val parser = Parser.builder().extensions(extensions).build()
-    val renderer = HtmlRenderer.builder().extensions(extensions).build()
-
     // For each markdown file, generate its content and produce a file
-    mdFiles.foreach(mdFile => Try {
+    mdFiles.foreach(mdFile => processMarkdownFile(
+      mdFile = mdFile,
+      context = context,
+      srcDirPath = srcDirPath,
+      outputDirPath = outputDirPath
+    ))
+  }
+
+  /**
+   * Processes a markdown file into HTML.
+   *
+   * @param mdFile The path to the markdown file to process
+   * @param context The context to use when processing
+   * @param srcDirPath The root source directory containing the markdown file
+   * @param outputDirPath The root output directory to write the HTML
+   */
+  private def processMarkdownFile(
+    mdFile: Path,
+    context: Context,
+    srcDirPath: Path,
+    outputDirPath: Path
+  ): Unit = {
+    val startTime = System.nanoTime()
+
+    Try({
+      logger.log(s"(( Processing $mdFile ))")
+
       val relativePath = srcDirPath.relativize(mdFile)
       val fileName = stripExtension(mdFile.getFileName.toString)
 
@@ -96,13 +123,13 @@ class Generator(private val config: Config) {
       val htmlFilePath = htmlDirPath.resolve("index.html")
 
       // Parse the md file into a node
-      logger.log(s"Parsing ${mdFile.toString}")
+      logger.log(s"\tParsing markdown file")
       val markdownDocument = parser.parseReader(
         Files.newBufferedReader(mdFile, Charset.forName("UTF-8"))
       )
 
       // Load front matter of document
-      logger.log(s"Extracting front matter from ${mdFile.toString}")
+      logger.log(s"\tExtracting front matter from markdown file")
       val yamlVisitor = new AbstractYamlFrontMatterVisitor
       yamlVisitor.visit(markdownDocument)
       val documentFrontMatter = yamlVisitor.getData.asScala
@@ -112,26 +139,35 @@ class Generator(private val config: Config) {
         .flatMap(_.asScala.headOption)
       layoutName match {
         case Some(name) =>
-          logger.log(s"Loading layout $name for ${mdFile.toString}")
+          logger.log(s"\tLoading layout $name")
         case None =>
-          logger.log(s"Loading default layout for ${mdFile.toString}")
+          logger.log(s"\tLoading default layout")
       }
       val layout = layoutName
         .map(layoutFromClassName(_: String, context))
         .getOrElse(defaultLayout(context))
 
       // Render markdown content to html
-      logger.log(s"Rendering ${mdFile.toString}")
+      logger.log(s"\tRendering markdown as html")
       val markdownContent = renderer.render(markdownDocument)
 
       // Apply associated layout
-      logger.log(s"Applying layout ${layout.getClass.getName} to ${mdFile.toString}")
+      logger.log(s"\tApplying layout ${layout.getClass.getName}")
       val htmlDocumentContent = layout.toString(markdownContent)
 
       // Write the md file as html to a file
-      logger.log(s"Writing to ${htmlFilePath.toString}")
+      logger.log(s"\tWriting to ${htmlFilePath.toString}")
       writeText(htmlFilePath, htmlDocumentContent)
-    }.failed.foreach(logger.error))
+    }).failed.foreach(logger.error)
+
+    val endTime = System.nanoTime()
+
+    // Nano is 10^-9
+    val timeTaken = endTime - startTime
+    val timeTakenMillis = TimeUnit.NANOSECONDS.toMillis(timeTaken)
+    val timeTakenNanosRemainder =
+      timeTaken - TimeUnit.MILLISECONDS.toNanos(timeTakenMillis)
+    logger.log(s"\tTook $timeTakenMillis.${timeTakenNanosRemainder}ms")
   }
 
   /**
