@@ -19,7 +19,11 @@ object MainNavStyle extends CascadingStyleSheet {
     justifyContent := "space-between",
     alignItems := "center",
     padding := "0.1em 1em",
-    fontSize := "1.5em"
+    fontSize := "1.5em",
+
+    background := "#3B3E43",
+    color := "#EBF0F1",
+    a(color := "#EBF0F1")
   )
 
   lazy val navLogo: Cls = cls(
@@ -65,6 +69,17 @@ object MainNavStyle extends CascadingStyleSheet {
       whiteSpace := "nowrap",
       overflow := "hidden",
       textOverflow := "ellipsis"
+    )
+  )
+
+  lazy val selectedNavLink: Cls = cls(
+    padding := "0em",
+    background := "#EBF0F1",
+    borderRadius := "8px",
+
+    a(
+      color := "#3B3E43",
+      border := "initial"
     )
   )
 }

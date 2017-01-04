@@ -87,7 +87,7 @@ object Main {
 
       // TODO: Create auto generator of content
       // Create front page
-      val frontPageText = FrontPage().toString
+      val frontPageText = new FrontPage().toString
       val frontPagePath = Paths.get(outputDir, "index.html")
       Files.write(
         frontPagePath,

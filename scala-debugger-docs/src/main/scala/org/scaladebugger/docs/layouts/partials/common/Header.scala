@@ -9,6 +9,6 @@ import scalatags.Text.all._
  */
 object Header {
   def apply(content: Modifier*): Modifier = {
-    tag("header")(MainNavStyle.headerCls, PageStyle.sectionDark)(content)
+    tag("header")(MainNavStyle.headerCls)(content)
   }
 }

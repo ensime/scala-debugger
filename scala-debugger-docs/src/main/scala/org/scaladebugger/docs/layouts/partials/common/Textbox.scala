@@ -9,10 +9,11 @@ import scalatags.Text.all._
  */
 object Textbox {
   def apply(fitContainer: Boolean, content: Modifier*): Modifier = {
-    if (fitContainer)
-      span(PageStyle.textbox, PageStyle.fitContainer)(content)
-    else
-      span(PageStyle.textbox)(content)
+    val fitContainerStyle =
+      if (fitContainer) Some(PageStyle.fitContainer)
+      else None
+
+    span(PageStyle.textbox, fitContainerStyle)(content)
   }
 
   def apply(content: Modifier*): Modifier = apply(false, content: _*)

@@ -12,9 +12,7 @@ import scalatags.Text.all._
  * @param sidebarMenuItems The collection of menu items representing the
  *                         sidebar
  */
-class DocPage(
-  val sidebarMenuItems: Seq[MenuItem] = Nil
-) extends Page(
+class DocPage(val sidebarMenuItems: Seq[MenuItem]) extends Page(
   postHeadContent = Seq(SidebarNavStyle.styleSheetText.toStyleTag)
 ) {
   /**
@@ -23,9 +21,10 @@ class DocPage(
    * @param content The documentation page contents
    * @return The rendered content
    */
-  override def render(content: Seq[Modifier]): Modifier = {
+  override def render(content: Seq[Modifier] = Nil): Modifier = {
     super.render(Seq(
-
-    ) ++ content)
+      div()(),
+      div()(content: _*)
+    ))
   }
 }

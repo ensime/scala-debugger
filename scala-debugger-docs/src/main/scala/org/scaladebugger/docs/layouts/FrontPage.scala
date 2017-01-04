@@ -8,7 +8,7 @@ import scalatags.Text.all._
 /**
  * Represents the layout for the front page of the site.
  */
-object FrontPage extends Page {
+class FrontPage extends Page {
   private val ApiExampleCode =
     s"""
       |val fileName = "file.scala"
@@ -36,7 +36,7 @@ object FrontPage extends Page {
    * @param content Unused
    * @return The rendered content
    */
-  override def render(content: Seq[Modifier]): Modifier = {
+  override def render(content: Seq[Modifier] = Nil): Modifier = {
     super.render(Seq(
       tag("section")(PageStyle.section, PageStyle.sectionLight)(
         div(PageStyle.sectionContent)(

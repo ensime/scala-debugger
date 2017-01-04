@@ -8,17 +8,6 @@ import org.scaladebugger.docs.styles.{MainNavStyle, PageStyle, TabsStyle}
 
 import scalatags.Text.all._
 
-/** Represents a singleton page that can be used with defaults. */
-object Page extends Page(
-  preHeadContent = Nil,
-  postHeadContent = Nil,
-  preBodyContent = Nil,
-  postBodyContent = Nil,
-  htmlModifiers = Nil,
-  bodyModifiers = Nil,
-  selectedMenuItems = Nil
-)
-
 /**
  * Represents the layout for a common site page.
  *
@@ -112,7 +101,7 @@ class Page(
    * @param content The content to render as HTML using this layout
    * @return The rendered content
    */
-  override def render(content: Seq[Modifier]): Modifier = {
+  override def render(content: Seq[Modifier] = Nil): Modifier = {
     html(htmlModifiers: _*)(
       head(headContent: _*),
       body(bodyModifiers: _*)(bodyContent(content))

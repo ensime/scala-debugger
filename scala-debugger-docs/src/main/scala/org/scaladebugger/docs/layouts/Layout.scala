@@ -12,13 +12,20 @@ trait Layout {
    * @param content The content to render as HTML using this layout
    * @return The rendered content
    */
-  def apply(content: Seq[Modifier] = Nil): Modifier = render(content)
+  def render(content: Seq[Modifier] = Nil): Modifier
 
   /**
-   * Renders the provided content as HTML using this layout.
+   * Renders the layout with content and returns the string representation.
    *
-   * @param content The content to render as HTML using this layout
-   * @return The rendered content
+   * @param content The content to fill in the layout
+   * @return The string representation of the layout
    */
-  def render(content: Seq[Modifier] = Nil): Modifier
+  def toString(content: Seq[Modifier]): String = render(content).toString
+
+  /**
+   * Renders the layout with no content and returns the string representation.
+   *
+   * @return The string representation of the layout
+   */
+  override def toString: String = toString(Nil)
 }

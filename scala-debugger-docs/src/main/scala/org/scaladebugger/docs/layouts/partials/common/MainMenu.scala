@@ -10,7 +10,11 @@ import scalatags.Text.all._
 object MainMenu {
   def apply(menuItems: MenuItem*): Modifier = {
     @inline def toListItem(menuItem: MenuItem): Modifier = {
-      li(
+      val selectedStyle =
+        if (menuItem.selected) Some(MainNavStyle.selectedNavLink)
+        else None
+
+      li(selectedStyle)(
         a(href := menuItem.link)(menuItem.name)
       )
     }
