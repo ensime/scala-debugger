@@ -14,7 +14,9 @@ object Docs {
     libraryDependencies ++= Seq(
       "com.lihaoyi" %% "scalatags" % "0.6.2", // Main doc generator
       "org.rogach" %% "scallop" % "2.0.5", // CLI Support
-      "com.vladsch.flexmark" % "flexmark-java" % "0.9.4", // Markdown support
+
+      "com.vladsch.flexmark" % "flexmark-java" % "0.10.2", // Markdown support
+      "com.vladsch.flexmark" % "flexmark-ext-yaml-front-matter" % "0.10.2", // Front matter support
 
       "commons-codec" % "commons-codec" % "1.10", // Base64 encoding support
 

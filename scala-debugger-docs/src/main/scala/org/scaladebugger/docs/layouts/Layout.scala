@@ -2,6 +2,18 @@ package org.scaladebugger.docs.layouts
 
 import scalatags.Text.all._
 
+object Layout {
+  /**
+   * Checks if the specified class is a layout.
+   *
+   * @param klass The class to check
+   * @return True if a layout, otherwise false
+   */
+  def classIsLayout(klass: Class[_]): Boolean = {
+    classOf[Layout].isAssignableFrom(klass)
+  }
+}
+
 /**
  * Represents the base interface that a layout must implement.
  */

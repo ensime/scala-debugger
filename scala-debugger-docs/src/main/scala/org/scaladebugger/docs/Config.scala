@@ -15,6 +15,11 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some(false)
   )
 
+  val defaultLayout: ScallopOption[String] = opt[String](
+    descr = "The class representing the default layout if one is not specified",
+    default = Some(classOf[org.scaladebugger.docs.layouts.DocPage].getName)
+  )
+
   /** Represents whether or not to generate the docs. */
   val generate: ScallopOption[Boolean] = opt[Boolean](
     descr = "If true, regenerates the docs",
