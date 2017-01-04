@@ -1,5 +1,6 @@
 package org.scaladebugger.docs
 
+import java.nio.charset.Charset
 import java.nio.file._
 
 import com.vladsch.flexmark.ext.front.matter.{AbstractYamlFrontMatterVisitor, YamlFrontMatterExtension, YamlFrontMatterVisitor}
@@ -97,7 +98,7 @@ class Generator(private val config: Config) {
       // Parse the md file into a node
       logger.log(s"Parsing ${mdFile.toString}")
       val markdownDocument = parser.parseReader(
-        Files.newBufferedReader(mdFile)
+        Files.newBufferedReader(mdFile, Charset.forName("UTF-8"))
       )
 
       // Load front matter of document
