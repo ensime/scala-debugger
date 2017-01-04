@@ -2,6 +2,7 @@ package org.scaladebugger.docs
 
 import java.nio.file._
 
+import com.vladsch.flexmark.ext.front.matter.{AbstractYamlFrontMatterVisitor, YamlFrontMatterExtension, YamlFrontMatterVisitor}
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
 import org.scaladebugger.docs.layouts.partials.common.MenuItem
@@ -9,6 +10,7 @@ import org.scaladebugger.docs.layouts.{Context, DocPage, FrontPage, Layout}
 
 import scala.annotation.tailrec
 import scala.util.Try
+import scala.collection.JavaConverters._
 
 /**
  * Represents a generator of content based on a configuration.
@@ -71,19 +73,22 @@ class Generator(private val config: Config) {
     )
 
     // Set up markdown parser and renderer
-    val parser = Parser.builder().build()
-    val renderer = HtmlRenderer.builder().build()
+    val extensions = Seq(YamlFrontMatterExtension.create()).asJava
+    val parser = Parser.builder().extensions(extensions).build()
+    val renderer = HtmlRenderer.builder().extensions(extensions).build()
 
     // For each markdown file, generate its content and produce a file
     mdFiles.foreach(mdFile => Try {
       val relativePath = srcDirPath.relativize(mdFile)
-      val fileName = mdFile.getFileName.toString.replaceFirst("[.][^.]+$", "")
+      val fileName = stripExtension(mdFile.getFileName.toString)
 
       // Create the output path to the new html file's directory
       val outputPath = Option(relativePath.getParent)
         .map(outputDirPath.resolve)
         .getOrElse(outputDirPath)
-      val htmlDirPath = outputPath.resolve(fileName)
+      val htmlDirPath =
+        if (isIndexFile(mdFile)) outputPath
+        else outputPath.resolve(fileName)
       Files.createDirectories(htmlDirPath)
 
       // Create the path to the html file itself
@@ -95,13 +100,28 @@ class Generator(private val config: Config) {
         Files.newBufferedReader(mdFile)
       )
 
+      // Load front matter of document
+      logger.log(s"Extracting front matter from ${mdFile.toString}")
+      val yamlVisitor = new AbstractYamlFrontMatterVisitor
+      yamlVisitor.visit(markdownDocument)
+      val documentFrontMatter = yamlVisitor.getData.asScala
+
+      // Load layout for file
+      val layoutName = documentFrontMatter.get("layout")
+        .flatMap(_.asScala.headOption)
+      layoutName match {
+        case Some(name) =>
+          logger.log(s"Loading layout $name for ${mdFile.toString}")
+        case None =>
+          logger.log(s"Loading default layout for ${mdFile.toString}")
+      }
+      val layout = layoutName
+        .map(layoutFromClassName(_: String, context))
+        .getOrElse(defaultLayout(context))
+
       // Render markdown content to html
       logger.log(s"Rendering ${mdFile.toString}")
       val markdownContent = renderer.render(markdownDocument)
-
-      // Load layout for file
-      // TODO: Parse correct layout to use
-      val layout = defaultLayout(context)
 
       // Apply associated layout
       logger.log(s"Applying layout ${layout.getClass.getName} to ${mdFile.toString}")
@@ -111,14 +131,6 @@ class Generator(private val config: Config) {
       logger.log(s"Writing to ${htmlFilePath.toString}")
       writeText(htmlFilePath, htmlDocumentContent)
     }.failed.foreach(logger.error))
-
-    // TODO: Create auto generator of content
-    // Create front page
-    val frontPage = new FrontPage
-    frontPage.context = context
-    val frontPageText = frontPage.toString
-    val frontPagePath = Paths.get(outputDir, "index.html")
-    writeText(frontPagePath, frontPageText)
   }
 
   /**
@@ -175,6 +187,27 @@ class Generator(private val config: Config) {
       StandardOpenOption.CREATE,
       StandardOpenOption.WRITE
     )
+  }
+
+  /**
+   * Removes the file extension from the name.
+   *
+   * @param fileName The file name whose extension to remove
+   * @return The file name without the extension
+   */
+  private def stripExtension(fileName: String): String = {
+    fileName.replaceFirst("[.][^.]+$", "")
+  }
+
+  /**
+   * Determines whether or not the path represents an index file.
+   *
+   * @param path The path to inspect
+   * @return True if an index file, otherwise false
+   */
+  private def isIndexFile(path: Path): Boolean = {
+    Files.isRegularFile(path) &&
+    stripExtension(path.getFileName.toString) == "index"
   }
 
   /**
