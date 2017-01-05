@@ -37,7 +37,7 @@ class FrontPage extends Page {
    * @return The rendered content
    */
   override def render(content: Seq[Modifier] = Nil): Modifier = {
-    super.render(Seq(
+    super.render(Seq(div(
       tag("section")(PageStyle.section, PageStyle.sectionLight)(
         div(PageStyle.sectionContent)(
           h1(PageStyle.heroTitle)(
@@ -194,6 +194,6 @@ class FrontPage extends Page {
           )
         )
       )
-    ))
+    )))
   }
 }

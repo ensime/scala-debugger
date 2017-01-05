@@ -9,6 +9,16 @@ import scalatags.stylesheet._
 object SidebarNavStyle extends CascadingStyleSheet {
   import scalatags.Text.styles2.{content => pseudoContent}
 
+  lazy val testCls: Cls = cls(
+    display := "flex",
+    flexDirection := "column",
+    alignItems := "stretch",
+    height := "100vh",
+
+    header(flex := "0 0 auto"),
+    footer(flex := "0 0 auto")
+  )
+
   lazy val mainContent: Cls = cls(
     display := "inline-block",
 
@@ -16,8 +26,6 @@ object SidebarNavStyle extends CascadingStyleSheet {
     color := "#696969",
 
     position := "relative",
-    width := "100%",
-    height := "100%",
     overflowY := "scroll"
   )
 
@@ -28,10 +36,7 @@ object SidebarNavStyle extends CascadingStyleSheet {
     background := "#D8D8D8",
     color := "#696969",
 
-    position := "relative",
-
     width := "16em",
-    height := "100%",
 
     a(
       textDecoration := "none",
@@ -40,8 +45,8 @@ object SidebarNavStyle extends CascadingStyleSheet {
   )
 
   lazy val navLinks: Cls = cls(
+    maxHeight := "100%",
     overflowY := "scroll",
-    height := "90%",
     padding := "0.5em",
     listStyleType := "none",
 

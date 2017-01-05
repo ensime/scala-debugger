@@ -54,8 +54,10 @@ abstract class Page(
             )): _*
           )
         )
-      ),
-      PageContent(content),
+      )
+    ) ++
+    content ++
+    Seq(
       Footer(
         authorName = "Chip Senkbeil",
         authorUrl = new URL("https://chipsenkbeil.com/"),

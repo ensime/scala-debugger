@@ -13,7 +13,8 @@ import scalatags.Text.all._
  * Represents the layout for the front page of the site.
  */
 class DocPage extends Page(
-  postHeadContent = Seq(SidebarNavStyle.styleSheetText.toStyleTag)
+  postHeadContent = Seq(SidebarNavStyle.styleSheetText.toStyleTag),
+  bodyModifiers = Seq(SidebarNavStyle.testCls)
 ) {
   /**
    * Renders a page of documentation.
@@ -22,21 +23,21 @@ class DocPage extends Page(
    * @return The rendered content
    */
   override def render(content: Seq[Modifier] = Nil): Modifier = {
-    super.render(Seq(
-      div(display := "flex")(
-        div(SidebarNavStyle.navbar)(
+    super.render(Seq(div(flex := "1 1 auto", height := "100px")(
+      div(display := "flex", height := "100%")(
+        div(SidebarNavStyle.navbar, flex := "0 0 auto")(
           tag("nav")(SidebarNavStyle.navLinks)(
             SideMenu(context.sideMenuItems: _*)
           ),
           copyright("Chip Senkbeil", new URL("https://chipsenkbeil.com"), 2015)
         ),
-        div(SidebarNavStyle.mainContent)(
+        div(SidebarNavStyle.mainContent, flex := "1 1 auto", maxHeight := "100%")(
           div(
             padding := "2em"
           )(content: _*)
         )
       )
-    ))
+    )))
   }
 
   private def copyright(
