@@ -33,6 +33,7 @@ object MainNavStyle extends CascadingStyleSheet {
     justifyContent := "flex-start",
     alignItems := "center",
     width := "25%",
+    textDecoration := "none",
 
     img(
       height := "3em",

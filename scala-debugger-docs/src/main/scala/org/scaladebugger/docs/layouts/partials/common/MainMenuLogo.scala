@@ -9,7 +9,7 @@ import scalatags.Text.all._
  */
 object MainMenuLogo {
   def apply(): Modifier = {
-    div(MainNavStyle.navLogo)(
+    a(MainNavStyle.navLogo, href := "/")(
       EnsimeLogo(),
       span("Scala Debugger")
     )

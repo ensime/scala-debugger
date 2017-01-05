@@ -1,5 +1,9 @@
 package org.scaladebugger.docs.layouts
 
+import java.net.URL
+import java.util.Calendar
+
+import org.scaladebugger.docs.layouts.partials.common.SideMenu
 import org.scaladebugger.docs.styles.Implicits._
 import org.scaladebugger.docs.styles.SidebarNavStyle
 
@@ -19,12 +23,44 @@ class DocPage extends Page(
    */
   override def render(content: Seq[Modifier] = Nil): Modifier = {
     super.render(Seq(
-      div(SidebarNavStyle.navbar)(
-        tag("nav")(SidebarNavStyle.navLinks)(
-
+      div(display := "flex")(
+        div(SidebarNavStyle.navbar)(
+          tag("nav")(SidebarNavStyle.navLinks)(
+            SideMenu(context.sideMenuItems: _*)
+          ),
+          copyright("Chip Senkbeil", new URL("https://chipsenkbeil.com"), 2015)
+        ),
+        div(SidebarNavStyle.mainContent)(
+          div(
+            padding := "2em"
+          )(content: _*)
         )
-      ),
-      div()(content: _*)
+      )
     ))
+  }
+
+  private def copyright(
+    authorName: String,
+    authorUrl: URL,
+    startYear: Int
+  ): Modifier = {
+    span(
+      position := "absolute",
+      left := "0em",
+      bottom := "0em",
+
+      width := "100%",
+      textAlign := "center",
+      paddingBottom := "1em",
+
+      fontSize := "0.8em",
+      fontWeight := "lighter"
+    )(
+      raw("Copyright "),
+      i(`class` := "fa fa-copyright", attr("aria-hidden") := "true"),
+      raw(" "),
+      a(href := authorUrl.toString)(authorName),
+      raw(s", $startYear-${Calendar.getInstance().get(Calendar.YEAR)}")
+    )
   }
 }

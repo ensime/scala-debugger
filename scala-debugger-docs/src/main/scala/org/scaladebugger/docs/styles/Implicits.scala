@@ -18,7 +18,7 @@ object Implicits {
       throw new RuntimeException(
         "TODO: styleSheet.styleSheetText is unreliable and is not providing text!"
       )
-      tag("style")(styleSheet.styleSheetText)
+      tag("style")(raw(styleSheet.styleSheetText))
     }
   }
 
@@ -28,6 +28,6 @@ object Implicits {
      *
      * @return The style tag containing the raw text
      */
-    def toStyleTag: Modifier = tag("style")(string)
+    def toStyleTag: Modifier = tag("style")(raw(string))
   }
 }

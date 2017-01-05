@@ -66,23 +66,29 @@ class Generator(private val config: Config) {
     val directoryPaths = directories(srcDirPath)
 
     // Generate top-level menu items based on src dir
-    def createLinkedMenuItem(path: Path): MenuItem = {
+    def createLinkedMenuItem(allPaths: Seq[Path], path: Path): MenuItem = {
       MenuItem(
-        name = path.getFileName.toString,
-        link = "/" + srcDirPath.relativize(path).toString
+        name = stripExtension(path.getFileName.toString)
+          .replaceAll("[^\\w\\s\\d]", " "),
+        link = "/" + stripExtension(srcDirPath.relativize(path).toString)
           .replaceAllLiterally(java.io.File.separator, "/") + "/",
-        children = directoryPaths.filter(_.getParent == path)
-          .map(createLinkedMenuItem)
+        children = allPaths.filter(_.getParent == path)
+          .map(p => createLinkedMenuItem(allPaths, p))
       )
     }
-    val linkedMenuItems = directoryPaths
+
+    val allPaths: Seq[Path] = (mdFiles ++ directoryPaths).toSeq
+    val linkedMainMenuItems = directoryPaths
       .filter(_.getParent == srcDirPath)
-      .map(createLinkedMenuItem)
+      .map(p => createLinkedMenuItem(directoryPaths, p))
+    val linkedSideMenuItems = (mdFiles ++ directoryPaths)
+      .filter(_.getParent == srcDirPath)
+      .map(p => createLinkedMenuItem(allPaths, p)).toSeq
 
     // Create our layout context
     val context = Context(
-      mainMenuItems = linkedMenuItems,
-      sideMenuItems = linkedMenuItems
+      mainMenuItems = linkedMainMenuItems,
+      sideMenuItems = linkedSideMenuItems
     )
 
     // For each markdown file, generate its content and produce a file
