@@ -1,6 +1,7 @@
 package org.scaladebugger.docs
 
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 
 /**
  * Main entrypoint for generating and serving docs.
@@ -23,10 +24,17 @@ object Main {
 
       val watcherThread = if (config.liveReload()) {
         logger.log(s"Watching $rootPath for changes")
-        Some(new Watcher(rootPath, e => {
-          logger.log(s"Detected change at ${e.path}")
-          new Generator(config).run()
-        }).runAsync())
+        val watcher = new Watcher(
+          path = rootPath,
+          callback = (rootPath, events) => {
+            logger.log(s"Detected ${events.length} change(s) at $rootPath")
+            new Generator(config).run()
+          },
+          waitTime = config.liveReloadWaitTime(),
+          waitUnit = TimeUnit.MILLISECONDS
+        )
+
+        Some(watcher.runAsync())
       } else None
 
       new Server(config).run()

@@ -1,5 +1,7 @@
 package org.scaladebugger.docs
 
+import java.util.concurrent.TimeUnit
+
 import org.rogach.scallop.{ScallopConf, ScallopOption}
 
 /**
@@ -60,6 +62,15 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
   val liveReload: ScallopOption[Boolean] = opt[Boolean](
     descr = "If true, re-generates files while being served",
     default = Some(true)
+  )
+
+  /** Represents the time in milliseconds to wait after first change. */
+  val liveReloadWaitTime: ScallopOption[Long] = opt[Long](
+    descr = Seq(
+      "The number of milliseconds to wait after detecting a change",
+      "before performing a live reload"
+    ).mkString(" "),
+    default = Some(500)
   )
 
   /**
