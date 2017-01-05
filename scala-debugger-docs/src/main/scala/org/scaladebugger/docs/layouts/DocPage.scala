@@ -5,7 +5,7 @@ import java.util.Calendar
 
 import org.scaladebugger.docs.layouts.partials.common.SideMenu
 import org.scaladebugger.docs.styles.Implicits._
-import org.scaladebugger.docs.styles.SidebarNavStyle
+import org.scaladebugger.docs.styles.{DocPageStyle, SidebarNavStyle}
 
 import scalatags.Text.all._
 
@@ -13,8 +13,11 @@ import scalatags.Text.all._
  * Represents the layout for the front page of the site.
  */
 class DocPage extends Page(
-  postHeadContent = Seq(SidebarNavStyle.styleSheetText.toStyleTag),
-  bodyModifiers = Seq(SidebarNavStyle.testCls)
+  postHeadContent = Seq(
+    DocPageStyle.styleSheetText.toStyleTag,
+    SidebarNavStyle.styleSheetText.toStyleTag
+  ),
+  bodyModifiers = Seq(DocPageStyle.bodyCls)
 ) {
   /**
    * Renders a page of documentation.
@@ -23,7 +26,7 @@ class DocPage extends Page(
    * @return The rendered content
    */
   override def render(content: Seq[Modifier] = Nil): Modifier = {
-    super.render(Seq(div(flex := "1 1 auto", height := "100px")(
+    super.render(Seq(div(flex := "1 1 auto", minHeight := "100px")(
       div(display := "flex", height := "100%")(
         div(SidebarNavStyle.navbar, flex := "0 0 auto")(
           tag("nav")(SidebarNavStyle.navLinks)(
@@ -31,7 +34,7 @@ class DocPage extends Page(
           ),
           copyright("Chip Senkbeil", new URL("https://chipsenkbeil.com"), 2015)
         ),
-        div(SidebarNavStyle.mainContent, flex := "1 1 auto", maxHeight := "100%")(
+        div(DocPageStyle.mainContent, flex := "1 1 auto", maxHeight := "100%")(
           div(
             padding := "2em"
           )(content: _*)

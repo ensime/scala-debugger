@@ -4,30 +4,10 @@ import scalatags.Text.all._
 import scalatags.stylesheet._
 
 /**
- * Represents stylesheet for main navigation menu (top bar).
+ * Represents stylesheet for the side bar.
  */
 object SidebarNavStyle extends CascadingStyleSheet {
   import scalatags.Text.styles2.{content => pseudoContent}
-
-  lazy val testCls: Cls = cls(
-    display := "flex",
-    flexDirection := "column",
-    alignItems := "stretch",
-    height := "100vh",
-
-    header(flex := "0 0 auto"),
-    footer(flex := "0 0 auto")
-  )
-
-  lazy val mainContent: Cls = cls(
-    display := "inline-block",
-
-    background := "#EAEAEC",
-    color := "#696969",
-
-    position := "relative",
-    overflowY := "scroll"
-  )
 
   lazy val navbar: Cls = cls(
     display := "inline-block",

@@ -1,6 +1,6 @@
 package org.scaladebugger.docs.layouts.partials.common
 
-import org.scaladebugger.docs.styles.MainNavStyle
+import org.scaladebugger.docs.styles.TopbarNavStyle
 
 import scalatags.Text.all._
 
@@ -9,7 +9,7 @@ import scalatags.Text.all._
  */
 object MainMenuLogo {
   def apply(): Modifier = {
-    a(MainNavStyle.navLogo, href := "/")(
+    a(TopbarNavStyle.navLogo, href := "/")(
       EnsimeLogo(),
       span("Scala Debugger")
     )

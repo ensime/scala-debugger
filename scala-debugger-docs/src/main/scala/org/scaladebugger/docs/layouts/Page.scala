@@ -4,7 +4,7 @@ import java.net.URL
 
 import org.scaladebugger.docs.layouts.partials.common._
 import org.scaladebugger.docs.layouts.partials.common.vendor.{ClipboardJS, FontAwesome}
-import org.scaladebugger.docs.styles.{MainNavStyle, PageStyle, TabsStyle}
+import org.scaladebugger.docs.styles.{TopbarNavStyle, PageStyle, TabsStyle}
 
 import scalatags.Text.all._
 
@@ -37,7 +37,7 @@ abstract class Page(
       FontAwesome(),
       PageStyle.global.toStyleTag,
       PageStyle.styleSheetText.toStyleTag,
-      MainNavStyle.styleSheetText.toStyleTag,
+      TopbarNavStyle.styleSheetText.toStyleTag,
       TabsStyle.styleSheetText.toStyleTag
     ) ++
     postHeadContent

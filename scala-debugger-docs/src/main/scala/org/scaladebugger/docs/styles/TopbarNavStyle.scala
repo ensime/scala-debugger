@@ -6,7 +6,7 @@ import scalatags.stylesheet._
 /**
  * Represents stylesheet for main navigation menu (top bar).
  */
-object MainNavStyle extends CascadingStyleSheet {
+object TopbarNavStyle extends CascadingStyleSheet {
   lazy val headerCls: Cls = cls(
     width := "100%",
     height := "auto"

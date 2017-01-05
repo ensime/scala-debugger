@@ -1,6 +1,6 @@
 package org.scaladebugger.docs.layouts.partials.common
 
-import org.scaladebugger.docs.styles.MainNavStyle
+import org.scaladebugger.docs.styles.TopbarNavStyle
 
 import scalatags.Text.all._
 
@@ -9,6 +9,6 @@ import scalatags.Text.all._
  */
 object MainMenuBar {
   def apply(content: Modifier*): Modifier = {
-    div(MainNavStyle.navbar)(content)
+    div(TopbarNavStyle.navbar)(content)
   }
 }

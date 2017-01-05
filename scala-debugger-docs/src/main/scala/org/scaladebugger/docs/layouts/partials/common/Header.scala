@@ -1,6 +1,6 @@
 package org.scaladebugger.docs.layouts.partials.common
 
-import org.scaladebugger.docs.styles.{PageStyle, MainNavStyle}
+import org.scaladebugger.docs.styles.{PageStyle, TopbarNavStyle}
 
 import scalatags.Text.all._
 
@@ -9,6 +9,6 @@ import scalatags.Text.all._
  */
 object Header {
   def apply(content: Modifier*): Modifier = {
-    tag("header")(MainNavStyle.headerCls)(content)
+    tag("header")(TopbarNavStyle.headerCls)(content)
   }
 }
