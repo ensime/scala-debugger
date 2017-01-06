@@ -102,4 +102,13 @@ object SidebarNavStyle extends CascadingStyleSheet {
       border := "initial"
     )
   )
+
+  lazy val summary: Cls = cls(
+    display := "block",
+    cursor := "pointer",
+
+    &.pseudoExtend(":-webkit-details-marker")(
+      display := "none"
+    )
+  )
 }

@@ -15,7 +15,11 @@ object MainMenu {
         else None
 
       li(selectedStyle)(
-        a(href := menuItem.link)(menuItem.name)
+        menuItem.link.map(l =>
+          a(TopbarNavStyle.navLink)(href := l)(menuItem.name)
+        ).getOrElse(
+          span(TopbarNavStyle.navLink)(menuItem.name)
+        )
       )
     }
 

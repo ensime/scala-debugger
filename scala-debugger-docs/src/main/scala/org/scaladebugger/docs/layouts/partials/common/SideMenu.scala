@@ -20,8 +20,12 @@ object SideMenu {
 
       li(selectedStyle)(
         tag("details")(
-          tag("summary")(
-            a(SidebarNavStyle.navLink, href := menuItem.link)(menuItem.name)
+          tag("summary")(SidebarNavStyle.summary)(
+            menuItem.link.map(l =>
+              a(SidebarNavStyle.navLink, href := l)(menuItem.name)
+            ).getOrElse(
+              span(SidebarNavStyle.navLink)(menuItem.name)
+            )
           ),
           childrenMenu
         )

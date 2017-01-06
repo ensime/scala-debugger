@@ -66,24 +66,39 @@ class Generator(private val config: Config) {
     val directoryPaths = directories(srcDirPath)
 
     // Generate top-level menu items based on src dir
-    def createLinkedMenuItem(allPaths: Seq[Path], path: Path): MenuItem = {
+    def createLinkedMenuItem(allPaths: Seq[Path], path: Path, dirUseFirstChild: Boolean): MenuItem = {
+      val children = allPaths.filter(_.getParent == path).map(p =>
+        createLinkedMenuItem(allPaths, p, dirUseFirstChild))
+
+      // Directories use first child as link
+      val isDir = Files.isDirectory(path)
+      val link =
+        if (isDir && dirUseFirstChild) children.find(_.link.nonEmpty).flatMap(_.link)
+        else if (isDir && !dirUseFirstChild) None
+        else Some("/" + stripExtension(srcDirPath.relativize(path).toString)
+          .replaceAllLiterally(java.io.File.separator, "/") + "/")
+
+      val name = stripExtension(
+        path.getFileName.toString
+      ).replaceAll("[^\\w\\s\\d]", " ")
+
       MenuItem(
-        name = stripExtension(path.getFileName.toString)
-          .replaceAll("[^\\w\\s\\d]", " "),
-        link = "/" + stripExtension(srcDirPath.relativize(path).toString)
-          .replaceAllLiterally(java.io.File.separator, "/") + "/",
-        children = allPaths.filter(_.getParent == path)
-          .map(p => createLinkedMenuItem(allPaths, p))
+        name = name,
+        link = link,
+        children = children
       )
     }
 
-    val allPaths: Seq[Path] = (mdFiles ++ directoryPaths).toSeq
-    val linkedMainMenuItems = directoryPaths
+    // All paths excluding top-level index.md
+    val allPaths: Seq[Path] = (mdFiles ++ directoryPaths)
+      .filterNot(p => srcDirPath.relativize(p) == Paths.get("index.md")).toSeq
+    val linkedMainMenuItems = allPaths
       .filter(_.getParent == srcDirPath)
-      .map(p => createLinkedMenuItem(directoryPaths, p))
-    val linkedSideMenuItems = (mdFiles ++ directoryPaths)
+      .map(p => createLinkedMenuItem(allPaths, p, dirUseFirstChild = true))
+      .map(_.copy(children = Nil))
+    val linkedSideMenuItems = allPaths
       .filter(_.getParent == srcDirPath)
-      .map(p => createLinkedMenuItem(allPaths, p)).toSeq
+      .map(p => createLinkedMenuItem(allPaths, p, dirUseFirstChild = false))
 
     // Create our layout context
     val context = Context(

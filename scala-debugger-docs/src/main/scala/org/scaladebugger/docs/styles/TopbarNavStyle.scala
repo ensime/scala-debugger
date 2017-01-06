@@ -59,18 +59,19 @@ object TopbarNavStyle extends CascadingStyleSheet {
 
     li(
       padding := "0em 0.5em"
-    ),
-
-    a(
-      color := "#EBF0F1",
-      fontSize := "0.65em",
-      textDecoration := "none",
-      textTransform := "uppercase",
-      borderBottom := "1px solid #EBF0F1",
-      whiteSpace := "nowrap",
-      overflow := "hidden",
-      textOverflow := "ellipsis"
     )
+  )
+
+  lazy val navLink: Cls = cls(
+    cursor := "pointer",
+    color := "#EBF0F1",
+    fontSize := "0.65em",
+    textDecoration := "none",
+    textTransform := "uppercase",
+    borderBottom := "1px solid #EBF0F1",
+    whiteSpace := "nowrap",
+    overflow := "hidden",
+    textOverflow := "ellipsis"
   )
 
   lazy val selectedNavLink: Cls = cls(
