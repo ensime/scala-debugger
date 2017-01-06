@@ -33,7 +33,6 @@ object PageStyle extends CascadingStyleSheet {
     alignItems := "center",
     justifyContent := "space-around",
     fontSize := "5em",
-    whiteSpace := "nowrap",
 
     img(
       padding := "0.5em"
