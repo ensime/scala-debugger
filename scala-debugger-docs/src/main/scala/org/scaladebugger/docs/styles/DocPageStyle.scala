@@ -11,7 +11,7 @@ object DocPageStyle extends CascadingStyleSheet {
     display := "flex",
     flexDirection := "column",
     alignItems := "stretch",
-    maxHeight := "100vh",
+    height := "100vh",
 
     header(flex := "0 0 auto"),
     footer(flex := "0 0 auto")

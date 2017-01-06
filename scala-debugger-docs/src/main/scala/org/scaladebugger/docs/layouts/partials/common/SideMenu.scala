@@ -19,8 +19,12 @@ object SideMenu {
         else None
 
       li(selectedStyle)(
-        a(SidebarNavStyle.navLink, href := menuItem.link)(menuItem.name),
-        childrenMenu
+        tag("details")(
+          tag("summary")(
+            a(SidebarNavStyle.navLink, href := menuItem.link)(menuItem.name)
+          ),
+          childrenMenu
+        )
       )
     }
 
