@@ -70,20 +70,28 @@ class Page private (
   def render(context: Context, path: Path = outputPath): Boolean = {
     val startTime = System.nanoTime()
 
-    val result = Try(writeText(path, renderToString(context)))
+    val result = if (metadata.render) {
+      val _result = Try(writeText(path, renderToString(context)))
 
-    result.failed.foreach(t => {
-      val errorName = t.getClass.getName
-      val errorMessage = Option(t.getLocalizedMessage).getOrElse("<none>")
-      val depth = config.stackTraceDepth()
-      val stackTrace =
-        if (depth < 0) t.getStackTrace
-        else t.getStackTrace.take(depth)
+      _result.failed.foreach(t => {
+        val errorName = t.getClass.getName
+        val errorMessage = Option(t.getLocalizedMessage).getOrElse("<none>")
+        val depth = config.stackTraceDepth()
+        val stackTrace =
+          if (depth < 0) t.getStackTrace
+          else t.getStackTrace.take(depth)
 
-      logger.error(s"!!! Failed: " + errorName)
-      logger.error(s"!!! Message: " + errorMessage)
-      stackTrace.foreach(ste => logger.error(s"!!! $ste"))
-    })
+        logger.error(s"!!! Failed: " + errorName)
+        logger.error(s"!!! Message: " + errorMessage)
+        stackTrace.foreach(ste => logger.error(s"!!! $ste"))
+      })
+
+      _result.isSuccess
+    } else {
+      logger.log("Skipping rendering")
+      true
+    }
+
 
     val endTime = System.nanoTime()
 
@@ -94,7 +102,7 @@ class Page private (
       timeTaken - TimeUnit.MILLISECONDS.toNanos(timeTakenMillis)
     logger.log(s"Took $timeTakenMillis.${timeTakenNanosRemainder}ms")
 
-    result.isSuccess
+    result
   }
 
   /** Represents the output path when the page is rendered. */
