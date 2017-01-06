@@ -41,6 +41,10 @@ object DocPageStyle extends CascadingStyleSheet {
     a(
       color := "#232F3F",
       textDecoration := "none"
+    ),
+
+    img(
+      maxWidth := "100%"
     )
   )
 }
