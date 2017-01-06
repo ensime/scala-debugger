@@ -9,21 +9,6 @@ import scalatags.stylesheet._
 object PageStyle extends CascadingStyleSheet {
   import scalatags.Text.styles2.{content => afterContent}
 
-  /** To be placed in a <style> tag. */
-  lazy val global: String =
-    """
-      |* {
-      |  margin: 0;
-      |  padding: 0;
-      |}
-      |
-      |html, body {
-      |  font-size: 1em;
-      |  font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
-      |  min-width: 880px;
-      |}
-    """.stripMargin
-
   //
   // HERO CSS
   //

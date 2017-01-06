@@ -4,6 +4,7 @@ import java.nio.charset.Charset
 import java.nio.file._
 import java.util.concurrent.TimeUnit
 
+import com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension
 import com.vladsch.flexmark.ext.front.matter.{AbstractYamlFrontMatterVisitor, YamlFrontMatterExtension}
 import com.vladsch.flexmark.ext.gfm.tables.TablesExtension
 import com.vladsch.flexmark.html.HtmlRenderer
@@ -31,6 +32,7 @@ class Generator(private val config: Config) {
 
   /** Represents extensions for the parser and renderer. */
   private lazy val extensions = Seq(
+    AbbreviationExtension.create(),
     TablesExtension.create(),
     YamlFrontMatterExtension.create()
   ).asJava

@@ -1,14 +1,17 @@
 package org.scaladebugger.docs.layouts
 
 import org.scaladebugger.docs.layouts.partials.common._
-import org.scaladebugger.docs.styles.PageStyle
+import org.scaladebugger.docs.styles.{FrontPageStyle, PageStyle}
 
 import scalatags.Text.all._
+import org.scaladebugger.docs.styles.Implicits._
 
 /**
  * Represents the layout for the front page of the site.
  */
-class FrontPage extends Page {
+class FrontPage extends Page(
+  postHeadContent = Seq(FrontPageStyle.global.toStyleTag)
+) {
   private val ApiExampleCode =
     s"""
       |val fileName = "file.scala"

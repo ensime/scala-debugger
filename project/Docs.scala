@@ -2,7 +2,7 @@ import sbt.Keys._
 import sbt._
 
 object Docs {
-  lazy val unfilteredVersion = settingKey[String](
+  lazy val unfilteredVersion: SettingKey[String] = settingKey[String](
     "Version of Unfiltered used in projects"
   )
 
@@ -18,6 +18,7 @@ object Docs {
       "com.vladsch.flexmark" % "flexmark-java" % "0.10.3", // Markdown support
       "com.vladsch.flexmark" % "flexmark-ext-yaml-front-matter" % "0.10.3", // Front matter support
       "com.vladsch.flexmark" % "flexmark-ext-gfm-tables" % "0.10.3", // Tables support
+      "com.vladsch.flexmark" % "flexmark-ext-abbreviation" % "0.10.3", // Abbreviation support
 
       "commons-codec" % "commons-codec" % "1.10", // Base64 encoding support
 

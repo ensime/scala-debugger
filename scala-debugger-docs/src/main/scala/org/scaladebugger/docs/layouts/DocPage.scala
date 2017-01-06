@@ -1,8 +1,5 @@
 package org.scaladebugger.docs.layouts
 
-import java.net.URL
-import java.util.Calendar
-
 import org.scaladebugger.docs.layouts.partials.common.SideMenu
 import org.scaladebugger.docs.styles.Implicits._
 import org.scaladebugger.docs.styles.{DocPageStyle, SidebarNavStyle}
@@ -14,6 +11,7 @@ import scalatags.Text.all._
  */
 class DocPage extends Page(
   postHeadContent = Seq(
+    DocPageStyle.global.toStyleTag,
     DocPageStyle.styleSheetText.toStyleTag,
     SidebarNavStyle.styleSheetText.toStyleTag
   ),
@@ -35,7 +33,7 @@ class DocPage extends Page(
       tag("nav")(SidebarNavStyle.navbar, SidebarNavStyle.navLinks, flex := "0 0 auto")(
         SideMenu(context.sideMenuItems: _*)
       ),
-      div(DocPageStyle.mainContent, flex := "1 1 auto", padding := "2em")(
+      div(DocPageStyle.mainContent, flex := "1 1 auto")(
         content: _*
       )
     )))

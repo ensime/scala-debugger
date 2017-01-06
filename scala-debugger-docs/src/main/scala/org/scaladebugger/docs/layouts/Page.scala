@@ -35,7 +35,6 @@ abstract class Page(
     Seq(
       meta(charset := "utf-8"),
       FontAwesome(),
-      PageStyle.global.toStyleTag,
       PageStyle.styleSheetText.toStyleTag,
       TopbarNavStyle.styleSheetText.toStyleTag,
       TabsStyle.styleSheetText.toStyleTag
