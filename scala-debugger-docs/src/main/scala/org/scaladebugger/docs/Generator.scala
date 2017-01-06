@@ -5,6 +5,7 @@ import java.nio.file._
 import java.util.concurrent.TimeUnit
 
 import com.vladsch.flexmark.ext.front.matter.{AbstractYamlFrontMatterVisitor, YamlFrontMatterExtension}
+import com.vladsch.flexmark.ext.gfm.tables.TablesExtension
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
 import org.scaladebugger.docs.layouts.partials.common.MenuItem
@@ -28,7 +29,10 @@ class Generator(private val config: Config) {
     FileSystems.getDefault.getPathMatcher("glob:**.md")
 
   /** Represents extensions for the parser and renderer. */
-  private lazy val extensions = Seq(YamlFrontMatterExtension.create()).asJava
+  private lazy val extensions = Seq(
+    TablesExtension.create(),
+    YamlFrontMatterExtension.create()
+  ).asJava
 
   /** Represents the Markdown parser. */
   private lazy val parser = Parser.builder().extensions(extensions).build()
