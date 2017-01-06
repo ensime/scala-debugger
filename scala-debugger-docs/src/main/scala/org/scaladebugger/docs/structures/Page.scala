@@ -24,11 +24,8 @@ import scala.util.Try
  */
 class Page private (
   val config: Config,
-  val path: Path
-)(
-  private val logger: Logger = new Logger(classOf[Page]).newSession(
-    path.toString
-  ).init()
+  val path: Path,
+  private val logger: Logger
 ) {
   /** Represents an internal flexmark node used for markdown processing. */
   private lazy val pageNode = parseMarkdownFile(path)
@@ -270,14 +267,33 @@ object Page {
   private lazy val renderer =
     HtmlRenderer.builder().extensions(extensions).build()
 
+  object Session {
+    /**
+     * Creates a new page instance with session logging.
+     *
+     * @param config Used to provide defaults
+     * @param path The path to the raw page content
+     * @return The new page instance
+     */
+    def newInstance(
+      config: Config,
+      path: Path
+    ): Page = new Page(
+      config,
+      path,
+      new Logger(classOf[Page]).newSession(path.toString).init()
+    )
+  }
+
+  /**
+   * Creates a new page instance with no logging.
+   *
+   * @param config Used to provide defaults
+   * @param path The path to the raw page content
+   * @return The new page instance
+   */
   def newInstance(
     config: Config,
     path: Path
-  ): Page = new Page(config, path)()
-
-  def newInstance(
-    config: Config,
-    path: Path,
-    logger: Logger
-  ): Page = new Page(config, path)(logger)
+  ): Page = new Page(config, path, Logger.Noop)
 }

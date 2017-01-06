@@ -89,6 +89,7 @@ class Generator(private val config: Config) {
     )
 
     // For each markdown file, generate its content and produce a file
-    mdFiles.foreach(mdFile => Page.newInstance(config, mdFile).render(context))
+    mdFiles.foreach(mdFile =>
+      Page.Session.newInstance(config, mdFile).render(context))
   }
 }

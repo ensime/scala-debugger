@@ -11,11 +11,13 @@ object DocPageStyle extends CascadingStyleSheet {
   lazy val global: String =
     """
       |html, body {
-      |  font-size: 1em;
-      |  font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
-      |  min-width: 880px;
       |  margin: 0;
       |  padding: 0;
+      |}
+      |
+      |html, body {
+      |  font-size: 1em;
+      |  font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
       |}
     """.stripMargin
 

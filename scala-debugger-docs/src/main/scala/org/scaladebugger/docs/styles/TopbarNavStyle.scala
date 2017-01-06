@@ -54,7 +54,9 @@ object TopbarNavStyle extends CascadingStyleSheet {
       flexDirection := "row",
       flexWrap := "nowrap",
       justifyContent := "flex-start",
-      listStyleType := "none"
+      listStyleType := "none",
+      margin := "0em",
+      padding := "0em"
     ),
 
     li(
