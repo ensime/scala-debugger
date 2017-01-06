@@ -11,22 +11,54 @@ import org.rogach.scallop.{ScallopConf, ScallopOption}
  *                  arguments that are fed into the main method)
  */
 class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
-  /** Represents whether or not to publish the built docs. */
-  val publish: ScallopOption[Boolean] = opt[Boolean](
-    descr = "If true, publishes the generated docs",
-    default = Some(false)
-  )
 
-  val defaultLayout: ScallopOption[String] = opt[String](
+  // ===========================================================================
+  // = CONFIGURABLE DEFAULTS
+  // ===========================================================================
+
+  /** Represents the fully-qualified class name of the default layout. */
+  val defaultPageLayout: ScallopOption[String] = opt[String](
     descr = "The class representing the default layout if one is not specified",
     default = Some(classOf[org.scaladebugger.docs.layouts.DocPage].getName)
   )
+
+  /** Represents the weight for a page if not specified. */
+  val defaultPageWeight: ScallopOption[Int] = opt[Int](
+    descr = "The weight for a page if one is not specified",
+    default = Some(0)
+  )
+
+  /** Represents whether or not to render a page if not specified. */
+  val defaultPageRender: ScallopOption[Boolean] = opt[Boolean](
+    descr = "The weight for a page if one is not specified",
+    default = Some(true)
+  )
+
+  // ===========================================================================
+  // = ACTIONS
+  // ===========================================================================
 
   /** Represents whether or not to generate the docs. */
   val generate: ScallopOption[Boolean] = opt[Boolean](
     descr = "If true, regenerates the docs",
     default = Some(false)
   )
+
+  /** Represents whether or not to serve the docs using a local server. */
+  val serve: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If true, serves the generated docs",
+    default = Some(false)
+  )
+
+  /** Represents whether or not to publish the built docs. */
+  val publish: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If true, publishes the generated docs",
+    default = Some(false)
+  )
+
+  // ===========================================================================
+  // = SETTINGS FOR ACTIONS
+  // ===========================================================================
 
   /** Represents the output directory of generated content. */
   val outputDir: ScallopOption[String] = opt[String](
@@ -50,12 +82,6 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
   val staticDir: ScallopOption[String] = opt[String](
     descr = "The static directory (relative to input directory) where static content is found",
     default = Some("static")
-  )
-
-  /** Represents whether or not to serve the docs using a local server. */
-  val serve: ScallopOption[Boolean] = opt[Boolean](
-    descr = "If true, serves the generated docs",
-    default = Some(false)
   )
 
   /** Represents whether or not to live regen docs when changed. */
@@ -91,6 +117,10 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     ).mkString(" "),
     default = Some(-1)
   )
+
+  // ===========================================================================
+  // = INITIALIZATION
+  // ===========================================================================
 
   // Display our default values in our help menu
   appendDefaultToDescription = true
