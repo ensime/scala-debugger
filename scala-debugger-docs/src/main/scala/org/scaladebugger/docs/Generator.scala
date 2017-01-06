@@ -10,6 +10,7 @@ import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
 import org.scaladebugger.docs.layouts.partials.common.MenuItem
 import org.scaladebugger.docs.layouts.{Context, Layout}
+import org.scaladebugger.docs.structures.Metadata
 
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
@@ -163,12 +164,10 @@ class Generator(private val config: Config) {
       logger.log(s"\tExtracting front matter from markdown file")
       val yamlVisitor = new AbstractYamlFrontMatterVisitor
       yamlVisitor.visit(markdownDocument)
-      val documentFrontMatter = yamlVisitor.getData.asScala
+      val documentMetadata = Metadata.fromJavaMap(yamlVisitor.getData)
 
       // Load layout for file
-      val layoutName = documentFrontMatter.get("layout")
-        .flatMap(_.asScala.headOption)
-      val layout = layoutName match {
+      val layout = documentMetadata.layout match {
         case Some(name) =>
           logger.log(s"\tLoading layout $name")
           layoutFromClassName(name, context)

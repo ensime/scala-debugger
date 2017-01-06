@@ -26,7 +26,7 @@ object SidebarNavStyle extends CascadingStyleSheet {
 
   lazy val navLinks: Cls = cls(
     maxHeight := "100%",
-    overflowY := "scroll",
+    overflowY := "auto",
     padding := "0.5em",
     listStyleType := "none",
 

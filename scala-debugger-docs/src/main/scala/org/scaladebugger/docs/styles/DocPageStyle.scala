@@ -24,6 +24,6 @@ object DocPageStyle extends CascadingStyleSheet {
     color := "#696969",
 
     position := "relative",
-    overflowY := "scroll"
+    overflowY := "auto"
   )
 }
