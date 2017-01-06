@@ -26,45 +26,18 @@ class DocPage extends Page(
    * @return The rendered content
    */
   override def render(content: Seq[Modifier] = Nil): Modifier = {
-    super.render(Seq(div(flex := "1 1 auto", minHeight := "100px")(
-      div(display := "flex", height := "100%")(
-        div(SidebarNavStyle.navbar, flex := "0 0 auto")(
-          tag("nav")(SidebarNavStyle.navLinks)(
-            SideMenu(context.sideMenuItems: _*)
-          ),
-          copyright("Chip Senkbeil", new URL("https://chipsenkbeil.com"), 2015)
-        ),
-        div(DocPageStyle.mainContent, flex := "1 1 auto", maxHeight := "100%")(
-          div(
-            padding := "2em"
-          )(content: _*)
-        )
+    super.render(Seq(div(
+      flex := "1 1 auto",
+      minHeight := "2em",
+      overflow := "auto",
+      display := "flex"
+    )(
+      tag("nav")(SidebarNavStyle.navbar, SidebarNavStyle.navLinks, flex := "0 0 auto")(
+        SideMenu(context.sideMenuItems: _*)
+      ),
+      div(DocPageStyle.mainContent, flex := "1 1 auto", padding := "2em")(
+        content: _*
       )
     )))
-  }
-
-  private def copyright(
-    authorName: String,
-    authorUrl: URL,
-    startYear: Int
-  ): Modifier = {
-    span(
-      position := "absolute",
-      left := "0em",
-      bottom := "0em",
-
-      width := "100%",
-      textAlign := "center",
-      paddingBottom := "1em",
-
-      fontSize := "0.8em",
-      fontWeight := "lighter"
-    )(
-      raw("Copyright "),
-      i(`class` := "fa fa-copyright", attr("aria-hidden") := "true"),
-      raw(" "),
-      a(href := authorUrl.toString)(authorName),
-      raw(s", $startYear-${Calendar.getInstance().get(Calendar.YEAR)}")
-    )
   }
 }
