@@ -9,6 +9,16 @@ import scalatags.stylesheet._
 object SidebarNavStyle extends CascadingStyleSheet {
   import scalatags.Text.styles2.{content => pseudoContent}
 
+  private val expandIconClosed = "\\25B6"
+  private val expandIconOpen = "\\25BC"
+
+  lazy val global: String =
+    s"""
+      |details[open] > summary > .${navLink.name} > .${summaryExpandIcon.name}::after {
+      | content: '$expandIconOpen';
+      |}
+    """.stripMargin
+
   lazy val navbar: Cls = cls(
     display := "inline-block",
 
@@ -35,13 +45,7 @@ object SidebarNavStyle extends CascadingStyleSheet {
       listStyleType := "none",
       navLink(
         fontSize := "1.1em",
-        textTransform := "uppercase",
-        &.pseudoExtend(":before")(
-          pseudoContent := "':: '"
-        ),
-        &.pseudoExtend(":after")(
-          pseudoContent := "' ::'"
-        )
+        textTransform := "uppercase"
       ),
       li(
         margin := "1.5em 0em",
@@ -49,13 +53,7 @@ object SidebarNavStyle extends CascadingStyleSheet {
           paddingLeft := "0.6125em",
           navLink(
             fontSize := "1em",
-            textTransform := "capitalize",
-            &.pseudoExtend(":before")(
-              pseudoContent := "'** '"
-            ),
-            &.pseudoExtend(":after")(
-              pseudoContent := "''"
-            )
+            textTransform := "capitalize"
           ),
           li(
             margin := "1em 0em",
@@ -63,13 +61,7 @@ object SidebarNavStyle extends CascadingStyleSheet {
               paddingLeft := "1.25em",
               navLink(
                 fontSize := "0.9em",
-                textTransform := "none",
-                &.pseudoExtend(":before")(
-                  pseudoContent := "'... '"
-                ),
-                &.pseudoExtend(":after")(
-                  pseudoContent := "''"
-                )
+                textTransform := "none"
               )
             )
           )
@@ -109,6 +101,14 @@ object SidebarNavStyle extends CascadingStyleSheet {
 
     &.pseudoExtend(":-webkit-details-marker")(
       display := "none"
+    )
+  )
+
+  lazy val summaryExpandIcon: Cls = cls(
+    fontSize := "0.8em",
+    &.pseudoExtend(":after")(
+      pseudoContent := s"'$expandIconClosed'",
+      paddingLeft := "1em"
     )
   )
 }

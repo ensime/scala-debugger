@@ -13,6 +13,7 @@ class DocPage extends Page(
   postHeadContent = Seq(
     DocPageStyle.global.toStyleTag,
     DocPageStyle.styleSheetText.toStyleTag,
+    SidebarNavStyle.global.toStyleTag,
     SidebarNavStyle.styleSheetText.toStyleTag
   ),
   bodyModifiers = Seq(DocPageStyle.bodyCls)
