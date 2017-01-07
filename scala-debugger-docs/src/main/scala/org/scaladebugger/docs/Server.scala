@@ -11,7 +11,7 @@ import scala.util.Try
  */
 class Server(private val config: Config) {
   /** Logger for this class. */
-  private val logger = new Logger(this.getClass)
+  private lazy val logger = new Logger(this.getClass)
 
   /**
    * Runs the server.
@@ -38,7 +38,7 @@ class Server(private val config: Config) {
 
             /** Logs response including status code. */
             val logResponse = (code: Int) =>
-              logger.log(s"Status $code :: GET $path")
+              logger.verbose(s"Status $code :: GET $path")
 
             try {
               val Mime(mimeType) = fileName

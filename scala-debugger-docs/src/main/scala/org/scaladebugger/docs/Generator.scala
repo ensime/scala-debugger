@@ -13,12 +13,12 @@ import org.scaladebugger.docs.structures.Page
  */
 class Generator(private val config: Config) {
   /** Logger for this class. */
-  private val logger = new Logger(this.getClass)
+  private lazy val logger = new Logger(this.getClass)
 
   /**
    * Runs the generator.
    */
-  def run(): Unit = {
+  def run(): Unit = logger.time(Logger.Level.Info, "Gen finished after ") {
     val outputDir = config.outputDir()
 
     val inputDir = config.inputDir()

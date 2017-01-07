@@ -33,7 +33,10 @@ class Page private (
   /** Represents the metadata for the page. */
   lazy val metadata: Metadata = parseMetadata(pageNode)
 
-  /** Represents an absolute web path link to this file. */
+  /**
+   * Represents an absolute web path link to this file,
+   * ignoring any overrides.
+   */
   lazy val absoluteLink: String = {
     val srcDirPath = {
       val inputDir = config.inputDir()
@@ -68,41 +71,38 @@ class Page private (
    * @return True if successfully rendered the page, otherwise false
    */
   def render(context: Context, path: Path = outputPath): Boolean = {
-    val startTime = System.nanoTime()
+    logger.time(Logger.Level.Trace) {
+      if (!metadata.render) {
+        logger.verbose("Skipping rendering")
+        true
+      } else {
+        val _result = Try(writeText(
+          path,
+          metadata.redirect match {
+            case Some(url) =>
+              logger.verbose(s"Rendering as redirect to $url")
+              Page.Redirect(url).toString
+            case None =>
+              renderToString(context)
+          }
+        ))
 
-    val result = if (metadata.render) {
-      val _result = Try(writeText(path, renderToString(context)))
+        _result.failed.foreach(t => {
+          val errorName = t.getClass.getName
+          val errorMessage = Option(t.getLocalizedMessage).getOrElse("<none>")
+          val depth = config.stackTraceDepth()
+          val stackTrace =
+            if (depth < 0) t.getStackTrace
+            else t.getStackTrace.take(depth)
 
-      _result.failed.foreach(t => {
-        val errorName = t.getClass.getName
-        val errorMessage = Option(t.getLocalizedMessage).getOrElse("<none>")
-        val depth = config.stackTraceDepth()
-        val stackTrace =
-          if (depth < 0) t.getStackTrace
-          else t.getStackTrace.take(depth)
+          logger.error(s"!!! Failed: " + errorName)
+          logger.error(s"!!! Message: " + errorMessage)
+          stackTrace.foreach(ste => logger.error(s"!!! $ste"))
+        })
 
-        logger.error(s"!!! Failed: " + errorName)
-        logger.error(s"!!! Message: " + errorMessage)
-        stackTrace.foreach(ste => logger.error(s"!!! $ste"))
-      })
-
-      _result.isSuccess
-    } else {
-      logger.log("Skipping rendering")
-      true
+        _result.isSuccess
+      }
     }
-
-
-    val endTime = System.nanoTime()
-
-    // Nano is 10^-9
-    val timeTaken = endTime - startTime
-    val timeTakenMillis = TimeUnit.NANOSECONDS.toMillis(timeTaken)
-    val timeTakenNanosRemainder =
-      timeTaken - TimeUnit.MILLISECONDS.toNanos(timeTakenMillis)
-    logger.log(s"Took $timeTakenMillis.${timeTakenNanosRemainder}ms")
-
-    result
   }
 
   /** Represents the output path when the page is rendered. */
@@ -151,10 +151,10 @@ class Page private (
   private def renderToString(context: Context): String = {
     val layout = newLayoutInstance(context)
 
-    logger.log(s"Rendering markdown as html")
+    logger.trace(s"Rendering markdown as html")
     val content = Page.renderer.render(pageNode)
 
-    logger.log(s"Applying layout ${layout.getClass.getName}")
+    logger.trace(s"Applying layout ${layout.getClass.getName}")
     layout.toString(content)
   }
 
@@ -166,11 +166,11 @@ class Page private (
    */
   private def newLayoutInstance(context: Context): Layout = {
     if (metadata.usingDefaultLayout) {
-      logger.log(s"Loading default layout")
+      logger.trace(s"Loading default layout")
       defaultLayout(context)
     } else {
       val layoutName = metadata.layout
-      logger.log(s"Loading layout $layoutName")
+      logger.trace(s"Loading layout $layoutName")
       layoutFromClassName(layoutName, context)
     }
   }
@@ -223,7 +223,7 @@ class Page private (
    * @return The new flexmark node instance
    */
   private def parseMarkdownFile(path: Path): Node = {
-    logger.log(s"Parsing markdown file")
+    logger.trace(s"Parsing markdown file")
     Page.parser.parseReader(
       Files.newBufferedReader(path, Charset.forName("UTF-8"))
     )
@@ -236,7 +236,7 @@ class Page private (
    * @return The metadata instance
    */
   private def parseMetadata(node: Node): Metadata = {
-    logger.log(s"Extracting front matter from markdown file")
+    logger.trace(s"Extracting front matter from markdown file")
     val yamlVisitor = new AbstractYamlFrontMatterVisitor
     yamlVisitor.visit(node)
     Metadata.fromJavaMap(config, yamlVisitor.getData)
@@ -289,8 +289,42 @@ object Page {
     ): Page = new Page(
       config,
       path,
-      new Logger(classOf[Page]).newSession(path.toString).init()
+      new Logger(classOf[Page])
+        .newSession(path.toString)
+        .init(Logger.Level.Verbose)
     )
+  }
+
+  /**
+   * Represents a redirection page.
+   */
+  object Redirect {
+    import scalatags.Text.all._
+
+    /**
+     * Generates a redirect page using the provided url.
+     *
+     * @param url The url that the page should redirect to
+     * @return The page content
+     */
+    def apply(url: String): Modifier = {
+      val q = "\""
+      html(lang := "en-US")(
+        head(
+          meta(charset := "UTF-8"),
+          meta(httpEquiv := "refresh", content := s"1; url=$url"),
+          script(`type` := "text/javascript")(
+            s"window.location.href = $q$url$q;"
+          ),
+          tag("title")("Page Redirection")
+        ),
+        body(
+          raw("If you are not redirected automatically, "),
+          a(href := url)("follow this link"),
+          raw(".")
+        )
+      )
+    }
   }
 
   /**
@@ -303,5 +337,5 @@ object Page {
   def newInstance(
     config: Config,
     path: Path
-  ): Page = new Page(config, path, Logger.Noop)
+  ): Page = new Page(config, path, Logger.Silent)
 }

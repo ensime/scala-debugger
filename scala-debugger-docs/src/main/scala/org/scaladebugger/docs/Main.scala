@@ -8,10 +8,13 @@ import java.util.concurrent.TimeUnit
  */
 object Main {
   /** Logger for this class. */
-  private val logger = new Logger(this.getClass)
+  private lazy val logger = new Logger(this.getClass)
 
   def main(args: Array[String]): Unit = {
     val config = new Config(args)
+
+    // Set global logger used throughout program
+    Logger.setDefaultLevel(config.defaultLogLevel())
 
     // Generate before other actions if indicated
     if (config.generate()) {
@@ -27,7 +30,7 @@ object Main {
         val watcher = new Watcher(
           path = rootPath,
           callback = (rootPath, events) => {
-            logger.log(s"Detected ${events.length} change(s) at $rootPath")
+            logger.verbose(s"Detected ${events.length} change(s) at $rootPath")
             new Generator(config).run()
           },
           waitTime = config.liveReloadWaitTime(),
@@ -40,16 +43,16 @@ object Main {
       new Server(config).run()
 
       watcherThread.foreach(t => {
-        logger.log("Shutting down watcher thread")
+        logger.verbose("Shutting down watcher thread")
         t.interrupt()
       })
 
     // Publish generated content
     } else if (config.publish()) {
-      // TODO: Implement publish using Scala process to run git
+      logger.fatal("TODO: Implement publish using Scala process to run git")
 
     // Print help info
-    } else {
+    } else if (!config.generate()) {
       config.printHelp()
     }
   }

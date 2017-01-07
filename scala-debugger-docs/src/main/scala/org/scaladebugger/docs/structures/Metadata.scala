@@ -12,6 +12,10 @@ import scala.util.Try
  *                           default layout
  * @param weight A weight used for page ordering in menus and other structures
  * @param render Whether or not to render the page
+ * @param redirect If not None, represents the url the page will
+ *                 use as the destination for redirection (ignoring any
+ *                 other settings such as layout); does nothing if
+ *                 render is false
  * @param other All other metadata properties that were provided that
  *              do not match reserved properties
  */
@@ -20,6 +24,7 @@ case class Metadata(
   usingDefaultLayout: Boolean,
   weight: Int,
   render: Boolean,
+  redirect: Option[String],
   other: Map[String, Seq[String]]
 )
 
@@ -38,6 +43,7 @@ object Metadata {
    * @return The new metadata instance
    */
   def fromMap(config: Config, data: Map[String, Seq[String]]): Metadata = {
+    val redirect = data.get("redirect").flatMap(_.headOption)
     val layout = data.get("layout").flatMap(_.headOption)
     val weight = data.get("weight").flatMap(_.headOption)
       .flatMap(w => Try(w.toInt).toOption)
@@ -49,6 +55,7 @@ object Metadata {
       usingDefaultLayout = layout.isEmpty,
       weight = weight.getOrElse(config.defaultPageWeight()),
       render = render.getOrElse(config.defaultPageRender()),
+      redirect = redirect,
       other = data.filterKeys(k => !reservedKeys.contains(k))
     )
   }

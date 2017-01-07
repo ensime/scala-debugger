@@ -1,8 +1,6 @@
 package org.scaladebugger.docs
 
-import java.util.concurrent.TimeUnit
-
-import org.rogach.scallop.{ScallopConf, ScallopOption}
+import org.rogach.scallop.{ScallopConf, ScallopOption, singleArgConverter}
 
 /**
  * Represents the CLI configuration for the Scala debugger tool.
@@ -11,6 +9,51 @@ import org.rogach.scallop.{ScallopConf, ScallopOption}
  *                  arguments that are fed into the main method)
  */
 class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
+  // ===========================================================================
+  // = ACTIONS
+  // ===========================================================================
+
+  /** Represents whether or not to generate the docs. */
+  val generate: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If true, regenerates the docs",
+    default = Some(false)
+  )
+
+  /** Represents whether or not to serve the docs using a local server. */
+  val serve: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If true, serves the generated docs",
+    default = Some(false)
+  )
+
+  /** Represents whether or not to publish the built docs. */
+  val publish: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If true, publishes the generated docs",
+    default = Some(false)
+  )
+
+  // ===========================================================================
+  // = LOGGING
+  // ===========================================================================
+
+  /** Aids in converting to a low level value. */
+  private implicit val logLevelConverter =
+    singleArgConverter[Logger.Level.Level](n =>
+      Logger.Level.withName(n.trim.toLowerCase.capitalize), {
+      case _: Throwable => Left(
+        "Choices are " +
+        Logger.Level.values.mkString(", ")
+      )
+    })
+
+  /** Represents the fully-qualified class name of the default layout. */
+  val defaultLogLevel: ScallopOption[Logger.Level.Level] =
+    opt[Logger.Level.Level](
+      descr = Seq(
+        "The lowest level of logging to print:",
+        Logger.Level.values.mkString(", ")
+      ).mkString(" "),
+      default = Some(Logger.defaultLevel)
+    )
 
   // ===========================================================================
   // = CONFIGURABLE DEFAULTS
@@ -32,28 +75,6 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
   val defaultPageRender: ScallopOption[Boolean] = opt[Boolean](
     descr = "The weight for a page if one is not specified",
     default = Some(true)
-  )
-
-  // ===========================================================================
-  // = ACTIONS
-  // ===========================================================================
-
-  /** Represents whether or not to generate the docs. */
-  val generate: ScallopOption[Boolean] = opt[Boolean](
-    descr = "If true, regenerates the docs",
-    default = Some(false)
-  )
-
-  /** Represents whether or not to serve the docs using a local server. */
-  val serve: ScallopOption[Boolean] = opt[Boolean](
-    descr = "If true, serves the generated docs",
-    default = Some(false)
-  )
-
-  /** Represents whether or not to publish the built docs. */
-  val publish: ScallopOption[Boolean] = opt[Boolean](
-    descr = "If true, publishes the generated docs",
-    default = Some(false)
   )
 
   // ===========================================================================

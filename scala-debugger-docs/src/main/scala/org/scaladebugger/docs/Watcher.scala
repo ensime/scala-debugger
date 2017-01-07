@@ -84,7 +84,7 @@ class Watcher(
   private val waitUnit: TimeUnit = Watcher.DefaultWaitUnit
 ) { self =>
   /** Logger for this class. */
-  private val logger = new Logger(this.getClass)
+  private lazy val logger = new Logger(this.getClass)
 
   /** Starts the watcher (blocking the current thread). */
   def run(): Unit = {
@@ -112,7 +112,7 @@ class Watcher(
         val waitTimeNanos = TimeUnit.NANOSECONDS.convert(waitTime, waitUnit)
         val waitString = nanoToString(waitTimeNanos)
 
-        logger.log(s"Received watch event, debouncing for $waitString...")
+        logger.trace(s"Received watch event, debouncing for $waitString...")
 
         startTime.set(System.nanoTime())
       }
@@ -125,7 +125,7 @@ class Watcher(
 
       // Finished "debouncing"
       if (startTime.get() > 0 && timeExceeded) {
-        logger.log(s"Debouncing finished after ${nanoToString(timeDiff)}")
+        logger.trace(s"Debouncing finished after ${nanoToString(timeDiff)}")
 
         // Dump all events
         val allEvents = eventQueue.asScala.toSeq.flatten
