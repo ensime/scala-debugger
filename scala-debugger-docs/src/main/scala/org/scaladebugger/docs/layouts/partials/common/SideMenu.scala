@@ -9,8 +9,8 @@ import scalatags.Text.all._
  * Generates the side menu.
  */
 object SideMenu {
-  private val menuItemBefore = Seq(":: ", "** ", "... ")
-  private val menuItemAfter = Seq(" ::", "", "")
+  private val menuItemBefore = Nil //Seq(":: ", "** ", "... ")
+  private val menuItemAfter = Nil //Seq(" ::", "", "")
 
   def apply(menuItems: MenuItem*): Modifier = {
     @inline def toListItem(menuItem: MenuItem, depth: Int = 0): Modifier = {
