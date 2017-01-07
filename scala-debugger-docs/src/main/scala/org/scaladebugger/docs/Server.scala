@@ -61,6 +61,6 @@ class Server(private val config: Config) {
         }
       case _ => MethodNotAllowed ~> ResponseString("Unknown request")
     }
-    unfiltered.jetty.Server.http(8080).plan(hostedContent).run()
+    unfiltered.jetty.Server.http(config.port()).plan(hostedContent).run()
   }
 }

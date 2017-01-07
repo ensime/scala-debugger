@@ -90,6 +90,12 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
   // = SETTINGS FOR ACTIONS
   // ===========================================================================
 
+  /** Represents the port used when serving content. */
+  val port: ScallopOption[Int] = opt[Int](
+    descr = "The port to use when serving files",
+    default = Some(8080)
+  )
+
   /** Represents the output directory of generated content. */
   val outputDir: ScallopOption[String] = opt[String](
     descr = "The output directory where content is generated and served",
