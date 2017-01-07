@@ -15,6 +15,9 @@ class Generator(private val config: Config) {
   /** Logger for this class. */
   private lazy val logger = new Logger(this.getClass)
 
+  /** Used for Github pages. */
+  private val NoJekyllFile = ".nojekyll"
+
   /**
    * Runs the generator.
    */
@@ -37,6 +40,15 @@ class Generator(private val config: Config) {
     val staticDirPath = Paths.get(inputDir, staticDir)
     logger.trace(s"Copying static files from $staticDirPath to $outputDirPath")
     FileUtils.copyDirectoryContents(staticDirPath, outputDirPath)
+
+    // Generate .nojekyll file
+    if (config.doNotGenerateNoJekyllFile()) {
+      logger.trace(s"Not generating $NoJekyllFile")
+    } else {
+      logger.trace(s"Generating $NoJekyllFile")
+      val noJekyllFilePath = outputDirPath.resolve(NoJekyllFile)
+      FileUtils.createEmptyFile(noJekyllFilePath)
+    }
 
     // Process all markdown files
     val srcDirPath = Paths.get(inputDir, srcDir)

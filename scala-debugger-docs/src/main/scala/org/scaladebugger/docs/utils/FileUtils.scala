@@ -14,6 +14,14 @@ object FileUtils {
     FileSystems.getDefault.getPathMatcher("glob:**.md")
 
   /**
+   * Creates an empty file at the specified path.
+   *
+   * @param path The path to the file
+   * @return The resulting path
+   */
+  def createEmptyFile(path: Path): Path = Files.createFile(path)
+
+  /**
    * Retrieves all markdown files found in the specified
    * directories or any of their subdirectories.
    *

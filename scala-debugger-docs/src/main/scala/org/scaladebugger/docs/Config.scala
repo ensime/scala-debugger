@@ -86,6 +86,12 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some(false)
   )
 
+  /** Represents a flag to NOT generate a .nojekyll file. */
+  val doNotGenerateNoJekyllFile: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If provided, will not generate a .nojekyll file in the output",
+    default = Some(false)
+  )
+
   // ===========================================================================
   // = SETTINGS FOR ACTIONS
   // ===========================================================================
