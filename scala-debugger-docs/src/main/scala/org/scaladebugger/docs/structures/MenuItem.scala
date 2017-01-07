@@ -13,15 +13,25 @@ import org.scaladebugger.docs.utils.FileUtils
  *             link to any content
  * @param children The children of the menu item
  * @param selected Whether or not the menu item is selected
+ * @param weight The weight associated with the menu item, used for ordering
+ *               where smaller weights should appear first (left/top) and
+ *               larger weights should appear last (right/bottom)
+ * @param fake If marked as fake, indicates that the menu item should not be
+ *             used and is around for other purposes
  */
 case class MenuItem(
   name: String,
   link: Option[String] = None,
   children: Seq[MenuItem] = Nil,
-  selected: Boolean = false
+  selected: Boolean = false,
+  weight: Int = MenuItem.DefaultWeight,
+  fake: Boolean = false
 )
 
 object MenuItem {
+  /** Represents the default weight of menu items. */
+  val DefaultWeight: Int = 0
+
   /**
    * Generates a collection of menu items from the given path by searching
    * for markdown files and using them as the basis of children menu items.
@@ -56,6 +66,7 @@ object MenuItem {
         allPaths,
         dirUseFirstChild = dirUseFirstChild
       ))
+      .sortBy(_.weight)
   }
 
   /**
@@ -78,24 +89,50 @@ object MenuItem {
     dirUseFirstChild: Boolean
   ): MenuItem = {
     val children = candidateChildren.filter(_.getParent == path).map(p =>
-      createLinkedMenuItem(config, p, candidateChildren, dirUseFirstChild))
+      createLinkedMenuItem(config, p, candidateChildren, dirUseFirstChild)
+    ).sortBy(_.weight)
 
-    val page = Page.newInstance(config, path)
+    // If the menu item has a fake child, it is an index file, meaning that
+    // we want to use that index file to control this menu item's weight,
+    // link, etc.
+    //
+    // E.g. /about/index.md would control the "about" menu item instead of
+    //      it being purely from the /about/ directory
+    val fakeChild = children.find(_.fake)
+    val fakeChildLink = fakeChild.flatMap(_.link).filterNot(_ == "index")
 
-    // Directories use first child as link
     val isDir = Files.isDirectory(path)
+    val page = Page.newInstance(config, path)
+    val isFake = !isDir && page.isIndexPage
+    val weight = fakeChild.map(_.weight).getOrElse(
+      if (isDir) DefaultWeight else page.metadata.weight
+    )
+
+    // Directories use either their index file's link or the first child's link
+    //
+    // Fake items should not report back a link unless they were given one
+    // explicitly
+    //
+    // Normal pages should return the link provided in their metadata, or
+    // their absolute link if no link in the metadata
     val link =
-      if (isDir && dirUseFirstChild)
+      if (isDir && fakeChildLink.nonEmpty)
+        fakeChildLink
+      else if (isDir && dirUseFirstChild)
         children.find(_.link.nonEmpty).flatMap(_.link)
       else if (isDir && !dirUseFirstChild)
         None
+      else if (isFake)
+        page.metadata.link
       else
-        Some(page.absoluteLink)
+        Some(page.metadata.link.getOrElse(page.absoluteLink))
 
     MenuItem(
       name = page.name,
       link = link,
-      children = children
+      children = children.filterNot(_.fake),
+      weight = weight,
+      fake = isFake
     )
   }
 }
