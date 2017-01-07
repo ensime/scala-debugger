@@ -1,5 +1,6 @@
 package org.scaladebugger.docs.layouts.partials.common
 
+import org.scaladebugger.docs.structures.MenuItem
 import org.scaladebugger.docs.styles.SidebarNavStyle
 
 import scalatags.Text.all._

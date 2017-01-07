@@ -39,7 +39,8 @@ abstract class Page(
       TopbarNavStyle.styleSheetText.toStyleTag,
       TabsStyle.styleSheetText.toStyleTag
     ) ++
-    postHeadContent
+    postHeadContent ++
+    context.title.map(t => tag("title")(t))
 
   private lazy val bodyContent = (content: Seq[Modifier]) =>
     preBodyContent ++

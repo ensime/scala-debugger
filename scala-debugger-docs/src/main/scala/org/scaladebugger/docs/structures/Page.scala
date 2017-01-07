@@ -49,11 +49,18 @@ class Page private (
       .replaceAllLiterally(java.io.File.separator, "/") + "/"
   }
 
-  /** Represents the name of the page. */
+  /**
+   * Represents the title of the page, which either comes from the metadata
+   * of the page or the name of the file the page is associated with.
+   */
+  lazy val title: String = metadata.title.getOrElse(name)
+
+  /** Represents the name of the page, which is based on the file name. */
   lazy val name: String = {
     FileUtils.stripExtension(
       path.getFileName.toString
     ).replaceAll("[^\\w\\s\\d]", " ")
+    .toLowerCase.split(' ').map(_.capitalize).mkString(" ")
   }
 
   /**
