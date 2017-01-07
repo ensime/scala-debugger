@@ -24,13 +24,13 @@ case class MenuItem(
   link: Option[String] = None,
   children: Seq[MenuItem] = Nil,
   selected: Boolean = false,
-  weight: Int = MenuItem.DefaultWeight,
+  weight: Double = MenuItem.DefaultWeight,
   fake: Boolean = false
 )
 
 object MenuItem {
   /** Represents the default weight of menu items. */
-  val DefaultWeight: Int = 0
+  val DefaultWeight: Double = 0
 
   /**
    * Generates a collection of menu items from the given path by searching

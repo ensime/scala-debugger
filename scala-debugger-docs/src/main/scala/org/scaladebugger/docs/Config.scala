@@ -66,7 +66,7 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
   )
 
   /** Represents the weight for a page if not specified. */
-  val defaultPageWeight: ScallopOption[Int] = opt[Int](
+  val defaultPageWeight: ScallopOption[Double] = opt[Double](
     descr = "The weight for a page if one is not specified",
     default = Some(0)
   )

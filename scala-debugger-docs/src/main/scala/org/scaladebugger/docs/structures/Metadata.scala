@@ -27,7 +27,7 @@ import scala.util.Try
 case class Metadata(
   layout: String,
   usingDefaultLayout: Boolean,
-  weight: Int,
+  weight: Double,
   render: Boolean,
   title: Option[String],
   link: Option[String],
@@ -56,7 +56,7 @@ object Metadata {
     val redirect = data.get("redirect").flatMap(_.headOption)
     val layout = data.get("layout").flatMap(_.headOption)
     val weight = data.get("weight").flatMap(_.headOption)
-      .flatMap(w => Try(w.toInt).toOption)
+      .flatMap(w => Try(w.toDouble).toOption)
     val render = data.get("render").flatMap(_.headOption)
       .flatMap(r => Try(r.toBoolean).toOption)
     val fake = data.get("fake").flatMap(_.headOption)
