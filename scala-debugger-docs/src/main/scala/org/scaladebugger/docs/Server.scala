@@ -35,17 +35,26 @@ class Server(private val config: Config) {
           case Some(result) =>
             val (filePath, fileBytes) = result
             val fileName = filePath.getFileName.toString
-            logger.log(s"GET '$path' -> $filePath")
+
+            /** Logs response including status code. */
+            val logResponse = (code: Int) =>
+              logger.log(s"Status $code :: GET $path")
 
             try {
               val Mime(mimeType) = fileName
 
+              logResponse(Ok.code)
               ContentType(mimeType) ~>
                 ResponseBytes(fileBytes)
             } catch {
+              case _: MatchError if config.allowUnsupportedMediaTypes() =>
+                logResponse(Ok.code)
+                ResponseBytes(fileBytes)
               case _: MatchError =>
+                logResponse(UnsupportedMediaType.code)
                 UnsupportedMediaType ~> ResponseString(fileName)
               case t: Throwable =>
+                logResponse(InternalServerError.code)
                 InternalServerError ~> ResponseString(t.toString)
             }
           case None => NotFound ~> ResponseString(s"Unknown page: $path")

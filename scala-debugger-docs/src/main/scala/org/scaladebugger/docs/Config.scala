@@ -99,6 +99,14 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some(500)
   )
 
+  val allowUnsupportedMediaTypes: ScallopOption[Boolean] = opt[Boolean](
+    descr = Seq(
+      "If true, files with unknown MIME types will be served,",
+      "but without a Content-Type header"
+    ).mkString(" "),
+    default = Some(false)
+  )
+
   /**
    * Represents files that serve as defaults when accessing a directory.
    *
