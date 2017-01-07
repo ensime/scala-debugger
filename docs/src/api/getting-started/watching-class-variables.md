@@ -1,3 +1,6 @@
+---
+weight: 6
+---
 # Working with watchpoints
 
 ---

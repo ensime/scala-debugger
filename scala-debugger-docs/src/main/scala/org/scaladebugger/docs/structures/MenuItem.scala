@@ -100,18 +100,24 @@ object MenuItem {
     //      it being purely from the /about/ directory
     val fakeChild = children.find(_.fake)
     val fakeChildLink = fakeChild.flatMap(_.link).filterNot(_ == "index")
+    val normalChildren = children.filterNot(_.fake)
 
     val isDir = Files.isDirectory(path)
     val page = Page.newInstance(config, path)
-    val isFake = !isDir && page.isIndexPage
+    val isFake = !isDir && page.metadata.fake
+
+    // Directories don't have metadata, so use default
     val weight = fakeChild.map(_.weight).getOrElse(
       if (isDir) DefaultWeight else page.metadata.weight
     )
 
+    // Directories don't have metadata, so cannot use title
+    val name = if (isDir) page.name else page.title
+
     // Directories use either their index file's link or the first child's link
     //
-    // Fake items should not report back a link unless they were given one
-    // explicitly
+    // Fake pages and pages not being rendered should not report back a link
+    // unless they were given one explicitly
     //
     // Normal pages should return the link provided in their metadata, or
     // their absolute link if no link in the metadata
@@ -119,18 +125,18 @@ object MenuItem {
       if (isDir && fakeChildLink.nonEmpty)
         fakeChildLink
       else if (isDir && dirUseFirstChild)
-        children.find(_.link.nonEmpty).flatMap(_.link)
+        normalChildren.find(_.link.nonEmpty).flatMap(_.link)
       else if (isDir && !dirUseFirstChild)
         None
-      else if (isFake)
+      else if (isFake || !page.metadata.render)
         page.metadata.link
       else
         Some(page.metadata.link.getOrElse(page.absoluteLink))
 
     MenuItem(
-      name = page.name,
+      name = name,
       link = link,
-      children = children.filterNot(_.fake),
+      children = normalChildren,
       weight = weight,
       fake = isFake
     )

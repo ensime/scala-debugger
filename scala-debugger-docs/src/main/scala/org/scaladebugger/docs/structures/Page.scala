@@ -80,8 +80,13 @@ class Page private (
    */
   def render(context: Context, path: Path = outputPath): Boolean = {
     logger.time(Logger.Level.Trace) {
+      // Don't render if explicitly turned off
       if (!metadata.render) {
-        logger.verbose("Skipping rendering")
+        logger.verbose(s"Skipping rendering (render=${metadata.render})")
+        true
+      // Don't render fake pages
+      } else if (metadata.fake) {
+        logger.verbose(s"Skipping rendering (fake=${metadata.fake})")
         true
       } else {
         val _result = Try(writeText(

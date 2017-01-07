@@ -73,8 +73,17 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
 
   /** Represents whether or not to render a page if not specified. */
   val defaultPageRender: ScallopOption[Boolean] = opt[Boolean](
-    descr = "The weight for a page if one is not specified",
+    descr = Seq(
+      "If false, the page will not be rendered if not specified in metadata,",
+      "but the page will still appear in menus"
+    ).mkString(" "),
     default = Some(true)
+  )
+
+  /** Represents whether or not a page is fake if not specified. */
+  val defaultPageFake: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If true, the page will be fake if not specified in metadata",
+    default = Some(false)
   )
 
   // ===========================================================================

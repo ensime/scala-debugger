@@ -1,3 +1,6 @@
+---
+weight: 1
+---
 # Installation
 
 How to install the Scala debugger API.

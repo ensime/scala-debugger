@@ -1,3 +1,6 @@
+---
+weight: 2
+---
 # Creating a Listening Debugger
 
 ---

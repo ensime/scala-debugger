@@ -19,6 +19,8 @@ import scala.util.Try
  *                 use as the destination for redirection (ignoring any
  *                 other settings such as layout); does nothing if
  *                 render is false
+ * @param fake If true, indicates that the page is fake and should not be
+ *             rendered or used anywhere
  * @param other All other metadata properties that were provided that
  *              do not match reserved properties
  */
@@ -30,6 +32,7 @@ case class Metadata(
   title: Option[String],
   link: Option[String],
   redirect: Option[String],
+  fake: Boolean,
   other: Map[String, Seq[String]]
 )
 
@@ -56,6 +59,8 @@ object Metadata {
       .flatMap(w => Try(w.toInt).toOption)
     val render = data.get("render").flatMap(_.headOption)
       .flatMap(r => Try(r.toBoolean).toOption)
+    val fake = data.get("fake").flatMap(_.headOption)
+      .flatMap(r => Try(r.toBoolean).toOption)
 
     Metadata(
       layout = layout.getOrElse(config.defaultPageLayout()),
@@ -65,6 +70,7 @@ object Metadata {
       title = title,
       link = link,
       redirect = redirect,
+      fake = fake.getOrElse(config.defaultPageFake()),
       other = data.filterKeys(k => !reservedKeys.contains(k))
     )
   }

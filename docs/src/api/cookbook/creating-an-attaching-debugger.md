@@ -1,3 +1,6 @@
+---
+weight: 1
+---
 # Creating an Attaching Debugger
 
 ---

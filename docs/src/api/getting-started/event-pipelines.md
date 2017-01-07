@@ -1,3 +1,6 @@
+---
+weight: 3
+---
 # Event Pipelines
 
 ---

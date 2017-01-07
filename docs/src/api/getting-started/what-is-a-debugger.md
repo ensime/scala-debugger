@@ -1,3 +1,6 @@
+---
+weight: 0
+---
 # What is a debugger?
 
 In this section, you will get a brief overview of what a debugger is and the

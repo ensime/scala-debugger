@@ -1,3 +1,6 @@
+---
+weight: 5
+---
 # Watching Modification of a Class Variable
 
 ---

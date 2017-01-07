@@ -1,4 +1,4 @@
 ---
-render: false
+fake: true
 weight: 4
 ---

@@ -1,3 +1,6 @@
+---
+weight: 2
+---
 # Contributing to the Scala Debugger
 
 ## Overview

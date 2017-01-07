@@ -1,3 +1,6 @@
+---
+weight: 2
+---
 # Available Debugger Connections
 
 In this section, you will get a brief overview of the available options for
