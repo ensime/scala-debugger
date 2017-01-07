@@ -34,13 +34,23 @@ class Server(private val config: Config) {
         fileBytes match {
           case Some(result) =>
             val (filePath, fileBytes) = result
-
+            val fileName = filePath.getFileName.toString
             logger.log(s"GET '$path' -> $filePath")
-            ResponseBytes(fileBytes)
-          case None => ResponseString(s"Unknown page: $path")
+
+            try {
+              val Mime(mimeType) = fileName
+
+              ContentType(mimeType) ~>
+                ResponseBytes(fileBytes)
+            } catch {
+              case _: MatchError =>
+                UnsupportedMediaType ~> ResponseString(fileName)
+              case t: Throwable =>
+                InternalServerError ~> ResponseString(t.toString)
+            }
+          case None => NotFound ~> ResponseString(s"Unknown page: $path")
         }
-      case _ =>
-        ResponseString("Unknown request")
+      case _ => MethodNotAllowed ~> ResponseString("Unknown request")
     }
     unfiltered.jetty.Server.http(8080).plan(hostedContent).run()
   }
