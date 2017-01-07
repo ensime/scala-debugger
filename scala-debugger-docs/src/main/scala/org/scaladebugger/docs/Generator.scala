@@ -30,15 +30,18 @@ class Generator(private val config: Config) {
     outputDirPath.getFileName
 
     // Re-create the output directory
+    logger.trace(s"Deleting and recreating $outputDirPath")
     FileUtils.deletePath(outputDirPath)
     Files.createDirectories(outputDirPath)
 
     // Copy all static content
     val staticDirPath = Paths.get(inputDir, staticDir)
+    logger.trace(s"Copying static files from $staticDirPath to $outputDirPath")
     FileUtils.copyDirectoryContents(staticDirPath, outputDirPath)
 
     // Process all markdown files
     val srcDirPath = Paths.get(inputDir, srcDir)
+    logger.trace(s"Processing markdown files from $srcDirPath")
     val mdFiles = FileUtils.markdownFiles(srcDirPath)
 
     // Find all directories of src dir
