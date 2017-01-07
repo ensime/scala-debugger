@@ -1,11 +1,11 @@
-package org.scaladebugger.docs
+package org.scaladebugger.docs.utils
 
 import org.apache.commons.codec.binary.Base64
 
 /**
  * Loads images from resources.
  */
-object ImageLoader {
+object ResourceImageLoader {
   private lazy val cl = getClass.getClassLoader
 
   /**

@@ -5,6 +5,7 @@ import java.nio.file._
 import org.scaladebugger.docs.layouts.Context
 import org.scaladebugger.docs.layouts.partials.common.MenuItem
 import org.scaladebugger.docs.structures.Page
+import org.scaladebugger.docs.utils.FileUtils
 
 /**
  * Represents a generator of content based on a configuration.

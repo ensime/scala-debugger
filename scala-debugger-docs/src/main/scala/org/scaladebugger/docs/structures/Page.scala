@@ -10,8 +10,9 @@ import com.vladsch.flexmark.ext.front.matter.{AbstractYamlFrontMatterVisitor, Ya
 import com.vladsch.flexmark.ext.gfm.tables.TablesExtension
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
-import org.scaladebugger.docs.{Config, FileUtils, Logger}
+import org.scaladebugger.docs.{Config, Logger}
 import org.scaladebugger.docs.layouts.{Context, Layout}
+import org.scaladebugger.docs.utils.FileUtils
 
 import scala.util.Try
 

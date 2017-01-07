@@ -1,4 +1,4 @@
-package org.scaladebugger.docs
+package org.scaladebugger.docs.utils
 
 import java.nio.file.{FileSystems, Files, Path}
 
