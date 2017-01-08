@@ -26,6 +26,12 @@ class Generator(private val config: Config) {
    * Runs the generator.
    */
   def run(): Unit = logger.time(Logger.Level.Info, "Gen finished after ") {
+    // Provide warning about site host not being set when generating
+    if (!config.siteHost.supplied) logger.warn(
+      "No site host provided when generating! " +
+      s"${config.siteHost()} will be used!"
+    )
+
     val outputDir = config.outputDir()
 
     val inputDir = config.inputDir()
