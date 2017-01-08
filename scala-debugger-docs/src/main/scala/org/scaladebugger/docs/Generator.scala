@@ -1,5 +1,6 @@
 package org.scaladebugger.docs
 
+import java.net.URL
 import java.nio.file._
 
 import org.scaladebugger.docs.layouts.Context
@@ -17,6 +18,9 @@ class Generator(private val config: Config) {
 
   /** Used for Github pages. */
   private val NoJekyllFile = ".nojekyll"
+
+  /** Used for Google search. */
+  private val SitemapFile = "sitemap.xml"
 
   /**
    * Runs the generator.
@@ -69,8 +73,66 @@ class Generator(private val config: Config) {
 
     // For each markdown file, generate its content and produce a file
     val mdFiles = FileUtils.markdownFiles(srcDirPath)
-    mdFiles.map(f => Page.Session.newInstance(config, f)).foreach(page => {
+    val pages = mdFiles.map(f => Page.Session.newInstance(config, f)).toSeq
+
+    pages.foreach(page => {
       page.render(context.copy(title = Some(page.title)))
     })
+
+    // Produce a sitemap.xml representing the links
+    if (config.doNotGenerateSitemapFile()) {
+      logger.trace(s"Not generating $SitemapFile")
+    } else {
+      logger.trace(s"Generating $SitemapFile")
+      createSitemapFile(
+        config.siteHost(),
+        pages,
+        outputDirPath.resolve(SitemapFile)
+      )
+    }
+  }
+
+  /**
+   * Creates a sitemap file based on the given pages.
+   *
+   * @param hostUrl The host to use for all pages such as http://www.example.com
+   * @param pages The collection of pages whose links to use in the sitemap
+   * @param outputPath The path to the sitemap file
+   */
+  private def createSitemapFile(
+    hostUrl: URL,
+    pages: Seq[Page],
+    outputPath: Path
+  ): Unit = {
+    val dateString = {
+      val format = new java.text.SimpleDateFormat("yyyy-MM-dd")
+      format.format(new java.util.Date())
+    }
+
+    val xmlUrls = pages.filterNot(p =>
+      p.metadata.fake || !p.metadata.render
+    ).map(p => {
+      <url>
+        <loc>{ hostUrl.toURI.resolve(p.absoluteLink).toString }</loc>
+        <lastmod>{ dateString }</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>{ if (p.isIndexPage && p.isAtRoot) 1.0 else 0.5 }</priority>
+      </url>
+    })
+
+    val sitemapXml =
+      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        { xmlUrls }
+      </urlset>
+
+    import scala.xml.XML
+    val writer = Files.newBufferedWriter(
+      outputPath,
+      StandardOpenOption.CREATE,
+      StandardOpenOption.WRITE
+    )
+    XML.write(writer, sitemapXml, "UTF-8", xmlDecl = true, doctype = null)
+    writer.flush()
+    writer.close()
   }
 }

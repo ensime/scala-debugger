@@ -45,8 +45,16 @@ class Page private (
       Paths.get(inputDir, srcDir)
     }
 
-    "/" + FileUtils.stripExtension(srcDirPath.relativize(path).toString)
-      .replaceAllLiterally(java.io.File.separator, "/") + "/"
+    val relativePath =
+      if (isIndexPage) srcDirPath.relativize(path.getParent)
+      else srcDirPath.relativize(path)
+
+    val rootPathString = "/" +
+      FileUtils.stripExtension(relativePath.toString)
+        .replaceAllLiterally(java.io.File.separator, "/")
+
+    if (rootPathString.endsWith("/")) rootPathString
+    else rootPathString + "/"
   }
 
   /**
@@ -153,6 +161,20 @@ class Page private (
   lazy val isIndexPage: Boolean = {
     Files.isRegularFile(path) &&
       FileUtils.stripExtension(path.getFileName.toString) == "index"
+  }
+
+  /**
+   * Represents whether or not this page is at the root of the website.
+   *
+   * E.g. /example.html is at the root while /my/example.html is not.
+   */
+  lazy val isAtRoot: Boolean = {
+    val srcDirPath = {
+      val inputDir = config.inputDir()
+      val srcDir = config.srcDir()
+      Paths.get(inputDir, srcDir)
+    }
+    srcDirPath.relativize(path) == path.getFileName
   }
 
   /**

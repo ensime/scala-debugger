@@ -1,5 +1,7 @@
 package org.scaladebugger.docs
 
+import java.net.URL
+
 import org.rogach.scallop.{ScallopConf, ScallopOption, singleArgConverter}
 
 /**
@@ -90,6 +92,21 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
   val doNotGenerateNoJekyllFile: ScallopOption[Boolean] = opt[Boolean](
     descr = "If provided, will not generate a .nojekyll file in the output",
     default = Some(false)
+  )
+
+  /** Represents a flag to NOT generate a sitemap.xml file. */
+  val doNotGenerateSitemapFile: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If provided, will not generate a sitemap.xml file in the output",
+    default = Some(false)
+  )
+
+  /** Represents the site's hostname. */
+  val siteHost: ScallopOption[URL] = opt[URL](
+    descr = Seq(
+      "Represents the host used when generating content such as",
+      "http://www.example.com"
+    ).mkString(" "),
+    default = Some(new URL("http://localhost/"))
   )
 
   // ===========================================================================
