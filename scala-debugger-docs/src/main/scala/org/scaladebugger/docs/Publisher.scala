@@ -3,6 +3,7 @@ package org.scaladebugger.docs
 import java.nio.file.{Files, Path, Paths}
 
 import org.apache.commons.io.FileUtils
+import org.eclipse.jgit.api.ResetCommand.ResetType
 import org.eclipse.jgit.api._
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revwalk.RevWalk
@@ -27,31 +28,33 @@ class Publisher(private val config: Config) {
    * Publishes the content in the output directory.
    */
   def run(): Unit = {
-    val rootPath = Paths.get(".").toAbsolutePath
-    val git = gitForPath(rootPath)
-
     // TODO: Copy directory to cache, reset hard to remove any changes,
     //       create/switch to the desired branch in the cache, clear the
     //       repository of all content, copy output directory contents to
     //       repository, commit changes, push
+    val repoPath = {
+      val rootPath = Paths.get(".").toAbsolutePath
+      val git = gitForPath(rootPath)
+      copyRepoToCache(git.getRepository, force = false)
+    }
 
-    val remoteName = config.publishRemoteName()
-    val remoteRepos = git.remoteList().call().asScala
-    val remote = remoteRepos.find(_.getName == remoteName).getOrElse(
-      throw new IllegalStateException(s"Remote $remoteName does not exist!")
-    )
+    logger.info(s"Rebasing repository found at $repoPath")
+    val result = {
+      val git = gitForPath(repoPath)
+      tryRebase(git, config.publishRemoteName(), config.publishRemoteBranch())
+    }
 
-    remote.getURIs.asScala.foreach(println)
-
-    copyRepoToCache(git.getRepository, force = false)
+    result.foreach(commitId => logger.info(s"Rebased to $commitId"))
+    result.failed.foreach(logger.error)
   }
 
   /**
-   * Copies the root directory to the cache directory
+   * Copies the repository to the cache directory.
    *
+   * @param repository The repository to copy
    * @param force If true, will force copying instead of ignoring if already
    *              cached
-   * @return The path to the cached directory
+   * @return The path to the cached directory containing the repository
    */
   private def copyRepoToCache(repository: Repository, force: Boolean): Path = {
     val cacheRootPath = Paths.get(config.publishCacheDir())
@@ -101,27 +104,35 @@ class Publisher(private val config: Config) {
   ): Try[String] = {
     val result = Try({
       val repo = git.getRepository
+      val repoPath = repo.getWorkTree.toPath.normalize()
+
+      // Reset any pending changes in the copy
+      logger.info(s"Clearing any changes in $repoPath")
+      git.reset()
+        .setMode(ResetType.HARD)
+        .call()
 
       // Switch to desired starting point
+      logger.info(s"Checking out $remoteName/$branchName")
       git.checkout()
         .setName(branchName)
         .setStartPoint(remoteName + "/" + branchName)
+        .call()
+
+      // Ensure we have the latest from the remote repo
+      logger.info(s"Pulling latest from $remoteName/$branchName")
+      git.pull()
+        .setRemote(remoteName)
+        .setRemoteBranchName(branchName)
         .call()
 
       // Find the top commit of the branch
       val revWalk = new RevWalk(repo)
       val revIterator = revWalk.iterator().asScala
       val commit = if (revIterator.hasNext) Some(revIterator.next()) else None
-
-      // If commit found, update the reference for the branch locally
-      commit match {
-        case Some(c) =>
-          val commitId = c.toObjectId.toString
-          repo.updateRef(s"refs/heads/$branchName").setNewObjectId(c)
-          commitId
-        case None =>
-          throw new IllegalStateException("No commit found in repository!")
-      }
+      commit.map(_.toObjectId.toString).getOrElse(
+        throw new IllegalStateException(s"No commit found in $remoteName/$branchName!")
+      )
     })
 
     result
