@@ -1,6 +1,7 @@
 package org.scaladebugger.docs
 
 import java.net.URL
+import java.nio.file.Paths
 
 import org.rogach.scallop.{ScallopConf, ScallopOption, singleArgConverter}
 
@@ -183,6 +184,36 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
       "(less than zero uses full stack)"
     ).mkString(" "),
     default = Some(-1)
+  )
+
+  // ===========================================================================
+  // = SETTINGS FOR PUBLISH
+  // ===========================================================================
+
+  val publishRemoteName: ScallopOption[String] = opt[String](
+    descr = "The remote name used as the destination of the publish",
+    default = Some("origin")
+  )
+
+  val publishRemoteBranch: ScallopOption[String] = opt[String](
+    descr = "The branch to publish the content to",
+    default = Some("gh-pages")
+  )
+
+  val publishCacheDir: ScallopOption[String] = opt[String](
+    descr = "The directory where a copy of the repository lives for publishing",
+    default = Some(Paths.get(
+      System.getProperty(
+        "user.home",
+        System.getProperty("java.io.tmpdir")
+      ),
+      ".sdd" // Scala Debugger Docs
+    ).toAbsolutePath.toString)
+  )
+
+  val publishForceCopy: ScallopOption[Boolean] = opt[Boolean](
+    descr = "If provided, forces the copying of the repository to the cache",
+    default = Some(false)
   )
 
   // ===========================================================================

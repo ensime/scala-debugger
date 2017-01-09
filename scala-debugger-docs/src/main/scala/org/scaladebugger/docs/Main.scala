@@ -58,6 +58,7 @@ object Main {
       logger.info("Needs to copy output into gh-pages directory")
       logger.info("Needs to create a commit and push")
       logger.info("Needs to switch back to the previous branch")
+      new Publisher(config).run()
 
     // Print help info
     } else if (!config.generate()) {

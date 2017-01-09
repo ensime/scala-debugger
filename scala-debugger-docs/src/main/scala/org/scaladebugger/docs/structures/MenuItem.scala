@@ -2,8 +2,10 @@ package org.scaladebugger.docs.structures
 
 import java.nio.file.{Files, Path, Paths}
 
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.{FalseFileFilter, TrueFileFilter}
 import org.scaladebugger.docs.Config
-import org.scaladebugger.docs.utils.FileUtils
+import org.scaladebugger.docs.utils.FileHelper
 
 /**
  * Represents a generic menu item.
@@ -49,10 +51,15 @@ object MenuItem {
     path: Path,
     dirUseFirstChild: Boolean = false
   ): Seq[MenuItem] = {
-    val mdFiles = FileUtils.markdownFiles(path)
+    val mdFiles = FileHelper.markdownFiles(path)
 
     // Find all directories of src dir
-    val directoryPaths = FileUtils.directories(path)
+    import scala.collection.JavaConverters._
+    val directoryPaths = FileUtils.listFilesAndDirs(
+      path.toFile,
+      FalseFileFilter.INSTANCE,
+      TrueFileFilter.INSTANCE
+    ).asScala.map(_.toPath)
 
     // All paths excluding top-level index.md
     val allPaths: Seq[Path] = (mdFiles ++ directoryPaths)

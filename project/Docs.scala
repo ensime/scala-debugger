@@ -23,6 +23,7 @@ object Docs {
       "org.eclipse.jgit" % "org.eclipse.jgit" % "4.6.0.201612231935-r", // Git support
 
       "commons-codec" % "commons-codec" % "1.10", // Base64 encoding support
+      "commons-io" % "commons-io" % "2.5", // File copy support
 
       // For hosting local server containing generated sources
       "ws.unfiltered" %% "unfiltered" % unfilteredVersion.value,

@@ -3,9 +3,10 @@ package org.scaladebugger.docs
 import java.net.URL
 import java.nio.file._
 
+import org.apache.commons.io.FileUtils
 import org.scaladebugger.docs.layouts.Context
 import org.scaladebugger.docs.structures.{MenuItem, Page}
-import org.scaladebugger.docs.utils.FileUtils
+import org.scaladebugger.docs.utils.FileHelper
 
 /**
  * Represents a generator of content based on a configuration.
@@ -43,13 +44,13 @@ class Generator(private val config: Config) {
 
     // Re-create the output directory
     logger.trace(s"Deleting and recreating $outputDirPath")
-    FileUtils.deletePath(outputDirPath)
+    FileUtils.deleteDirectory(outputDirPath.toFile)
     Files.createDirectories(outputDirPath)
 
     // Copy all static content
     val staticDirPath = Paths.get(inputDir, staticDir)
     logger.trace(s"Copying static files from $staticDirPath to $outputDirPath")
-    FileUtils.copyDirectoryContents(staticDirPath, outputDirPath)
+    FileUtils.copyDirectory(staticDirPath.toFile, outputDirPath.toFile)
 
     // Generate .nojekyll file
     if (config.doNotGenerateNoJekyllFile()) {
@@ -57,7 +58,7 @@ class Generator(private val config: Config) {
     } else {
       logger.trace(s"Generating $NoJekyllFile")
       val noJekyllFilePath = outputDirPath.resolve(NoJekyllFile)
-      FileUtils.createEmptyFile(noJekyllFilePath)
+      Files.createFile(noJekyllFilePath)
     }
 
     // Process all markdown files
@@ -78,7 +79,7 @@ class Generator(private val config: Config) {
     )
 
     // For each markdown file, generate its content and produce a file
-    val mdFiles = FileUtils.markdownFiles(srcDirPath)
+    val mdFiles = FileHelper.markdownFiles(srcDirPath)
     val pages = mdFiles.map(f => Page.Session.newInstance(config, f)).toSeq
 
     pages.foreach(page => {
