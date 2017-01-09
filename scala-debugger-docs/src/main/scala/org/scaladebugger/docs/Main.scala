@@ -49,15 +49,6 @@ object Main {
 
     // Publish generated content
     } else if (config.publish()) {
-      logger.fatal("TODO: Implement publish using Scala process to run git")
-      logger.info("Needs to switch to the gh-pages branch of the project")
-      logger.info("Needs to clear the old contents of the gh-pages branch")
-      logger.info("Needs to generate a .nojekyll file")
-      logger.info("Needs to generate a sitemap.xml file")
-      logger.info("Needs to generate normal output")
-      logger.info("Needs to copy output into gh-pages directory")
-      logger.info("Needs to create a commit and push")
-      logger.info("Needs to switch back to the previous branch")
       new Publisher(config).run()
 
     // Print help info

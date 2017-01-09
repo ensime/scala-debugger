@@ -24,7 +24,7 @@ class Publisher(private val config: Config) {
   /**
    * Publishes the content in the output directory.
    */
-  def run(): Unit = {
+  def run(): Unit = logger.time(Logger.Level.Info, "Publish finished after ") {
     val outputDirPath = Paths.get(config.outputDir())
     val remoteName = config.publishRemoteName()
     val remoteBranch = config.publishRemoteBranch()
@@ -35,7 +35,7 @@ class Publisher(private val config: Config) {
       copyRepoToCache(git.getRepository, force = false)
     }
 
-    logger.info("Loading configuration data")
+    logger.trace("Loading configuration data")
     val git = gitForPath(repoPath)
     val authorName = config.publishAuthorName.toOption.orElse(
       Option(git.getRepository.getConfig.getString("user", null, "name"))
@@ -48,25 +48,25 @@ class Publisher(private val config: Config) {
       throw new IllegalStateException("No Git author email available!")
     )
 
-    logger.info(s"Rebasing repository found at $repoPath")
+    logger.trace(s"Rebasing repository found at $repoPath")
     (() => {
       val result = prepareBranch(git, remoteName, remoteBranch)
 
-      result.foreach(commitId => logger.info(s"Rebased to $commitId"))
+      result.foreach(commitId => logger.verbose(s"Rebased to $commitId"))
       result.failed.foreach(logger.error)
     })()
 
-    logger.info("Wiping old branch contents")
+    logger.trace("Wiping old branch contents")
     Files.newDirectoryStream(repoPath).asScala
       .filterNot(_ == repoPath.resolve(".git"))
       .map(_.toFile)
       .foreach(FileUtils.forceDelete)
 
-    logger.info(s"Copying contents from $outputDirPath to $repoPath")
+    logger.verbose(s"Copying contents from $outputDirPath to $repoPath")
     FileUtils.copyDirectory(outputDirPath.toFile, repoPath.toFile)
 
-    logger.info("Adding changes")
-    git.add().addFilepattern(".").call()
+    logger.trace("Adding changes")
+    git.add().addFilepattern(".").call() // To add untracked files
 
     logger.info(s"Committing changes as $authorName <$authorEmail>")
     val dateString = {
@@ -74,6 +74,7 @@ class Publisher(private val config: Config) {
       format.format(new java.util.Date())
     }
     git.commit()
+      .setAll(true) // To add "deleted" files
       .setAuthor(authorName, authorEmail)
       .setCommitter(authorName, authorEmail)
       .setMessage(s"New publish on $dateString")
@@ -109,7 +110,6 @@ class Publisher(private val config: Config) {
     // If not already exists or being forced, copy contents to cache
     val workTreePath = repository.getWorkTree.toPath.toAbsolutePath.normalize()
     val destinationPath = cacheRootPath.resolve(workTreePath.getFileName)
-    logger.info(s"Work Tree file name: ${workTreePath.getFileName}")
     if (!Files.exists(destinationPath) || force) {
       FileUtils.deleteDirectory(destinationPath.toFile)
       Files.createDirectories(destinationPath)
@@ -117,7 +117,7 @@ class Publisher(private val config: Config) {
       logger.info(s"Copying $workTreePath to $destinationPath")
       FileUtils.copyDirectory(workTreePath.toFile, destinationPath.toFile)
     } else {
-      logger.info(s"$destinationPath already exists, so not copying!")
+      logger.verbose(s"$destinationPath already exists, so not copying!")
     }
 
     destinationPath
@@ -143,13 +143,13 @@ class Publisher(private val config: Config) {
       val remoteBranchName = s"$remoteName/$branchName"
 
       // Reset any pending changes in the copy
-      logger.info(s"Clearing any changes in $repoPath")
+      logger.trace(s"Clearing any changes in $repoPath")
       git.reset()
         .setMode(ResetType.HARD)
         .call()
 
       // Fetch the latest from our remote
-      logger.info(s"Fetching latest from $remoteName")
+      logger.trace(s"Fetching latest from $remoteName")
       git.fetch().setCheckFetchedObjects(true).setRemote(remoteName).call()
 
       // See if the desired branch already exists
@@ -159,7 +159,7 @@ class Publisher(private val config: Config) {
         .exists(_.getName == branchName)
 
       if (!branchExists) {
-        logger.info(s"Creating $branchName to track $remoteBranchName")
+        logger.trace(s"Creating $branchName to track $remoteBranchName")
         git.branchCreate()
           .setName(branchName)
           .setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
@@ -168,11 +168,11 @@ class Publisher(private val config: Config) {
           .call()
       }
 
-      logger.info(s"Checking out $branchName")
+      logger.trace(s"Checking out $branchName")
       git.checkout().setName(branchName).call()
 
       // Ensure we have the latest from the remote repo
-      logger.info(s"Pulling latest from $remoteBranchName")
+      logger.trace(s"Pulling latest from $remoteBranchName")
       git.pull()
         .setRemote(remoteName)
         .setRemoteBranchName(branchName)
