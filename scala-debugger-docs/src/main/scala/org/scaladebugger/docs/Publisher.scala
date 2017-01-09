@@ -3,10 +3,10 @@ package org.scaladebugger.docs
 import java.nio.file.{Files, Path, Paths}
 
 import org.apache.commons.io.FileUtils
+import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode
 import org.eclipse.jgit.api.ResetCommand.ResetType
 import org.eclipse.jgit.api._
 import org.eclipse.jgit.lib.Repository
-import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 
 import scala.collection.JavaConverters._
@@ -21,31 +21,66 @@ class Publisher(private val config: Config) {
   /** Logger for this class. */
   private lazy val logger = new Logger(this.getClass)
 
-  /** Represents the repository builder. */
-  private lazy val builder = new FileRepositoryBuilder
-
   /**
    * Publishes the content in the output directory.
    */
   def run(): Unit = {
-    // TODO: Copy directory to cache, reset hard to remove any changes,
-    //       create/switch to the desired branch in the cache, clear the
-    //       repository of all content, copy output directory contents to
-    //       repository, commit changes, push
+    val outputDirPath = Paths.get(config.outputDir())
+    val remoteName = config.publishRemoteName()
+    val remoteBranch = config.publishRemoteBranch()
+
     val repoPath = {
       val rootPath = Paths.get(".").toAbsolutePath
       val git = gitForPath(rootPath)
       copyRepoToCache(git.getRepository, force = false)
     }
 
-    logger.info(s"Rebasing repository found at $repoPath")
-    val result = {
-      val git = gitForPath(repoPath)
-      tryRebase(git, config.publishRemoteName(), config.publishRemoteBranch())
-    }
+    logger.info("Loading configuration data")
+    val git = gitForPath(repoPath)
+    val authorName = config.publishAuthorName.toOption.orElse(
+      Option(git.getRepository.getConfig.getString("user", null, "name"))
+    ).getOrElse(
+      throw new IllegalStateException("No Git author name available!")
+    )
+    val authorEmail = config.publishAuthorEmail.toOption.orElse(
+      Option(git.getRepository.getConfig.getString("user", null, "email"))
+    ).getOrElse(
+      throw new IllegalStateException("No Git author email available!")
+    )
 
-    result.foreach(commitId => logger.info(s"Rebased to $commitId"))
-    result.failed.foreach(logger.error)
+    logger.info(s"Rebasing repository found at $repoPath")
+    (() => {
+      val result = prepareBranch(git, remoteName, remoteBranch)
+
+      result.foreach(commitId => logger.info(s"Rebased to $commitId"))
+      result.failed.foreach(logger.error)
+    })()
+
+    logger.info("Wiping old branch contents")
+    Files.newDirectoryStream(repoPath).asScala
+      .filterNot(_ == repoPath.resolve(".git"))
+      .map(_.toFile)
+      .foreach(FileUtils.forceDelete)
+
+    logger.info(s"Copying contents from $outputDirPath to $repoPath")
+    FileUtils.copyDirectory(outputDirPath.toFile, repoPath.toFile)
+
+    logger.info("Adding changes")
+    git.add().addFilepattern(".").call()
+
+    logger.info(s"Committing changes as $authorName <$authorEmail>")
+    val dateString = {
+      val format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+      format.format(new java.util.Date())
+    }
+    git.commit()
+      .setAuthor(authorName, authorEmail)
+      .setCommitter(authorName, authorEmail)
+      .setMessage(s"New publish on $dateString")
+      .call().disposeBody()
+
+    logger.info(s"Pushing to $remoteName/$remoteBranch")
+    git.push().setRemote(remoteName).call()
   }
 
   /**
@@ -89,7 +124,7 @@ class Publisher(private val config: Config) {
   }
 
   /**
-   * Attempts to rebase the repository to a clean state.
+   * Attempts to reset the repository branch to a clean state.
    *
    * @param git The git instance whose repository to rebase
    * @param remoteName The name of the remote repo (e.g. origin) whose commit
@@ -97,7 +132,7 @@ class Publisher(private val config: Config) {
    * @param branchName The name of the branch to rebase
    * @return Success containing the top commit id after rebasing, or a Failure
    */
-  private def tryRebase(
+  private def prepareBranch(
     git: Git,
     remoteName: String = "origin",
     branchName: String = "gh-pages"
@@ -105,7 +140,7 @@ class Publisher(private val config: Config) {
     val result = Try({
       val repo = git.getRepository
       val repoPath = repo.getWorkTree.toPath.normalize()
-      val fullBranchName = s"$remoteName/$branchName"
+      val remoteBranchName = s"$remoteName/$branchName"
 
       // Reset any pending changes in the copy
       logger.info(s"Clearing any changes in $repoPath")
@@ -113,23 +148,40 @@ class Publisher(private val config: Config) {
         .setMode(ResetType.HARD)
         .call()
 
-      // Switch to desired starting point
-      logger.info(s"Checking out $fullBranchName")
-      git.checkout().setName(fullBranchName).call()
+      // Fetch the latest from our remote
+      logger.info(s"Fetching latest from $remoteName")
+      git.fetch().setCheckFetchedObjects(true).setRemote(remoteName).call()
+
+      // See if the desired branch already exists
+      val branchExists = git
+        .branchList()
+        .call().asScala
+        .exists(_.getName == branchName)
+
+      if (!branchExists) {
+        logger.info(s"Creating $branchName to track $remoteBranchName")
+        git.branchCreate()
+          .setName(branchName)
+          .setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
+          .setStartPoint(remoteBranchName)
+          .setForce(true)
+          .call()
+      }
+
+      logger.info(s"Checking out $branchName")
+      git.checkout().setName(branchName).call()
 
       // Ensure we have the latest from the remote repo
-      logger.info(s"Pulling latest from $fullBranchName")
+      logger.info(s"Pulling latest from $remoteBranchName")
       git.pull()
         .setRemote(remoteName)
         .setRemoteBranchName(branchName)
         .call()
 
       // Find the top commit of the branch
-      val revWalk = new RevWalk(repo)
-      val revIterator = revWalk.iterator().asScala
-      val commit = if (revIterator.hasNext) Some(revIterator.next()) else None
-      commit.map(_.toObjectId.toString).getOrElse(
-        throw new IllegalStateException(s"No commit found in $remoteName/$branchName!")
+      val commits = git.log().setMaxCount(1).call().asScala.toSeq
+      commits.headOption.map(_.getName).getOrElse(
+        throw new IllegalStateException(s"$branchName has no commits!")
       )
     })
 
@@ -143,6 +195,7 @@ class Publisher(private val config: Config) {
    * @return The Git instance
    */
   private def gitForPath(path: Path): Git = {
+    val builder = new FileRepositoryBuilder
     val repository = builder.readEnvironment().findGitDir(path.toFile).build()
 
     new Git(repository)

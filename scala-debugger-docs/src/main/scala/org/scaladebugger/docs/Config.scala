@@ -216,6 +216,16 @@ class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
     default = Some(false)
   )
 
+  val publishAuthorName: ScallopOption[String] = opt[String](
+    descr = "The name to use for both author and committer when publishing",
+    default = None
+  )
+
+  val publishAuthorEmail: ScallopOption[String] = opt[String](
+    descr = "The email to use for both author and committer when publishing",
+    default = None
+  )
+
   // ===========================================================================
   // = INITIALIZATION
   // ===========================================================================
