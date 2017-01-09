@@ -105,6 +105,7 @@ class Publisher(private val config: Config) {
     val result = Try({
       val repo = git.getRepository
       val repoPath = repo.getWorkTree.toPath.normalize()
+      val fullBranchName = s"$remoteName/$branchName"
 
       // Reset any pending changes in the copy
       logger.info(s"Clearing any changes in $repoPath")
@@ -113,14 +114,11 @@ class Publisher(private val config: Config) {
         .call()
 
       // Switch to desired starting point
-      logger.info(s"Checking out $remoteName/$branchName")
-      git.checkout()
-        .setName(branchName)
-        .setStartPoint(remoteName + "/" + branchName)
-        .call()
+      logger.info(s"Checking out $fullBranchName")
+      git.checkout().setName(fullBranchName).call()
 
       // Ensure we have the latest from the remote repo
-      logger.info(s"Pulling latest from $remoteName/$branchName")
+      logger.info(s"Pulling latest from $fullBranchName")
       git.pull()
         .setRemote(remoteName)
         .setRemoteBranchName(branchName)
