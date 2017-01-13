@@ -36,9 +36,9 @@ val s: ScalaVirtualMachine = /* some virtual machine */
 val fileName: String = /* desired starting file location */
 val lineNumber: Int = /* desired starting line location */
 
-s.onUnsafeBreakpoint(fileName, lineNumber).foreach(be => {
-  val path = be.location().sourcePath()
-  val line = be.location().lineNumber()
+s.getOrCreateBreakpointRequest(fileName, lineNumber).foreach(be => {
+  val path = be.location.sourcePath
+  val line = be.location.lineNumber
 
   println(s"Reached breakpoint for $path:$line")
 
@@ -59,18 +59,18 @@ would like to perform. The Scala debugger API supports six kinds of steps:
 The more common step types are associated with lines of code, rather than
 stack frames. All of these methods return a future that is completed when the
 step operation has completed. Each of these methods also requires you to
-provide a [`ThreadReference`][thread-reference] where the step will occur. You
+provide the _ThreadInfo_ representing the thread where the step will occur. You
 can acquire the reference to the thread where a breakpoint occurred from the
 breakpoint event as seen in the example below.
 
 ```scala
-val be: BreakpointEvent = /* Breakpoint event from above code example */
+val be: BreakpointEventInfo = /* Breakpoint event from above code example */
 
 // Step methods return a future that occurs when the step finishes
 import scala.concurrent.ExecutionContext.Implicits.global
-s.stepOverLine(be.thread()).foreach(se => {
-  val path = se.location().sourcePath()
-  val line = se.location().lineNumber()
+s.stepOverLine(be.thread).foreach(se => {
+  val path = se.location.sourcePath
+  val line = se.location.lineNumber
 
   println(s"Stepped to $path:$line")
 })
@@ -80,7 +80,6 @@ s.stepOverLine(be.thread()).foreach(se => {
 
 See the [cookbook][cookbook] for a working example.
 
-[thread-reference]: http://docs.oracle.com/javase/7/docs/jdk/api/jpda/jdi/com/sun/jdi/ThreadReference.html
 [cookbook]: /cookbook/stepping-over-a-line-of-code/
 
 *[JDI]: Java Debugger Interface

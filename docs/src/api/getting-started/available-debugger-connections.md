@@ -216,10 +216,72 @@ normal execution.
 
 See the [cookbook][cookbook-listening] for a full example.
 
+## Process Debugger
+
+The process debugger is much less frequently used and is a convenience to
+connect to processes that have exposed JDI sockets and whose PIDs are also
+known.
+
+It begins with the target JVM already running with the necessary JDWP arguments
+to expose a TCP port that the debugger will use to connect behind the scenes: 
+
+```
+# Allow debuggers to attach via port 5005
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+```
+
+### Instantiating
+
+To create the process debugger using the Scala debugger API, you instantiate
+a new instance of the debugger using the companion object:
+
+```scala
+val processDebugger = ProcessDebugger(port = 5005)
+```
+
+The only required argument for the process debugger is the pid of the process
+that the debugger will treat as the target JVM. This process should still have
+a port exposed in the JDWP arguments as the debugger will determine the
+port and connect using it.
+
+The process debugger can also take a timeout argument, which is the maximum
+time to wait (in milliseconds) for a successful connection before timing out.
+
+### Starting
+
+When you are ready to connect to the target JVM, call the `start` method.
+
+```scala
+processDebugger.start { s =>
+  println("Connected to JVM: " + s.uniqueId)
+}
+```
+
+As with the other debuggers, when you call `start`, you provide a function
+that takes a `ScalaVirtualMachine` as an argument. This function is treated as
+a callback that is invoked when the process debugger connects to the target
+JVM process.
+
+### Stopping
+
+To stop the process debugger, you can call the `stop` function:
+
+```scala
+processDebugger.stop()
+```
+
+This disconnects from the target JVM and stops the debugger. The target JVM
+will continue to run and, if suspended, should resume normal execution.
+
+### Cookbook
+
+See the [cookbook][cookbook-process] for a full example.
+
 [connectors]: http://docs.oracle.com/javase/7/docs/technotes/guides/jpda/conninv.html
 [cookbook-launching]: /cookbook/creating-a-launching-debugger/
 [cookbook-attaching]: /cookbook/creating-an-attaching-debugger/
 [cookbook-listening]: /cookbook/creating-a-listening-debugger/
+[cookbook-process]: /cookbook/creating-a-process-debugger/
 
 *[JDI]: Java Debugger Interface
 

@@ -14,22 +14,18 @@ chaining together reactions to breakpoint events, and removing breakpoints.
 
 The Scala debugger API provides a simple way to create breakpoints in your
 debugger application. Given a _ScalaVirtualMachine_ instance, you can execute
-the `onBreakpoint` or `onUnsafeBreakpoint` method to place a breakpoint on the
+the `getOrCreateBreakpointRequest` method to place a breakpoint on the
 specified file and line number.
 
 ```scala
 val s: ScalaVirtualMachine = /* some virtual machine */
-s.onUnsafeBreakpoint("some/scala/file.scala", 37)
+s.getOrCreateBreakpointRequest("some/scala/file.scala", 37)
 ```
 
 You do not need to worry about creating the same breakpoint over and over
-when calling `onBreakpoint` or `onUnsafeBreakpoint`. These methods cache
+when calling `getOrCreateBreakpontRequest`. This method caches
 your request based on the provided arguments. So, you can reference the
 same breakpoint multiple times.
-
-The difference between safe and unsafe operations is that the unsafe operation
-will throw an exception if an error occurs that prevents the breakpoint from
-being created while the safe operation will wrap the error in a `Try` object.
 
 !!! note "Note:"
     The file name of the breakpoint must be the ACTUAL file name, not the
@@ -49,17 +45,32 @@ are consistent with standard Scala `map`, `flatMap`, and `foreach` structure.
 
 ```scala
 val s: ScalaVirtualMachine = /* some virtual machine */
-s.onUnsafeBreakpoint("some/scala/file.scala", 37).foreach(_ => println("Hit line 37!"))
+s.getOrCreateBreakpointRequest("some/scala/file.scala", 37)
+  .foreach(e => println(s"Hit line ${e.lineNumber}!"))
 ```
 
 ## Removing
 
-Whenever you are finished with the breakpoint, you can remove it by closing the
-associated pipeline.
+Whenever you are finished with the breakpoint, you can either remove it
+directly or close its pipeline.
+
+### Removing directly
 
 ```scala
 val s: ScalaVirtualMachine = /* some virtual machine */
-val bp = s.onUnsafeBreakpoint("some/scala/file.scala", 37)
+val bp = s.getOrCreateBreakpointRequest("some/scala/file.scala", 37)
+
+bp.foreach(_ => println("Hit line 37!"))
+
+// Remove the breakpoint request explicitly (removes all for file and line)
+bp.removeBreakpointRequests("some/scala/file.scala", 37)
+```
+
+### Removing by closing the pipeline
+
+```scala
+val s: ScalaVirtualMachine = /* some virtual machine */
+val bp = s.getOrCreateBreakpointRequest("some/scala/file.scala", 37)
 
 bp.foreach(_ => println("Hit line 37!"))
 
@@ -67,17 +78,18 @@ import org.scaladebugger.api.profiles.Constants.CloseRemoveAll
 bp.close(data = CloseRemoveAll)
 ```
 
-!!! warning "Warning:"
-    Currently, you must provide close with the flag `CloseRemoveAll` in order
-    to remove the request and any underlying event handlers.
-
-    Specifying close without that flag will only stop events going through
-    that specific pipeline. If all pipelines associated with a request are
-    closed, the request will also be removed.
-
 By default, `close` will be triggered immediately. Alternatively, you can
 invoke `close` with `now = false` to close the pipeline once the next
 event occurs.
+
+#### Warning about closing pipelines
+
+Currently, you must provide close with the flag `CloseRemoveAll` in order
+to remove the request and any underlying event handlers.
+
+Specifying close without that flag will only stop events going through
+that specific pipeline. If all pipelines associated with a request are
+closed, the request will also be removed.
 
 ## Cookbook
 

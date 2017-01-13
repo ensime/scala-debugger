@@ -34,7 +34,7 @@ The Scala debugger library is available on Maven Central, which means that you
 can install it using sbt:
 
 ```scala
-libraryDependencies += "org.scala-debugger" %% "scala-debugger-api" % "1.0.0"
+libraryDependencies += "org.scala-debugger" %% "scala-debugger-api" % "1.1.0-M3"
 ```
 
 To be able to compile code using the JDI, you need to also add this plugin to
@@ -44,7 +44,8 @@ your `project/plugins.sbt` file:
 addSbtPlugin("org.scala-debugger" % "sbt-jdi-tools" % "1.0.0")
 ```
 
-The Scala debugger API is currently available for Scala 2.10 and Scala 2.11.
+The Scala debugger API is currently available for Scala 2.10, Scala 2.11, and
+Scala 2.12.
 
 ## Verifying it works
 
