@@ -60,7 +60,7 @@ class PureValueInfo(
    *
    * @return The profile containing type information
    */
-  override def typeInfo: TypeInfo =
+  override def `type`: TypeInfo =
     newTypeProfile(if (!isNull) _value.`type`() else null)
 
   /**

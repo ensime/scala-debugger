@@ -76,7 +76,7 @@ class Scala210ObjectInfo(
       else if (ignoreNamePrefix.exists(jField.name.startsWith)) Nil
 
       // If the field's origin starts with an origin we don't want, ignore it
-      else if (ignoreOrigin.exists(jField.declaringTypeInfo.name.startsWith)) Nil
+      else if (ignoreOrigin.exists(jField.declaringType.name.startsWith)) Nil
 
       // If the field is one that should be expanded, do so
       else if (value.isObject && expandNames.contains(jField.name))

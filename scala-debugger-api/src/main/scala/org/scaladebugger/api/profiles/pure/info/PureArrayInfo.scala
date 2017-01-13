@@ -70,7 +70,7 @@ class PureArrayInfo(
    *
    * @return The profile containing type information
    */
-  override def typeInfo: ArrayTypeInfo = super.typeInfo.toArrayType
+  override def `type`: ArrayTypeInfo = super.`type`.toArrayType
 
   /**
    * Returns the length of the array.

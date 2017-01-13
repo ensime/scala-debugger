@@ -29,22 +29,22 @@ class PureClassTypeInfoIntegrationSpec extends ParallelMockFunSpec
         logTimeTaken(eventually {
           val frame = t.get.topFrame
 
-          val classFromInterfaceFromBaseInterfaceType = frame.variable("classFromInterfaceFromBaseInterface").typeInfo.toClassType
-          val baseClassType = frame.variable("baseClass").typeInfo.toClassType
-          val classFromBaseClassType = frame.variable("classFromBaseClass").typeInfo.toClassType
-          val classFromIndirectBaseClassType = frame.variable("classFromIndirectBaseClass").typeInfo.toClassType
-          val classFromBaseInterfaceType = frame.variable("classFromBaseInterface").typeInfo.toClassType
-          val classFromIndirectBaseInterfaceType = frame.variable("classFromIndirectBaseInterface").typeInfo.toClassType
-          val notEnumerationClassType = frame.variable("notEnumerationClass").typeInfo.toClassType
-          val enumerationClassType = frame.variable("enumerationClass").typeInfo.toClassType
-          val javaEnumerationType = frame.variable("javaEnumeration").typeInfo.toClassType
-          val classWithMethodsType = frame.variable("classWithMethods").typeInfo.toClassType
-          val classWithFieldsType = frame.variable("classWithFields").typeInfo.toClassType
-          val classWithConstructorType = frame.variable("classWithConstructor").typeInfo.toClassType
+          val classFromInterfaceFromBaseInterfaceType = frame.variable("classFromInterfaceFromBaseInterface").`type`.toClassType
+          val baseClassType = frame.variable("baseClass").`type`.toClassType
+          val classFromBaseClassType = frame.variable("classFromBaseClass").`type`.toClassType
+          val classFromIndirectBaseClassType = frame.variable("classFromIndirectBaseClass").`type`.toClassType
+          val classFromBaseInterfaceType = frame.variable("classFromBaseInterface").`type`.toClassType
+          val classFromIndirectBaseInterfaceType = frame.variable("classFromIndirectBaseInterface").`type`.toClassType
+          val notEnumerationClassType = frame.variable("notEnumerationClass").`type`.toClassType
+          val enumerationClassType = frame.variable("enumerationClass").`type`.toClassType
+          val javaEnumerationType = frame.variable("javaEnumeration").`type`.toClassType
+          val classWithMethodsType = frame.variable("classWithMethods").`type`.toClassType
+          val classWithFieldsType = frame.variable("classWithFields").`type`.toClassType
+          val classWithConstructorType = frame.variable("classWithConstructor").`type`.toClassType
           val classFromBaseClassUsingBaseClassDefinitionType =
-            frame.variable("classFromBaseClassUsingBaseClassDefinition").typeInfo.toClassType
+            frame.variable("classFromBaseClassUsingBaseClassDefinition").`type`.toClassType
           val classWithStaticMethodsType = s.classes.find(_.name.endsWith("ClassWithStaticMethods$")).get.toClassType
-          val javaStaticMethodsType = frame.variable("javaStaticMethodsClass").typeInfo.toClassType
+          val javaStaticMethodsType = frame.variable("javaStaticMethodsClass").`type`.toClassType
           val objectType = s.classes.find(_.name == "java.lang.Object").get.toClassType
 
           // Type name should return the definition
@@ -119,7 +119,7 @@ class PureClassTypeInfoIntegrationSpec extends ParallelMockFunSpec
           val thread = t.get
           val frame = thread.topFrame
 
-          val javaStaticMethodsType = frame.variable("javaStaticMethodsClass").typeInfo.toClassType
+          val javaStaticMethodsType = frame.variable("javaStaticMethodsClass").`type`.toClassType
 
           // Should be able to find static methods using their names and signatures
           val method = javaStaticMethodsType.methodOption("staticMethod3", "(I)I").get
@@ -151,7 +151,7 @@ class PureClassTypeInfoIntegrationSpec extends ParallelMockFunSpec
           val thread = t.get
           val frame = thread.topFrame
 
-          val baseClassType = frame.variable("baseClass").typeInfo.toClassType
+          val baseClassType = frame.variable("baseClass").`type`.toClassType
           val newBaseClass = baseClassType.newInstance(
             thread,
             "<init>",
@@ -160,7 +160,7 @@ class PureClassTypeInfoIntegrationSpec extends ParallelMockFunSpec
           )
 
           newBaseClass.isNull should be (false)
-          newBaseClass.typeInfo.name should endWith ("BaseClass")
+          newBaseClass.`type`.name should endWith ("BaseClass")
         })
       }
     }

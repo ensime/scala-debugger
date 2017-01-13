@@ -61,7 +61,7 @@ class PureMethodInfo(
    *
    * @return The collection of profiles containing type information
    */
-  override def parameterTypeInfo: Seq[TypeInfo] = {
+  override def parameterTypes: Seq[TypeInfo] = {
     import scala.collection.JavaConverters._
 
     _method.argumentTypes().asScala.map(newTypeProfile)
@@ -72,7 +72,7 @@ class PureMethodInfo(
    *
    * @return The profile containing type information
    */
-  override def returnTypeInfo: TypeInfo =
+  override def returnType: TypeInfo =
     newTypeProfile(_method.returnType())
 
   /**
@@ -89,7 +89,7 @@ class PureMethodInfo(
    *
    * @return The reference type information that declared this method
    */
-  override def declaringTypeInfo: ReferenceTypeInfo =
+  override def declaringType: ReferenceTypeInfo =
     newReferenceTypeProfile(_method.declaringType())
 
   /**

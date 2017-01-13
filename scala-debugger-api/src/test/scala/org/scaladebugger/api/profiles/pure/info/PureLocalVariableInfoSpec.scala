@@ -115,7 +115,7 @@ class PureLocalVariableInfoSpec extends ParallelMockFunSpec
         mockNewTypeProfile.expects(mockType)
           .returning(expected).once()
 
-        val actual = pureLocalVariableInfoProfile.typeInfo
+        val actual = pureLocalVariableInfoProfile.`type`
 
         actual should be (expected)
       }

@@ -162,7 +162,7 @@ class PureFieldInfoSpec extends ParallelMockFunSpec
         mockNewTypeProfile.expects(mockType)
           .returning(expected).once()
 
-        val actual = pureFieldInfoProfile.typeInfo
+        val actual = pureFieldInfoProfile.`type`
 
         actual should be (expected)
       }
@@ -220,7 +220,7 @@ class PureFieldInfoSpec extends ParallelMockFunSpec
           .returning(expected)
           .once()
 
-        val actual = pureFieldInfoProfile.declaringTypeInfo
+        val actual = pureFieldInfoProfile.declaringType
 
         actual should be (expected)
       }

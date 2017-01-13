@@ -84,7 +84,7 @@ class PureLocalVariableInfo(
    *
    * @return The profile containing type information
    */
-  override def typeInfo: TypeInfo =
+  override def `type`: TypeInfo =
     newTypeProfile(_localVariable.`type`())
 
   /**

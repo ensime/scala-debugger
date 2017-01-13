@@ -45,7 +45,7 @@ trait ArrayInfo
    *
    * @return The profile containing type information
    */
-  override def typeInfo: ArrayTypeInfo
+  override def `type`: ArrayTypeInfo
 
   /**
    * Returns the length of the array.

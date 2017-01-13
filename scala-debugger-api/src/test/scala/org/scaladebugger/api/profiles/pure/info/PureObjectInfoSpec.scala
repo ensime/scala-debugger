@@ -106,7 +106,7 @@ class PureObjectInfoSpec extends ParallelMockFunSpec
         (mockTypeInfoProfile.toReferenceType _).expects()
           .returning(expected).once()
 
-        val actual = pureObjectInfoProfile.typeInfo
+        val actual = pureObjectInfoProfile.`type`
 
         actual should be (expected)
       }

@@ -44,7 +44,7 @@ trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The profile containing type information
    */
-  def elementTypeInfo: TypeInfo
+  def elementType: TypeInfo
 
   /**
    * Returns the type information for the common element in the array.
@@ -52,7 +52,7 @@ trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
    * @return Success containing the profile containing type information,
    *         otherwise a failure
    */
-  def tryElementTypeInfo: Try[TypeInfo] = Try(elementTypeInfo)
+  def tryElementType: Try[TypeInfo] = Try(elementType)
 
   /**
    * Creates a new instance of the array with the given length.

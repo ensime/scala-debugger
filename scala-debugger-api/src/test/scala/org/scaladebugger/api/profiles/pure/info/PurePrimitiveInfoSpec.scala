@@ -163,7 +163,7 @@ class PurePrimitiveInfoSpec extends ParallelMockFunSpec
         (mockTypeInfoProfile.toPrimitiveType _).expects()
           .returning(expected).once()
 
-        val actual = purePrimitiveInfoProfile.typeInfo
+        val actual = purePrimitiveInfoProfile.`type`
 
         actual should be (expected)
       }
@@ -192,7 +192,7 @@ class PurePrimitiveInfoSpec extends ParallelMockFunSpec
         (mockTypeInfoProfile.toPrimitiveType _).expects()
           .returning(expected).once()
 
-        val actual = purePrimitiveInfoProfile.typeInfo
+        val actual = purePrimitiveInfoProfile.`type`
 
         actual should be (expected)
       }

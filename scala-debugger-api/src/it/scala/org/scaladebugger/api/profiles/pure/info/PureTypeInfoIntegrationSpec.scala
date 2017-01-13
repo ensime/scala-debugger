@@ -28,7 +28,7 @@ class PureTypeInfoIntegrationSpec extends ParallelMockFunSpec
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
           val vt = t.get.topFrame
-            .allVariables.map(v => v.name -> v.typeInfo)
+            .allVariables.map(v => v.name -> v.`type`)
             .toMap
 
           // NOTE: Using assert to provide better feedback with failures
@@ -61,7 +61,7 @@ class PureTypeInfoIntegrationSpec extends ParallelMockFunSpec
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
           val vt = t.get.topFrame
-            .allVariables.map(v => v.name -> v.typeInfo)
+            .allVariables.map(v => v.name -> v.`type`)
             .toMap
 
           (vt("a").castLocal("true") == true) should be (true)

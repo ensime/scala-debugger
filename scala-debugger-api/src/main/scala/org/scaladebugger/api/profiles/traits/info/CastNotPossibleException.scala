@@ -6,11 +6,11 @@ package org.scaladebugger.api.profiles.traits.info
  * desired type is not possible.
  *
  * @param value The local value the could not be casted
- * @param typeInfo The type information that tried to perform the cast
+ * @param `type` The type information that tried to perform the cast
  */
 class CastNotPossibleException(
   private val value: Any,
-  private val typeInfo: TypeInfo
+  private val `type`: TypeInfo
 ) extends Exception(
-  s"Not possible to cast ${value.getClass.getName} to ${typeInfo.name}"
+  s"Not possible to cast ${value.getClass.getName} to ${`type`.name}"
 )

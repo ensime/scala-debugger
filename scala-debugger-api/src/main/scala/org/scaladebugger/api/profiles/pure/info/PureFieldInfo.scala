@@ -117,7 +117,7 @@ class PureFieldInfo(
    *
    * @return The profile containing type information
    */
-  override def typeInfo: TypeInfo = newTypeProfile(_field.`type`())
+  override def `type`: TypeInfo = newTypeProfile(_field.`type`())
 
   /**
    * Returns the parent that contains this field.
@@ -133,7 +133,7 @@ class PureFieldInfo(
    *
    * @return The reference type information that declared this field
    */
-  override def declaringTypeInfo: ReferenceTypeInfo =
+  override def declaringType: ReferenceTypeInfo =
     newReferenceTypeProfile(_field.declaringType())
 
   /**

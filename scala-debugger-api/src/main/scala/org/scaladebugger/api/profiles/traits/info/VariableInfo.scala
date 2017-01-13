@@ -58,15 +58,15 @@ trait VariableInfo extends CreateInfoProfile with CommonInfo {
    *
    * @return The profile containing type information
    */
-  def typeInfo: TypeInfo
+  def `type`: TypeInfo
 
-  /**rsenkbeil3
+  /**
    * Returns the type information for the variable.
    *
    * @return Success containing the profile containing type information,
    *         otherwise a failure
    */
-  def tryTypeInfo: Try[TypeInfo] = Try(typeInfo)
+  def tryType: Try[TypeInfo] = Try(`type`)
 
   /**
    * Returns whether or not this variable represents a field.

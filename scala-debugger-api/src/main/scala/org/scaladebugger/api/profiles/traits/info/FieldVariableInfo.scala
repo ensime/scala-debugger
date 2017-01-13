@@ -32,13 +32,12 @@ trait FieldVariableInfo
    *
    * @return The reference type information that declared this field
    */
-  def declaringTypeInfo: ReferenceTypeInfo
+  def declaringType: ReferenceTypeInfo
 
   /**
    * Returns the type where this field was declared.
    *
    * @return The reference type information that declared this field
    */
-  def tryDeclaringTypeInfo: Try[ReferenceTypeInfo] =
-    Try(declaringTypeInfo)
+  def tryDeclaringType: Try[ReferenceTypeInfo] = Try(declaringType)
 }

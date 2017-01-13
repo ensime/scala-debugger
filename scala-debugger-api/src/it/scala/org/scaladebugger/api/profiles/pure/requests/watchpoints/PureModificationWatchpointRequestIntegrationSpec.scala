@@ -27,7 +27,7 @@ class PureModificationWatchpointRequestIntegrationSpec extends ParallelMockFunSp
       // Listen for modification watchpoint events for specific variable
       s.withProfile(PureDebugProfile.Name)
         .getOrCreateModificationWatchpointRequest(className, fieldName)
-        .filter(_.field.declaringTypeInfo.name == className)
+        .filter(_.field.declaringType.name == className)
         .filter(_.field.name == fieldName)
         .foreach(_ => detectedModificationWatchpoint.set(true))
 

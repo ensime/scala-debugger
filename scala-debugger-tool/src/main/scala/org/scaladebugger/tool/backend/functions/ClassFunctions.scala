@@ -56,7 +56,7 @@ class ClassFunctions(
     val fnr = Regex.wildcardString(filterNot)
 
     @inline def methodToString(m: MethodInfo): String = {
-      val p = m.tryParameterTypeInfo.map(_.map(_.name).mkString(",")).recover {
+      val p = m.tryParameterTypes.map(_.map(_.name).mkString(",")).recover {
         case t: Throwable => t.toString
       }.get
       m.name + "(" + p + ")"

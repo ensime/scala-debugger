@@ -73,7 +73,7 @@ class PureArrayTypeInfo(
    *
    * @return The profile containing type information
    */
-  override def elementTypeInfo: TypeInfo =
+  override def elementType: TypeInfo =
     newTypeProfile(_arrayType.componentType())
 
   /**

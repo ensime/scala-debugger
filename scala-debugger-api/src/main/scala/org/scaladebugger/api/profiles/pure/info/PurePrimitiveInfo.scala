@@ -61,8 +61,8 @@ class PurePrimitiveInfo(
    *
    * @return The profile containing type information
    */
-  override def typeInfo: PrimitiveTypeInfo =
-    super.typeInfo.toPrimitiveType
+  override def `type`: PrimitiveTypeInfo =
+    super.`type`.toPrimitiveType
 
   /**
    * Returns the value as a value local to this JVM.

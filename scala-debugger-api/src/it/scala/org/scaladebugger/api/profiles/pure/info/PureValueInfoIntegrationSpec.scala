@@ -29,7 +29,7 @@ class PureValueInfoIntegrationSpec extends ParallelMockFunSpec
         logTimeTaken(eventually {
           val variableNamesAndTypes = t.get
             .topFrame
-            .allVariables.map(v => v.name -> v.typeInfo.name)
+            .allVariables.map(v => v.name -> v.`type`.name)
             .toMap
 
           variableNamesAndTypes should contain theSameElementsAs Map(

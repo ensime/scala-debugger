@@ -72,8 +72,8 @@ class PureObjectInfo(
    *
    * @return The profile containing type information
    */
-  override def typeInfo: ReferenceTypeInfo =
-    super.typeInfo.toReferenceType
+  override def `type`: ReferenceTypeInfo =
+    super.`type`.toReferenceType
 
   /**
    * Represents the unique id of this object.

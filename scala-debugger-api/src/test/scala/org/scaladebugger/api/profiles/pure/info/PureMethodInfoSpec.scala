@@ -83,7 +83,7 @@ class PureMethodInfoSpec extends ParallelMockFunSpec
 
         mockNewTypeProfile.expects(mockType).returning(expected).once()
 
-        val actual = pureMethodInfoProfile.returnTypeInfo
+        val actual = pureMethodInfoProfile.returnType
 
         actual should be (expected)
       }
@@ -113,7 +113,7 @@ class PureMethodInfoSpec extends ParallelMockFunSpec
           .returning(expected)
           .once()
 
-        val actual = pureMethodInfoProfile.declaringTypeInfo
+        val actual = pureMethodInfoProfile.declaringType
 
         actual should be (expected)
       }
@@ -132,7 +132,7 @@ class PureMethodInfoSpec extends ParallelMockFunSpec
           mockNewTypeProfile.expects(t).returning(e).once()
         }
 
-        val actual = pureMethodInfoProfile.parameterTypeInfo
+        val actual = pureMethodInfoProfile.parameterTypes
 
         actual should be (expected)
       }

@@ -48,7 +48,7 @@ class PureFrameInfoIntegrationSpec extends ParallelMockFunSpec
 
       withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
         logTimeTaken(eventually {
-          val thisTypeName = t.get.topFrame.thisObject.typeInfo.name
+          val thisTypeName = t.get.topFrame.thisObject.`type`.name
 
           thisTypeName should be ("org.scaladebugger.test.info.Variables$")
         })

@@ -29,11 +29,11 @@ class PureArrayTypeInfoIntegrationSpec extends ParallelMockFunSpec
         logTimeTaken(eventually {
           val array = t.get.topFrame.variable("array").toValueInfo.toArrayInfo
 
-          val arrayType = array.typeInfo
+          val arrayType = array.`type`
 
           arrayType.elementTypeName should be ("int")
           arrayType.elementSignature should be ("I")
-          arrayType.elementTypeInfo.name should be ("int")
+          arrayType.elementType.name should be ("int")
         })
       }
     }
@@ -55,7 +55,7 @@ class PureArrayTypeInfoIntegrationSpec extends ParallelMockFunSpec
 
         logTimeTaken(eventually {
           val array = t.get.topFrame.variable("array").toValueInfo.toArrayInfo
-          val arrayType = array.typeInfo
+          val arrayType = array.`type`
 
           // TODO: Assign the new array to the tmpArray variable
           // Create a new array

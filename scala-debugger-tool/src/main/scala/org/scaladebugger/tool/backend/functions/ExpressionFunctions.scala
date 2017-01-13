@@ -81,7 +81,7 @@ class ExpressionFunctions(
       variable.foreach(v => {
         // TODO: Support assigning object or value that is
         //       already remote
-        val result = v.typeInfo.tryCastLocal(r) match {
+        val result = v.`type`.tryCastLocal(r) match {
           case Success(st: String) =>
             v.tryCreateRemotely(st)
           case Success(av) =>

@@ -30,7 +30,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
-  override def typeInfo: ReferenceTypeInfo
+  override def `type`: ReferenceTypeInfo
 
   /**
    * Represents the unique id of this object.

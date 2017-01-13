@@ -96,7 +96,7 @@ class PureArrayInfoSpec extends ParallelMockFunSpec
         (mockReferenceTypeInfoProfile.toArrayType _).expects()
           .returning(expected).once()
 
-        val actual = pureArrayInfoProfile.typeInfo
+        val actual = pureArrayInfoProfile.`type`
 
         actual should be (expected)
       }

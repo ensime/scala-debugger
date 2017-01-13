@@ -30,7 +30,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
-  override def typeInfo: PrimitiveTypeInfo
+  override def `type`: PrimitiveTypeInfo
 
   /**
    * Returns the value as a value local to this JVM.

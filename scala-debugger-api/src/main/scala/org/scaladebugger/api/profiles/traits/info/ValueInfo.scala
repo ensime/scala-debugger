@@ -29,7 +29,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return The profile containing type information
    */
-  def typeInfo: TypeInfo
+  def `type`: TypeInfo
 
   /**
    * Returns the type information for the value.
@@ -37,7 +37,7 @@ trait ValueInfo extends CommonInfo {
    * @return Success containing the profile containing type information,
    *         otherwise a failure
    */
-  def tryTypeInfo: Try[TypeInfo] = Try(typeInfo)
+  def tryType: Try[TypeInfo] = Try(`type`)
 
   /**
    * Returns the value as a value local to this JVM.

@@ -53,7 +53,7 @@ trait MethodInfo extends CommonInfo {
    *
    * @return The collection of profiles containing type information
    */
-  def parameterTypeInfo: Seq[TypeInfo]
+  def parameterTypes: Seq[TypeInfo]
 
   /**
    * Returns the type information for the method's parameter types.
@@ -61,7 +61,7 @@ trait MethodInfo extends CommonInfo {
    * @return Success containing the collection of profiles containing type
    *         information
    */
-  def tryParameterTypeInfo: Try[Seq[TypeInfo]] = Try(parameterTypeInfo)
+  def tryParameterTypes: Try[Seq[TypeInfo]] = Try(parameterTypes)
 
   /**
    * Returns the fully-qualified class name of the type for the return value
@@ -84,29 +84,28 @@ trait MethodInfo extends CommonInfo {
    *
    * @return The profile containing type information
    */
-  def returnTypeInfo: TypeInfo
+  def returnType: TypeInfo
 
   /**
    * Returns the type information for the method's return type.
    *
    * @return The profile containing type information
    */
-  def tryReturnTypeInfo: Try[TypeInfo] = Try(returnTypeInfo)
+  def tryReturnType: Try[TypeInfo] = Try(returnType)
 
   /**
    * Returns the type where this method was declared.
    *
    * @return The reference type information that declared this method
    */
-  def declaringTypeInfo: ReferenceTypeInfo
+  def declaringType: ReferenceTypeInfo
 
   /**
    * Returns the type where this method was declared.
    *
    * @return The reference type information that declared this method
    */
-  def tryDeclaringTypeInfo: Try[ReferenceTypeInfo] =
-    Try(declaringTypeInfo)
+  def tryDeclaringType: Try[ReferenceTypeInfo] = Try(declaringType)
 
   /**
    * Returns a string presenting a better human-readable description of
