@@ -69,7 +69,7 @@ class PureMonitorEventInfo(
    */
   override def toJavaInfo: LocatableEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newMonitorEventInfoProfile(
+    jep.newMonitorEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       monitorEvent = monitorEvent,
       jdiArguments = jdiArguments
@@ -95,7 +95,7 @@ class PureMonitorEventInfo(
    *
    * @return The information profile about the monitor object
    */
-  override def monitor: ObjectInfo = infoProducer.newObjectInfoProfile(
+  override def monitor: ObjectInfo = infoProducer.newObjectInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     objectReference = _monitor
   )(
@@ -108,7 +108,7 @@ class PureMonitorEventInfo(
    *
    * @return The information profile about the thread
    */
-  override def thread: ThreadInfo = infoProducer.newThreadInfoProfile(
+  override def thread: ThreadInfo = infoProducer.newThreadInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     threadReference = _thread
   )(

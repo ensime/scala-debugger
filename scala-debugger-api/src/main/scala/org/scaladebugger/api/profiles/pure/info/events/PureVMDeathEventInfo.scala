@@ -47,7 +47,7 @@ class PureVMDeathEventInfo(
    */
   override def toJavaInfo: VMDeathEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newVMDeathEventInfoProfile(
+    jep.newVMDeathEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       vmDeathEvent = vmDeathEvent,
       jdiArguments = jdiArguments

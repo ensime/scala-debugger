@@ -43,7 +43,7 @@ class PureClassTypeInfo(
    *         to Java
    */
   override def toJavaInfo: ClassTypeInfo = {
-    infoProducer.toJavaInfo.newClassTypeInfoProfile(
+    infoProducer.toJavaInfo.newClassTypeInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       classType = _classType
     )
@@ -235,7 +235,7 @@ class PureClassTypeInfo(
   protected def newObjectProfile(
     objectReference: ObjectReference,
     virtualMachine: VirtualMachine
-  ): ObjectInfo = infoProducer.newObjectInfoProfile(
+  ): ObjectInfo = infoProducer.newObjectInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     objectReference = objectReference
   )(
@@ -246,5 +246,5 @@ class PureClassTypeInfo(
     scalaVirtualMachine.underlyingVirtualMachine
 
   protected def newValueProfile(value: Value): ValueInfo =
-    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfo(scalaVirtualMachine, value)
 }

@@ -57,7 +57,7 @@ class PureThreadDeathEventInfo(
    */
   override def toJavaInfo: ThreadDeathEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newThreadDeathEventInfoProfile(
+    jep.newThreadDeathEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       threadDeathEvent = threadDeathEvent,
       jdiArguments = jdiArguments
@@ -80,7 +80,7 @@ class PureThreadDeathEventInfo(
    *
    * @return The information profile about the thread
    */
-  override def thread: ThreadInfo = infoProducer.newThreadInfoProfile(
+  override def thread: ThreadInfo = infoProducer.newThreadInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     threadReference = _thread
   )(

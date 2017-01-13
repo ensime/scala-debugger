@@ -171,7 +171,7 @@ class PureMethodEntryRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[MethodEntryEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultMethodEntryEventInfoProfile _)
+          (mockEventProducer.newDefaultMethodEntryEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

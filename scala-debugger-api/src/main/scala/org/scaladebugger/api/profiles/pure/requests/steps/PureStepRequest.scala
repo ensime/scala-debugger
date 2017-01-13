@@ -46,34 +46,34 @@ trait PureStepRequest extends StepRequest {
   /**
    * Steps in from the current location to the next line.
    *
-   * @param threadInfoProfile The thread in which to perform the step
+   * @param threadInfo The thread in which to perform the step
    * @param extraArguments The additional JDI arguments to provide
    * @return The resulting event and any retrieved data based on
    *         requests from extra arguments
    */
   override def stepIntoLineWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = createStepFuture(
     stepManager.createStepIntoLineRequest,
-    threadInfoProfile,
+    threadInfo,
     extraArguments: _*
   )
 
   /**
    * Steps over from the current location to the next line.
    *
-   * @param threadInfoProfile The thread in which to perform the step
+   * @param threadInfo The thread in which to perform the step
    * @param extraArguments The additional JDI arguments to provide
    * @return The resulting event and any retrieved data based on
    *         requests from extra arguments
    */
   override def stepOverLineWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = createStepFuture(
     stepManager.createStepOverLineRequest,
-    threadInfoProfile,
+    threadInfo,
     extraArguments: _*
   )
 
@@ -81,51 +81,51 @@ trait PureStepRequest extends StepRequest {
    * Constructs a stream of step events caused by stepping out from the
    * current location to the next line.
    *
-   * @param threadInfoProfile The thread in which to perform the step
+   * @param threadInfo The thread in which to perform the step
    * @param extraArguments The additional JDI arguments to provide
    * @return The resulting event and any retrieved data based on
    *         requests from extra arguments
    */
   override def stepOutLineWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = createStepFuture(
     stepManager.createStepOutLineRequest,
-    threadInfoProfile,
+    threadInfo,
     extraArguments: _*
   )
 
   /**
    * Steps in from the current location to the next location.
    *
-   * @param threadInfoProfile The thread in which to perform the step
+   * @param threadInfo The thread in which to perform the step
    * @param extraArguments The additional JDI arguments to provide
    * @return The resulting event and any retrieved data based on
    *         requests from extra arguments
    */
   override def stepIntoMinWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = createStepFuture(
     stepManager.createStepIntoMinRequest,
-    threadInfoProfile,
+    threadInfo,
     extraArguments: _*
   )
 
   /**
    * Steps over from the current location to the next location.
    *
-   * @param threadInfoProfile The thread in which to perform the step
+   * @param threadInfo The thread in which to perform the step
    * @param extraArguments The additional JDI arguments to provide
    * @return The resulting event and any retrieved data based on
    *         requests from extra arguments
    */
   override def stepOverMinWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = createStepFuture(
     stepManager.createStepOverMinRequest,
-    threadInfoProfile,
+    threadInfo,
     extraArguments: _*
   )
 
@@ -133,49 +133,49 @@ trait PureStepRequest extends StepRequest {
    * Constructs a stream of step events caused by stepping out from the
    * current location to the next location.
    *
-   * @param threadInfoProfile The thread in which to perform the step
+   * @param threadInfo The thread in which to perform the step
    * @param extraArguments The additional JDI arguments to provide
    * @return The resulting event and any retrieved data based on
    *         requests from extra arguments
    */
   override def stepOutMinWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = createStepFuture(
     stepManager.createStepOutMinRequest,
-    threadInfoProfile,
+    threadInfo,
     extraArguments: _*
   )
 
   /**
    * Constructs a stream of step events.
    *
-   * @param threadInfoProfile The thread with which to receive step events
+   * @param threadInfo The thread with which to receive step events
    * @param extraArguments The additional JDI arguments to provide
    * @return The stream of step events and any retrieved data based on
    *         requests from extra arguments
    */
   override def tryCreateStepListenerWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[StepEventAndData]] = Try {
     val JDIArgumentGroup(_, eArgs, _) = JDIArgumentGroup(extraArguments: _*)
-    newStepPipeline("", (threadInfoProfile, eArgs))
+    newStepPipeline("", (threadInfo, eArgs))
   }
 
   /**
    * Determines if there is any step request for the specified thread that
    * is pending.
    *
-   * @param threadInfoProfile The thread with which is receiving the step request
+   * @param threadInfo The thread with which is receiving the step request
    * @return True if there is at least one step request with the
    *         specified name in the specified class that is pending,
    *         otherwise false
    */
   override def isStepRequestPending(
-    threadInfoProfile: ThreadInfo
+    threadInfo: ThreadInfo
   ): Boolean = {
-    lazy val threadReference = threadInfoProfile.toJdiInstance
+    lazy val threadReference = threadInfo.toJdiInstance
     stepRequests
       .filter(_.threadReference == threadReference)
       .exists(_.isPending)
@@ -185,7 +185,7 @@ trait PureStepRequest extends StepRequest {
    * Determines if there is any step request for the specified thread with
    * matching arguments that is pending.
    *
-   * @param threadInfoProfile The thread with which is receiving the step request
+   * @param threadInfo The thread with which is receiving the step request
    * @param extraArguments  The additional arguments provided to the specific
    *                        step request
    * @return True if there is at least one step request with the
@@ -193,10 +193,10 @@ trait PureStepRequest extends StepRequest {
    *         pending, otherwise false
    */
   override def isStepRequestWithArgsPending(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Boolean = {
-    lazy val threadReference = threadInfoProfile.toJdiInstance
+    lazy val threadReference = threadInfo.toJdiInstance
     stepRequests
       .filter(t =>
         t.threadReference == threadReference &&
@@ -207,13 +207,13 @@ trait PureStepRequest extends StepRequest {
   /**
    * Removes all step requests for the given thread.
    *
-   * @param threadInfoProfile The thread with which is receiving the step request
+   * @param threadInfo The thread with which is receiving the step request
    * @return The collection of information about removed step requests
    */
   override def removeStepRequests(
-    threadInfoProfile: ThreadInfo
+    threadInfo: ThreadInfo
   ): Seq[StepRequestInfo] = {
-    lazy val threadReference = threadInfoProfile.toJdiInstance
+    lazy val threadReference = threadInfo.toJdiInstance
     stepRequests.filter(_.threadReference == threadReference).filter(s =>
       stepManager.removeStepRequestWithId(s.requestId)
     )
@@ -223,17 +223,17 @@ trait PureStepRequest extends StepRequest {
    * Removes all step requests for the given thread with the specified extra
    * arguments.
    *
-   * @param threadInfoProfile The thread with which is receiving the step request
+   * @param threadInfo The thread with which is receiving the step request
    * @param extraArguments  the additional arguments provided to the specific
    *                        step request
    * @return Some information about the removed request if it existed,
    *         otherwise None
    */
   override def removeStepRequestWithArgs(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Option[StepRequestInfo] = {
-    lazy val threadReference = threadInfoProfile.toJdiInstance
+    lazy val threadReference = threadInfo.toJdiInstance
     stepRequests.find(s =>
       s.threadReference == threadReference &&
       s.extraArguments == extraArguments
@@ -259,24 +259,24 @@ trait PureStepRequest extends StepRequest {
    *
    * @param newStepRequestFunc The function used to create the request and
    *                           return the id of the request
-   * @param threadInfoProfile The thread in which to perform the step
+   * @param threadInfo The thread in which to perform the step
    * @param extraArguments The additional JDI arguments to provide
    * @return The future containing the result from the step request
    */
   protected def createStepFuture(
     newStepRequestFunc: (ThreadReference, Seq[JDIRequestArgument]) => Try[String],
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = {
     val tryPipeline = {
       val JDIArgumentGroup(rArgs, eArgs, _) =
         JDIArgumentGroup(extraArguments: _*)
 
-      val threadReference = threadInfoProfile.toJdiInstance
+      val threadReference = threadInfo.toJdiInstance
       newStepRequestFunc(
         threadReference,
         rArgs :+ ThreadFilter(threadReference)
-      ).map(requestId => (requestId, threadInfoProfile, eArgs))
+      ).map(requestId => (requestId, threadInfo, eArgs))
     }.map { case (requestId, thread, eArgs) =>
       newStepPipeline(requestId, (thread, eArgs))
     }
@@ -305,7 +305,7 @@ trait PureStepRequest extends StepRequest {
     val newPipeline = eventManager
       .addEventDataStream(StepEventType, args._2: _*)
       .map(t => (t._1.asInstanceOf[StepEvent], t._2))
-      .map(t => (eventProducer.newDefaultStepEventInfoProfile(
+      .map(t => (eventProducer.newDefaultStepEventInfo(
         scalaVirtualMachine = scalaVirtualMachine,
         stepEvent = t._1,
         rArgs ++ eArgs: _*

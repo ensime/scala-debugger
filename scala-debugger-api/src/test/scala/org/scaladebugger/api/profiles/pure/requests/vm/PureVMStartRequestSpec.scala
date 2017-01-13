@@ -150,7 +150,7 @@ class PureVMStartRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[VMStartEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultVMStartEventInfoProfile _)
+          (mockEventProducer.newDefaultVMStartEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

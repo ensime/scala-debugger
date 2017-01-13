@@ -66,7 +66,7 @@ trait PureVMDeathRequest extends VMDeathRequest {
         vmDeathManager.removeVMDeathRequest(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultVMDeathEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultVMDeathEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = vmDeathManager.getVMDeathRequestInfo
     )

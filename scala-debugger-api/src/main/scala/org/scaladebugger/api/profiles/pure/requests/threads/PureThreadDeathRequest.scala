@@ -71,7 +71,7 @@ trait PureThreadDeathRequest extends ThreadDeathRequest {
         threadDeathManager.removeThreadDeathRequest(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultThreadDeathEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultThreadDeathEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = threadDeathManager.getThreadDeathRequestInfo
     )

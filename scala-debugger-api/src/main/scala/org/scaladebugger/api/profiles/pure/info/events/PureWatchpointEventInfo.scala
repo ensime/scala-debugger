@@ -69,7 +69,7 @@ class PureWatchpointEventInfo(
    */
   override def toJavaInfo: WatchpointEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newWatchpointEventInfoProfile(
+    jep.newWatchpointEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       watchpointEvent = watchpointEvent,
       jdiArguments = jdiArguments
@@ -93,7 +93,7 @@ class PureWatchpointEventInfo(
    *
    * @return The information profile about the field
    */
-  override def field: FieldVariableInfo = infoProducer.newFieldInfoProfile(
+  override def field: FieldVariableInfo = infoProducer.newFieldInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     container = _container,
     field = _field,
@@ -111,7 +111,7 @@ class PureWatchpointEventInfo(
    */
   override def `object`: Option[ObjectInfo] = {
     Option(watchpointEvent.`object`()).map(o =>
-      infoProducer.newObjectInfoProfile(
+      infoProducer.newObjectInfo(
         scalaVirtualMachine = scalaVirtualMachine,
         objectReference = o
       )(
@@ -126,7 +126,7 @@ class PureWatchpointEventInfo(
    *
    * @return The information profile about the value
    */
-  override def currentValue: ValueInfo = infoProducer.newValueInfoProfile(
+  override def currentValue: ValueInfo = infoProducer.newValueInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     value = watchpointEvent.valueCurrent()
   )

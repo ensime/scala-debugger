@@ -200,7 +200,7 @@ class PureMonitorContendedEnteredRequestSpec extends ParallelMockFunSpec with JD
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[MonitorContendedEnteredEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultMonitorContendedEnteredEventInfoProfile _)
+          (mockEventProducer.newDefaultMonitorContendedEnteredEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

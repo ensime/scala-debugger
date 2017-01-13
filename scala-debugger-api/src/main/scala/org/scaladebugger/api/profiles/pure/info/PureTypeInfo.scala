@@ -43,7 +43,7 @@ class PureTypeInfo(
    *         to Java
    */
   override def toJavaInfo: TypeInfo = {
-    infoProducer.toJavaInfo.newTypeInfoProfile(
+    infoProducer.toJavaInfo.newTypeInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       _type = _type
     )
@@ -180,46 +180,46 @@ class PureTypeInfo(
   }
 
   protected def newTypeProfile(_type: Type): TypeInfo =
-    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfo(scalaVirtualMachine, _type)
 
   protected def newReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfoProfile(
+  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfo(
     scalaVirtualMachine,
     referenceType
   )
 
   protected def newArrayTypeProfile(
     arrayType: ArrayType
-  ): ArrayTypeInfo = infoProducer.newArrayTypeInfoProfile(
+  ): ArrayTypeInfo = infoProducer.newArrayTypeInfo(
     scalaVirtualMachine,
     arrayType
   )
 
   protected def newClassTypeProfile(
     classType: ClassType
-  ): ClassTypeInfo = infoProducer.newClassTypeInfoProfile(
+  ): ClassTypeInfo = infoProducer.newClassTypeInfo(
     scalaVirtualMachine,
     classType
   )
 
   protected def newInterfaceTypeProfile(
     interfaceType: InterfaceType
-  ): InterfaceTypeInfo = infoProducer.newInterfaceTypeInfoProfile(
+  ): InterfaceTypeInfo = infoProducer.newInterfaceTypeInfo(
     scalaVirtualMachine,
     interfaceType
   )
 
   protected def newPrimitiveTypeProfile(
     primitiveType: PrimitiveType
-  ): PrimitiveTypeInfo = infoProducer.newPrimitiveTypeInfoProfile(
+  ): PrimitiveTypeInfo = infoProducer.newPrimitiveTypeInfo(
     scalaVirtualMachine,
     primitiveType
   )
 
   protected def newPrimitiveTypeProfile(
     voidType: VoidType
-  ): PrimitiveTypeInfo = infoProducer.newPrimitiveTypeInfoProfile(
+  ): PrimitiveTypeInfo = infoProducer.newPrimitiveTypeInfo(
     scalaVirtualMachine,
     voidType
   )

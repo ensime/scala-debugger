@@ -48,7 +48,7 @@ class PureClassLoaderInfo(
    *         to Java
    */
   override def toJavaInfo: ClassLoaderInfo = {
-    infoProducer.toJavaInfo.newClassLoaderInfoProfile(
+    infoProducer.toJavaInfo.newClassLoaderInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       classLoaderReference = _classLoaderReference
     )(

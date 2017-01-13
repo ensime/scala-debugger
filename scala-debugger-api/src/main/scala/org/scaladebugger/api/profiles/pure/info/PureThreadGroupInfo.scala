@@ -45,7 +45,7 @@ class PureThreadGroupInfo(
    *         to Java
    */
   override def toJavaInfo: ThreadGroupInfo = {
-    infoProducer.toJavaInfo.newThreadGroupInfoProfile(
+    infoProducer.toJavaInfo.newThreadGroupInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       threadGroupReference = _threadGroupReference
     )(
@@ -112,7 +112,7 @@ class PureThreadGroupInfo(
 
   override protected def newThreadGroupProfile(
     threadGroupReference: ThreadGroupReference
-  ): ThreadGroupInfo = infoProducer.newThreadGroupInfoProfile(
+  ): ThreadGroupInfo = infoProducer.newThreadGroupInfo(
     scalaVirtualMachine,
     threadGroupReference
   )(
@@ -122,7 +122,7 @@ class PureThreadGroupInfo(
 
   override protected def newThreadProfile(
     threadReference: ThreadReference
-  ): ThreadInfo = infoProducer.newThreadInfoProfile(
+  ): ThreadInfo = infoProducer.newThreadInfo(
     scalaVirtualMachine,
     threadReference
   )(

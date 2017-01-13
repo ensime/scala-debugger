@@ -200,7 +200,7 @@ class PureThreadStartRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[ThreadStartEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultThreadStartEventInfoProfile _)
+          (mockEventProducer.newDefaultThreadStartEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

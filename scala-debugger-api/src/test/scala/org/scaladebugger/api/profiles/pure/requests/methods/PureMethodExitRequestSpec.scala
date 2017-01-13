@@ -170,7 +170,7 @@ class PureMethodExitRequestSpec extends ParallelMockFunSpec with JDIMockHelpers 
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[MethodExitEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultMethodExitEventInfoProfile _)
+          (mockEventProducer.newDefaultMethodExitEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

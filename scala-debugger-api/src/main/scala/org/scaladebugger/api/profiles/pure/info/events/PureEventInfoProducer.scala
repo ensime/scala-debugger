@@ -37,7 +37,7 @@ class PureEventInfoProducer(
     new PureEventInfoProducer(infoProducer.toJavaInfo)
   }
 
-  override def newEventInfoProfile(
+  override def newEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     event: Event,
     jdiArguments: Seq[JDIArgument]
@@ -48,7 +48,7 @@ class PureEventInfoProducer(
     jdiArguments = jdiArguments
   )
 
-  override def newLocatableEventInfoProfile(
+  override def newLocatableEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     locatableEvent: LocatableEvent,
     jdiArguments: Seq[JDIArgument]
@@ -69,7 +69,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newWatchpointEventInfoProfile(
+  override def newWatchpointEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     watchpointEvent: WatchpointEvent,
     jdiArguments: Seq[JDIArgument]
@@ -94,7 +94,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newAccessWatchpointEventInfoProfile(
+  override def newAccessWatchpointEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     accessWatchpointEvent: AccessWatchpointEvent,
     jdiArguments: Seq[JDIArgument]
@@ -119,7 +119,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newBreakpointEventInfoProfile(
+  override def newBreakpointEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     breakpointEvent: BreakpointEvent,
     jdiArguments: Seq[JDIArgument]
@@ -140,7 +140,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newClassPrepareEventInfoProfile(
+  override def newClassPrepareEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classPrepareEvent: ClassPrepareEvent,
     jdiArguments: Seq[JDIArgument]
@@ -161,7 +161,7 @@ class PureEventInfoProducer(
     _referenceType = referenceType
   )
 
-  override def newClassUnloadEventInfoProfile(
+  override def newClassUnloadEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classUnloadEvent: ClassUnloadEvent,
     jdiArguments: Seq[JDIArgument]
@@ -172,7 +172,7 @@ class PureEventInfoProducer(
     jdiArguments = jdiArguments
   )
 
-  override def newExceptionEventInfoProfile(
+  override def newExceptionEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     exceptionEvent: ExceptionEvent,
     jdiArguments: Seq[JDIArgument]
@@ -199,7 +199,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newMethodEntryEventInfoProfile(
+  override def newMethodEntryEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     methodEntryEvent: MethodEntryEvent,
     jdiArguments: Seq[JDIArgument]
@@ -222,7 +222,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newMethodExitEventInfoProfile(
+  override def newMethodExitEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     methodExitEvent: MethodExitEvent,
     jdiArguments: Seq[JDIArgument]
@@ -247,7 +247,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newModificationWatchpointEventInfoProfile(
+  override def newModificationWatchpointEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     modificationWatchpointEvent: ModificationWatchpointEvent,
     jdiArguments: Seq[JDIArgument]
@@ -272,7 +272,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newMonitorEventInfoProfile(
+  override def newMonitorEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorEvent: MonitorEvent,
     jdiArguments: Seq[JDIArgument]
@@ -297,7 +297,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newMonitorContendedEnteredEventInfoProfile(
+  override def newMonitorContendedEnteredEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorContendedEnteredEvent: MonitorContendedEnteredEvent,
     jdiArguments: Seq[JDIArgument]
@@ -322,7 +322,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newMonitorContendedEnterEventInfoProfile(
+  override def newMonitorContendedEnterEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorContendedEnterEvent: MonitorContendedEnterEvent,
     jdiArguments: Seq[JDIArgument]
@@ -347,7 +347,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newMonitorWaitedEventInfoProfile(
+  override def newMonitorWaitedEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorWaitedEvent: MonitorWaitedEvent,
     jdiArguments: Seq[JDIArgument]
@@ -372,7 +372,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newMonitorWaitEventInfoProfile(
+  override def newMonitorWaitEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     monitorWaitEvent: MonitorWaitEvent,
     jdiArguments: Seq[JDIArgument]
@@ -397,7 +397,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newStepEventInfoProfile(
+  override def newStepEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     stepEvent: StepEvent,
     jdiArguments: Seq[JDIArgument]
@@ -418,7 +418,7 @@ class PureEventInfoProducer(
     _location = location
   )
 
-  override def newThreadDeathEventInfoProfile(
+  override def newThreadDeathEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadDeathEvent: ThreadDeathEvent,
     jdiArguments: Seq[JDIArgument]
@@ -437,7 +437,7 @@ class PureEventInfoProducer(
     _threadReferenceType = threadReferenceType
   )
 
-  override def newThreadStartEventInfoProfile(
+  override def newThreadStartEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadStartEvent: ThreadStartEvent,
     jdiArguments: Seq[JDIArgument]
@@ -456,7 +456,7 @@ class PureEventInfoProducer(
     _threadReferenceType = threadReferenceType
   )
 
-  override def newVMDeathEventInfoProfile(
+  override def newVMDeathEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     vmDeathEvent: VMDeathEvent,
     jdiArguments: Seq[JDIArgument]
@@ -467,7 +467,7 @@ class PureEventInfoProducer(
     jdiArguments = jdiArguments
   )
 
-  override def newVMDisconnectEventInfoProfile(
+  override def newVMDisconnectEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     vmDisconnectEvent: VMDisconnectEvent,
     jdiArguments: Seq[JDIArgument]
@@ -478,7 +478,7 @@ class PureEventInfoProducer(
     jdiArguments = jdiArguments
   )
 
-  override def newVMStartEventInfoProfile(
+  override def newVMStartEventInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     vmStartEvent: VMStartEvent,
     jdiArguments: Seq[JDIArgument]

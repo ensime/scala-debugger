@@ -201,7 +201,7 @@ class PureMonitorContendedEnterRequestSpec extends ParallelMockFunSpec with JDIM
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[MonitorContendedEnterEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultMonitorContendedEnterEventInfoProfile _)
+          (mockEventProducer.newDefaultMonitorContendedEnterEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

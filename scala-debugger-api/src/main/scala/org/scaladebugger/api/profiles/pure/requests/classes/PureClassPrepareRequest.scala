@@ -67,7 +67,7 @@ trait PureClassPrepareRequest extends ClassPrepareRequest {
         classPrepareManager.removeClassPrepareRequest(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultClassPrepareEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultClassPrepareEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = classPrepareManager.getClassPrepareRequestInfo
     )

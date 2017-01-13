@@ -70,7 +70,7 @@ trait PureModificationWatchpointRequest extends ModificationWatchpointRequest {
         modificationWatchpointManager.removeModificationWatchpointRequestWithId(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultModificationWatchpointEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultModificationWatchpointEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = modificationWatchpointManager.getModificationWatchpointRequestInfoWithId
     )

@@ -66,7 +66,7 @@ trait PureMiscInfo extends MiscInfo with JDIHelperMethods {
 
   protected def miscNewReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfoProfile(
+  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfo(
     scalaVirtualMachine,
     referenceType
   )

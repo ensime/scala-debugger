@@ -118,7 +118,7 @@ class PureEventListenerRequestSpec extends ParallelMockFunSpec with JDIMockHelpe
         val mockEventInfoProducer = mock[EventInfoProducer]
         (mockInfoProducer.eventProducer _).expects()
           .returning(mockEventInfoProducer).once()
-        (mockEventInfoProducer.newDefaultEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultEventInfo _).expects(
           mockScalaVirtualMachine,
           mockEvent,
           arguments

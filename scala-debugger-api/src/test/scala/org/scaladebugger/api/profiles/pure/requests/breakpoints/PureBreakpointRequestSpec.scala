@@ -175,7 +175,7 @@ class PureBreakpointRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[BreakpointEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultBreakpointEventInfoProfile _)
+          (mockEventProducer.newDefaultBreakpointEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

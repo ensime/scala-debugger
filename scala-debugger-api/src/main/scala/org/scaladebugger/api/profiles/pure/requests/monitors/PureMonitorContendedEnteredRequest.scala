@@ -66,7 +66,7 @@ trait PureMonitorContendedEnteredRequest extends MonitorContendedEnteredRequest 
         monitorContendedEnteredManager.removeMonitorContendedEnteredRequest(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultMonitorContendedEnteredEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultMonitorContendedEnteredEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = monitorContendedEnteredManager.getMonitorContendedEnteredRequestInfo
     )

@@ -105,7 +105,7 @@ trait PureExceptionRequest extends ExceptionRequest {
         exceptionManager.removeExceptionRequestWithId(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultExceptionEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultExceptionEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = exceptionManager.getExceptionRequestInfoWithId
     )

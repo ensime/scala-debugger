@@ -42,7 +42,7 @@ class PureReferenceTypeInfo(
    *         to Java
    */
   override def toJavaInfo: ReferenceTypeInfo = {
-    infoProducer.toJavaInfo.newReferenceTypeInfoProfile(
+    infoProducer.toJavaInfo.newReferenceTypeInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       referenceType = _referenceType
     )
@@ -342,7 +342,7 @@ class PureReferenceTypeInfo(
   protected def newFieldProfile(
     field: Field,
     offsetIndex: Int
-  ): FieldVariableInfo = infoProducer.newFieldInfoProfile(
+  ): FieldVariableInfo = infoProducer.newFieldInfo(
     scalaVirtualMachine,
     Right(_referenceType),
     field,
@@ -350,24 +350,24 @@ class PureReferenceTypeInfo(
   )()
 
   protected def newMethodProfile(method: Method): MethodInfo =
-    infoProducer.newMethodInfoProfile(scalaVirtualMachine, method)
+    infoProducer.newMethodInfo(scalaVirtualMachine, method)
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfo =
-    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)()
+    infoProducer.newObjectInfo(scalaVirtualMachine, objectReference)()
 
   protected def newLocationProfile(location: Location): LocationInfo =
-    infoProducer.newLocationInfoProfile(scalaVirtualMachine, location)
+    infoProducer.newLocationInfo(scalaVirtualMachine, location)
 
   protected def newClassObjectProfile(
     classObjectReference: ClassObjectReference
-  ): ClassObjectInfo = infoProducer.newClassObjectInfoProfile(
+  ): ClassObjectInfo = infoProducer.newClassObjectInfo(
     scalaVirtualMachine,
     classObjectReference
   )(referenceType = _referenceType)
 
   protected def newClassLoaderProfile(
     classLoaderReference: ClassLoaderReference
-  ): ClassLoaderInfo = infoProducer.newClassLoaderInfoProfile(
+  ): ClassLoaderInfo = infoProducer.newClassLoaderInfo(
     scalaVirtualMachine,
     classLoaderReference
   )(referenceType = _referenceType)

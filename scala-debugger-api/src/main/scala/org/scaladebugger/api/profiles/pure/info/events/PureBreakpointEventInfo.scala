@@ -64,7 +64,7 @@ class PureBreakpointEventInfo(
    */
   override def toJavaInfo: BreakpointEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newBreakpointEventInfoProfile(
+    jep.newBreakpointEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       breakpointEvent = breakpointEvent,
       jdiArguments = jdiArguments

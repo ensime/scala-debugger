@@ -57,7 +57,7 @@ class PureModificationWatchpointEventInfoSpec extends ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newModificationWatchpointEventInfoProfile(
+        (mockEventInfoProducer.newModificationWatchpointEventInfo(
           _: ScalaVirtualMachine,
           _: ModificationWatchpointEvent,
           _: Seq[JDIArgument]

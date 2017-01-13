@@ -31,33 +31,33 @@ object Implicits {
 
   /** Converts breakpoint profile to implicit DSL wrapping. */
   implicit def BreakpointDSL(
-    breakpointProfile: BreakpointRequest
-  ): BreakpointDSLWrapper = new BreakpointDSLWrapper(breakpointProfile)
+    breakpointRequest: BreakpointRequest
+  ): BreakpointDSLWrapper = new BreakpointDSLWrapper(breakpointRequest)
 
   /** Converts class prepare profile to implicit DSL wrapping. */
   implicit def ClassPrepareDSL(
-    classPrepareProfile: ClassPrepareRequest
-  ): ClassPrepareDSLWrapper = new ClassPrepareDSLWrapper(classPrepareProfile)
+    classPrepareRequest: ClassPrepareRequest
+  ): ClassPrepareDSLWrapper = new ClassPrepareDSLWrapper(classPrepareRequest)
 
   /** Converts class unload profile to implicit DSL wrapping. */
   implicit def ClassUnloadDSL(
-    classUnloadProfile: ClassUnloadRequest
-  ): ClassUnloadDSLWrapper = new ClassUnloadDSLWrapper(classUnloadProfile)
+    classUnloadRequest: ClassUnloadRequest
+  ): ClassUnloadDSLWrapper = new ClassUnloadDSLWrapper(classUnloadRequest)
 
   /** Converts event listener profile to implicit DSL wrapping. */
   implicit def EventListenerDSL(
-    eventListenerProfile: EventListenerRequest
-  ): EventListenerDSLWrapper = new EventListenerDSLWrapper(eventListenerProfile)
+    eventListenerRequest: EventListenerRequest
+  ): EventListenerDSLWrapper = new EventListenerDSLWrapper(eventListenerRequest)
 
   /** Converts exception profile to implicit DSL wrapping. */
   implicit def ExceptionDSL(
-    exceptionProfile: ExceptionRequest
-  ): ExceptionDSLWrapper = new ExceptionDSLWrapper(exceptionProfile)
+    exceptionRequest: ExceptionRequest
+  ): ExceptionDSLWrapper = new ExceptionDSLWrapper(exceptionRequest)
 
   /** Converts frame info profile to implicit DSL wrapping. */
   implicit def FrameInfoDSL(
-    frameInfoProfile: FrameInfo
-  ): FrameInfoDSLWrapper = new FrameInfoDSLWrapper(frameInfoProfile)
+    frameInfoRequest: FrameInfo
+  ): FrameInfoDSLWrapper = new FrameInfoDSLWrapper(frameInfoRequest)
 
   /** Converts grab info profile to implicit DSL wrapping. */
   implicit def GrabInfoDSL(
@@ -66,86 +66,86 @@ object Implicits {
 
   /** Converts method entry profile to implicit DSL wrapping. */
   implicit def MethodEntryDSL(
-    methodEntryProfile: MethodEntryRequest
-  ): MethodEntryDSLWrapper = new MethodEntryDSLWrapper(methodEntryProfile)
+    methodEntryRequest: MethodEntryRequest
+  ): MethodEntryDSLWrapper = new MethodEntryDSLWrapper(methodEntryRequest)
 
   /** Converts method exit profile to implicit DSL wrapping. */
   implicit def MethodExitDSL(
-    methodExitProfile: MethodExitRequest
-  ): MethodExitDSLWrapper = new MethodExitDSLWrapper(methodExitProfile)
+    methodExitRequest: MethodExitRequest
+  ): MethodExitDSLWrapper = new MethodExitDSLWrapper(methodExitRequest)
 
   /** Converts monitor contended entered profile to implicit DSL wrapping. */
   implicit def MonitorContendedEnteredDSL(
-    monitorContendedEnteredProfile: MonitorContendedEnteredRequest
-  ): MonitorContendedEnteredDSLWrapper = new MonitorContendedEnteredDSLWrapper(monitorContendedEnteredProfile)
+    monitorContendedEnteredRequest: MonitorContendedEnteredRequest
+  ): MonitorContendedEnteredDSLWrapper = new MonitorContendedEnteredDSLWrapper(monitorContendedEnteredRequest)
 
   /** Converts monitor contended enter profile to implicit DSL wrapping. */
   implicit def MonitorContendedEnterDSL(
-    monitorContendedEnterProfile: MonitorContendedEnterRequest
-  ): MonitorContendedEnterDSLWrapper = new MonitorContendedEnterDSLWrapper(monitorContendedEnterProfile)
+    monitorContendedEnterRequest: MonitorContendedEnterRequest
+  ): MonitorContendedEnterDSLWrapper = new MonitorContendedEnterDSLWrapper(monitorContendedEnterRequest)
 
   /** Converts monitor waited profile to implicit DSL wrapping. */
   implicit def MonitorWaitedDSL(
-    monitorWaitedProfile: MonitorWaitedRequest
-  ): MonitorWaitedDSLWrapper = new MonitorWaitedDSLWrapper(monitorWaitedProfile)
+    monitorWaitedRequest: MonitorWaitedRequest
+  ): MonitorWaitedDSLWrapper = new MonitorWaitedDSLWrapper(monitorWaitedRequest)
 
   /** Converts monitor wait profile to implicit DSL wrapping. */
   implicit def MonitorWaitDSL(
-    monitorWaitProfile: MonitorWaitRequest
-  ): MonitorWaitDSLWrapper = new MonitorWaitDSLWrapper(monitorWaitProfile)
+    monitorWaitRequest: MonitorWaitRequest
+  ): MonitorWaitDSLWrapper = new MonitorWaitDSLWrapper(monitorWaitRequest)
 
   /** Converts object info profile to implicit DSL wrapping. */
   implicit def ObjectInfoDSL[T <: ObjectInfo](
-    objectInfoProfile: T
-  ): ObjectInfoDSLWrapper[T] = new ObjectInfoDSLWrapper(objectInfoProfile)
+    objectInfoRequest: T
+  ): ObjectInfoDSLWrapper[T] = new ObjectInfoDSLWrapper(objectInfoRequest)
 
   /** Converts step profile to implicit DSL wrapping. */
   implicit def StepDSL(
-    stepProfile: StepRequest
-  ): StepDSLWrapper = new StepDSLWrapper(stepProfile)
+    stepRequest: StepRequest
+  ): StepDSLWrapper = new StepDSLWrapper(stepRequest)
 
   /** Converts thread death profile to implicit DSL wrapping. */
   implicit def ThreadDeathDSL(
-    threadDeathProfile: ThreadDeathRequest
-  ): ThreadDeathDSLWrapper = new ThreadDeathDSLWrapper(threadDeathProfile)
+    threadDeathRequest: ThreadDeathRequest
+  ): ThreadDeathDSLWrapper = new ThreadDeathDSLWrapper(threadDeathRequest)
 
   /** Converts thread start profile to implicit DSL wrapping. */
   implicit def ThreadStartDSL(
-    threadStartProfile: ThreadStartRequest
-  ): ThreadStartDSLWrapper = new ThreadStartDSLWrapper(threadStartProfile)
+    threadStartRequest: ThreadStartRequest
+  ): ThreadStartDSLWrapper = new ThreadStartDSLWrapper(threadStartRequest)
 
   /** Converts value info profile to implicit DSL wrapping. */
   implicit def ValueInfoDSL[T <: ValueInfo](
-    valueInfoProfile: T
-  ): ValueInfoDSLWrapper[T] = new ValueInfoDSLWrapper(valueInfoProfile)
+    valueInfoRequest: T
+  ): ValueInfoDSLWrapper[T] = new ValueInfoDSLWrapper(valueInfoRequest)
 
   /** Converts variable info profile to implicit DSL wrapping. */
   implicit def VariableInfoDSL(
-    variableInfoProfile: VariableInfo
-  ): VariableInfoDSLWrapper = new VariableInfoDSLWrapper(variableInfoProfile)
+    variableInfoRequest: VariableInfo
+  ): VariableInfoDSLWrapper = new VariableInfoDSLWrapper(variableInfoRequest)
 
   /** Converts vm death profile to implicit DSL wrapping. */
   implicit def VMDeathDSL(
-    vmDeathProfile: VMDeathRequest
-  ): VMDeathDSLWrapper = new VMDeathDSLWrapper(vmDeathProfile)
+    vmDeathRequest: VMDeathRequest
+  ): VMDeathDSLWrapper = new VMDeathDSLWrapper(vmDeathRequest)
 
   /** Converts vm disconnect profile to implicit DSL wrapping. */
   implicit def VMDisconnectDSL(
-    vmDisconnectProfile: VMDisconnectRequest
-  ): VMDisconnectDSLWrapper = new VMDisconnectDSLWrapper(vmDisconnectProfile)
+    vmDisconnectRequest: VMDisconnectRequest
+  ): VMDisconnectDSLWrapper = new VMDisconnectDSLWrapper(vmDisconnectRequest)
 
   /** Converts vm start profile to implicit DSL wrapping. */
   implicit def VMStartDSL(
-    vmStartProfile: VMStartRequest
-  ): VMStartDSLWrapper = new VMStartDSLWrapper(vmStartProfile)
+    vmStartRequest: VMStartRequest
+  ): VMStartDSLWrapper = new VMStartDSLWrapper(vmStartRequest)
 
   /** Converts access watchpoint profile to implicit DSL wrapping. */
   implicit def AccessWatchpointDSL(
-    accessWatchpointProfile: AccessWatchpointRequest
-  ): AccessWatchpointDSLWrapper = new AccessWatchpointDSLWrapper(accessWatchpointProfile)
+    accessWatchpointRequest: AccessWatchpointRequest
+  ): AccessWatchpointDSLWrapper = new AccessWatchpointDSLWrapper(accessWatchpointRequest)
 
   /** Converts modification watchpoint profile to implicit DSL wrapping. */
   implicit def ModificationWatchpointDSL(
-    modificationWatchpointProfile: ModificationWatchpointRequest
-  ): ModificationWatchpointDSLWrapper = new ModificationWatchpointDSLWrapper(modificationWatchpointProfile)
+    modificationWatchpointRequest: ModificationWatchpointRequest
+  ): ModificationWatchpointDSLWrapper = new ModificationWatchpointDSLWrapper(modificationWatchpointRequest)
 }

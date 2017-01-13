@@ -81,7 +81,7 @@ class PureFieldInfo(
    *         to Java
    */
   override def toJavaInfo: FieldVariableInfo = {
-    infoProducer.toJavaInfo.newFieldInfoProfile(
+    infoProducer.toJavaInfo.newFieldInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       container = _container,
       field = _field,
@@ -188,18 +188,18 @@ class PureFieldInfo(
   })
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfo =
-    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)()
+    infoProducer.newObjectInfo(scalaVirtualMachine, objectReference)()
 
   protected def newReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfoProfile(
+  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfo(
     scalaVirtualMachine,
     referenceType
   )
 
   protected def newValueProfile(value: Value): ValueInfo =
-    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfo(scalaVirtualMachine, value)
 
   protected def newTypeProfile(_type: Type): TypeInfo =
-    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfo(scalaVirtualMachine, _type)
 }

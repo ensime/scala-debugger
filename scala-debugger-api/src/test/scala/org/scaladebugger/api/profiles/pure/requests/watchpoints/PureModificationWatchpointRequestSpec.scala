@@ -177,7 +177,7 @@ class PureModificationWatchpointRequestSpec extends ParallelMockFunSpec with JDI
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[ModificationWatchpointEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultModificationWatchpointEventInfoProfile _)
+          (mockEventProducer.newDefaultModificationWatchpointEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

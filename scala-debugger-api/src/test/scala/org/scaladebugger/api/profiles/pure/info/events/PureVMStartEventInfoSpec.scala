@@ -50,7 +50,7 @@ class PureVMStartEventInfoSpec extends ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newVMStartEventInfoProfile(
+        (mockEventInfoProducer.newVMStartEventInfo(
           _: ScalaVirtualMachine,
           _: VMStartEvent,
           _: Seq[JDIArgument]
@@ -97,7 +97,7 @@ class PureVMStartEventInfoSpec extends ParallelMockFunSpec {
 
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newThreadInfoProfile(
+        (mockInfoProducer.newThreadInfo(
           _: ScalaVirtualMachine,
           _: ThreadReference
         )(

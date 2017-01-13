@@ -57,7 +57,7 @@ class PureWatchpointEventInfoSpec extends ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newWatchpointEventInfoProfile(
+        (mockEventInfoProducer.newWatchpointEventInfo(
           _: ScalaVirtualMachine,
           _: WatchpointEvent,
           _: Seq[JDIArgument]
@@ -107,7 +107,7 @@ class PureWatchpointEventInfoSpec extends ParallelMockFunSpec {
 
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newFieldInfoProfile(
+        (mockInfoProducer.newFieldInfo(
           _: ScalaVirtualMachine,
           _: Either[ObjectReference, ReferenceType],
           _: Field,
@@ -137,7 +137,7 @@ class PureWatchpointEventInfoSpec extends ParallelMockFunSpec {
         (mockWatchpointEvent.`object` _).expects()
           .returning(mockObjectReference).once()
 
-        (mockInfoProducer.newObjectInfoProfile(
+        (mockInfoProducer.newObjectInfo(
           _: ScalaVirtualMachine,
           _: ObjectReference
         )(
@@ -176,7 +176,7 @@ class PureWatchpointEventInfoSpec extends ParallelMockFunSpec {
         (mockWatchpointEvent.valueCurrent _).expects()
           .returning(mockValue).once()
 
-        (mockInfoProducer.newValueInfoProfile _)
+        (mockInfoProducer.newValueInfo _)
           .expects(mockScalaVirtualMachine, mockValue)
           .returning(expected).once()
 

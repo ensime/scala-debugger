@@ -49,7 +49,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Java version of event info producer creates a new event instance
-        (mockEventInfoProducer.newEventInfoProfile _)
+        (mockEventInfoProducer.newEventInfo _)
           .expects(mockScalaVirtualMachine, mockEvent, mockJdiArguments)
           .returning(expected).once()
 
@@ -674,7 +674,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultAccessWatchpointEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultAccessWatchpointEventInfo _).expects(
           mockScalaVirtualMachine,
           mockAccessWatchpointEvent,
           mockJdiArguments
@@ -710,7 +710,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultBreakpointEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultBreakpointEventInfo _).expects(
           mockScalaVirtualMachine,
           mockBreakpointEvent,
           mockJdiArguments
@@ -746,7 +746,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultClassPrepareEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultClassPrepareEventInfo _).expects(
           mockScalaVirtualMachine,
           mockClassPrepareEvent,
           mockJdiArguments
@@ -782,7 +782,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultClassUnloadEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultClassUnloadEventInfo _).expects(
           mockScalaVirtualMachine,
           mockClassUnloadEvent,
           mockJdiArguments
@@ -818,7 +818,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultExceptionEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultExceptionEventInfo _).expects(
           mockScalaVirtualMachine,
           mockExceptionEvent,
           mockJdiArguments
@@ -854,7 +854,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultLocatableEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultLocatableEventInfo _).expects(
           mockScalaVirtualMachine,
           mockLocatableEvent,
           mockJdiArguments
@@ -890,7 +890,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultMethodEntryEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultMethodEntryEventInfo _).expects(
           mockScalaVirtualMachine,
           mockMethodEntryEvent,
           mockJdiArguments
@@ -926,7 +926,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultMethodExitEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultMethodExitEventInfo _).expects(
           mockScalaVirtualMachine,
           mockMethodExitEvent,
           mockJdiArguments
@@ -962,7 +962,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultModificationWatchpointEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultModificationWatchpointEventInfo _).expects(
           mockScalaVirtualMachine,
           mockModificationWatchpointEvent,
           mockJdiArguments
@@ -1005,7 +1005,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultMonitorEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultMonitorEventInfo _).expects(
           mockScalaVirtualMachine,
           monitorEvent,
           mockJdiArguments
@@ -1041,7 +1041,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultMonitorContendedEnteredEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultMonitorContendedEnteredEventInfo _).expects(
           mockScalaVirtualMachine,
           mockMonitorContendedEnteredEvent,
           mockJdiArguments
@@ -1077,7 +1077,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultMonitorContendedEnterEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultMonitorContendedEnterEventInfo _).expects(
           mockScalaVirtualMachine,
           mockMonitorContendedEnterEvent,
           mockJdiArguments
@@ -1113,7 +1113,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultMonitorWaitedEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultMonitorWaitedEventInfo _).expects(
           mockScalaVirtualMachine,
           mockMonitorWaitedEvent,
           mockJdiArguments
@@ -1149,7 +1149,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultMonitorWaitEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultMonitorWaitEventInfo _).expects(
           mockScalaVirtualMachine,
           mockMonitorWaitEvent,
           mockJdiArguments
@@ -1185,7 +1185,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultStepEventInfo _).expects(
           mockScalaVirtualMachine,
           mockStepEvent,
           mockJdiArguments
@@ -1221,7 +1221,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultThreadDeathEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultThreadDeathEventInfo _).expects(
           mockScalaVirtualMachine,
           mockThreadDeathEvent,
           mockJdiArguments
@@ -1257,7 +1257,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultThreadStartEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultThreadStartEventInfo _).expects(
           mockScalaVirtualMachine,
           mockThreadStartEvent,
           mockJdiArguments
@@ -1293,7 +1293,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultVMDeathEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultVMDeathEventInfo _).expects(
           mockScalaVirtualMachine,
           mockVMDeathEvent,
           mockJdiArguments
@@ -1329,7 +1329,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultVMDisconnectEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultVMDisconnectEventInfo _).expects(
           mockScalaVirtualMachine,
           mockVMDisconnectEvent,
           mockJdiArguments
@@ -1365,7 +1365,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultVMStartEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultVMStartEventInfo _).expects(
           mockScalaVirtualMachine,
           mockVMStartEvent,
           mockJdiArguments
@@ -1401,7 +1401,7 @@ class PureEventInfoSpec extends ParallelMockFunSpec {
           .returning(mockEventInfoProducer).once()
 
         // Creates a new instance of the event info using defaults
-        (mockEventInfoProducer.newDefaultWatchpointEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultWatchpointEventInfo _).expects(
           mockScalaVirtualMachine,
           mockWatchpointEvent,
           mockJdiArguments

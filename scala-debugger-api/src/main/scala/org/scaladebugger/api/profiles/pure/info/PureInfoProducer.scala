@@ -38,7 +38,7 @@ class PureInfoProducer extends InfoProducer {
     new PureEventInfoProducer(this)
   }
 
-  override def newValueInfoProfile(
+  override def newValueInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     value: Value
   ): ValueInfo = new PureValueInfo(
@@ -47,7 +47,7 @@ class PureInfoProducer extends InfoProducer {
     value
   )
 
-  override def newArrayInfoProfile(
+  override def newArrayInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     arrayReference: ArrayReference
   )(
@@ -61,7 +61,7 @@ class PureInfoProducer extends InfoProducer {
   )
 
 
-  override def newObjectInfoProfile(
+  override def newObjectInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     objectReference: ObjectReference
   )(
@@ -76,12 +76,12 @@ class PureInfoProducer extends InfoProducer {
     _referenceType = referenceType
   )
 
-  override def newTypeInfoProfile(
+  override def newTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     _type: Type
   ): TypeInfo = new PureTypeInfo(scalaVirtualMachine, this, _type)
 
-  override def newReferenceTypeInfoProfile(
+  override def newReferenceTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     referenceType: ReferenceType
   ): ReferenceTypeInfo = new PureReferenceTypeInfo(
@@ -90,7 +90,7 @@ class PureInfoProducer extends InfoProducer {
     referenceType
   )
 
-  override def newLocalVariableInfoProfile(
+  override def newLocalVariableInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     frame: FrameInfo,
     localVariable: LocalVariable,
@@ -105,7 +105,7 @@ class PureInfoProducer extends InfoProducer {
     offsetIndex
   )(virtualMachine)
 
-  override def newThreadInfoProfile(
+  override def newThreadInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadReference: ThreadReference
   )(
@@ -120,7 +120,7 @@ class PureInfoProducer extends InfoProducer {
     _referenceType = referenceType
   )
 
-  override def newThreadGroupInfoProfile(
+  override def newThreadGroupInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadGroupReference: ThreadGroupReference
   )(
@@ -135,7 +135,7 @@ class PureInfoProducer extends InfoProducer {
     _referenceType = referenceType
   )
 
-  override def newClassObjectInfoProfile(
+  override def newClassObjectInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classObjectReference: ClassObjectReference
   )(
@@ -150,7 +150,7 @@ class PureInfoProducer extends InfoProducer {
     _virtualMachine = virtualMachine
   )
 
-  override def newClassLoaderInfoProfile(
+  override def newClassLoaderInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classLoaderReference: ClassLoaderReference
   )(
@@ -165,7 +165,7 @@ class PureInfoProducer extends InfoProducer {
     _virtualMachine = virtualMachine
   )
 
-  override def newLocationInfoProfile(
+  override def newLocationInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     location: Location
   ): LocationInfo = new PureLocationInfo(
@@ -174,7 +174,7 @@ class PureInfoProducer extends InfoProducer {
     location
   )
 
-  override def newFieldInfoProfile(
+  override def newFieldInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     container: Either[ObjectReference, ReferenceType],
     field: Field,
@@ -189,7 +189,7 @@ class PureInfoProducer extends InfoProducer {
     offsetIndex
   )(virtualMachine)
 
-  override def newMethodInfoProfile(
+  override def newMethodInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     method: Method
   ): MethodInfo = new PureMethodInfo(
@@ -198,7 +198,7 @@ class PureInfoProducer extends InfoProducer {
     method
   )
 
-  override def newFrameInfoProfile(
+  override def newFrameInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     stackFrame: StackFrame,
     offsetIndex: Int
@@ -209,11 +209,11 @@ class PureInfoProducer extends InfoProducer {
     offsetIndex
   )
 
-  override def newThreadStatusInfoProfile(
+  override def newThreadStatusInfo(
     threadReference: ThreadReference
   ): ThreadStatusInfo = new PureThreadStatusInfo(threadReference)
 
-  override def newArrayTypeInfoProfile(
+  override def newArrayTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     arrayType: ArrayType
   ): ArrayTypeInfo = new PureArrayTypeInfo(
@@ -222,7 +222,7 @@ class PureInfoProducer extends InfoProducer {
     arrayType
   )
 
-  override def newClassTypeInfoProfile(
+  override def newClassTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classType: ClassType
   ): ClassTypeInfo = new PureClassTypeInfo(
@@ -231,7 +231,7 @@ class PureInfoProducer extends InfoProducer {
     classType
   )
 
-  override def newInterfaceTypeInfoProfile(
+  override def newInterfaceTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     interfaceType: InterfaceType
   ): InterfaceTypeInfo = new PureInterfaceTypeInfo(
@@ -240,7 +240,7 @@ class PureInfoProducer extends InfoProducer {
     interfaceType
   )
 
-  override def newPrimitiveTypeInfoProfile(
+  override def newPrimitiveTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     primitiveType: PrimitiveType
   ): PrimitiveTypeInfo = new PurePrimitiveTypeInfo(
@@ -249,7 +249,7 @@ class PureInfoProducer extends InfoProducer {
     Left(primitiveType)
   )
 
-  override def newPrimitiveTypeInfoProfile(
+  override def newPrimitiveTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     voidType: VoidType
   ): PrimitiveTypeInfo = new PurePrimitiveTypeInfo(
@@ -258,7 +258,7 @@ class PureInfoProducer extends InfoProducer {
     Right(voidType)
   )
 
-  override def newPrimitiveInfoProfile(
+  override def newPrimitiveInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     primitiveValue: PrimitiveValue
   ): PrimitiveInfo = new PurePrimitiveInfo(
@@ -267,7 +267,7 @@ class PureInfoProducer extends InfoProducer {
     Left(primitiveValue)
   )
 
-  override def newPrimitiveInfoProfile(
+  override def newPrimitiveInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     voidValue: VoidValue
   ): PrimitiveInfo = new PurePrimitiveInfo(
@@ -276,7 +276,7 @@ class PureInfoProducer extends InfoProducer {
     Right(voidValue)
   )
 
-  override def newStringInfoProfile(
+  override def newStringInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     stringReference: StringReference
   )(
@@ -291,6 +291,6 @@ class PureInfoProducer extends InfoProducer {
     _virtualMachine = virtualMachine
   )
 
-  override def newTypeCheckerProfile(): TypeChecker =
+  override def newTypeChecker(): TypeChecker =
     new PureTypeChecker
 }

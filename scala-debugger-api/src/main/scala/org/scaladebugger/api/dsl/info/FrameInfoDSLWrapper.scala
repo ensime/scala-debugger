@@ -7,70 +7,70 @@ import scala.util.Try
 /**
  * Wraps a profile, providing DSL-like syntax.
  *
- * @param frameInfoProfile The profile to wrap
+ * @param frameInfo The frame info to wrap
  */
 class FrameInfoDSLWrapper private[dsl] (
-  private val frameInfoProfile: FrameInfo
+  private val frameInfo: FrameInfo
 ) {
   /** @see FrameInfo#tryThisObject() */
-  def withThisObject: Try[ObjectInfo] = frameInfoProfile.tryThisObject
+  def withThisObject: Try[ObjectInfo] = frameInfo.tryThisObject
 
   /** @see FrameInfo#thisObject() */
-  def withUnsafeThisObject: ObjectInfo = frameInfoProfile.thisObject
+  def withUnsafeThisObject: ObjectInfo = frameInfo.thisObject
 
   /** @see FrameInfo#tryCurrentThread() */
   def withCurrentThread: Try[ThreadInfo] =
-    frameInfoProfile.tryCurrentThread
+    frameInfo.tryCurrentThread
 
   /** @see FrameInfo#currentThread() */
   def withUnsafeCurrentThread: ThreadInfo =
-    frameInfoProfile.currentThread
+    frameInfo.currentThread
 
   /** @see FrameInfo#tryVariable(String) */
   def forVariable(name: String): Try[VariableInfo] =
-    frameInfoProfile.tryVariable(name)
+    frameInfo.tryVariable(name)
 
   /** @see FrameInfo#variable(String) */
   def forUnsafeVariable(name: String): VariableInfo =
-    frameInfoProfile.variable(name)
+    frameInfo.variable(name)
 
   /** @see FrameInfo#tryAllVariables() */
   def forAllVariables: Try[Seq[VariableInfo]] =
-    frameInfoProfile.tryAllVariables
+    frameInfo.tryAllVariables
 
   /** @see FrameInfo#tryArgumentLocalVariables() */
   def forArguments: Try[Seq[VariableInfo]] =
-    frameInfoProfile.tryArgumentLocalVariables
+    frameInfo.tryArgumentLocalVariables
 
   /** @see FrameInfo#tryNonArgumentLocalVariables() */
   def forNonArguments: Try[Seq[VariableInfo]] =
-    frameInfoProfile.tryNonArgumentLocalVariables
+    frameInfo.tryNonArgumentLocalVariables
 
   /** @see FrameInfo#tryLocalVariables() */
   def forLocalVariables: Try[Seq[VariableInfo]] =
-    frameInfoProfile.tryLocalVariables
+    frameInfo.tryLocalVariables
 
   /** @see FrameInfo#tryFieldVariables() */
   def forFieldVariables: Try[Seq[VariableInfo]] =
-    frameInfoProfile.tryFieldVariables
+    frameInfo.tryFieldVariables
 
   /** @see FrameInfo#allVariables() */
   def forUnsafeAllVariables: Seq[VariableInfo] =
-    frameInfoProfile.allVariables
+    frameInfo.allVariables
 
   /** @see FrameInfo#argumentLocalVariables() */
   def forUnsafeArguments: Seq[VariableInfo] =
-    frameInfoProfile.argumentLocalVariables
+    frameInfo.argumentLocalVariables
 
   /** @see FrameInfo#nonArgumentLocalVariables() */
   def forUnsafeNonArguments: Seq[VariableInfo] =
-    frameInfoProfile.nonArgumentLocalVariables
+    frameInfo.nonArgumentLocalVariables
 
   /** @see FrameInfo#localVariables() */
   def forUnsafeLocalVariables: Seq[VariableInfo] =
-    frameInfoProfile.localVariables
+    frameInfo.localVariables
 
   /** @see FrameInfo#fieldVariables() */
   def forUnsafeFieldVariables: Seq[VariableInfo] =
-    frameInfoProfile.fieldVariables
+    frameInfo.fieldVariables
 }

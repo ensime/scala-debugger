@@ -70,7 +70,7 @@ class PureMonitorWaitedEventInfo(
    */
   override def toJavaInfo: MonitorWaitedEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newMonitorWaitedEventInfoProfile(
+    jep.newMonitorWaitedEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       monitorWaitedEvent = monitorWaitedEvent,
       jdiArguments = jdiArguments

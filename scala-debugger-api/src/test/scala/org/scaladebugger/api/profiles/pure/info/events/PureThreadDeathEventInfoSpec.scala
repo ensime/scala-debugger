@@ -50,7 +50,7 @@ class PureThreadDeathEventInfoSpec extends ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newThreadDeathEventInfoProfile(
+        (mockEventInfoProducer.newThreadDeathEventInfo(
           _: ScalaVirtualMachine,
           _: ThreadDeathEvent,
           _: Seq[JDIArgument]
@@ -97,7 +97,7 @@ class PureThreadDeathEventInfoSpec extends ParallelMockFunSpec {
 
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newThreadInfoProfile(
+        (mockInfoProducer.newThreadInfo(
           _: ScalaVirtualMachine,
           _: ThreadReference
         )(

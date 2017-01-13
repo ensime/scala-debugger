@@ -19,7 +19,7 @@ class Scala210InfoProducer extends PureInfoProducer {
    */
   override def isJavaInfo: Boolean = false
 
-  override def newFieldInfoProfile(
+  override def newFieldInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     container: Either[ObjectReference, ReferenceType],
     field: Field,
@@ -34,7 +34,7 @@ class Scala210InfoProducer extends PureInfoProducer {
     offsetIndex
   )(virtualMachine)
 
-  override def newLocalVariableInfoProfile(
+  override def newLocalVariableInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     frame: FrameInfo,
     localVariable: LocalVariable,
@@ -49,7 +49,7 @@ class Scala210InfoProducer extends PureInfoProducer {
     offsetIndex
   )(virtualMachine)
 
-  override def newReferenceTypeInfoProfile(
+  override def newReferenceTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     referenceType: ReferenceType
   ): ReferenceTypeInfo = new Scala210ReferenceTypeInfo(
@@ -58,7 +58,7 @@ class Scala210InfoProducer extends PureInfoProducer {
     referenceType
   )
 
-  override def newObjectInfoProfile(
+  override def newObjectInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     objectReference: ObjectReference
   )(

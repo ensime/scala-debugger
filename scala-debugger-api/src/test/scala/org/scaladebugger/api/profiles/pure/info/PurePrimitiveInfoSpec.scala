@@ -29,7 +29,7 @@ class PurePrimitiveInfoSpec extends ParallelMockFunSpec
           .returning(mockInfoProducerProfile).once()
 
         // Create new info profile using Java version of info producer
-        (mockInfoProducerProfile.newPrimitiveInfoProfile(_: ScalaVirtualMachine, _: PrimitiveValue))
+        (mockInfoProducerProfile.newPrimitiveInfo(_: ScalaVirtualMachine, _: PrimitiveValue))
           .expects(mockScalaVirtualMachine, mockPrimitiveValue)
           .returning(expected).once()
 
@@ -51,7 +51,7 @@ class PurePrimitiveInfoSpec extends ParallelMockFunSpec
           .returning(mockInfoProducerProfile).once()
 
         // Create new info profile using Java version of info producer
-        (mockInfoProducerProfile.newPrimitiveInfoProfile(_: ScalaVirtualMachine, _: VoidValue))
+        (mockInfoProducerProfile.newPrimitiveInfo(_: ScalaVirtualMachine, _: VoidValue))
           .expects(mockScalaVirtualMachine, mockVoidValue)
           .returning(expected).once()
 

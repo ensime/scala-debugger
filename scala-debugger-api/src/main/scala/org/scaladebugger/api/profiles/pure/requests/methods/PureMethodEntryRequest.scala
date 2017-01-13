@@ -72,7 +72,7 @@ trait PureMethodEntryRequest extends MethodEntryRequest {
         methodEntryManager.removeMethodEntryRequestWithId(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultMethodEntryEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultMethodEntryEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = methodEntryManager.getMethodEntryRequestInfoWithId
     )

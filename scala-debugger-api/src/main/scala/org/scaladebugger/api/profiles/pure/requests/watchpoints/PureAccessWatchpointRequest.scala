@@ -70,7 +70,7 @@ trait PureAccessWatchpointRequest extends AccessWatchpointRequest {
         accessWatchpointManager.removeAccessWatchpointRequestWithId(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultAccessWatchpointEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultAccessWatchpointEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = accessWatchpointManager.getAccessWatchpointRequestInfoWithId
     )

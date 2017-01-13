@@ -59,7 +59,7 @@ class PureLocatableEventInfo(
    */
   override def toJavaInfo: LocatableEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newLocatableEventInfoProfile(
+    jep.newLocatableEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       locatableEvent = locatableEvent,
       jdiArguments = jdiArguments
@@ -83,7 +83,7 @@ class PureLocatableEventInfo(
    *
    * @return The information profile about the thread
    */
-  override def thread: ThreadInfo = infoProducer.newThreadInfoProfile(
+  override def thread: ThreadInfo = infoProducer.newThreadInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     threadReference = _thread
   )(
@@ -96,7 +96,7 @@ class PureLocatableEventInfo(
    *
    * @return The information profile about the location
    */
-  override def location: LocationInfo = infoProducer.newLocationInfoProfile(
+  override def location: LocationInfo = infoProducer.newLocationInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     location = _location
   )

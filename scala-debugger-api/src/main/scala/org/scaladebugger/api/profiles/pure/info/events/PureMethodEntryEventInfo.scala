@@ -66,7 +66,7 @@ class PureMethodEntryEventInfo(
    */
   override def toJavaInfo: MethodEntryEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newMethodEntryEventInfoProfile(
+    jep.newMethodEntryEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       methodEntryEvent = methodEntryEvent,
       jdiArguments = jdiArguments
@@ -91,7 +91,7 @@ class PureMethodEntryEventInfo(
    *
    * @return The information profile about the method
    */
-  override def method: MethodInfo = infoProducer.newMethodInfoProfile(
+  override def method: MethodInfo = infoProducer.newMethodInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     method = _method
   )

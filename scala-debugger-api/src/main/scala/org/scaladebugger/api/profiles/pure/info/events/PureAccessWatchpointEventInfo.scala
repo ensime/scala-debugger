@@ -78,7 +78,7 @@ class PureAccessWatchpointEventInfo(
    */
   override def toJavaInfo: AccessWatchpointEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newAccessWatchpointEventInfoProfile(
+    jep.newAccessWatchpointEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       accessWatchpointEvent = accessWatchpointEvent,
       jdiArguments = jdiArguments

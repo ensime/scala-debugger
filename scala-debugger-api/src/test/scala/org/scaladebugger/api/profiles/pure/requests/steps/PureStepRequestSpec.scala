@@ -750,7 +750,7 @@ class PureStepRequestSpec extends ParallelMockFunSpec with JDIMockHelpers with F
         val mockEventInfoProducer = mock[EventInfoProducer]
         (mockInfoProducer.eventProducer _).expects()
           .returning(mockEventInfoProducer).once()
-        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultStepEventInfo _).expects(
           mockScalaVirtualMachine,
           mockStepEvent,
           stepRequestInfo.extraArguments ++ eArgs
@@ -831,7 +831,7 @@ class PureStepRequestSpec extends ParallelMockFunSpec with JDIMockHelpers with F
         val mockEventInfoProducer = mock[EventInfoProducer]
         (mockInfoProducer.eventProducer _).expects()
           .returning(mockEventInfoProducer).once()
-        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultStepEventInfo _).expects(
           mockScalaVirtualMachine,
           mockStepEvent,
           stepRequestInfo.extraArguments ++ eArgs
@@ -909,7 +909,7 @@ class PureStepRequestSpec extends ParallelMockFunSpec with JDIMockHelpers with F
         val mockEventInfoProducer = mock[EventInfoProducer]
         (mockInfoProducer.eventProducer _).expects()
           .returning(mockEventInfoProducer).once()
-        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultStepEventInfo _).expects(
           mockScalaVirtualMachine,
           mockStepEvent,
           stepRequestInfo.extraArguments ++ eArgs
@@ -987,7 +987,7 @@ class PureStepRequestSpec extends ParallelMockFunSpec with JDIMockHelpers with F
         val mockEventInfoProducer = mock[EventInfoProducer]
         (mockInfoProducer.eventProducer _).expects()
           .returning(mockEventInfoProducer).once()
-        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultStepEventInfo _).expects(
           mockScalaVirtualMachine,
           mockStepEvent,
           stepRequestInfo.extraArguments ++ eArgs
@@ -1065,7 +1065,7 @@ class PureStepRequestSpec extends ParallelMockFunSpec with JDIMockHelpers with F
         val mockEventInfoProducer = mock[EventInfoProducer]
         (mockInfoProducer.eventProducer _).expects()
           .returning(mockEventInfoProducer).once()
-        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultStepEventInfo _).expects(
           mockScalaVirtualMachine,
           mockStepEvent,
           stepRequestInfo.extraArguments ++ eArgs
@@ -1143,7 +1143,7 @@ class PureStepRequestSpec extends ParallelMockFunSpec with JDIMockHelpers with F
         val mockEventInfoProducer = mock[EventInfoProducer]
         (mockInfoProducer.eventProducer _).expects()
           .returning(mockEventInfoProducer).once()
-        (mockEventInfoProducer.newDefaultStepEventInfoProfile _).expects(
+        (mockEventInfoProducer.newDefaultStepEventInfo _).expects(
           mockScalaVirtualMachine,
           mockStepEvent,
           stepRequestInfo.extraArguments ++ eArgs

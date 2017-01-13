@@ -58,7 +58,7 @@ class PureFrameInfoSpec extends ParallelMockFunSpec
           .returning(mockInfoProducerProfile).once()
 
         // Create new info profile using Java version of info producer
-        (mockInfoProducerProfile.newFrameInfoProfile _)
+        (mockInfoProducerProfile.newFrameInfo _)
           .expects(mockScalaVirtualMachine, mockStackFrame, TestFrameIndex)
           .returning(expected).once()
 

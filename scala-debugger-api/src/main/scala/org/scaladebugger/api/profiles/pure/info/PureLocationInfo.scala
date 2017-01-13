@@ -36,7 +36,7 @@ class PureLocationInfo(
    *         to Java
    */
   override def toJavaInfo: LocationInfo = {
-    infoProducer.toJavaInfo.newLocationInfoProfile(
+    infoProducer.toJavaInfo.newLocationInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       location = _location
     )
@@ -97,11 +97,11 @@ class PureLocationInfo(
 
   protected def newReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfoProfile(
+  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfo(
     scalaVirtualMachine,
     referenceType
   )
 
   protected def newMethodProfile(method: Method): MethodInfo =
-    infoProducer.newMethodInfoProfile(scalaVirtualMachine, method)
+    infoProducer.newMethodInfo(scalaVirtualMachine, method)
 }

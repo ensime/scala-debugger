@@ -45,11 +45,11 @@ class PurePrimitiveInfo(
   override def toJavaInfo: PrimitiveInfo = {
     val producer = infoProducer.toJavaInfo
     eitherValue match {
-      case Left(pv) => producer.newPrimitiveInfoProfile(
+      case Left(pv) => producer.newPrimitiveInfo(
         scalaVirtualMachine = scalaVirtualMachine,
         primitiveValue = pv
       )
-      case Right(vv) => producer.newPrimitiveInfoProfile(
+      case Right(vv) => producer.newPrimitiveInfo(
         scalaVirtualMachine = scalaVirtualMachine,
         voidValue = vv
       )

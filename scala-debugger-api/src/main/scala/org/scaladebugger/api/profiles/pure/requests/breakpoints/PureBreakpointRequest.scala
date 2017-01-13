@@ -79,7 +79,7 @@ trait PureBreakpointRequest extends BreakpointRequest {
         breakpointManager.removeBreakpointRequestWithId(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultBreakpointEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultBreakpointEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = breakpointManager.getBreakpointRequestInfoWithId
     )

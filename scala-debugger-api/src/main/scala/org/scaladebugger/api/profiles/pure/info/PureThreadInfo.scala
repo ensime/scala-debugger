@@ -47,7 +47,7 @@ class PureThreadInfo(
    *         to Java
    */
   override def toJavaInfo: ThreadInfo = {
-    infoProducer.toJavaInfo.newThreadInfoProfile(
+    infoProducer.toJavaInfo.newThreadInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       threadReference = _threadReference
     )(
@@ -150,18 +150,18 @@ class PureThreadInfo(
   protected def newFrameProfile(
     stackFrame: StackFrame,
     index: Int
-  ): FrameInfo = infoProducer.newFrameInfoProfile(
+  ): FrameInfo = infoProducer.newFrameInfo(
     scalaVirtualMachine,
     stackFrame,
     index
   )
 
   protected def newThreadStatusProfile(): ThreadStatusInfo =
-    infoProducer.newThreadStatusInfoProfile(_threadReference)
+    infoProducer.newThreadStatusInfo(_threadReference)
 
   override protected def newThreadGroupProfile(
     threadGroupReference: ThreadGroupReference
-  ): ThreadGroupInfo = infoProducer.newThreadGroupInfoProfile(
+  ): ThreadGroupInfo = infoProducer.newThreadGroupInfo(
     scalaVirtualMachine,
     threadGroupReference
   )(

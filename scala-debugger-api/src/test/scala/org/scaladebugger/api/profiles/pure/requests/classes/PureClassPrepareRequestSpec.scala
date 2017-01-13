@@ -200,7 +200,7 @@ class PureClassPrepareRequestSpec extends ParallelMockFunSpec with JDIMockHelper
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[ClassPrepareEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultClassPrepareEventInfoProfile _)
+          (mockEventProducer.newDefaultClassPrepareEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

@@ -48,7 +48,7 @@ class PureClassUnloadEventInfo(
    */
   override def toJavaInfo: ClassUnloadEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newClassUnloadEventInfoProfile(
+    jep.newClassUnloadEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       classUnloadEvent = classUnloadEvent,
       jdiArguments = jdiArguments

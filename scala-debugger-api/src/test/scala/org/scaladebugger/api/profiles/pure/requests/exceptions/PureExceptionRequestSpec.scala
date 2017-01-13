@@ -356,7 +356,7 @@ class PureExceptionRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
             val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
             val mockEvent = mock[ExceptionEvent]
             val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-            (mockEventProducer.newDefaultExceptionEventInfoProfile _)
+            (mockEventProducer.newDefaultExceptionEventInfo _)
               .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
               .returning(expected).once()
 
@@ -386,7 +386,7 @@ class PureExceptionRequestSpec extends ParallelMockFunSpec with JDIMockHelpers
             val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
             val mockEvent = mock[ExceptionEvent]
             val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-            (mockEventProducer.newDefaultExceptionEventInfoProfile _)
+            (mockEventProducer.newDefaultExceptionEventInfo _)
               .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
               .returning(expected).once()
 

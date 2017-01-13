@@ -21,82 +21,82 @@ trait SwappableStepRequest extends StepRequest {
   this: SwappableDebugProfileManagement =>
 
   override def stepIntoLineWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = {
-    withCurrentProfile.stepIntoLineWithData(threadInfoProfile, extraArguments: _*)
+    withCurrentProfile.stepIntoLineWithData(threadInfo, extraArguments: _*)
   }
 
   override def stepOverLineWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = {
-    withCurrentProfile.stepOverLineWithData(threadInfoProfile, extraArguments: _*)
+    withCurrentProfile.stepOverLineWithData(threadInfo, extraArguments: _*)
   }
 
   override def stepOutLineWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = {
-    withCurrentProfile.stepOutLineWithData(threadInfoProfile, extraArguments: _*)
+    withCurrentProfile.stepOutLineWithData(threadInfo, extraArguments: _*)
   }
 
   override def stepIntoMinWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = {
-    withCurrentProfile.stepIntoMinWithData(threadInfoProfile, extraArguments: _*)
+    withCurrentProfile.stepIntoMinWithData(threadInfo, extraArguments: _*)
   }
 
   override def stepOverMinWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = {
-    withCurrentProfile.stepOverMinWithData(threadInfoProfile, extraArguments: _*)
+    withCurrentProfile.stepOverMinWithData(threadInfo, extraArguments: _*)
   }
 
   override def stepOutMinWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Future[StepEventAndData] = {
-    withCurrentProfile.stepOutMinWithData(threadInfoProfile, extraArguments: _*)
+    withCurrentProfile.stepOutMinWithData(threadInfo, extraArguments: _*)
   }
 
   override def tryCreateStepListenerWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[(StepEventInfo, Seq[JDIEventDataResult])]] = {
-    withCurrentProfile.tryCreateStepListenerWithData(threadInfoProfile, extraArguments: _*)
+    withCurrentProfile.tryCreateStepListenerWithData(threadInfo, extraArguments: _*)
   }
 
   override def isStepRequestPending(
-    threadInfoProfile: ThreadInfo
+    threadInfo: ThreadInfo
   ): Boolean = {
-    withCurrentProfile.isStepRequestPending(threadInfoProfile)
+    withCurrentProfile.isStepRequestPending(threadInfo)
   }
 
   override def isStepRequestWithArgsPending(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Boolean = {
     withCurrentProfile.isStepRequestWithArgsPending(
-      threadInfoProfile,
+      threadInfo,
       extraArguments: _*
     )
   }
 
   override def removeStepRequests(
-    threadInfoProfile: ThreadInfo
+    threadInfo: ThreadInfo
   ): Seq[StepRequestInfo] = {
-    withCurrentProfile.removeStepRequests(threadInfoProfile)
+    withCurrentProfile.removeStepRequests(threadInfo)
   }
 
   override def removeStepRequestWithArgs(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Option[StepRequestInfo] = {
     withCurrentProfile.removeStepRequestWithArgs(
-      threadInfoProfile,
+      threadInfo,
       extraArguments: _*
     )
   }

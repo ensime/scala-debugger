@@ -36,7 +36,7 @@ class PureArrayTypeInfoSpec extends ParallelMockFunSpec
           .returning(mockInfoProducerProfile).once()
 
         // Create new info profile using Java version of info producer
-        (mockInfoProducerProfile.newArrayTypeInfoProfile _)
+        (mockInfoProducerProfile.newArrayTypeInfo _)
           .expects(mockScalaVirtualMachine, mockArrayType)
           .returning(expected).once()
 

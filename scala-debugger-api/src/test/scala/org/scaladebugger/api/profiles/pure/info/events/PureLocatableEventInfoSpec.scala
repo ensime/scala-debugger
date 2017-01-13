@@ -52,7 +52,7 @@ class PureLocatableEventInfoSpec extends ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newLocatableEventInfoProfile(
+        (mockEventInfoProducer.newLocatableEventInfo(
           _: ScalaVirtualMachine,
           _: LocatableEvent,
           _: Seq[JDIArgument]
@@ -100,7 +100,7 @@ class PureLocatableEventInfoSpec extends ParallelMockFunSpec {
 
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newThreadInfoProfile(
+        (mockInfoProducer.newThreadInfo(
           _: ScalaVirtualMachine,
           _: ThreadReference
         )(
@@ -122,7 +122,7 @@ class PureLocatableEventInfoSpec extends ParallelMockFunSpec {
       it("should return a new instance of the location info profile") {
         val expected = mock[LocationInfo]
 
-        (mockInfoProducer.newLocationInfoProfile _)
+        (mockInfoProducer.newLocationInfo _)
           .expects(mockScalaVirtualMachine, mockLocation)
           .returning(expected).once()
 

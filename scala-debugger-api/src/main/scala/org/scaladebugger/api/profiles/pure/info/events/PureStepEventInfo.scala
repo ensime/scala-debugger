@@ -64,7 +64,7 @@ class PureStepEventInfo(
    */
   override def toJavaInfo: StepEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newStepEventInfoProfile(
+    jep.newStepEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       stepEvent = stepEvent,
       jdiArguments = jdiArguments

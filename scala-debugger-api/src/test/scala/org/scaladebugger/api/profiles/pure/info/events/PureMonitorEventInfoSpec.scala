@@ -56,7 +56,7 @@ class PureMonitorEventInfoSpec extends ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newMonitorEventInfoProfile(
+        (mockEventInfoProducer.newMonitorEventInfo(
           _: ScalaVirtualMachine,
           _: MonitorEvent,
           _: Seq[JDIArgument]
@@ -106,7 +106,7 @@ class PureMonitorEventInfoSpec extends ParallelMockFunSpec {
 
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newObjectInfoProfile(
+        (mockInfoProducer.newObjectInfo(
           _: ScalaVirtualMachine,
           _: ObjectReference
         )(
@@ -130,7 +130,7 @@ class PureMonitorEventInfoSpec extends ParallelMockFunSpec {
 
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newThreadInfoProfile(
+        (mockInfoProducer.newThreadInfo(
           _: ScalaVirtualMachine,
           _: ThreadReference
         )(

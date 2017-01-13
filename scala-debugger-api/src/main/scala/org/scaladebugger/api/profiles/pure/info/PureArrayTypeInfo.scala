@@ -40,7 +40,7 @@ class PureArrayTypeInfo(
    *         to Java
    */
   override def toJavaInfo: ArrayTypeInfo = {
-    infoProducer.toJavaInfo.newArrayTypeInfoProfile(
+    infoProducer.toJavaInfo.newArrayTypeInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       arrayType = _arrayType
     )
@@ -87,7 +87,7 @@ class PureArrayTypeInfo(
 
   protected def newArrayProfile(
     arrayReference: ArrayReference
-  ): ArrayInfo = infoProducer.newArrayInfoProfile(
+  ): ArrayInfo = infoProducer.newArrayInfo(
     scalaVirtualMachine,
     arrayReference
   )()

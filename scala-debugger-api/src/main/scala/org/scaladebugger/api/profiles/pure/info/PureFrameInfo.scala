@@ -47,7 +47,7 @@ class PureFrameInfo(
    *         to Java
    */
   override def toJavaInfo: FrameInfo = {
-    infoProducer.toJavaInfo.newFrameInfoProfile(
+    infoProducer.toJavaInfo.newFrameInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       stackFrame = _stackFrame,
       offsetIndex = index
@@ -224,7 +224,7 @@ class PureFrameInfo(
   protected def newLocalVariableProfile(
     localVariable: LocalVariable,
     offsetIndex: Int
-  ): IndexedVariableInfo = infoProducer.newLocalVariableInfoProfile(
+  ): IndexedVariableInfo = infoProducer.newLocalVariableInfo(
     scalaVirtualMachine,
     this,
     localVariable,
@@ -232,14 +232,14 @@ class PureFrameInfo(
   )()
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfo =
-    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)()
+    infoProducer.newObjectInfo(scalaVirtualMachine, objectReference)()
 
   protected def newThreadProfile(threadReference: ThreadReference): ThreadInfo =
-    infoProducer.newThreadInfoProfile(scalaVirtualMachine, threadReference)()
+    infoProducer.newThreadInfo(scalaVirtualMachine, threadReference)()
 
   protected def newLocationProfile(location: Location): LocationInfo =
-    infoProducer.newLocationInfoProfile(scalaVirtualMachine, location)
+    infoProducer.newLocationInfo(scalaVirtualMachine, location)
 
   protected def newValueProfile(value: Value): ValueInfo =
-    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfo(scalaVirtualMachine, value)
 }

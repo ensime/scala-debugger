@@ -54,7 +54,7 @@ class PureMethodEntryEventInfoSpec extends ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newMethodEntryEventInfoProfile(
+        (mockEventInfoProducer.newMethodEntryEventInfo(
           _: ScalaVirtualMachine,
           _: MethodEntryEvent,
           _: Seq[JDIArgument]
@@ -103,7 +103,7 @@ class PureMethodEntryEventInfoSpec extends ParallelMockFunSpec {
 
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newMethodInfoProfile _)
+        (mockInfoProducer.newMethodInfo _)
           .expects(mockScalaVirtualMachine, mockMethod)
           .returning(expected).once()
 

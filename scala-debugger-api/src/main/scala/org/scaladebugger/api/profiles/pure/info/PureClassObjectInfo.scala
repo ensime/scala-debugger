@@ -45,7 +45,7 @@ class PureClassObjectInfo(
    *         to Java
    */
   override def toJavaInfo: ClassObjectInfo = {
-    infoProducer.toJavaInfo.newClassObjectInfoProfile(
+    infoProducer.toJavaInfo.newClassObjectInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       classObjectReference = _classObjectReference
     )(

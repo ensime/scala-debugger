@@ -12,39 +12,39 @@ import scala.util.Try
 /**
  * Wraps a profile, providing DSL-like syntax.
  *
- * @param stepProfile The profile to wrap
+ * @param stepRequest The step request to wrap
  */
 class StepDSLWrapper private[dsl] (
-  private val stepProfile: StepRequest
+  private val stepRequest: StepRequest
 ) {
   /** Represents a Step event and any associated data. */
   type StepStepAndData = (StepEventInfo, Seq[JDIEventDataResult])
 
   /** @see StepRequest#tryCreateStepListener(ThreadInfo, JDIArgument*) */
   def onStep(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[StepEventInfo]] =
-    stepProfile.tryCreateStepListener(threadInfoProfile, extraArguments: _*)
+    stepRequest.tryCreateStepListener(threadInfo, extraArguments: _*)
 
   /** @see StepRequest#createStepListener(ThreadInfo, JDIArgument*) */
   def onUnsafeStep(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): IdentityPipeline[StepEventInfo] =
-    stepProfile.createStepListener(threadInfoProfile, extraArguments: _*)
+    stepRequest.createStepListener(threadInfo, extraArguments: _*)
 
   /** @see StepRequest#createStepListenerWithData(ThreadInfo, JDIArgument*) */
   def onUnsafeStepWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): IdentityPipeline[StepStepAndData] =
-    stepProfile.createStepListenerWithData(threadInfoProfile, extraArguments: _*)
+    stepRequest.createStepListenerWithData(threadInfo, extraArguments: _*)
 
   /** @see StepRequest#tryCreateStepListenerWithData(ThreadInfo, JDIArgument*) */
   def onStepWithData(
-    threadInfoProfile: ThreadInfo,
+    threadInfo: ThreadInfo,
     extraArguments: JDIArgument*
   ): Try[IdentityPipeline[StepStepAndData]] =
-    stepProfile.tryCreateStepListenerWithData(threadInfoProfile, extraArguments: _*)
+    stepRequest.tryCreateStepListenerWithData(threadInfo, extraArguments: _*)
 }

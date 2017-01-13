@@ -47,7 +47,7 @@ class PureVMDisconnectEventInfo(
    */
   override def toJavaInfo: VMDisconnectEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newVMDisconnectEventInfoProfile(
+    jep.newVMDisconnectEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       vmDisconnectEvent = vmDisconnectEvent,
       jdiArguments = jdiArguments

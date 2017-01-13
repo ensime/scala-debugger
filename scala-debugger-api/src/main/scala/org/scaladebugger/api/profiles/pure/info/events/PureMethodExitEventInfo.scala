@@ -68,7 +68,7 @@ class PureMethodExitEventInfo(
    */
   override def toJavaInfo: MethodExitEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newMethodExitEventInfoProfile(
+    jep.newMethodExitEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       methodExitEvent = methodExitEvent,
       jdiArguments = jdiArguments
@@ -94,7 +94,7 @@ class PureMethodExitEventInfo(
    *
    * @return The information profile about the method
    */
-  override def method: MethodInfo = infoProducer.newMethodInfoProfile(
+  override def method: MethodInfo = infoProducer.newMethodInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     method = _method
   )
@@ -104,7 +104,7 @@ class PureMethodExitEventInfo(
    *
    * @return The information profile about the value
    */
-  override def returnValue: ValueInfo = infoProducer.newValueInfoProfile(
+  override def returnValue: ValueInfo = infoProducer.newValueInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     value = _returnValue
   )

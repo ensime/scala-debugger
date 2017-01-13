@@ -38,7 +38,7 @@ class PureLocationInfoSpec extends ParallelMockFunSpec
           .returning(mockInfoProducerProfile).once()
 
         // Create new info profile using Java version of info producer
-        (mockInfoProducerProfile.newLocationInfoProfile _)
+        (mockInfoProducerProfile.newLocationInfo _)
           .expects(mockScalaVirtualMachine, mockLocation)
           .returning(expected).once()
 

@@ -59,7 +59,7 @@ class PureClassPrepareEventInfo(
    */
   override def toJavaInfo: ClassPrepareEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newClassPrepareEventInfoProfile(
+    jep.newClassPrepareEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       classPrepareEvent = classPrepareEvent,
       jdiArguments = jdiArguments
@@ -84,7 +84,7 @@ class PureClassPrepareEventInfo(
    * @return The information profile about the reference type
    */
   override def referenceType: ReferenceTypeInfo = {
-    infoProducer.newReferenceTypeInfoProfile(
+    infoProducer.newReferenceTypeInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       referenceType = _referenceType
     )
@@ -95,7 +95,7 @@ class PureClassPrepareEventInfo(
    *
    * @return The information profile about the thread
    */
-  override def thread: ThreadInfo = infoProducer.newThreadInfoProfile(
+  override def thread: ThreadInfo = infoProducer.newThreadInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     threadReference = _thread
   )(

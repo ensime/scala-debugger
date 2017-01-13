@@ -80,7 +80,7 @@ class PureModificationWatchpointEventInfo(
    */
   override def toJavaInfo: ModificationWatchpointEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newModificationWatchpointEventInfoProfile(
+    jep.newModificationWatchpointEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       modificationWatchpointEvent = modificationWatchpointEvent,
       jdiArguments = jdiArguments

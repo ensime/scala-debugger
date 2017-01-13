@@ -41,7 +41,7 @@ class PureInterfaceTypeInfo(
    *         to Java
    */
   override def toJavaInfo: InterfaceTypeInfo = {
-    infoProducer.toJavaInfo.newInterfaceTypeInfoProfile(
+    infoProducer.toJavaInfo.newInterfaceTypeInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       interfaceType = _interfaceType
     )

@@ -58,7 +58,7 @@ class PureExceptionEventInfoSpec extends ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newExceptionEventInfoProfile(
+        (mockEventInfoProducer.newExceptionEventInfo(
           _: ScalaVirtualMachine,
           _: ExceptionEvent,
           _: Seq[JDIArgument]
@@ -108,7 +108,7 @@ class PureExceptionEventInfoSpec extends ParallelMockFunSpec {
         val expected = Some(mock[LocationInfo])
 
         // Verify catch location is fed into location info producer
-        (mockInfoProducer.newLocationInfoProfile _)
+        (mockInfoProducer.newLocationInfo _)
           .expects(mockScalaVirtualMachine, mockCatchLocation)
           .returning(expected.get).once()
 
@@ -149,7 +149,7 @@ class PureExceptionEventInfoSpec extends ParallelMockFunSpec {
         // Verify catch location is fed into location info producer
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newObjectInfoProfile(
+        (mockInfoProducer.newObjectInfo(
           _: ScalaVirtualMachine,
           _: ObjectReference
         )(

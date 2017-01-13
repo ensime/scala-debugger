@@ -67,7 +67,7 @@ trait PureMonitorWaitRequest extends MonitorWaitRequest {
         monitorWaitManager.removeMonitorWaitRequest(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultMonitorWaitEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultMonitorWaitEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = monitorWaitManager.getMonitorWaitRequestInfo
     )

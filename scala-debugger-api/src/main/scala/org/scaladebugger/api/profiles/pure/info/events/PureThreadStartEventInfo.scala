@@ -57,7 +57,7 @@ class PureThreadStartEventInfo(
    */
   override def toJavaInfo: ThreadStartEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newThreadStartEventInfoProfile(
+    jep.newThreadStartEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       threadStartEvent = threadStartEvent,
       jdiArguments = jdiArguments
@@ -80,7 +80,7 @@ class PureThreadStartEventInfo(
    *
    * @return The information profile about the thread
    */
-  override def thread: ThreadInfo = infoProducer.newThreadInfoProfile(
+  override def thread: ThreadInfo = infoProducer.newThreadInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     threadReference = _thread
   )(

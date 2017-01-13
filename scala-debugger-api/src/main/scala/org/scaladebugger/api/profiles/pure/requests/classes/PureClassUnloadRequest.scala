@@ -74,7 +74,7 @@ trait PureClassUnloadRequest extends ClassUnloadRequest {
         classUnloadManager.removeClassUnloadRequest(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultClassUnloadEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultClassUnloadEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = classUnloadManager.getClassUnloadRequestInfo
     )

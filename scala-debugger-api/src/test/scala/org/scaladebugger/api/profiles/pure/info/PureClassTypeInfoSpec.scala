@@ -62,7 +62,7 @@ class PureClassTypeInfoSpec extends ParallelMockFunSpec
           .returning(mockInfoProducerProfile).once()
 
         // Create new info profile using Java version of info producer
-        (mockInfoProducerProfile.newClassTypeInfoProfile _)
+        (mockInfoProducerProfile.newClassTypeInfo _)
           .expects(mockScalaVirtualMachine, mockClassType)
           .returning(expected).once()
 

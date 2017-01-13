@@ -46,7 +46,7 @@ class PureStringInfo(
    *         to Java
    */
   override def toJavaInfo: StringInfo = {
-    infoProducer.toJavaInfo.newStringInfoProfile(
+    infoProducer.toJavaInfo.newStringInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       stringReference = _stringReference
     )(

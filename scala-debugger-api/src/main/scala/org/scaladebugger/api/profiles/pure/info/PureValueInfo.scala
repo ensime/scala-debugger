@@ -42,7 +42,7 @@ class PureValueInfo(
    *         to Java
    */
   override def toJavaInfo: ValueInfo = {
-    infoProducer.toJavaInfo.newValueInfoProfile(
+    infoProducer.toJavaInfo.newValueInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       value = _value
     )
@@ -244,32 +244,32 @@ class PureValueInfo(
   override def isNull: Boolean = _value == null
 
   protected def newPrimitiveProfile(primitiveValue: PrimitiveValue): PrimitiveInfo =
-    infoProducer.newPrimitiveInfoProfile(scalaVirtualMachine, primitiveValue)
+    infoProducer.newPrimitiveInfo(scalaVirtualMachine, primitiveValue)
 
   protected def newPrimitiveProfile(voidValue: VoidValue): PrimitiveInfo =
-    infoProducer.newPrimitiveInfoProfile(scalaVirtualMachine, voidValue)
+    infoProducer.newPrimitiveInfo(scalaVirtualMachine, voidValue)
 
   protected def newObjectProfile(objectReference: ObjectReference): ObjectInfo =
-    infoProducer.newObjectInfoProfile(scalaVirtualMachine, objectReference)()
+    infoProducer.newObjectInfo(scalaVirtualMachine, objectReference)()
 
   protected def newStringProfile(stringReference: StringReference): StringInfo =
-  infoProducer.newStringInfoProfile(scalaVirtualMachine, stringReference)()
+  infoProducer.newStringInfo(scalaVirtualMachine, stringReference)()
 
   protected def newArrayProfile(arrayReference: ArrayReference): ArrayInfo =
-    infoProducer.newArrayInfoProfile(scalaVirtualMachine, arrayReference)()
+    infoProducer.newArrayInfo(scalaVirtualMachine, arrayReference)()
 
   protected def newClassLoaderProfile(classLoaderReference: ClassLoaderReference): ClassLoaderInfo =
-    infoProducer.newClassLoaderInfoProfile(scalaVirtualMachine, classLoaderReference)()
+    infoProducer.newClassLoaderInfo(scalaVirtualMachine, classLoaderReference)()
 
   protected def newClassObjectProfile(classObjectReference: ClassObjectReference): ClassObjectInfo =
-    infoProducer.newClassObjectInfoProfile(scalaVirtualMachine, classObjectReference)()
+    infoProducer.newClassObjectInfo(scalaVirtualMachine, classObjectReference)()
 
   protected def newThreadGroupProfile(threadGroupReference: ThreadGroupReference): ThreadGroupInfo =
-    infoProducer.newThreadGroupInfoProfile(scalaVirtualMachine, threadGroupReference)()
+    infoProducer.newThreadGroupInfo(scalaVirtualMachine, threadGroupReference)()
 
   protected def newThreadProfile(threadReference: ThreadReference): ThreadInfo =
-    infoProducer.newThreadInfoProfile(scalaVirtualMachine, threadReference)()
+    infoProducer.newThreadInfo(scalaVirtualMachine, threadReference)()
 
   protected def newTypeProfile(_type: Type): TypeInfo =
-    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfo(scalaVirtualMachine, _type)
 }

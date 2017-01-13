@@ -25,31 +25,31 @@ trait InfoProducer extends JavaInfo {
   def eventProducer: EventInfoProducer
 
   /** Fills in additional properties with default values. */
-  def newDefaultValueInfoProfile(
+  def newDefaultValueInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     value: Value
-  ): ValueInfo = newValueInfoProfile(
+  ): ValueInfo = newValueInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     value = value
   )
 
   /** Creates a new instance of the value info profile. */
-  def newValueInfoProfile(
+  def newValueInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     value: Value
   ): ValueInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultArrayInfoProfile(
+  def newDefaultArrayInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     arrayReference: ArrayReference
-  ): ArrayInfo = newArrayInfoProfile(
+  ): ArrayInfo = newArrayInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     arrayReference = arrayReference
   )()
 
   /** Creates a new instance of the array info profile. */
-  def newArrayInfoProfile(
+  def newArrayInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     arrayReference: ArrayReference
   )(
@@ -58,16 +58,16 @@ trait InfoProducer extends JavaInfo {
   ): ArrayInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultObjectInfoProfile(
+  def newDefaultObjectInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     objectReference: ObjectReference
-  ): ObjectInfo = newObjectInfoProfile(
+  ): ObjectInfo = newObjectInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     objectReference = objectReference
   )()
 
   /** Creates a new instance of the object info profile. */
-  def newObjectInfoProfile(
+  def newObjectInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     objectReference: ObjectReference
   )(
@@ -76,42 +76,42 @@ trait InfoProducer extends JavaInfo {
   ): ObjectInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultTypeInfoProfile(
+  def newDefaultTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     _type: Type
-  ): TypeInfo = newTypeInfoProfile(
+  ): TypeInfo = newTypeInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     _type = _type
   )
 
   /** Creates a new instance of the type info profile. */
-  def newTypeInfoProfile(
+  def newTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     _type: Type
   ): TypeInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultReferenceTypeInfoProfile(
+  def newDefaultReferenceTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     referenceType: ReferenceType
-  ): ReferenceTypeInfo = newReferenceTypeInfoProfile(
+  ): ReferenceTypeInfo = newReferenceTypeInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     referenceType = referenceType
   )
 
   /** Creates a new instance of the reference type info profile. */
-  def newReferenceTypeInfoProfile(
+  def newReferenceTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     referenceType: ReferenceType
   ): ReferenceTypeInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultLocalVariableInfoProfile(
+  def newDefaultLocalVariableInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     frame: FrameInfo,
     localVariable: LocalVariable,
     offsetIndex: Int
-  ): IndexedVariableInfo = newLocalVariableInfoProfile(
+  ): IndexedVariableInfo = newLocalVariableInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     frame = frame,
     localVariable = localVariable,
@@ -119,7 +119,7 @@ trait InfoProducer extends JavaInfo {
   )()
 
   /** Creates a new instance of the local variable info profile. */
-  def newLocalVariableInfoProfile(
+  def newLocalVariableInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     frame: FrameInfo,
     localVariable: LocalVariable,
@@ -129,16 +129,16 @@ trait InfoProducer extends JavaInfo {
   ): IndexedVariableInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultThreadInfoProfile(
+  def newDefaultThreadInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadReference: ThreadReference
-  ): ThreadInfo = newThreadInfoProfile(
+  ): ThreadInfo = newThreadInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     threadReference = threadReference
   )()
 
   /** Creates a new instance of the thread info profile. */
-  def newThreadInfoProfile(
+  def newThreadInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadReference: ThreadReference
   )(
@@ -147,16 +147,16 @@ trait InfoProducer extends JavaInfo {
   ): ThreadInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultThreadGroupInfoProfile(
+  def newDefaultThreadGroupInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadGroupReference: ThreadGroupReference
-  ): ThreadGroupInfo = newThreadGroupInfoProfile(
+  ): ThreadGroupInfo = newThreadGroupInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     threadGroupReference = threadGroupReference
   )()
 
   /** Creates a new instance of the thread group info profile. */
-  def newThreadGroupInfoProfile(
+  def newThreadGroupInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     threadGroupReference: ThreadGroupReference
   )(
@@ -165,27 +165,27 @@ trait InfoProducer extends JavaInfo {
   ): ThreadGroupInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultLocationInfoProfile(
+  def newDefaultLocationInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     location: Location
-  ): LocationInfo = newLocationInfoProfile(
+  ): LocationInfo = newLocationInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     location = location
   )
 
   /** Creates a new instance of the location info profile. */
-  def newLocationInfoProfile(
+  def newLocationInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     location: Location
   ): LocationInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultFieldInfoProfile(
+  def newDefaultFieldInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     container: Either[ObjectReference, ReferenceType],
     field: Field,
     offsetIndex: Int
-  ): FieldVariableInfo = newFieldInfoProfile(
+  ): FieldVariableInfo = newFieldInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     container = container,
     field = field,
@@ -193,7 +193,7 @@ trait InfoProducer extends JavaInfo {
   )()
 
   /** Creates a new instance of the field variable info profile. */
-  def newFieldInfoProfile(
+  def newFieldInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     container: Either[ObjectReference, ReferenceType],
     field: Field,
@@ -203,49 +203,49 @@ trait InfoProducer extends JavaInfo {
   ): FieldVariableInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultMethodInfoProfile(
+  def newDefaultMethodInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     method: Method
-  ): MethodInfo = newMethodInfoProfile(
+  ): MethodInfo = newMethodInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     method = method
   )
 
   /** Creates a new instance of the method info profile. */
-  def newMethodInfoProfile(
+  def newMethodInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     method: Method
   ): MethodInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultFrameInfoProfile(
+  def newDefaultFrameInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     stackFrame: StackFrame,
     offsetIndex: Int
-  ): FrameInfo = newFrameInfoProfile(
+  ): FrameInfo = newFrameInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     stackFrame = stackFrame,
     offsetIndex = offsetIndex
   )
 
   /** Creates a new instance of the frame info profile. */
-  def newFrameInfoProfile(
+  def newFrameInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     stackFrame: StackFrame,
     offsetIndex: Int
   ): FrameInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultClassObjectInfoProfile(
+  def newDefaultClassObjectInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classObjectReference: ClassObjectReference
-  ): ClassObjectInfo = newClassObjectInfoProfile(
+  ): ClassObjectInfo = newClassObjectInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     classObjectReference = classObjectReference
   )()
 
   /** Creates a new instance of the class object info profile. */
-  def newClassObjectInfoProfile(
+  def newClassObjectInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classObjectReference: ClassObjectReference
   )(
@@ -254,16 +254,16 @@ trait InfoProducer extends JavaInfo {
   ): ClassObjectInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultClassLoaderInfoProfile(
+  def newDefaultClassLoaderInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classLoaderReference: ClassLoaderReference
-  ): ClassLoaderInfo = newClassLoaderInfoProfile(
+  ): ClassLoaderInfo = newClassLoaderInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     classLoaderReference = classLoaderReference
   )()
 
   /** Creates a new instance of the class loader info profile. */
-  def newClassLoaderInfoProfile(
+  def newClassLoaderInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classLoaderReference: ClassLoaderReference
   )(
@@ -272,133 +272,133 @@ trait InfoProducer extends JavaInfo {
   ): ClassLoaderInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultThreadStatusInfoProfile(
+  def newDefaultThreadStatusInfo(
     threadReference: ThreadReference
-  ): ThreadStatusInfo = newThreadStatusInfoProfile(
+  ): ThreadStatusInfo = newThreadStatusInfo(
     threadReference = threadReference
   )
 
   /** Creates a new instance of the thread status info profile. */
-  def newThreadStatusInfoProfile(
+  def newThreadStatusInfo(
     threadReference: ThreadReference
   ): ThreadStatusInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultArrayTypeInfoProfile(
+  def newDefaultArrayTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     arrayType: ArrayType
-  ): ArrayTypeInfo = newArrayTypeInfoProfile(
+  ): ArrayTypeInfo = newArrayTypeInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     arrayType = arrayType
   )
 
   /** Creates a new instance of the array type info profile. */
-  def newArrayTypeInfoProfile(
+  def newArrayTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     arrayType: ArrayType
   ): ArrayTypeInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultClassTypeInfoProfile(
+  def newDefaultClassTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classType: ClassType
-  ): ClassTypeInfo = newClassTypeInfoProfile(
+  ): ClassTypeInfo = newClassTypeInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     classType = classType
   )
 
   /** Creates a new instance of the class type info profile. */
-  def newClassTypeInfoProfile(
+  def newClassTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     classType: ClassType
   ): ClassTypeInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultInterfaceTypeInfoProfile(
+  def newDefaultInterfaceTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     interfaceType: InterfaceType
-  ): InterfaceTypeInfo = newInterfaceTypeInfoProfile(
+  ): InterfaceTypeInfo = newInterfaceTypeInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     interfaceType = interfaceType
   )
 
   /** Creates a new instance of the interface type info profile. */
-  def newInterfaceTypeInfoProfile(
+  def newInterfaceTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     interfaceType: InterfaceType
   ): InterfaceTypeInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultPrimitiveTypeInfoProfile(
+  def newDefaultPrimitiveTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     primitiveType: PrimitiveType
-  ): PrimitiveTypeInfo = newPrimitiveTypeInfoProfile(
+  ): PrimitiveTypeInfo = newPrimitiveTypeInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     primitiveType = primitiveType
   )
 
   /** Creates a new instance of the primitive type info profile. */
-  def newPrimitiveTypeInfoProfile(
+  def newPrimitiveTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     primitiveType: PrimitiveType
   ): PrimitiveTypeInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultPrimitiveTypeInfoProfile(
+  def newDefaultPrimitiveTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     voidType: VoidType
-  ): PrimitiveTypeInfo = newPrimitiveTypeInfoProfile(
+  ): PrimitiveTypeInfo = newPrimitiveTypeInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     voidType = voidType
   )
 
   /** Creates a new instance of the primitive type info profile. */
-  def newPrimitiveTypeInfoProfile(
+  def newPrimitiveTypeInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     voidType: VoidType
   ): PrimitiveTypeInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultPrimitiveInfoProfile(
+  def newDefaultPrimitiveInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     primitiveValue: PrimitiveValue
-  ): PrimitiveInfo = newPrimitiveInfoProfile(
+  ): PrimitiveInfo = newPrimitiveInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     primitiveValue = primitiveValue
   )
 
   /** Creates a new instance of the primitive info profile. */
-  def newPrimitiveInfoProfile(
+  def newPrimitiveInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     primitiveValue: PrimitiveValue
   ): PrimitiveInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultPrimitiveInfoProfile(
+  def newDefaultPrimitiveInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     voidValue: VoidValue
-  ): PrimitiveInfo = newPrimitiveInfoProfile(
+  ): PrimitiveInfo = newPrimitiveInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     voidValue = voidValue
   )
 
   /** Creates a new instance of the primitive info profile. */
-  def newPrimitiveInfoProfile(
+  def newPrimitiveInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     voidValue: VoidValue
   ): PrimitiveInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultStringInfoProfile(
+  def newDefaultStringInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     stringReference: StringReference
-  ): StringInfo = newStringInfoProfile(
+  ): StringInfo = newStringInfo(
     scalaVirtualMachine = scalaVirtualMachine,
     stringReference = stringReference
   )()
 
   /** Creates a new instance of the string info profile. */
-  def newStringInfoProfile(
+  def newStringInfo(
     scalaVirtualMachine: ScalaVirtualMachine,
     stringReference: StringReference
   )(
@@ -407,9 +407,8 @@ trait InfoProducer extends JavaInfo {
   ): StringInfo
 
   /** Fills in additional properties with default values. */
-  def newDefaultTypeCheckerProfile(): TypeChecker =
-    newTypeCheckerProfile()
+  def newDefaultTypeChecker(): TypeChecker = newTypeChecker()
 
   /** Creates a new instance of the type checker profile. */
-  def newTypeCheckerProfile(): TypeChecker
+  def newTypeChecker(): TypeChecker
 }

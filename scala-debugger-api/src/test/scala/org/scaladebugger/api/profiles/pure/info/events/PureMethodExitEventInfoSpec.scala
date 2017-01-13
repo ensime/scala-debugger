@@ -56,7 +56,7 @@ class PureMethodExitEventInfoSpec extends ParallelMockFunSpec {
         // Java version of event info producer creates a new event instance
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockEventInfoProducer.newMethodExitEventInfoProfile(
+        (mockEventInfoProducer.newMethodExitEventInfo(
           _: ScalaVirtualMachine,
           _: MethodExitEvent,
           _: Seq[JDIArgument]
@@ -106,7 +106,7 @@ class PureMethodExitEventInfoSpec extends ParallelMockFunSpec {
 
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newMethodInfoProfile _)
+        (mockInfoProducer.newMethodInfo _)
           .expects(mockScalaVirtualMachine, mockMethod)
           .returning(expected).once()
 
@@ -122,7 +122,7 @@ class PureMethodExitEventInfoSpec extends ParallelMockFunSpec {
 
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducer.newValueInfoProfile _)
+        (mockInfoProducer.newValueInfo _)
           .expects(mockScalaVirtualMachine, mockReturnValue)
           .returning(expected).once()
 

@@ -37,7 +37,7 @@ class PureStringInfoSpec extends ParallelMockFunSpec
         // Create new info profile using Java version of info producer
         // NOTE: Cannot validate second set of args because they are
         //       call-by-name, which ScalaMock does not support presently
-        (mockInfoProducerProfile.newStringInfoProfile(
+        (mockInfoProducerProfile.newStringInfo(
           _: ScalaVirtualMachine,
           _: StringReference
         )(

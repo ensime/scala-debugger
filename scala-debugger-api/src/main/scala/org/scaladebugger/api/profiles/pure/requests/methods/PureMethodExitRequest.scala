@@ -79,7 +79,7 @@ trait PureMethodExitRequest extends MethodExitRequest {
         methodExitManager.removeMethodExitRequestWithId(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultMethodExitEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultMethodExitEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = methodExitManager.getMethodExitRequestInfoWithId
     )

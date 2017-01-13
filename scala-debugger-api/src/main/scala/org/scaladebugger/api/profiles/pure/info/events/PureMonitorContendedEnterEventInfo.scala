@@ -71,7 +71,7 @@ class PureMonitorContendedEnterEventInfo(
    */
   override def toJavaInfo: MonitorContendedEnterEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newMonitorContendedEnterEventInfoProfile(
+    jep.newMonitorContendedEnterEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       monitorContendedEnterEvent = monitorContendedEnterEvent,
       jdiArguments = jdiArguments

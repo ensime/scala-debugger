@@ -72,7 +72,7 @@ trait PureThreadStartRequest extends ThreadStartRequest {
         threadStartManager.removeThreadStartRequest(requestId)
       },
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultThreadStartEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultThreadStartEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = threadStartManager.getThreadStartRequestInfo
     )

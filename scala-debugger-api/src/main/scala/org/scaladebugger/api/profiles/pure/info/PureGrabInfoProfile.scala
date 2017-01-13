@@ -175,44 +175,44 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
 
   protected def newThreadProfile(
     threadReference: ThreadReference
-  ): ThreadInfo = infoProducer.newThreadInfoProfile(
+  ): ThreadInfo = infoProducer.newThreadInfo(
     scalaVirtualMachine,
     threadReference
   )(virtualMachine = _virtualMachine)
 
   protected def newThreadGroupProfile(
     threadGroupReference: ThreadGroupReference
-  ): ThreadGroupInfo = infoProducer.newThreadGroupInfoProfile(
+  ): ThreadGroupInfo = infoProducer.newThreadGroupInfo(
     scalaVirtualMachine,
     threadGroupReference
   )(virtualMachine = _virtualMachine)
 
   protected def newReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfoProfile(
+  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfo(
     scalaVirtualMachine,
     referenceType
   )
 
   protected def newTypeProfile(_type: Type): TypeInfo =
-    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfo(scalaVirtualMachine, _type)
 
   protected def newValueProfile(value: Value): ValueInfo =
-    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfo(scalaVirtualMachine, value)
 
   protected def newLocationProfile(location: Location): LocationInfo =
-    infoProducer.newLocationInfoProfile(scalaVirtualMachine, location)
+    infoProducer.newLocationInfo(scalaVirtualMachine, location)
 
   protected def newMethodProfile(method: Method): MethodInfo =
-    infoProducer.newMethodInfoProfile(scalaVirtualMachine, method)
+    infoProducer.newMethodInfo(scalaVirtualMachine, method)
 
   protected def newFrameProfile(stackFrame: StackFrame): FrameInfo =
-    infoProducer.newFrameInfoProfile(scalaVirtualMachine, stackFrame, -1)
+    infoProducer.newFrameInfo(scalaVirtualMachine, stackFrame, -1)
 
   protected def newFieldProfile(
     objectReference: ObjectReference,
     field: Field
-  ): FieldVariableInfo = infoProducer.newFieldInfoProfile(
+  ): FieldVariableInfo = infoProducer.newFieldInfo(
     scalaVirtualMachine,
     Left(objectReference),
     field,
@@ -222,7 +222,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   protected def newFieldProfile(
     referenceType: ReferenceType,
     field: Field
-  ): FieldVariableInfo = infoProducer.newFieldInfoProfile(
+  ): FieldVariableInfo = infoProducer.newFieldInfo(
     scalaVirtualMachine,
     Right(referenceType),
     field,
@@ -232,7 +232,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
   protected def newLocalVariableProfile(
     stackFrame: StackFrame,
     localVariable: LocalVariable
-  ): VariableInfo = infoProducer.newLocalVariableInfoProfile(
+  ): VariableInfo = infoProducer.newLocalVariableInfo(
     scalaVirtualMachine,
     newFrameProfile(stackFrame),
     localVariable,
@@ -241,7 +241,7 @@ trait PureGrabInfoProfile extends GrabInfoProfile {
 
   protected def newObjectProfile(
     objectReference: ObjectReference
-  ): ObjectInfo = infoProducer.newObjectInfoProfile(
+  ): ObjectInfo = infoProducer.newObjectInfo(
     scalaVirtualMachine,
     objectReference
   )(

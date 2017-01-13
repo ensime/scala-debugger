@@ -57,7 +57,7 @@ trait PureVMDisconnectRequest extends VMDisconnectRequest {
       _hasRequest = id => requestArgsCache.values.toSeq.contains(id),
       _removeRequestById = requestId => requestArgsCache.remove(requestId),
       _newEventInfo = (s, event, jdiArgs) => {
-        eventProducer.newDefaultVMDisconnectEventInfoProfile(s, event, jdiArgs: _*)
+        eventProducer.newDefaultVMDisconnectEventInfo(s, event, jdiArgs: _*)
       },
       _retrieveRequestInfo = requestId => requestArgsCache.get(requestId)
         .map(rArgs => StandardRequestInfo(requestId, isPending = true, rArgs)),

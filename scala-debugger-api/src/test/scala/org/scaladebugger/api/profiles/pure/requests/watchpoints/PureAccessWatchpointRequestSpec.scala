@@ -170,7 +170,7 @@ class PureAccessWatchpointRequestSpec extends ParallelMockFunSpec with JDIMockHe
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[AccessWatchpointEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultAccessWatchpointEventInfoProfile _)
+          (mockEventProducer.newDefaultAccessWatchpointEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

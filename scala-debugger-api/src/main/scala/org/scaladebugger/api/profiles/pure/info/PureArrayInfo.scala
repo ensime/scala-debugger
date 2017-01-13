@@ -49,7 +49,7 @@ class PureArrayInfo(
    *         to Java
    */
   override def toJavaInfo: ArrayInfo = {
-    infoProducer.toJavaInfo.newArrayInfoProfile(
+    infoProducer.toJavaInfo.newArrayInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       arrayReference = _arrayReference
     )(
@@ -170,5 +170,5 @@ class PureArrayInfo(
   }
 
   override protected def newValueProfile(value: Value): ValueInfo =
-    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfo(scalaVirtualMachine, value)
 }

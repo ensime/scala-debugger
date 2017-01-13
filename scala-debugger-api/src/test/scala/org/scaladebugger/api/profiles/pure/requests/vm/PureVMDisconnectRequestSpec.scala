@@ -149,7 +149,7 @@ class PureVMDisconnectRequestSpec extends ParallelMockFunSpec with JDIMockHelper
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[VMDisconnectEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultVMDisconnectEventInfoProfile _)
+          (mockEventProducer.newDefaultVMDisconnectEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 

@@ -36,7 +36,7 @@ class PureMethodInfo(
    *         to Java
    */
   override def toJavaInfo: MethodInfo = {
-    infoProducer.toJavaInfo.newMethodInfoProfile(
+    infoProducer.toJavaInfo.newMethodInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       method = _method
     )
@@ -105,11 +105,11 @@ class PureMethodInfo(
 
   protected def newReferenceTypeProfile(
     referenceType: ReferenceType
-  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfoProfile(
+  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfo(
     scalaVirtualMachine,
     referenceType
   )
 
   protected def newTypeProfile(_type: Type): TypeInfo =
-    infoProducer.newTypeInfoProfile(scalaVirtualMachine, _type)
+    infoProducer.newTypeInfo(scalaVirtualMachine, _type)
 }

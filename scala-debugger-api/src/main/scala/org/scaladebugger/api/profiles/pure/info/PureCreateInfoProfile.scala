@@ -37,5 +37,5 @@ trait PureCreateInfoProfile extends CreateInfoProfile with JDIHelperMethods {
   }
 
   protected def createNewValueProfile(value: Value): ValueInfo =
-    infoProducer.newValueInfoProfile(scalaVirtualMachine, value)
+    infoProducer.newValueInfo(scalaVirtualMachine, value)
 }

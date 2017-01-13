@@ -71,7 +71,7 @@ class PureExceptionEventInfo(
    */
   override def toJavaInfo: ExceptionEventInfo = {
     val jep = infoProducer.eventProducer.toJavaInfo
-    jep.newExceptionEventInfoProfile(
+    jep.newExceptionEventInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       exceptionEvent = exceptionEvent,
       jdiArguments = jdiArguments
@@ -100,7 +100,7 @@ class PureExceptionEventInfo(
    *         a caught exception, otherwise None if it is uncaught
    */
   override def catchLocation: Option[LocationInfo] = {
-    _catchLocation.map(l => infoProducer.newLocationInfoProfile(
+    _catchLocation.map(l => infoProducer.newLocationInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       location = l
     ))
@@ -112,7 +112,7 @@ class PureExceptionEventInfo(
    * @return The information profile about the exception object
    */
   override def exception: ObjectInfo = {
-    infoProducer.newObjectInfoProfile(
+    infoProducer.newObjectInfo(
       scalaVirtualMachine = scalaVirtualMachine,
       objectReference = _exception
     )(

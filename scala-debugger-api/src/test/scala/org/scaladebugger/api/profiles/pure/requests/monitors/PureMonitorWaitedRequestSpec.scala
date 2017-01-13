@@ -201,7 +201,7 @@ class PureMonitorWaitedRequestSpec extends ParallelMockFunSpec with JDIMockHelpe
           val mockScalaVirtualMachine = mock[ScalaVirtualMachine]
           val mockEvent = mock[MonitorWaitedEvent]
           val mockJdiArgs = Seq(mock[JDIRequestArgument], mock[JDIEventArgument])
-          (mockEventProducer.newDefaultMonitorWaitedEventInfoProfile _)
+          (mockEventProducer.newDefaultMonitorWaitedEventInfo _)
             .expects(mockScalaVirtualMachine, mockEvent, mockJdiArgs)
             .returning(expected).once()
 
