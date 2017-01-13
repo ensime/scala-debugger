@@ -21,7 +21,7 @@ class Scala210ReferenceTypeInfo(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,
   _referenceType = _referenceType
-) {
+) with Scala210FieldTransformationRules {
   /**
    * Returns whether or not this info profile represents the low-level Java
    * implementation.
@@ -33,11 +33,53 @@ class Scala210ReferenceTypeInfo(
   override def isJavaInfo: Boolean = false
 
   /**
+    * Retrieves all fields declared in this type, its superclasses, implemented
+    * interfaces, and superinterfaces.
+    *
+    * @note Provides no offset index information!
+    * @return The collection of fields as variable info profiles
+    */
+  override def allFields: Seq[FieldVariableInfo] = super.allFields.flatMap(transformField)
+
+   /**
+    * Retrieves unhidden and unambiguous fields in this type. Fields hidden
+    * by other fields with the same name (in a more recently inherited class)
+    * are not included. Fields that are ambiguously multiply inherited are also
+    * not included. All other inherited fields are included.
+    *
+    * @note Provides offset index information!
+    * @return The collection of fields as variable info profiles
+    */
+  override def visibleFields: Seq[FieldVariableInfo] = super.visibleFields.flatMap(transformField)
+
+  /**
    * Retrieves the visible field with the matching name.
    *
    * @param name The name of the field to retrieve
    * @return Some field as a variable info profile, or None if doesn't exist
    */
   override def fieldOption(name: String): Option[FieldVariableInfo] =
-    allFields.find(_.name == name)
+    visibleFields.find(_.name == name)
+
+  /**
+    * Retrieves unhidden and unambiguous fields in this type. Fields hidden
+    * by other fields with the same name (in a more recently inherited class)
+    * are not included. Fields that are ambiguously multiply inherited are also
+    * not included. All other inherited fields are included. Offset index
+    * information is included.
+    *
+    * @return The collection of fields as variable info profiles
+    */
+  override def indexedVisibleFields: Seq[FieldVariableInfo] = visibleFields.zipWithIndex.map {
+    case (f, i) => newFieldProfile(f.toJdiInstance, i)
+  }
+
+  /** Retrieves the visible field with the matching name with offset index
+   * information.
+   *
+   * @param name The name of the field to retrieve
+   * @return Some field as a variable info profile, or None if doesn't exist
+   */
+  override def indexedFieldOption(name: String): Option[FieldVariableInfo] =
+    indexedVisibleFields.find(_.name == name)
 }

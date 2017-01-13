@@ -1,5 +1,7 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import com.sun.jdi.Field
+
 import scala.util.Try
 
 
@@ -18,6 +20,13 @@ trait FieldVariableInfo
    *         to Java
    */
   override def toJavaInfo: FieldVariableInfo
+
+  /**
+    * Returns the JDI representation this profile instance wraps.
+    *
+    * @return The JDI instance
+    */
+  override def toJdiInstance: Field
 
   /**
    * Returns the parent that contains this field.
