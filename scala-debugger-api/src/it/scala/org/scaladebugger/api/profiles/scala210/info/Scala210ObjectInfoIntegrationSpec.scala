@@ -76,9 +76,9 @@ class Scala210ObjectInfoIntegrationSpec extends ParallelMockFunSpec
             .flatMap(_.visibleFields)
             .map(_.toJdiInstance.name)
 
-          fieldNames.length should ===(4)
-          indexedFieldNames.length should ===(4)
-          typeRefVisibleFieldNames.length should ===(4)
+          fieldNames should have length 4
+          indexedFieldNames should have length 4
+          typeRefVisibleFieldNames should have length 4
 
           fieldNames should (
             contain theSameElementsAs indexedFieldNames and

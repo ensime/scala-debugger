@@ -40,7 +40,7 @@ class Scala210ReferenceTypeInfo(
     * @return The collection of fields as variable info profiles
     */
   override def allFields: Seq[FieldVariableInfo] =
-    super.allFields.flatMap(transformField(_, isInStaticContext = true))
+    toJavaInfo.allFields.flatMap(transformField(_, isInStaticContext = true))
 
    /**
     * Retrieves unhidden and unambiguous fields in this type. Fields hidden
@@ -52,7 +52,7 @@ class Scala210ReferenceTypeInfo(
     * @return The collection of fields as variable info profiles
     */
   override def visibleFields: Seq[FieldVariableInfo] =
-    super.visibleFields.flatMap(transformField(_, isInStaticContext = true))
+    toJavaInfo.visibleFields.flatMap(transformField(_, isInStaticContext = true))
 
   /**
    * Retrieves the visible field with the matching name.

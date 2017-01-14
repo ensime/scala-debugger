@@ -18,7 +18,7 @@ trait Scala210FieldTransformationRules {
   private val ignoreOrigin = Seq("scala.")
 
   // TODO: Handle infinitely-recursive fields when expanding
-  def transformField(field: FieldVariableInfo, isInStaticContext: Boolean = false): Seq[FieldVariableInfo] = {
+  protected def transformField(field: FieldVariableInfo, isInStaticContext: Boolean = false): Seq[FieldVariableInfo] = {
     val jField = field.toJavaInfo
     val value = if (field.toJdiInstance.isStatic == isInStaticContext) Some(field.toValueInfo)
                 else None
