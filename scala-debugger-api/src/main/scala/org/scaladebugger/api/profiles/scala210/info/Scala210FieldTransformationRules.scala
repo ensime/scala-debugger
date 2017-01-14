@@ -18,9 +18,10 @@ trait Scala210FieldTransformationRules {
   private val ignoreOrigin = Seq("scala.")
 
   // TODO: Handle infinitely-recursive fields when expanding
-  def transformField(field: FieldVariableInfo): Seq[FieldVariableInfo] = {
+  def transformField(field: FieldVariableInfo, isInStaticContext: Boolean = false): Seq[FieldVariableInfo] = {
     val jField = field.toJavaInfo
-    val value = field.toValueInfo
+    val value = if (field.toJdiInstance.isStatic == isInStaticContext) Some(field.toValueInfo)
+                else None
 
     // If the field is something we should ignore directly, do so
     if (ignoreNames.contains(jField.name)) Nil
@@ -29,11 +30,11 @@ trait Scala210FieldTransformationRules {
     else if (ignoreNamePrefix.exists(jField.name.startsWith)) Nil
 
     // If the field's origin starts with an origin we don't want, ignore it
-    else if (ignoreOrigin.exists(jField.declaringTypeInfo.name.startsWith)) Nil
+    else if (ignoreOrigin.exists(jField.declaringType.name.startsWith)) Nil
 
     // If the field is one that should be expanded, do so
-    else if (value.isObject && expandNames.contains(jField.name))
-      value.toObjectInfo.fields.flatMap(transformField)
+    else if (value.exists(_.isObject) && expandNames.contains(jField.name))
+      value.toList.flatMap(_.toObjectInfo.fields.flatMap(transformField(_)))
 
     // Otherwise, return the normal field
     else Seq(field)

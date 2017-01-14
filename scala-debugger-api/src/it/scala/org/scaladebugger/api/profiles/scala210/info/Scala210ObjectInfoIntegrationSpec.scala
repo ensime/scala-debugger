@@ -41,5 +41,52 @@ class Scala210ObjectInfoIntegrationSpec extends ParallelMockFunSpec
         })
       }
     }
+
+    it("should be consistent in .fields() and .indexedFields() calls and with Scala210ReferenceType") {
+      val testClass = "org.scaladebugger.test.info.Fields"
+      val testFile = JDITools.scalaClassStringToFileString(testClass)
+
+      @volatile var t: Option[ThreadInfo] = None
+      val s = DummyScalaVirtualMachine.newInstance()
+
+      // NOTE: Do not resume so we can check the variables at the stack frame
+      s.withProfile(Scala210DebugProfile.Name)
+        .getOrCreateBreakpointRequest(testFile, 63, NoResume)
+        .foreach(e => t = Some(e.thread))
+
+      withVirtualMachine(testClass, pendingScalaVirtualMachines = Seq(s)) { (s) =>
+        logTimeTaken(eventually {
+          val inheritedClassVar = t
+            .flatMap(_.findVariableByName("inheritedClass"))
+          val inheritedClassObject = inheritedClassVar
+            .map(_.toValueInfo.toObjectInfo)
+          val inheritedClassTypeRef = inheritedClassVar
+            .map(_.toValueInfo.`type`.toReferenceType)
+
+          val fieldNames = inheritedClassObject
+            .toList
+            .flatMap(_.fields)
+            .map(_.toJdiInstance.name)
+          val indexedFieldNames = inheritedClassObject
+            .toList
+            .flatMap(_.indexedFields)
+            .map(_.toJdiInstance.name)
+          val typeRefVisibleFieldNames = inheritedClassTypeRef
+            .toList
+            .flatMap(_.visibleFields)
+            .map(_.toJdiInstance.name)
+
+          fieldNames.length should ===(4)
+          indexedFieldNames.length should ===(4)
+          typeRefVisibleFieldNames.length should ===(4)
+
+          fieldNames should (
+            contain theSameElementsAs indexedFieldNames and
+            contain theSameElementsAs typeRefVisibleFieldNames
+          )
+
+        })
+      }
+    }
   }
 }
