@@ -46,7 +46,7 @@ class Scala210ObjectInfo(
    * @note Provides no offset index information!
    * @return The profiles wrapping the visible fields in this object
    */
-  override def fields: Seq[FieldVariableInfo] = toJavaInfo.fields.flatMap(transformField(_))
+  override def fields: Seq[FieldVariableInfo] = super.fields.flatMap(transformField(_))
 
   /**
    * Returns the object's field with the specified name.
