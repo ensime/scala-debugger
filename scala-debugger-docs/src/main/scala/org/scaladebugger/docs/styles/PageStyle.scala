@@ -210,8 +210,7 @@ object PageStyle extends CascadingStyleSheet {
   )
 
   lazy val copyButton: Cls = cls(
-    display := "flex",
-    alignItems := "center",
+    display := "inline-block",
 
     position := "absolute",
     top := "0",
