@@ -35,7 +35,7 @@ object DocPageStyle extends CascadingStyleSheet {
     display := "inline-block",
 
     background := "#EAEAEC",
-    color := "#696969",
+    color := "#3B3E43",
 
     overflowY := "auto",
     padding := "2em",
@@ -47,6 +47,79 @@ object DocPageStyle extends CascadingStyleSheet {
 
     img(
       maxWidth := "100%"
+    ),
+
+    Selector(".hljs")(
+      padding := "1em",
+      borderRadius := "8px",
+      background := "#3B3E43"
+    ),
+
+    pre(
+      code(
+        Selector(":not(.hljs)")(
+          display := "inline-block",
+          background := "#ECF0F1",
+          color := "#3B3E43",
+          border := "1px solid #979797",
+          borderRadius := "8px",
+          overflow := "auto",
+          padding := "1em",
+          fontWeight := "inherit"
+        )
+      )
+    ),
+
+    code(
+      Selector(":not(.hljs)")(
+        color := "#9B0000",
+        fontWeight := "bold"
+      )
+    ),
+
+    table(
+      emptyCells := "show",
+      width := "100%",
+      height := "auto",
+      border := "1px solid #CBCBCB",
+      borderRadius := "8px",
+      //borderCollapse := "collapse",
+      borderSpacing := "0",
+      marginTop := "1em",
+      marginBottom := "1em",
+
+      thead(
+        background := "#D8D8D8",
+        color := "#3B3E43",
+        textAlign := "left",
+        verticalAlign := "bottom"
+      ),
+
+      th(
+        padding := "0.5em 1.0em",
+        borderLeft := "1px solid #CBCBCB",
+        borderWidth := "0px 0px 0px 1px",
+        fontSize := "inherit",
+        margin := "0em",
+        overflow := "visible",
+
+        &.firstChild(
+          borderLeftWidth := "0em"
+        )
+      ),
+
+      td(
+        padding := "0.5em 1.0em",
+        borderLeft := "1px solid #CBCBCB",
+        borderWidth := "0px 0px 0px 1px",
+        fontSize := "inherit",
+        margin := "0em",
+        overflow := "visible",
+
+        &.firstChild(
+          borderLeftWidth := "0em"
+        )
+      )
     )
   )
 }

@@ -10,7 +10,8 @@ import org.scaladebugger.docs.styles.Implicits._
  * Represents the layout for the front page of the site.
  */
 class FrontPage extends Page(
-  postHeadContent = Seq(FrontPageStyle.global.toStyleTag)
+  postHeadContent = Seq(FrontPageStyle.global.toStyleTag),
+  syntaxHighlightTheme = "default"
 ) {
   private val ApiExampleCode =
     s"""

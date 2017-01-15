@@ -7,8 +7,6 @@ import scalatags.Text.all._
  */
 object ClipboardJS {
   def apply(): Modifier = {
-    script(
-      src := "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.16/clipboard.min.js"
-    )
+    script(src := "/scripts/vendor/clipboard/clipboard.min.js")
   }
 }

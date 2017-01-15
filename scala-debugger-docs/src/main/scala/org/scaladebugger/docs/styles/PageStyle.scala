@@ -91,7 +91,7 @@ object PageStyle extends CascadingStyleSheet {
   //
 
   lazy val buttonCls: Cls = cls(
-    background := "#232F3F",
+    background := "#3B3E43",
     color := "#ECF0F1",
     padding := "1em 1.5em",
     borderRadius := "8px",
@@ -187,6 +187,50 @@ object PageStyle extends CascadingStyleSheet {
     border := "1px solid #979797",
     borderRadius := "8px",
     overflow := "auto",
-    padding := "1em 0.5em 1em"
+    padding := "1em 0.5em 1em",
+
+    Selector(".hljs")(
+      background := "#ECF0F1",
+      color := "#3B3E43"
+    )
+  )
+
+  //
+  // COPY BUTTON CSS
+  //
+
+  lazy val copyContainer: Cls = cls(
+    position := "relative",
+
+    &.hover(
+      copyButton(
+        opacity := "1"
+      )
+    )
+  )
+
+  lazy val copyButton: Cls = cls(
+    display := "flex",
+    alignItems := "center",
+
+    position := "absolute",
+    top := "0",
+    right := "0",
+
+    fontSize := "1em",
+    padding := "0.5em 1em",
+
+    textDecoration := "none",
+    border := "transparent",
+    background := "#EF4551",
+    color := "#ECF0F1",
+    borderRadius := "8px",
+
+    opacity := "0",
+    transition := "opacity 0.35s ease-in-out",
+
+    &.active(
+      background := "#A84444"
+    )
   )
 }

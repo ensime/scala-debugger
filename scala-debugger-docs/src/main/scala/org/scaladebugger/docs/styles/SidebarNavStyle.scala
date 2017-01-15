@@ -24,13 +24,13 @@ object SidebarNavStyle extends CascadingStyleSheet {
 
     fontFamily := "'Helvetica Neue', Helvetica, Arial, sans-serif",
     background := "#D8D8D8",
-    color := "#696969",
+    color := "#3B3E43",
 
     width := "16em",
 
     a(
       textDecoration := "none",
-      color := "#696969"
+      color := "#3B3E43"
     )
   )
 
@@ -71,7 +71,7 @@ object SidebarNavStyle extends CascadingStyleSheet {
 
     a(
       textDecoration := "none",
-      color := "#696969"
+      color := "#3B3E43"
     )
   )
 

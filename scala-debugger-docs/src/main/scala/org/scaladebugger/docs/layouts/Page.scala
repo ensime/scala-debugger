@@ -3,8 +3,8 @@ package org.scaladebugger.docs.layouts
 import java.net.URL
 
 import org.scaladebugger.docs.layouts.partials.common._
-import org.scaladebugger.docs.layouts.partials.common.vendor.{ClipboardJS, FontAwesome}
-import org.scaladebugger.docs.styles.{TopbarNavStyle, PageStyle, TabsStyle}
+import org.scaladebugger.docs.layouts.partials.common.vendor._
+import org.scaladebugger.docs.styles.{PageStyle, TabsStyle, TopbarNavStyle}
 
 import scalatags.Text.all._
 
@@ -19,6 +19,8 @@ import scalatags.Text.all._
  * @param bodyModifiers Modifiers to apply on the <body> tag
  * @param selectedMenuItems Will mark each menu item whose name is provided
  *                          as selected
+ * @param syntaxHighlightTheme The theme to use for syntax highlighting; themes
+ *                             are from the highlight.js list
  */
 abstract class Page(
   val preHeadContent: Seq[Modifier] = Nil,
@@ -27,14 +29,16 @@ abstract class Page(
   val postBodyContent: Seq[Modifier] = Nil,
   val htmlModifiers: Seq[Modifier] = Nil,
   val bodyModifiers: Seq[Modifier] = Nil,
-  val selectedMenuItems: Seq[String] = Nil
+  val selectedMenuItems: Seq[String] = Nil,
+  val syntaxHighlightTheme: String = "agate"
 ) extends Layout {
   import org.scaladebugger.docs.styles.Implicits._
   private lazy val headContent =
     preHeadContent ++
     Seq(
       meta(charset := "utf-8"),
-      FontAwesome(),
+      FontAwesomeCSS(),
+      HighlightCSS(theme = syntaxHighlightTheme),
       PageStyle.styleSheetText.toStyleTag,
       TopbarNavStyle.styleSheetText.toStyleTag,
       TabsStyle.styleSheetText.toStyleTag
@@ -63,7 +67,10 @@ abstract class Page(
         authorUrl = new URL("https://chipsenkbeil.com/"),
         startYear = 2015
       ),
-      ClipboardJS()
+      ClipboardJS(),
+      HighlightJS(),
+      ClipboardJSInit(),
+      HighlightJSInit()
     ) ++
     postBodyContent
 
