@@ -29,10 +29,16 @@ class Page private (
   private val logger: Logger
 ) {
   /** Represents an internal flexmark node used for markdown processing. */
-  private lazy val pageNode = parseMarkdownFile(path)
+  private lazy val pageNode = {
+    assert(!isDirectory, "Page represents a directory, not a markdown file!")
+    parseMarkdownFile(path)
+  }
 
   /** Represents the metadata for the page. */
   lazy val metadata: Metadata = parseMetadata(pageNode)
+
+  /** Represents whether or not this page represents a directory. */
+  lazy val isDirectory: Boolean = Files.isDirectory(path)
 
   /**
    * Represents an absolute web path link to this file,

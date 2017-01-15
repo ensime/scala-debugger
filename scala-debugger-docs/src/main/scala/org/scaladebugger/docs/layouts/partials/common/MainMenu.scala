@@ -11,8 +11,9 @@ import scalatags.Text.all._
 object MainMenu {
   def apply(menuItems: MenuItem*): Modifier = {
     @inline def toListItem(menuItem: MenuItem): Modifier = {
+      val isSelected = menuItem.isDirectlyOrIndirectlySelected
       val selectedStyle =
-        if (menuItem.selected) Some(TopbarNavStyle.selectedNavLink)
+        if (isSelected) Some(TopbarNavStyle.selectedNavLink)
         else None
 
       li(selectedStyle)(

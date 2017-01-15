@@ -7,6 +7,8 @@ import org.apache.commons.io.filefilter.{FalseFileFilter, TrueFileFilter}
 import org.scaladebugger.docs.Config
 import org.scaladebugger.docs.utils.FileHelper
 
+import scala.annotation.tailrec
+
 /**
  * Represents a generic menu item.
  *
@@ -28,7 +30,35 @@ case class MenuItem(
   selected: Boolean = false,
   weight: Double = MenuItem.DefaultWeight,
   fake: Boolean = false
-)
+) {
+  /**
+   * Indicates whether or not the menu item represents the specified page.
+   *
+   * @param page The page to compare to the menu item
+   * @return True if the menu item represents the page, otherwise false
+   */
+  def representsPage(page: Page): Boolean = {
+    if (page.isDirectory) page.name == name
+    else page.title == name
+  }
+
+  /**
+   * Indicates whether or not this menu item or any of its children (or one of
+   * its their children, recursive) is selected.
+   *
+   * @return True if this menu item or any child of this menu item or any one
+   *         of their children (recursive) is selected, otherwise false
+   */
+  def isDirectlyOrIndirectlySelected: Boolean = {
+    @tailrec def checkIsSelected(menuItems: MenuItem*): Boolean = {
+      if (menuItems.isEmpty) false
+      else if (menuItems.exists(_.selected)) true
+      else checkIsSelected(menuItems.flatMap(_.children): _*)
+    }
+
+    checkIsSelected(this)
+  }
+}
 
 object MenuItem {
   /** Represents the default weight of menu items. */
@@ -109,8 +139,8 @@ object MenuItem {
     val fakeChildLink = fakeChild.flatMap(_.link).filterNot(_ == "index")
     val normalChildren = children.filterNot(_.fake)
 
-    val isDir = Files.isDirectory(path)
     val page = Page.newInstance(config, path)
+    val isDir = page.isDirectory
     val isFake = !isDir && page.metadata.fake
 
     // Directories don't have metadata, so use default

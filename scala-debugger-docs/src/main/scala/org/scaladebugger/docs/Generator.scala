@@ -83,7 +83,27 @@ class Generator(private val config: Config) {
     val pages = mdFiles.map(f => Page.Session.newInstance(config, f)).toSeq
 
     pages.foreach(page => {
-      page.render(context.copy(title = Some(page.title)))
+      @inline def markMenuItem(menuItems: Seq[MenuItem]): Seq[MenuItem] = {
+        menuItems.map(menuItem => {
+          menuItem.copy(
+            selected = menuItem.representsPage(page),
+            children = markMenuItem(menuItem.children)
+          )
+        })
+      }
+
+      val markedSideMenuItems = markMenuItem(context.sideMenuItems)
+      val markedMainMenuItems = context.mainMenuItems.map(menuItem => {
+        val matchingItem = markedSideMenuItems.find(_.name == menuItem.name)
+        val isSelected = matchingItem.exists(_.isDirectlyOrIndirectlySelected)
+        menuItem.copy(selected = isSelected)
+      })
+
+      page.render(context.copy(
+        title = Some(page.title),
+        mainMenuItems = markedMainMenuItems,
+        sideMenuItems = markedSideMenuItems
+      ))
     })
 
     // Produce a sitemap.xml representing the links

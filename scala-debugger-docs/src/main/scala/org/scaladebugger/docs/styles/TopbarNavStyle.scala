@@ -60,6 +60,9 @@ object TopbarNavStyle extends CascadingStyleSheet {
     ),
 
     li(
+      display := "flex",
+      alignItems := "center",
+      height := "1em",
       padding := "0em 0.5em"
     )
   )
@@ -79,11 +82,10 @@ object TopbarNavStyle extends CascadingStyleSheet {
   lazy val selectedNavLink: Cls = cls(
     padding := "0em",
     background := "#EBF0F1",
-    borderRadius := "8px",
 
     a(
       color := "#3B3E43",
-      border := "initial"
+      borderBottom := "1px solid #3B3E43"
     )
   )
 }

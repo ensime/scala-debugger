@@ -18,6 +18,9 @@ object SideMenu {
         if (menuItem.selected) Some(SidebarNavStyle.selectedNavLink)
         else None
 
+      val isSelected = menuItem.isDirectlyOrIndirectlySelected
+      val selectedAttr = if (isSelected) Some(attr("open").empty) else None
+
       val childrenMenu =
         if (menuItem.children.nonEmpty)
           Some(toMenu(menuItem.children, depth + 1))
@@ -33,13 +36,13 @@ object SideMenu {
       val title = prefix.toSeq ++ Seq(raw(menuItem.name)) ++ suffix.toSeq ++
         childrenMenu.map(_ => span(SidebarNavStyle.summaryExpandIcon)()).toSeq
 
-      li(selectedStyle)(
-        tag("details")(
+      li(
+        tag("details")(selectedAttr)(
           tag("summary")(SidebarNavStyle.summary)(
             menuItem.link.map(l =>
-              a(SidebarNavStyle.navLink, href := l)(title)
+              a(selectedStyle, SidebarNavStyle.navLink, href := l)(title)
             ).getOrElse(
-              span(SidebarNavStyle.navLink)(title)
+              span(selectedStyle, SidebarNavStyle.navLink)(title)
             )
           ),
           childrenMenu

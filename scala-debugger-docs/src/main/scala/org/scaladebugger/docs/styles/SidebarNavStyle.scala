@@ -72,6 +72,14 @@ object SidebarNavStyle extends CascadingStyleSheet {
     a(
       textDecoration := "none",
       color := "#3B3E43"
+    ),
+
+    selectedNavLink(
+      background := "#3B3E43",
+      color := "#D8D8D8",
+      a(
+        color := "#D8D8D8"
+      )
     )
   )
 
@@ -84,16 +92,7 @@ object SidebarNavStyle extends CascadingStyleSheet {
     )
   )
 
-  lazy val selectedNavLink: Cls = cls(
-    padding := "0em",
-    background := "#EBF0F1",
-    borderRadius := "8px",
-
-    a(
-      color := "#3B3E43",
-      border := "initial"
-    )
-  )
+  lazy val selectedNavLink: Cls = cls()
 
   lazy val summary: Cls = cls(
     display := "block",

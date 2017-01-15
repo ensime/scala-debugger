@@ -52,11 +52,7 @@ abstract class Page(
       Header(
         MainMenuBar(
           MainMenuLogo(),
-          MainMenu(
-            context.mainMenuItems.map(m => m.copy(
-              selected = isMenuItemSelected(m.name)
-            )): _*
-          )
+          MainMenu(context.mainMenuItems: _*)
         )
       )
     ) ++
@@ -73,9 +69,6 @@ abstract class Page(
       HighlightJSInit()
     ) ++
     postBodyContent
-
-  @inline private def isMenuItemSelected(name: String): Boolean =
-    selectedMenuItems.map(_.toLowerCase).contains(name)
 
   /**
    * Renders a generic page.
