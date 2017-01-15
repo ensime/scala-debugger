@@ -21,5 +21,11 @@ pipeline:
         commands:
             - host `curl -s http://httpbin.org/ip | jq -r '.origin'` || true
             - javac -version
-            - /usr/bin/sbt ";+++ $SCALA_VERSION $TEST_SUITE ;+++ $SCALA_VERSION $IT_TEST_SUITE"
+            - sbt ";+++ $SCALA_VERSION $TEST_SUITE ;+++ $SCALA_VERSION $IT_TEST_SUITE"
 
+    report:
+      image: chipsenkbeil/scala-debugger:latest
+      when:
+        status: failure
+      commands:
+        - head -v -n 1000 *.log
