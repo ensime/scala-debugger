@@ -211,6 +211,7 @@ object PageStyle extends CascadingStyleSheet {
 
   lazy val copyButton: Cls = cls(
     display := "inline-block",
+    cursor := "pointer",
 
     position := "absolute",
     top := "0",
