@@ -28,6 +28,18 @@ class Page private (
   val path: Path,
   private val logger: Logger
 ) {
+  /**
+   * Compares this page with another page. Two pages are equal if they have
+   * the same path.
+   *
+   * @param obj The other page to compare
+   * @return True if the two pages have the same path, otherwise false
+   */
+  override def equals(obj: Any): Boolean = obj match {
+    case p: Page  => p.path == this.path
+    case _        => false
+  }
+
   /** Represents an internal flexmark node used for markdown processing. */
   private lazy val pageNode = {
     assert(!isDirectory, "Page represents a directory, not a markdown file!")
