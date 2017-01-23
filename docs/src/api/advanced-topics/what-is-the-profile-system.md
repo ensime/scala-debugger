@@ -21,11 +21,18 @@ The `DebugProfile` trait provides a collection of higher-level methods that
 can be used to create JDI requests and process incoming events using the
 `Pipeline` construct. Each profile implements the `DebugProfile` trait.
 
+The `ScalaVirtualMachine` interface extends the `SwappableDebugProfile` to
+enable it to utilize different rules on demand.
+
+![ScalaVirtualMachine][scala-virtual-machine]
+
 ## Pure Profile
 
 The pure profile is the default profile for the `ScalaVirtualMachine`. It adds
 no custom logic for any of the Scala versions; therefore, it should be able to
 work with Java code.
+
+![Pure Profile Example][pure-profile-example]
 
 The pure profile adds support for caching requests, which means calls to
 `getOrCreateBreakpointRequest`, `getOrCreateAccessWatchpointRequest`, etc. with
@@ -59,6 +66,7 @@ s.withProfile(PureDebugProfile.Name)
     .getOrCreateBreakpointRequest("myfile.scala", 37)
 ```
 
+
 ## Scala 2.10 Profile
 
 The Scala 2.10 profile is another profile available to the
@@ -66,6 +74,8 @@ The Scala 2.10 profile is another profile available to the
 the majority of custom rules also work for Scala 2.11 and Scala 2.12.
 Furthermore, the profile's rules typically do not affect normal Java debugging,
 meaning that this profile can be used to debug a mixed Java/Scala project.
+
+![Scala 2.10 Profile Example][scala-210-profile-example]
 
 Like the pure profile, the Scala 2.10 profile supports caching requests that
 use the same arguments. This allows you to refer to the stream for an existing
@@ -108,6 +118,10 @@ val s: ScalaVirtualMachine = /* some virtual machine */
 
 s.register("profile name", /* profile instance */)
 ```
+
+[scala-virtual-machine]: /img/api/advanced-topics/scala-virtual-machine.png
+[pure-profile-example]: /img/api/advanced-topics/pure-profile-example.png
+[scala-210-profile-example]: /img/api/advanced-topics/scala-210-profile-example.png
 
 *[JDI]: Java Debugger Interface
 

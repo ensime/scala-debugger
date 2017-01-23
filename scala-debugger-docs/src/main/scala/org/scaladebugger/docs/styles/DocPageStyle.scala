@@ -31,6 +31,10 @@ object DocPageStyle extends CascadingStyleSheet {
     footer(flex := "0 0 auto")
   )
 
+  lazy val viewArea: Cls = cls(
+    maxWidth := "75em"
+  )
+
   lazy val mainContent: Cls = cls(
     display := "inline-block",
 
@@ -47,6 +51,11 @@ object DocPageStyle extends CascadingStyleSheet {
     ),
 
     img(
+      // Used to center image
+      display := "block",
+      marginLeft := "auto",
+      marginRight := "auto",
+
       maxWidth := "100%"
     ),
 

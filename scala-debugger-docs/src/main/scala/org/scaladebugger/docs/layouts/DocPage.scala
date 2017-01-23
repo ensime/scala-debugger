@@ -35,7 +35,7 @@ class DocPage extends Page(
         SideMenu(context.sideMenuItems: _*)
       ),
       div(DocPageStyle.mainContent, flex := "1 1 auto")(
-        content: _*
+        div(DocPageStyle.viewArea)(content: _*)
       )
     )))
   }
