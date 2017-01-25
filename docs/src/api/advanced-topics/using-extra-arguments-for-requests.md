@@ -30,6 +30,9 @@ s.getOrCreateBreakpointRequest(
 )
 ```
 
+![JDI Event Process Steps][jdi-event-process-steps]
+
+
 ## Request Arguments
 
 `JDIRequestArgument` instances come in two flavors: `JDIRequestProperty` and
@@ -110,6 +113,7 @@ There are also a couple of event arguments that directly extend
 | NoResume   | If provided, does not resume the JVM after the event is processed.                  |
 | YesResume  | If provided, does resume the JVM after the event is processed. This is the default. |
 
+[jdi-event-process-steps]: /img/api/advanced-topics/jdi-event-process-steps.png
 
 *[JDI]: Java Debugger Interface
 

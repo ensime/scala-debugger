@@ -12,10 +12,14 @@ debugger has connected to the target JVM. To do this, you can take advantage
 of the `DummyScalaVirtualMachine` to use the same API to create and manage
 your requests and events __before__ the target JVM starts.
 
+![Adding Pending Requests][adding-pending-requests]
+
 Whenever you call a function on a `DummyScalaVirtualMachine`, the underlying
 request is placed on a pending queue. When you provide the dummy VM to a
 debugger, all of the pending requests are applied to each JVM that connects
 using that debugger.
+
+![Processing Pending Actions][processing-pending-actions]
 
 ## Creating the dummy VM
 
@@ -87,6 +91,9 @@ Currently, there are a couple of limitations when using the
 
 6. Any invocation on the dummy VM after the target JVM connects will not
    be applied.
+   
+[adding-pending-requests]: /img/api/advanced-topics/adding-pending-requests.png
+[processing-pending-actions]: /img/api/advanced-topics/processing-pending-actions.png
 
 *[JDI]: Java Debugger Interface
 
