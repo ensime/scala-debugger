@@ -30,7 +30,20 @@ s.getOrCreateBreakpointRequest(
 )
 ```
 
+## How It Works
+
 ![JDI Event Process Steps][jdi-event-process-steps]
+
+1. Callbacks in the form of event handlers and event pipelines are retrieved
+   for requests that correspond to the incoming JDI event
+2. Filters are applied on the event to determine if it is relevant to the
+   callbacks
+3. Custom data stored on the request and the event are extracted to be
+   returned to the callbacks when provided _event data request_ arguments
+4. Callbacks that passed their associated filters are invoked with any
+   extracted data alongside the actual JDI event
+5. The associated threads are resumed after all callbacks have finished, unless
+   `NoResume` or another special event argument is provided
 
 
 ## Request Arguments
