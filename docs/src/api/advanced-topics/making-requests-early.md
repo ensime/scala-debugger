@@ -53,14 +53,15 @@ Currently, there are a couple of limitations when using the
         val d: DummyScalaVirtualMachine = /* some dummy virtual machine */
 
         // Will get evaluated
-        d.createBreakpointRequest("file.scala", 37)
+        d.getOrCreateBreakpointRequest("file.scala", 37)
 
         // Will get evaluated
-        d.addResumingEventHandler(BreakpointEventType, e => {
-          val breakpointEvent = e.asInstanceOf[BreakpointEvent]
-
-          // Will never get evaluated
-          d.createStepOverLineRequest(breakpointEvent.thread())
+        d.createEventListener(BreakpointEventType, be => {
+          d.lowlevel.addResumingEventHandler(StepEventType, e => {
+            // Will never get evaluated
+          })
+          
+          d.stepOverLine(be.thread)
         })
 
 2. You cannot nest creation of pipelines within the callbacks of other
@@ -69,9 +70,10 @@ Currently, there are a couple of limitations when using the
         val d: DummyScalaVirtualMachine = /* some dummy virtual machine */
 
         // Will get evaluated
-        d.onBreakpoint("file.scala", 37).foreach(e => {
-          // Will never get evaluated
-          d.stepOverLine(e.thread())
+        d.getOrCreateBreakpointRequest("file.scala", 37).foreach(e => {
+          d.stepOverLine(e.thread).foreach(stepEvent => {
+            // Will never get evaluated
+          })
         })
 
 3. You cannot invoke `availableLinesForFile` as the target JVM needs to be
