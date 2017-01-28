@@ -15,7 +15,7 @@ import org.scaladebugger.api.profiles.swappable.requests.watchpoints.{SwappableA
 import org.scaladebugger.api.profiles.traits.DebugProfile
 
 /**
- * Contains information about the pure debug profile.
+ * Contains information about the java debug profile.
  */
 object SwappableDebugProfile {
   val Name: String = "swappable"

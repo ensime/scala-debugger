@@ -1,14 +1,14 @@
 package org.scaladebugger.api.profiles.scala210.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.pure.info.PureInfoProducer
+import org.scaladebugger.api.profiles.java.info.JavaInfoProducer
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
  * Represents the interface to produce Scala 2.10 info profile instances.
  */
-class Scala210InfoProducer extends PureInfoProducer {
+class Scala210InfoProducer extends JavaInfoProducer {
   /**
    * Returns whether or not this info profile represents the low-level Java
    * implementation.

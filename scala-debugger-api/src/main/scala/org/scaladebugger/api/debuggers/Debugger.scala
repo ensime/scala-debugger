@@ -1,7 +1,7 @@
 package org.scaladebugger.api.debuggers
 import java.util.concurrent.ConcurrentHashMap
 
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.java.JavaDebugProfile
 import org.scaladebugger.api.utils.{JDILoader, Logging}
 import org.scaladebugger.api.virtualmachines.{DummyScalaVirtualMachine, ScalaVirtualMachine, ScalaVirtualMachineManager}
 
@@ -13,7 +13,7 @@ import Debugger._
 /** Represents the constants available to the debugger interface. */
 object Debugger {
   /** Represents the default profile named used with new VMs. */
-  val DefaultProfileName: String = PureDebugProfile.Name
+  val DefaultProfileName: String = JavaDebugProfile.Name
 }
 
 /**

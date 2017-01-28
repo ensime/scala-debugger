@@ -26,13 +26,13 @@ enable it to utilize different rules on demand.
 
 ![ScalaVirtualMachine][scala-virtual-machine]
 
-## Pure Profile
+## Java Profile
 
 The pure profile is the default profile for the `ScalaVirtualMachine`. It adds
 no custom logic for any of the Scala versions; therefore, it should be able to
 work with Java code.
 
-![Pure Profile Example][pure-profile-example]
+![Java Profile Example][pure-profile-example]
 
 The pure profile adds support for caching requests, which means calls to
 `getOrCreateBreakpointRequest`, `getOrCreateAccessWatchpointRequest`, etc. with
@@ -60,9 +60,9 @@ You can specifically reference the profile using its name:
 ```scala
 val s: ScalaVirtualMachine = /* some virtual machine */
 
-// Use the ScalaVirtualMachine with the pure profile
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
-s.withProfile(PureDebugProfile.Name)
+java
+import org.scaladebugger.api.profiles.pure.JavaDebugProfile
+s.withProfile(JavaDebugProfile.Name)
     .getOrCreateBreakpointRequest("myfile.scala", 37)
 ```
 
@@ -99,10 +99,10 @@ change between different profiles.
 // Inherits the SwappableDebugProfile trait
 val s: ScalaVirtualMachine = /* some virtual machine */
 
-// All future calls to the profile will route to the pure debug profile
-s.use(PureDebugProfile.Name)
+java
+s.use(JavaDebugProfile.Name)
 
-// This will be handled by the pure debug profile
+java
 s.getOrCreateBreakpointRequest("file.scala", 37)
 ```
 

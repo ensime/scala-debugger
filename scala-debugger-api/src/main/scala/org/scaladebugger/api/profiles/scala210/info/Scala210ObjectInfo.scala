@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.scala210.info
 
 import com.sun.jdi.{ObjectReference, ReferenceType, VirtualMachine}
-import org.scaladebugger.api.profiles.pure.info.PureObjectInfo
+import org.scaladebugger.api.profiles.java.info.JavaObjectInfo
 import org.scaladebugger.api.profiles.traits.info.{FieldVariableInfo, InfoProducer}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
@@ -22,7 +22,7 @@ class Scala210ObjectInfo(
 )(
   override protected val _virtualMachine: VirtualMachine = _objectReference.virtualMachine(),
   private val _referenceType: ReferenceType = _objectReference.referenceType()
-) extends PureObjectInfo(
+) extends JavaObjectInfo(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,
   _objectReference = _objectReference

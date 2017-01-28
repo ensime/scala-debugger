@@ -2,24 +2,24 @@ package org.scaladebugger.api.profiles.scala210
 
 import com.sun.jdi.VirtualMachine
 import org.scaladebugger.api.lowlevel.ManagerContainer
-import org.scaladebugger.api.profiles.pure.requests.breakpoints.PureBreakpointRequest
-import org.scaladebugger.api.profiles.pure.requests.classes.{PureClassPrepareRequest, PureClassUnloadRequest}
-import org.scaladebugger.api.profiles.pure.requests.events.PureEventListenerRequest
-import org.scaladebugger.api.profiles.pure.requests.exceptions.PureExceptionRequest
-import org.scaladebugger.api.profiles.pure.info.{PureCreateInfoProfile, PureGrabInfoProfile, PureMiscInfo}
-import org.scaladebugger.api.profiles.pure.requests.methods.{PureMethodEntryRequest, PureMethodExitRequest}
-import org.scaladebugger.api.profiles.pure.requests.monitors.{PureMonitorContendedEnterRequest, PureMonitorContendedEnteredRequest, PureMonitorWaitRequest, PureMonitorWaitedRequest}
-import org.scaladebugger.api.profiles.pure.requests.steps.PureStepRequest
-import org.scaladebugger.api.profiles.pure.requests.threads.{PureThreadDeathRequest, PureThreadStartRequest}
-import org.scaladebugger.api.profiles.pure.requests.vm.{PureVMDeathRequest, PureVMDisconnectRequest, PureVMStartRequest}
-import org.scaladebugger.api.profiles.pure.requests.watchpoints.{PureAccessWatchpointRequest, PureModificationWatchpointRequest}
+import org.scaladebugger.api.profiles.java.requests.breakpoints.JavaBreakpointRequest
+import org.scaladebugger.api.profiles.java.requests.classes.{JavaClassPrepareRequest, JavaClassUnloadRequest}
+import org.scaladebugger.api.profiles.java.requests.events.JavaEventListenerRequest
+import org.scaladebugger.api.profiles.java.requests.exceptions.JavaExceptionRequest
+import org.scaladebugger.api.profiles.java.info.{JavaCreateInfoProfile, JavaGrabInfoProfile, JavaMiscInfo}
+import org.scaladebugger.api.profiles.java.requests.methods.{JavaMethodEntryRequest, JavaMethodExitRequest}
+import org.scaladebugger.api.profiles.java.requests.monitors.{JavaMonitorContendedEnterRequest, JavaMonitorContendedEnteredRequest, JavaMonitorWaitRequest, JavaMonitorWaitedRequest}
+import org.scaladebugger.api.profiles.java.requests.steps.JavaStepRequest
+import org.scaladebugger.api.profiles.java.requests.threads.{JavaThreadDeathRequest, JavaThreadStartRequest}
+import org.scaladebugger.api.profiles.java.requests.vm.{JavaVMDeathRequest, JavaVMDisconnectRequest, JavaVMStartRequest}
+import org.scaladebugger.api.profiles.java.requests.watchpoints.{JavaAccessWatchpointRequest, JavaModificationWatchpointRequest}
 import org.scaladebugger.api.profiles.scala210.info.Scala210InfoProducer
 import org.scaladebugger.api.profiles.traits.ManagerContainerDebugProfile
 import org.scaladebugger.api.profiles.traits.info.InfoProducer
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
- * Contains information about the pure debug profile.
+ * Contains information about the java debug profile.
  */
 object Scala210DebugProfile {
   val Name: String = "scala-2.10"
@@ -44,25 +44,25 @@ class Scala210DebugProfile(
   protected val infoProducer: InfoProducer =
     new Scala210InfoProducer
 ) extends ManagerContainerDebugProfile
-  with PureAccessWatchpointRequest
-  with PureBreakpointRequest
-  with PureClassPrepareRequest
-  with PureClassUnloadRequest
-  with PureCreateInfoProfile
-  with PureEventListenerRequest
-  with PureExceptionRequest
-  with PureGrabInfoProfile
-  with PureMethodEntryRequest
-  with PureMethodExitRequest
-  with PureMiscInfo
-  with PureModificationWatchpointRequest
-  with PureMonitorContendedEnteredRequest
-  with PureMonitorContendedEnterRequest
-  with PureMonitorWaitedRequest
-  with PureMonitorWaitRequest
-  with PureStepRequest
-  with PureThreadDeathRequest
-  with PureThreadStartRequest
-  with PureVMStartRequest
-  with PureVMDeathRequest
-  with PureVMDisconnectRequest
+  with JavaAccessWatchpointRequest
+  with JavaBreakpointRequest
+  with JavaClassPrepareRequest
+  with JavaClassUnloadRequest
+  with JavaCreateInfoProfile
+  with JavaEventListenerRequest
+  with JavaExceptionRequest
+  with JavaGrabInfoProfile
+  with JavaMethodEntryRequest
+  with JavaMethodExitRequest
+  with JavaMiscInfo
+  with JavaModificationWatchpointRequest
+  with JavaMonitorContendedEnteredRequest
+  with JavaMonitorContendedEnterRequest
+  with JavaMonitorWaitedRequest
+  with JavaMonitorWaitRequest
+  with JavaStepRequest
+  with JavaThreadDeathRequest
+  with JavaThreadStartRequest
+  with JavaVMStartRequest
+  with JavaVMDeathRequest
+  with JavaVMDisconnectRequest
