@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles
 
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicInteger
+import _root_.java.util.concurrent.ConcurrentHashMap
+import _root_.java.util.concurrent.atomic.AtomicInteger
 
 import com.sun.jdi.event.Event
 import org.scaladebugger.api.lowlevel.events.EventType.EventType

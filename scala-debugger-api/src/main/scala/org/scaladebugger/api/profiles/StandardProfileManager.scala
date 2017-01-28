@@ -1,6 +1,6 @@
 package org.scaladebugger.api.profiles
 
-import java.util.concurrent.ConcurrentHashMap
+import _root_.java.util.concurrent.ConcurrentHashMap
 
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.java.JavaDebugProfile
