@@ -7,8 +7,8 @@ weight: 1
 
 ## Version 1.0.0 (2015-12-23)
 
-- Added high-level pure profile
-    - Implemented caching in pure profile traits
+- Added high-level Java profile
+    - Implemented caching in Java profile traits
 - Added high-level swappable profile used by `ScalaVirtualMachine` to
   give the appearance of one API but utilize different APIs underneath
   that can be decided upon programmatically

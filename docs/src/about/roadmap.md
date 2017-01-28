@@ -16,7 +16,7 @@ indicates new features, and a revision update indicates bug fixes.
 
 ## Version 1.0.0
 
-- Create high-level profile system (only pure profile needed now)
+- Create high-level profile system (only Java profile needed now)
 - Create low-level managers for JDI requests
 - Add support for pending requests to be applied as soon as possible
 - Architect "extra argument" system
