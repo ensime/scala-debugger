@@ -6,7 +6,7 @@ import org.scaladebugger.api.profiles.java.requests.breakpoints.JavaBreakpointRe
 import org.scaladebugger.api.profiles.java.requests.classes.{JavaClassPrepareRequest, JavaClassUnloadRequest}
 import org.scaladebugger.api.profiles.java.requests.events.JavaEventListenerRequest
 import org.scaladebugger.api.profiles.java.requests.exceptions.JavaExceptionRequest
-import org.scaladebugger.api.profiles.java.info.{JavaCreateInfoProfile, JavaGrabInfoProfile, JavaMiscInfo}
+import org.scaladebugger.api.profiles.java.info.{JavaCreateInfo, JavaGrabInfoProfile, JavaMiscInfo}
 import org.scaladebugger.api.profiles.java.requests.methods.{JavaMethodEntryRequest, JavaMethodExitRequest}
 import org.scaladebugger.api.profiles.java.requests.monitors.{JavaMonitorContendedEnterRequest, JavaMonitorContendedEnteredRequest, JavaMonitorWaitRequest, JavaMonitorWaitedRequest}
 import org.scaladebugger.api.profiles.java.requests.steps.JavaStepRequest
@@ -48,7 +48,7 @@ class Scala210DebugProfile(
   with JavaBreakpointRequest
   with JavaClassPrepareRequest
   with JavaClassUnloadRequest
-  with JavaCreateInfoProfile
+  with JavaCreateInfo
   with JavaEventListenerRequest
   with JavaExceptionRequest
   with JavaGrabInfoProfile

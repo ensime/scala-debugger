@@ -18,7 +18,7 @@ class JavaCreateInfoSpec extends ParallelMockFunSpec with JDIMockHelpers
   private val mockVirtualMachine = mock[VirtualMachine]
   private val mockCreateNewValueProfile = mockFunction[Value, ValueInfo]
 
-  private val javaCreateInfoProfile = new Object with JavaCreateInfoProfile {
+  private val javaCreateInfoProfile = new Object with JavaCreateInfo {
     override protected def createNewValueProfile(value: Value): ValueInfo =
       mockCreateNewValueProfile(value)
 
@@ -27,7 +27,7 @@ class JavaCreateInfoSpec extends ParallelMockFunSpec with JDIMockHelpers
     override protected val _virtualMachine: VirtualMachine = mockVirtualMachine
   }
 
-  describe("JavaCreateInfoProfile") {
+  describe("JavaCreateInfo") {
     describe("#createRemotely(AnyVal)") {
       it("should create and wrap a mirrored boolean value in a value info profile") {
         val expected = mock[ValueInfo]

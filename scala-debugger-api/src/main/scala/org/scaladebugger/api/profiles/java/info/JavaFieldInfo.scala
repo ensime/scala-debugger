@@ -30,7 +30,7 @@ class JavaFieldInfo(
   val offsetIndex: Int
 )(
   protected val _virtualMachine: VirtualMachine = _field.virtualMachine()
-) extends FieldVariableInfo with JavaCreateInfoProfile {
+) extends FieldVariableInfo with JavaCreateInfo {
   private lazy val _parent = _container match {
     case Left(o) => Left(newObjectProfile(o))
     case Right(r) => Right(newReferenceTypeProfile(r))

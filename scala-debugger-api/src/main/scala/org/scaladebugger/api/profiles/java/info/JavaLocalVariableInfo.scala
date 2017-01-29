@@ -27,7 +27,7 @@ class JavaLocalVariableInfo(
   val offsetIndex: Int
 )(
   protected val _virtualMachine: VirtualMachine = _localVariable.virtualMachine()
-) extends IndexedVariableInfo with JavaCreateInfoProfile {
+) extends IndexedVariableInfo with JavaCreateInfo {
   private lazy val stackFrame = frame.toJdiInstance
 
   /**

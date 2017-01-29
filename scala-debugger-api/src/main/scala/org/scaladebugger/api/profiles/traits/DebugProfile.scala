@@ -4,7 +4,7 @@ import org.scaladebugger.api.profiles.traits.requests.breakpoints.BreakpointRequ
 import org.scaladebugger.api.profiles.traits.requests.classes.{ClassPrepareRequest, ClassUnloadRequest}
 import org.scaladebugger.api.profiles.traits.requests.events.EventListenerRequest
 import org.scaladebugger.api.profiles.traits.requests.exceptions.ExceptionRequest
-import org.scaladebugger.api.profiles.traits.info.{CreateInfoProfile, GrabInfoProfile, MiscInfo}
+import org.scaladebugger.api.profiles.traits.info.{CreateInfo, GrabInfoProfile, MiscInfo}
 import org.scaladebugger.api.profiles.traits.requests.methods.{MethodEntryRequest, MethodExitRequest}
 import org.scaladebugger.api.profiles.traits.requests.monitors.{MonitorContendedEnterRequest, MonitorContendedEnteredRequest, MonitorWaitRequest, MonitorWaitedRequest}
 import org.scaladebugger.api.profiles.traits.requests.steps.StepRequest
@@ -21,7 +21,7 @@ trait DebugProfile
   with BreakpointRequest
   with ClassPrepareRequest
   with ClassUnloadRequest
-  with CreateInfoProfile
+  with CreateInfo
   with EventListenerRequest
   with ExceptionRequest
   with GrabInfoProfile

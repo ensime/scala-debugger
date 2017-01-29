@@ -7,7 +7,7 @@ import scala.util.Try
 /**
  * Represents the interface for variable-based interaction.
  */
-trait VariableInfo extends CreateInfoProfile with CommonInfo {
+trait VariableInfo extends CreateInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
    * low-level Java instead of a higher-level abstraction.

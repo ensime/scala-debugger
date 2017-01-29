@@ -5,7 +5,7 @@ import org.scaladebugger.api.profiles.swappable.requests.breakpoints.SwappableBr
 import org.scaladebugger.api.profiles.swappable.requests.classes.{SwappableClassPrepareRequest, SwappableClassUnloadRequest}
 import org.scaladebugger.api.profiles.swappable.requests.events.SwappableEventListenerRequest
 import org.scaladebugger.api.profiles.swappable.requests.exceptions.SwappableExceptionRequest
-import org.scaladebugger.api.profiles.swappable.info.{SwappableCreateInfoProfile, SwappableGrabInfoProfile, SwappableMiscInfo}
+import org.scaladebugger.api.profiles.swappable.info.{SwappableCreateInfo, SwappableGrabInfoProfile, SwappableMiscInfo}
 import org.scaladebugger.api.profiles.swappable.requests.methods.{SwappableMethodEntryRequest, SwappableMethodExitRequest}
 import org.scaladebugger.api.profiles.swappable.requests.monitors.{SwappableMonitorContendedEnterRequest, SwappableMonitorContendedEnteredRequest, SwappableMonitorWaitRequest, SwappableMonitorWaitedRequest}
 import org.scaladebugger.api.profiles.swappable.requests.steps.SwappableStepRequest
@@ -32,7 +32,7 @@ trait SwappableDebugProfile
   with SwappableBreakpointRequest
   with SwappableClassPrepareRequest
   with SwappableClassUnloadRequest
-  with SwappableCreateInfoProfile
+  with SwappableCreateInfo
   with SwappableEventListenerRequest
   with SwappableExceptionRequest
   with SwappableGrabInfoProfile

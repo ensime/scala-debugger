@@ -9,9 +9,7 @@ import scala.util.Try
  * Represents the interface for variable-based interaction with field-specific
  * information.
  */
-trait FieldVariableInfo
-  extends VariableInfo with CreateInfoProfile with CommonInfo
-{
+trait FieldVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
    * low-level Java instead of a higher-level abstraction.

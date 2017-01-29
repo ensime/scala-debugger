@@ -17,7 +17,7 @@ object InfoTestClasses {
   val DefaultException = new NotOverriddenException
   private def throwException() = throw DefaultException
 
-  trait TestCreateInfoProfileTrait extends CreateInfoProfile {
+  trait TestCreateInfoTrait extends CreateInfo {
     override def createRemotely(value: AnyVal): ValueInfo = throwException()
     override def createRemotely(value: String): ValueInfo = throwException()
   }
@@ -113,7 +113,7 @@ object InfoTestClasses {
     override def toJdiInstance: Value = throwException()
   }
 
-  class TestVariableInfo extends VariableInfo with TestCreateInfoProfileTrait {
+  class TestVariableInfo extends VariableInfo with TestCreateInfoTrait {
     override def toJavaInfo: VariableInfo = throwException()
     override def isJavaInfo: Boolean = throwException()
     override def offsetIndex: Int = throwException()
@@ -207,7 +207,7 @@ object InfoTestClasses {
     override def toJdiInstance: StringReference = throwException()
   }
 
-  class TestArrayInfo extends TestObjectInfo with ArrayInfo with TestCreateInfoProfileTrait {
+  class TestArrayInfo extends TestObjectInfo with ArrayInfo with TestCreateInfoTrait {
     override def toJavaInfo: ArrayInfo = throwException()
     override def isJavaInfo: Boolean = throwException()
     override def indexedFields: Seq[FieldVariableInfo] = throwException()

@@ -28,7 +28,7 @@ class JavaArrayInfo(
 ) extends JavaObjectInfo(scalaVirtualMachine, infoProducer, _arrayReference)(
   _virtualMachine = _virtualMachine,
   _referenceType = _referenceType
-) with ArrayInfo with JavaCreateInfoProfile {
+) with ArrayInfo with JavaCreateInfo {
   import scala.collection.JavaConverters._
   import org.scaladebugger.api.lowlevel.wrappers.Implicits._
   /**

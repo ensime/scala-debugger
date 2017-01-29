@@ -11,7 +11,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  * Represents a java profile for creating data that adds no extra logic
  * on top of the standard JDI.
  */
-trait JavaCreateInfoProfile extends CreateInfoProfile with JDIHelperMethods {
+trait JavaCreateInfo extends CreateInfo with JDIHelperMethods {
   protected val scalaVirtualMachine: ScalaVirtualMachine
   protected val infoProducer: InfoProducer
 
