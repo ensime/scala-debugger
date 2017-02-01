@@ -1,6 +1,6 @@
 package org.scaladebugger.api.profiles.frozen.info
 
-import org.scaladebugger.api.profiles.frozen.InvocationFrozenException
+import org.scaladebugger.api.profiles.frozen.{FrozenException, InvalidCastFrozenException}
 import org.scaladebugger.api.profiles.traits.info.JavaInfo
 
 /**
@@ -18,7 +18,6 @@ trait FrozenJavaInfo extends JavaInfo {
   override def isJavaInfo: Boolean = false
 
   /** Unavailable on frozen entity. */
-  @throws[InvocationFrozenException]
-  override def toJavaInfo: AnyRef =
-    throw new InvocationFrozenException("toJavaInfo")
+  @throws[FrozenException]
+  override def toJavaInfo: AnyRef = throw InvalidCastFrozenException
 }

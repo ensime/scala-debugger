@@ -1,7 +1,8 @@
 package org.scaladebugger.api.profiles.frozen.info
 
-import org.scaladebugger.api.profiles.frozen.FrozenException
 import org.scaladebugger.api.profiles.traits.info._
+
+import scala.util.Try
 
 /**
  * Represents value information frozen (snapshot at a point in time) for a
@@ -11,13 +12,13 @@ case class FrozenValueInfo(
   `type`: TypeInfo,
   isNull: Boolean,
   isVoid: Boolean,
-  protected val localValue: Either[FrozenException, Any],
-  protected val arrayInfo: Either[FrozenException, ArrayInfo],
-  protected val stringInfo: Either[FrozenException, StringInfo],
-  protected val objectInfo: Either[FrozenException, ObjectInfo],
-  protected val threadInfo: Either[FrozenException, ThreadInfo],
-  protected val threadGroupInfo: Either[FrozenException, ThreadGroupInfo],
-  protected val classObjectInfo: Either[FrozenException, ClassObjectInfo],
-  protected val classLoaderInfo: Either[FrozenException, ClassLoaderInfo],
-  protected val primitiveInfo: Either[FrozenException, PrimitiveInfo]
+  protected val _localValue: Try[Any],
+  protected val _arrayInfo: Try[ArrayInfo],
+  protected val _stringInfo: Try[StringInfo],
+  protected val _objectInfo: Try[ObjectInfo],
+  protected val _threadInfo: Try[ThreadInfo],
+  protected val _threadGroupInfo: Try[ThreadGroupInfo],
+  protected val _classObjectInfo: Try[ClassObjectInfo],
+  protected val _classLoaderInfo: Try[ClassLoaderInfo],
+  protected val _primitiveInfo: Try[PrimitiveInfo]
 ) extends FrozenValueInfoLike

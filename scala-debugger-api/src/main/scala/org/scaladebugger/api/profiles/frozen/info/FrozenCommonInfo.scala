@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.frozen.info
 
 import com.sun.jdi.Mirror
-import org.scaladebugger.api.profiles.frozen.DataUnavailableFrozenException
+import org.scaladebugger.api.profiles.frozen.{DataUnavailableFrozenException, FrozenException}
 import org.scaladebugger.api.profiles.traits.info.CommonInfo
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
@@ -10,12 +10,11 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
  */
 trait FrozenCommonInfo extends CommonInfo with FrozenJavaInfo {
   /** Unavailable on frozen entity. */
-  @throws[UnavailableDataFrozenException]
+  @throws[FrozenException]
   override def scalaVirtualMachine: ScalaVirtualMachine =
-    throw new UnavailableDataFrozenException("scalaVirtualMachine")
+    throw DataUnavailableFrozenException
 
   /** Unavailable on frozen entity. */
-  @throws[UnavailableDataFrozenException]
-  override def toJdiInstance: Mirror =
-    throw new UnavailableDataFrozenException("JDI Instance")
+  @throws[FrozenException]
+  override def toJdiInstance: Mirror = throw DataUnavailableFrozenException
 }
