@@ -3,74 +3,76 @@ package org.scaladebugger.api.profiles.frozen.info
 import org.scaladebugger.api.profiles.frozen.FrozenException
 import org.scaladebugger.api.profiles.traits.info._
 
+import scala.util.Try
+
 trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
   override val isNull: Boolean
   override val isVoid: Boolean
-  protected val localValue: Either[FrozenException, Any]
-  protected val arrayInfo: Either[FrozenException, ArrayInfo]
-  protected val stringInfo: Either[FrozenException, StringInfo]
-  protected val objectInfo: Either[FrozenException, ObjectInfo]
-  protected val threadInfo: Either[FrozenException, ThreadInfo]
-  protected val threadGroupInfo: Either[FrozenException, ThreadGroupInfo]
-  protected val classObjectInfo: Either[FrozenException, ClassObjectInfo]
-  protected val classLoaderInfo: Either[FrozenException, ClassLoaderInfo]
-  protected val primitiveInfo: Either[FrozenException, PrimitiveInfo]
+  protected val _localValue: Try[Any]
+  protected val _arrayInfo: Try[ArrayInfo]
+  protected val _stringInfo: Try[StringInfo]
+  protected val _objectInfo: Try[ObjectInfo]
+  protected val _threadInfo: Try[ThreadInfo]
+  protected val _threadGroupInfo: Try[ThreadGroupInfo]
+  protected val _classObjectInfo: Try[ClassObjectInfo]
+  protected val _classLoaderInfo: Try[ClassLoaderInfo]
+  protected val _primitiveInfo: Try[PrimitiveInfo]
 
   /**
    * Returns whether or not this value represents a primitive.
    *
    * @return True if a primitive, otherwise false
    */
-  override def isPrimitive: Boolean = primitiveInfo.isRight
+  override def isPrimitive: Boolean = _primitiveInfo.isSuccess
 
   /**
    * Returns whether or not this value represents an array.
    *
    * @return True if an array, otherwise false
    */
-  override def isArray: Boolean = arrayInfo.isRight
+  override def isArray: Boolean = _arrayInfo.isSuccess
 
   /**
    * Returns whether or not this value represents a class loader.
    *
    * @return True if a class loader, otherwise false
    */
-  override def isClassLoader: Boolean = classLoaderInfo.isRight
+  override def isClassLoader: Boolean = _classLoaderInfo.isSuccess
 
   /**
    * Returns whether or not this value represents a class object.
    *
    * @return True if a class object, otherwise false
    */
-  override def isClassObject: Boolean = classObjectInfo.isRight
+  override def isClassObject: Boolean = _classObjectInfo.isSuccess
 
   /**
    * Returns whether or not this value represents a thread group.
    *
    * @return True if a thread group, otherwise false
    */
-  override def isThreadGroup: Boolean = threadGroupInfo.isRight
+  override def isThreadGroup: Boolean = _threadGroupInfo.isSuccess
 
   /**
    * Returns whether or not this value represents a thread.
    *
    * @return True if a thread, otherwise false
    */
-  override def isThread: Boolean = threadInfo.isRight
+  override def isThread: Boolean = _threadInfo.isSuccess
 
   /**
    * Returns whether or not this value represents an object.
    *
    * @return True if an object, otherwise false
    */
-  override def isObject: Boolean = objectInfo.isRight
+  override def isObject: Boolean = _objectInfo.isSuccess
 
   /**
    * Returns whether or not this value represents a string.
    *
    * @return True if a string, otherwise false
    */
-  override def isString: Boolean = stringInfo.isRight
+  override def isString: Boolean = _stringInfo.isSuccess
 
   /**
    * Returns the value as a value local to this JVM.
@@ -78,10 +80,7 @@ trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
    * @return The value as a local instance
    */
   @throws[FrozenException]
-  override def toLocalValue: Any = localValue match {
-    case Left(e) => throw e
-    case Right(v) => v
-  }
+  override def toLocalValue: Any = _localValue.get
 
   /**
    * Returns the value as a primitive (profile).
@@ -89,10 +88,7 @@ trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
    * @return The primitive profile wrapping this value
    */
   @throws[FrozenException]
-  override def toPrimitiveInfo: PrimitiveInfo = primitiveInfo match {
-    case Left(e) => throw e
-    case Right(v) => v
-  }
+  override def toPrimitiveInfo: PrimitiveInfo = _primitiveInfo.get
 
   /**
    * Returns the value as a class loader (profile).
@@ -100,10 +96,7 @@ trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
    * @return The class loader profile wrapping this value
    */
   @throws[FrozenException]
-  override def toClassLoaderInfo: ClassLoaderInfo = classLoaderInfo match {
-    case Left(e) => throw e
-    case Right(v) => v
-  }
+  override def toClassLoaderInfo: ClassLoaderInfo = _classLoaderInfo.get
 
   /**
    * Returns the value as a class object (profile).
@@ -111,10 +104,7 @@ trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
    * @return The class object profile wrapping this value
    */
   @throws[FrozenException]
-  override def toClassObjectInfo: ClassObjectInfo = classObjectInfo match {
-    case Left(e) => throw e
-    case Right(v) => v
-  }
+  override def toClassObjectInfo: ClassObjectInfo = _classObjectInfo.get
 
   /**
    * Returns the value as a thread group (profile).
@@ -122,10 +112,7 @@ trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
    * @return The thread group profile wrapping this value
    */
   @throws[FrozenException]
-  override def toThreadGroupInfo: ThreadGroupInfo = threadGroupInfo match {
-    case Left(e) => throw e
-    case Right(v) => v
-  }
+  override def toThreadGroupInfo: ThreadGroupInfo = _threadGroupInfo.get
 
   /**
    * Returns the value as a thread (profile).
@@ -133,10 +120,7 @@ trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
    * @return The thread profile wrapping this value
    */
   @throws[FrozenException]
-  override def toThreadInfo: ThreadInfo = threadInfo match {
-    case Left(e) => throw e
-    case Right(v) => v
-  }
+  override def toThreadInfo: ThreadInfo = _threadInfo.get
 
   /**
    * Returns the value as an object (profile).
@@ -144,10 +128,7 @@ trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
    * @return The object profile wrapping this value
    */
   @throws[FrozenException]
-  override def toObjectInfo: ObjectInfo = objectInfo match {
-    case Left(e) => throw e
-    case Right(v) => v
-  }
+  override def toObjectInfo: ObjectInfo = _objectInfo.get
 
   /**
    * Returns the value as an string (profile).
@@ -155,10 +136,7 @@ trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
    * @return The string profile wrapping this value
    */
   @throws[FrozenException]
-  override def toStringInfo: StringInfo = stringInfo match {
-    case Left(e) => throw e
-    case Right(v) => v
-  }
+  override def toStringInfo: StringInfo = _stringInfo.get
 
   /**
    * Returns the value as an array (profile).
@@ -166,8 +144,5 @@ trait FrozenValueInfoLike extends ValueInfo with FrozenCommonInfo {
    * @return The array profile wrapping this value
    */
   @throws[FrozenException]
-  override def toArrayInfo: ArrayInfo = arrayInfo match {
-    case Left(e) => throw e
-    case Right(v) => v
-  }
+  override def toArrayInfo: ArrayInfo = _arrayInfo.get
 }
