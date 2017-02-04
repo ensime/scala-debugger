@@ -3,7 +3,7 @@
 To generate and serve the docs, run the following:
 
 ```
-sbt scalaDebuggerDocs/run -gs --allow-unsupported-media-types
+sbt 'scalaDebuggerDocs/run -gs --allow-unsupported-media-types'
 ```
 
 Note the use of `--allow-unsupported-media-types`, which is needed to serve
