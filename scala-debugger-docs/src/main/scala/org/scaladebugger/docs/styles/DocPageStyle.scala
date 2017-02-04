@@ -47,7 +47,11 @@ object DocPageStyle extends CascadingStyleSheet {
     a(
       color := "#232F3F",
       textDecoration := "none",
-      fontWeight := "bold"
+      fontWeight := "bold",
+      &.hover(
+        background := "#232F3F",
+        color := "#EBF0F1"
+      )
     ),
 
     img(
