@@ -60,7 +60,6 @@ You can specifically reference the profile using its name:
 ```scala
 val s: ScalaVirtualMachine = /* some virtual machine */
 
-java
 import org.scaladebugger.api.profiles.java.JavaDebugProfile
 s.withProfile(JavaDebugProfile.Name)
     .getOrCreateBreakpointRequest("myfile.scala", 37)
@@ -99,10 +98,8 @@ change between different profiles.
 // Inherits the SwappableDebugProfile trait
 val s: ScalaVirtualMachine = /* some virtual machine */
 
-java
 s.use(JavaDebugProfile.Name)
 
-java
 s.getOrCreateBreakpointRequest("file.scala", 37)
 ```
 
