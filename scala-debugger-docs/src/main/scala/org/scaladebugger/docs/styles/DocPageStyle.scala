@@ -88,6 +88,7 @@ object DocPageStyle extends CascadingStyleSheet {
     ),
 
     table(
+      background := "#FBFBFB",
       emptyCells := "show",
       width := "100%",
       height := "auto",
