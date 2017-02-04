@@ -28,7 +28,7 @@ import org.scaladebugger.api.utils.JDITools
 object ListeningDebuggerExample extends App {
   // Get the executing class name (remove $ from object class name)
   val klass = SomeListeningMainClass.getClass
-  val className = klass.name.replaceAllLiterally("$", "")
+  val className = klass.getName.replaceAllLiterally("$", "")
 
   val listeningDebugger = ListeningDebugger(port = 5005)
 
