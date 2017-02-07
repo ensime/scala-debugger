@@ -7,6 +7,8 @@ import scalatags.stylesheet._
  * Represents stylesheet for tab-oriented content.
  */
 object TabsStyle extends CascadingStyleSheet {
+  initStyleSheet()
+
   /** To be placed on <ul> element. */
   lazy val tabs: Cls = cls(
     display := "flex",

@@ -7,6 +7,8 @@ import scalatags.stylesheet._
  * Represents stylesheet for the front page.
  */
 object FrontPageStyle extends CascadingStyleSheet {
+  initStyleSheet()
+
   /** To be placed in a <style> tag. */
   lazy val global: String =
     """

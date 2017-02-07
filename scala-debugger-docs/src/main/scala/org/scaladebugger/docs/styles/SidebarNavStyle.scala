@@ -7,6 +7,8 @@ import scalatags.stylesheet._
  * Represents stylesheet for the side bar.
  */
 object SidebarNavStyle extends CascadingStyleSheet {
+  initStyleSheet()
+
   import scalatags.Text.styles2.{content => pseudoContent}
 
   private val expandIconClosed = "\\25B6"

@@ -13,13 +13,7 @@ object Implicits {
      *
      * @return The style tag representing this stylesheet
      */
-    def toStyleTag: Modifier = {
-      // TODO: Check back in with https://github.com/lihaoyi/scalatags/issues/147
-      throw new RuntimeException(
-        "TODO: styleSheet.styleSheetText is unreliable and is not providing text!"
-      )
-      tag("style")(raw(styleSheet.styleSheetText))
-    }
+    def toStyleTag: Modifier = tag("style")(raw(styleSheet.styleSheetText))
   }
 
   implicit class StringWrapper(private val string: String) {

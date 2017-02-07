@@ -35,8 +35,8 @@ against; so, pick whichever binary you prefer.
 
 ## Verifying it works
 
-1. Download a binary distribution as described in the 
-   [earlier section][#downloading-the-binary]
+1. Download a binary distribution as described in the
+   [earlier section][downloading_the_binary]
 2. Start another Java program with 
    `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005`
 3. Run the CLI binary via `java -jar <YOUR_CLI_BINARY>.jar`
@@ -47,6 +47,7 @@ against; so, pick whichever binary you prefer.
 *[JDI]: Java Debugger Interface
 
 [api_prerequisites]: /api/getting-started/installation#prerequisities
+[downloading_the_binary]: /sdb/getting-started/installation#downloading-the-binary
 [latest_binary_2.10]: https://github.com/ensime/scala-debugger/releases/download/v1.1.0-M3/sdb-1.1.0-M3-2.10.jar
 [latest_binary_2.11]: https://github.com/ensime/scala-debugger/releases/download/v1.1.0-M3/sdb-1.1.0-M3-2.11.jar
 [latest_binary_2.12]: https://github.com/ensime/scala-debugger/releases/download/v1.1.0-M3/sdb-1.1.0-M3-2.12.jar

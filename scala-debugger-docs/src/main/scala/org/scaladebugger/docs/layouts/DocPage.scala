@@ -12,9 +12,9 @@ import scalatags.Text.all._
 class DocPage extends Page(
   postHeadContent = Seq(
     DocPageStyle.global.toStyleTag,
-    DocPageStyle.styleSheetText.toStyleTag,
+    DocPageStyle.toStyleTag,
     SidebarNavStyle.global.toStyleTag,
-    SidebarNavStyle.styleSheetText.toStyleTag
+    SidebarNavStyle.toStyleTag
   ),
   bodyModifiers = Seq(DocPageStyle.bodyCls)
 ) {

@@ -7,6 +7,8 @@ import scalatags.stylesheet._
  * Represents stylesheet for all pages.
  */
 object PageStyle extends CascadingStyleSheet {
+  initStyleSheet()
+
   import scalatags.Text.styles2.{content => afterContent}
 
   //
