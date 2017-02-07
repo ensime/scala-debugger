@@ -23,4 +23,11 @@ object FrontPageStyle extends CascadingStyleSheet {
       |  min-width: 880px;
       |}
     """.stripMargin
+
+  lazy val inlineButtonContainer: Cls = cls(
+    display := "inline-flex",
+    justifyContent := "space-around",
+    alignItems := "center",
+    alignContent := "center"
+  )
 }

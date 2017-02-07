@@ -107,6 +107,10 @@ object PageStyle extends CascadingStyleSheet {
     )
   )
 
+  lazy val buttonMargin: Cls = cls(
+    margin := "1em 1em"
+  )
+
   lazy val videoCls: Cls = cls(
     width := "100%"
   )
