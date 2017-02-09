@@ -38,7 +38,8 @@ object DocPageStyle extends CascadingStyleSheet {
   )
 
   lazy val mainContent: Cls = cls(
-    display := "inline-block",
+    display := "inline-flex",
+    justifyContent := "center",
 
     background := "#EAEAEC",
     color := "#3B3E43",
