@@ -100,6 +100,7 @@ object PageStyle extends CascadingStyleSheet {
     overflow := "hidden",
     textOverflow := "ellipsis",
     whiteSpace := "nowrap",
+    textDecoration := "none",
 
     a(
       color := "#ECF0F1",

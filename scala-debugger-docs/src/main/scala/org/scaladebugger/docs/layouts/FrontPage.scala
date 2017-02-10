@@ -55,14 +55,16 @@ class FrontPage extends Page(
             "Scala abstractions and tooling around the Java Debugger Interface."
           ),
           span(FrontPageStyle.inlineButtonContainer)(
-            div(PageStyle.buttonCls, PageStyle.buttonMargin)(
-              a(href := "/about")("Learn More")
+            Button("Learn More", "/about", PageStyle.buttonMargin),
+            Button(
+              "Source Code",
+              "https://www.github.com/ensime/scala-debugger",
+              PageStyle.buttonMargin
             ),
-            div(PageStyle.buttonCls, PageStyle.buttonMargin)(
-              a(href := "https://www.github.com/ensime/scala-debugger")("Source Code")
-            ),
-            div(PageStyle.buttonCls, PageStyle.buttonMargin)(
-              a(href := "https://www.gitter.im/ensime/scala-debugger")("Community")
+            Button(
+              "Community",
+              "https://www.gitter.im/ensime/scala-debugger",
+              PageStyle.buttonMargin
             )
           )
         )
