@@ -39,3 +39,9 @@ function, `plus(3, 4)` or `plus 3 4`.
 | Name | Description | Function Name | Code Representation |
 | ---- | ----------- | ------------- | ------------------- |
 | Plus Plus | Concatenates two text values together. | plusPlus | "my" ++ "text" |
+
+## Evaluation
+
+| Name | Description | Function Name | Code Representation |
+| ---- | ----------- | ------------- | ------------------- |
+| Skip Eval | Expression is not immediately evaluated. | N/A | y := 999; x := @(y-3); y := 7; x |
