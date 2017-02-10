@@ -34,7 +34,13 @@ class FrontPage extends Page(
 
   private val LanguageExampleCode =
     """
-      |TODO: Implement language example here
+      |myFunc := func(a, b) {
+      |  a + b
+      |}
+      |
+      |result := myFunc 3 9
+      |
+      |print("Result is " ++ result)
     """.stripMargin
 
   /**
@@ -127,7 +133,7 @@ class FrontPage extends Page(
             ),
 
             // Visual Debugger
-            Tabs.Tab(
+            /*Tabs.Tab(
               name = "visual debugger",
               LinedContent("download jar", Button(
                 name = "vsdb 1.1.0-M3 built with Scala 2.10",
@@ -141,7 +147,7 @@ class FrontPage extends Page(
                 name = "vsdb 1.1.0-M3 built with Scala 2.12",
                 link = "/downloads/vsdb/1.1.0-M3/vsdb-2.12.jar"
               ))
-            ),
+            ),*/
 
             // SBT plugin
             Tabs.Tab(
@@ -198,10 +204,10 @@ class FrontPage extends Page(
             ),
 
             // Visual Debugger
-            Tabs.Tab.NoInner(
+            /*Tabs.Tab.NoInner(
               name = "visual debugger",
               Video("/videos/examples/", "visual-debugger")
-            ),
+            ),*/
 
             // SBT plugin
             Tabs.Tab.NoInner(
