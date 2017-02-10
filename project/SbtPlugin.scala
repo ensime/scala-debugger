@@ -1,7 +1,7 @@
 import sbt.Keys._
 
 object SbtPlugin {
-  /** Sbt plugin-specific project settings. */
+  /** sbt plugin-specific project settings. */
   val settings = Seq(
     sbtPlugin := true,
 

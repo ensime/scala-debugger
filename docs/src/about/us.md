@@ -65,10 +65,10 @@ result := myFunc 3 9
 print("Result is " ++ result)
 ```
 
-## Scala Debugger SBT Plugin
+## Scala Debugger sbt Plugin
 
-Contains an implementation of an SBT plugin that runs the interactive
-Scala Debugger Tool from within SBT.
+Contains an implementation of an sbt plugin that runs the interactive
+Scala Debugger Tool from within sbt.
 
 <video
     class="org-scaladebugger-docs-styles-PageStyle-videoCls"

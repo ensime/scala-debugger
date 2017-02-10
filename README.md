@@ -14,7 +14,7 @@ A simple debugger library for Scala. Tested on OpenJDK 7 for Windows and Linux.
 - Visit the [main site](https://scala-debugger.org/) for more documentation.
 - Check out the [wiki](https://github.com/ensime/scala-debugger/wiki) for the current roadmap.
 
-Installing with SBT
+Installing with sbt
 -------------------
 
 Hosted on Maven Central and can be installed via the following:

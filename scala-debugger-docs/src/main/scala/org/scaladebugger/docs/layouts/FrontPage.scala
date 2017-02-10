@@ -156,7 +156,7 @@ class FrontPage extends Page(
               ))
             ),*/
 
-            // SBT plugin
+            // sbt plugin
             Tabs.Tab(
               name = "sbt",
               LinedContent("sbt plugin", ScalaCodeBlock(
@@ -216,7 +216,7 @@ class FrontPage extends Page(
               Video("/videos/examples/", "visual-debugger")
             ),*/
 
-            // SBT plugin
+            // sbt plugin
             Tabs.Tab.NoInner(
               name = "sbt",
               Video("/videos/examples/", "sbt-plugin")
