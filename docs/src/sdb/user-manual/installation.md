@@ -47,7 +47,7 @@ against; so, pick whichever binary you prefer.
 *[JDI]: Java Debugger Interface
 
 [api_prerequisites]: /api/getting-started/installation#prerequisities
-[downloading_the_binary]: /sdb/getting-started/installation#downloading-the-binary
+[downloading_the_binary]: /sdb/user-manual/installation#downloading-the-binary
 [latest_binary_2.10]: https://github.com/ensime/scala-debugger/releases/download/v1.1.0-M3/sdb-1.1.0-M3-2.10.jar
 [latest_binary_2.11]: https://github.com/ensime/scala-debugger/releases/download/v1.1.0-M3/sdb-1.1.0-M3-2.11.jar
 [latest_binary_2.12]: https://github.com/ensime/scala-debugger/releases/download/v1.1.0-M3/sdb-1.1.0-M3-2.12.jar
