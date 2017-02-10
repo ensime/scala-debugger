@@ -61,7 +61,14 @@ class FrontPage extends Page(
             "Scala abstractions and tooling around the Java Debugger Interface."
           ),
           span(FrontPageStyle.inlineButtonContainer)(
-            Button("Learn More", "/about", PageStyle.buttonMargin),
+            Button(
+              "Learn More",
+              context.mainMenuItems
+                .find(_.name.toLowerCase == "about")
+                .flatMap(_.link)
+                .getOrElse(throw new RuntimeException("Missing about section!")),
+              PageStyle.buttonMargin
+            ),
             Button(
               "Source Code",
               "https://www.github.com/ensime/scala-debugger",

@@ -1,5 +1,5 @@
 ---
-weight: 0
+weight: 1
 ---
 # Roadmap
 
@@ -10,9 +10,18 @@ indicates new features, and a revision update indicates bug fixes.
 
 ---
 
+## Version 1.2.0
+
+- Add expression evaluator
+- Improve Scala debug profiles to handle more scenarios
+
 ## Version 1.1.0
 
-- See the [wiki][wiki] for the current roadmap!
+- Add JDB implementation using Scala Debugger API (SDB)
+- Add SBT plugin providing JDB-like interface
+- Add basic Scala profile to support name demangling
+- Add freeze support to serialize/deserialize debug information
+- Improve stability of library
 
 ## Version 1.0.0
 
