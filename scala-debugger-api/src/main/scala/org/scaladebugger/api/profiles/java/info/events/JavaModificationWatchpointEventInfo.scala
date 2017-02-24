@@ -3,8 +3,8 @@ package org.scaladebugger.api.profiles.java.info.events
 import com.sun.jdi._
 import com.sun.jdi.event.ModificationWatchpointEvent
 import org.scaladebugger.api.lowlevel.JDIArgument
-import org.scaladebugger.api.profiles.traits.info.InfoProducer
-import org.scaladebugger.api.profiles.traits.info.events.{ModificationWatchpointEventInfo, EventInfo}
+import org.scaladebugger.api.profiles.traits.info.{InfoProducer, ValueInfo}
+import org.scaladebugger.api.profiles.traits.info.events.{EventInfo, ModificationWatchpointEventInfo}
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**
@@ -93,4 +93,14 @@ class JavaModificationWatchpointEventInfo(
       location = _location
     )
   }
+
+  /**
+   * Returns the value to be assigned to the variable being modified.
+   *
+   * @return The information profile about the value
+   */
+  override def valueToBe: ValueInfo = infoProducer.newValueInfo(
+    scalaVirtualMachine = scalaVirtualMachine,
+    value = modificationWatchpointEvent.valueToBe()
+  )
 }

@@ -100,5 +100,24 @@ class JavaModificationWatchpointEventInfoSpec extends ParallelMockFunSpec {
         actual should be (expected)
       }
     }
+
+    describe("#valueToBe") {
+      it("should return a new instance of the value info profile") {
+        val expected = mock[ValueInfo]
+
+        // Invokes watchpoint event's valueCurrent function
+        val mockValue = mock[Value]
+        (mockModificationWatchpointEvent.valueToBe _).expects()
+          .returning(mockValue).once()
+
+        (mockInfoProducer.newValueInfo _)
+          .expects(mockScalaVirtualMachine, mockValue)
+          .returning(expected).once()
+
+        val actual = javaModificationWatchpointEventInfoProfile.valueToBe
+
+        actual should be (expected)
+      }
+    }
   }
 }
