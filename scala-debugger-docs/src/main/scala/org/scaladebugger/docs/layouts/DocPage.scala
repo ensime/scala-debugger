@@ -12,9 +12,9 @@ import scalatags.Text.all._
 class DocPage extends Page(
   postHeadContent = Seq(
     DocPageStyle.global.toStyleTag,
-    DocPageStyle.styleSheetText.toStyleTag,
+    DocPageStyle.toStyleTag,
     SidebarNavStyle.global.toStyleTag,
-    SidebarNavStyle.styleSheetText.toStyleTag
+    SidebarNavStyle.toStyleTag
   ),
   bodyModifiers = Seq(DocPageStyle.bodyCls)
 ) {
@@ -35,7 +35,7 @@ class DocPage extends Page(
         SideMenu(context.sideMenuItems: _*)
       ),
       div(DocPageStyle.mainContent, flex := "1 1 auto")(
-        content: _*
+        div(DocPageStyle.viewArea)(content: _*)
       )
     )))
   }

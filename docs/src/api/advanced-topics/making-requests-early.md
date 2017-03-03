@@ -12,10 +12,14 @@ debugger has connected to the target JVM. To do this, you can take advantage
 of the `DummyScalaVirtualMachine` to use the same API to create and manage
 your requests and events __before__ the target JVM starts.
 
+![Adding Pending Requests][adding-pending-requests]
+
 Whenever you call a function on a `DummyScalaVirtualMachine`, the underlying
 request is placed on a pending queue. When you provide the dummy VM to a
 debugger, all of the pending requests are applied to each JVM that connects
 using that debugger.
+
+![Processing Pending Actions][processing-pending-actions]
 
 ## Creating the dummy VM
 
@@ -53,14 +57,15 @@ Currently, there are a couple of limitations when using the
         val d: DummyScalaVirtualMachine = /* some dummy virtual machine */
 
         // Will get evaluated
-        d.createBreakpointRequest("file.scala", 37)
+        d.getOrCreateBreakpointRequest("file.scala", 37)
 
         // Will get evaluated
-        d.addResumingEventHandler(BreakpointEventType, e => {
-          val breakpointEvent = e.asInstanceOf[BreakpointEvent]
-
-          // Will never get evaluated
-          d.createStepOverLineRequest(breakpointEvent.thread())
+        d.createEventListener(BreakpointEventType, be => {
+          d.lowlevel.addResumingEventHandler(StepEventType, e => {
+            // Will never get evaluated
+          })
+          
+          d.stepOverLine(be.thread)
         })
 
 2. You cannot nest creation of pipelines within the callbacks of other
@@ -69,9 +74,10 @@ Currently, there are a couple of limitations when using the
         val d: DummyScalaVirtualMachine = /* some dummy virtual machine */
 
         // Will get evaluated
-        d.onBreakpoint("file.scala", 37).foreach(e => {
-          // Will never get evaluated
-          d.stepOverLine(e.thread())
+        d.getOrCreateBreakpointRequest("file.scala", 37).foreach(e => {
+          d.stepOverLine(e.thread).foreach(stepEvent => {
+            // Will never get evaluated
+          })
         })
 
 3. You cannot invoke `availableLinesForFile` as the target JVM needs to be
@@ -85,6 +91,9 @@ Currently, there are a couple of limitations when using the
 
 6. Any invocation on the dummy VM after the target JVM connects will not
    be applied.
+   
+[adding-pending-requests]: /img/api/advanced-topics/adding-pending-requests.png
+[processing-pending-actions]: /img/api/advanced-topics/processing-pending-actions.png
 
 *[JDI]: Java Debugger Interface
 

@@ -29,7 +29,7 @@ import org.scaladebugger.api.utils.JDITools
 object AttachingDebuggerExample extends App {
   // Get the executing class name (remove $ from object class name)
   val klass = SomeAttachingMainClass.getClass
-  val className = klass.name.replaceAllLiterally("$", "")
+  val className = klass.getName.replaceAllLiterally("$", "")
 
   // Spawn the target JVM process using our helper function
   val targetJvmProcess = JDITools.spawn(

@@ -4,7 +4,7 @@ import java.io.File
 
 import org.rogach.scallop.ScallopConf
 import org.scaladebugger.api.debuggers.Debugger
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.java.JavaDebugProfile
 import org.scaladebugger.api.profiles.scala210.Scala210DebugProfile
 
 /**
@@ -15,7 +15,7 @@ import org.scaladebugger.api.profiles.scala210.Scala210DebugProfile
  */
 class Config(arguments: Seq[String]) extends ScallopConf(arguments) {
   private val candidateProfiles = Seq(
-    PureDebugProfile.Name,
+    JavaDebugProfile.Name,
     Scala210DebugProfile.Name
   )
   private val historyFilePath =

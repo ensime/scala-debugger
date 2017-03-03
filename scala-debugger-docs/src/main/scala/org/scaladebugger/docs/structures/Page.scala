@@ -2,14 +2,15 @@ package org.scaladebugger.docs.structures
 
 import java.nio.charset.Charset
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
-import java.util.concurrent.TimeUnit
 
 import com.vladsch.flexmark.ast.Node
 import com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension
+import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension
 import com.vladsch.flexmark.ext.front.matter.{AbstractYamlFrontMatterVisitor, YamlFrontMatterExtension}
 import com.vladsch.flexmark.ext.gfm.tables.TablesExtension
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
+import com.vladsch.flexmark.util.options.MutableDataSet
 import org.scaladebugger.docs.{Config, Logger}
 import org.scaladebugger.docs.layouts.{Context, Layout}
 import org.scaladebugger.docs.utils.FileHelper
@@ -28,6 +29,18 @@ class Page private (
   val path: Path,
   private val logger: Logger
 ) {
+  /**
+   * Compares this page with another page. Two pages are equal if they have
+   * the same path.
+   *
+   * @param obj The other page to compare
+   * @return True if the two pages have the same path, otherwise false
+   */
+  override def equals(obj: Any): Boolean = obj match {
+    case p: Page  => p.path == this.path
+    case _        => false
+  }
+
   /** Represents an internal flexmark node used for markdown processing. */
   private lazy val pageNode = {
     assert(!isDirectory, "Page represents a directory, not a markdown file!")
@@ -305,6 +318,7 @@ object Page {
   /** Represents extensions for the parser and renderer. */
   private lazy val extensions = Seq(
     AbbreviationExtension.create(),
+    AnchorLinkExtension.create(),
     TablesExtension.create(),
     YamlFrontMatterExtension.create()
   ).asJava
@@ -312,9 +326,15 @@ object Page {
   /** Represents the Markdown parser. */
   private lazy val parser = Parser.builder().extensions(extensions).build()
 
+  /** Represents options to be fed into the html renderer. */
+  private lazy val options = (new MutableDataSet)
+    .set[java.lang.Boolean](HtmlRenderer.GENERATE_HEADER_ID, true)
+
   /** Represents the Markdown => HTML renderer. */
-  private lazy val renderer =
-    HtmlRenderer.builder().extensions(extensions).build()
+  private lazy val renderer = HtmlRenderer
+    .builder(options)
+    .extensions(extensions)
+    .build()
 
   object Session {
     /**

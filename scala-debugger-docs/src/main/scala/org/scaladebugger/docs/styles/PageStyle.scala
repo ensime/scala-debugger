@@ -7,6 +7,8 @@ import scalatags.stylesheet._
  * Represents stylesheet for all pages.
  */
 object PageStyle extends CascadingStyleSheet {
+  initStyleSheet()
+
   import scalatags.Text.styles2.{content => afterContent}
 
   //
@@ -98,11 +100,16 @@ object PageStyle extends CascadingStyleSheet {
     overflow := "hidden",
     textOverflow := "ellipsis",
     whiteSpace := "nowrap",
+    textDecoration := "none",
 
     a(
       color := "#ECF0F1",
       textDecoration := "none"
     )
+  )
+
+  lazy val buttonMargin: Cls = cls(
+    margin := "1em 1em"
   )
 
   lazy val videoCls: Cls = cls(
@@ -210,8 +217,8 @@ object PageStyle extends CascadingStyleSheet {
   )
 
   lazy val copyButton: Cls = cls(
-    display := "flex",
-    alignItems := "center",
+    display := "inline-block",
+    cursor := "pointer",
 
     position := "absolute",
     top := "0",

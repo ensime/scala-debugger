@@ -13,8 +13,8 @@ pipeline:
         image: chipsenkbeil/scala-debugger:latest
         pull: true
         environment:
-            - SBT_TASK_LIMIT=4
-            - SCALATEST_PARALLEL_TESTS=4
+            - SBT_TASK_LIMIT=2
+            - SCALATEST_PARALLEL_TESTS=2
             - SCALATEST_SLEEP_SCALE_FACTOR=2.0
             - CACHE_DIR="/drone"
             - SCALATEST_SPAN_SCALE_FACTOR=20

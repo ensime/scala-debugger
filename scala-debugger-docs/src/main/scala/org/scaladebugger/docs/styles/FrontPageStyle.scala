@@ -7,6 +7,8 @@ import scalatags.stylesheet._
  * Represents stylesheet for the front page.
  */
 object FrontPageStyle extends CascadingStyleSheet {
+  initStyleSheet()
+
   /** To be placed in a <style> tag. */
   lazy val global: String =
     """
@@ -21,4 +23,11 @@ object FrontPageStyle extends CascadingStyleSheet {
       |  min-width: 880px;
       |}
     """.stripMargin
+
+  lazy val inlineButtonContainer: Cls = cls(
+    display := "inline-flex",
+    justifyContent := "space-around",
+    alignItems := "center",
+    alignContent := "center"
+  )
 }

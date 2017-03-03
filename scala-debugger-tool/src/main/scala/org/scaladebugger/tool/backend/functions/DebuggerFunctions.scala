@@ -1,6 +1,6 @@
 package org.scaladebugger.tool.backend.functions
 import org.scaladebugger.api.debuggers.{AttachingDebugger, LaunchingDebugger, ListeningDebugger, ProcessDebugger}
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.java.JavaDebugProfile
 import org.scaladebugger.api.profiles.scala210.Scala210DebugProfile
 import org.scaladebugger.api.utils.JDITools
 import org.scaladebugger.tool.backend.StateManager
@@ -105,7 +105,7 @@ class DebuggerFunctions(
   /** Entrypoint for displaying profile name choices. */
   def profiles(m: Map[String, Any]) = {
     // TODO: Pull names from profile manager?
-    val names = Seq(PureDebugProfile.Name, Scala210DebugProfile.Name)
+    val names = Seq(JavaDebugProfile.Name, Scala210DebugProfile.Name)
     writeLine(names.map("-> " + _).mkString("\n"))
   }
 

@@ -1,6 +1,6 @@
 package org.scaladebugger.api.profiles
 
-import java.util.UUID
+import _root_.java.util.UUID
 
 import com.sun.jdi.VirtualMachine
 import com.sun.jdi.event.Event

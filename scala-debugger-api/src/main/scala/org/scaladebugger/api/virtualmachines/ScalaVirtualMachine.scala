@@ -3,7 +3,7 @@ package org.scaladebugger.api.virtualmachines
 import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.ProfileManager
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.java.JavaDebugProfile
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 
 /**
@@ -17,7 +17,7 @@ trait ScalaVirtualMachine extends SwappableDebugProfile with ProfileManager {
    * @param startProcessingEvents If true, immediately starts processing events
    */
   def initialize(
-    defaultProfile: String = PureDebugProfile.Name,
+    defaultProfile: String = JavaDebugProfile.Name,
     startProcessingEvents: Boolean = true
   ): Unit
 

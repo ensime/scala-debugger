@@ -1,5 +1,5 @@
 ---
-weight: 2
+weight: 3
 ---
 # Contributing to the Scala Debugger
 
@@ -19,7 +19,7 @@ All contributions are welcome! As a reminder, project is licensed under the
 
 4. Validate that your changes pass the existing tests along with your own.
 
-        sbt test it:test
+        sbt +test +it:test
 
 5. If relevant (new features, modifying existing features), please update
    the documentation in `docs/`.

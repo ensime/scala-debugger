@@ -16,7 +16,7 @@ installing the JDK on your system.
 At runtime, the Scala debugger API will attempt to load `tools.jar` from a
 variety of locations including `JDK_HOME`, `JAVA_HOME`, and the system
 property `java.home`. If the Scala debugger API has issues loading `tools.jar`,
-you should set either `JD_HOME` or `JAVA_HOME` to the path to your JDK.
+you should set either `JDK_HOME` or `JAVA_HOME` to the path to your JDK.
 
 Mac OS X users can locate their active JDK version using
 `/usr/libexec/java_home`.

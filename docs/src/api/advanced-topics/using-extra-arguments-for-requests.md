@@ -13,7 +13,7 @@ arguments in the form of `JDIArgument` or one of its derivatives:
 set additional configuration options on requests as well as provide additional
 filtering and logic when receiving events.
 
-Methods like `onBreakpoint` and `createBreakpointRequest` accept a variable
+Methods like `getOrCreateBreakpointRequest` accept a variable
 number of extra arguments at the end of the method (defaulting to no extra
 arguments).
 
@@ -22,8 +22,29 @@ val s: ScalaVirtualMachine = /* some virtual machine */
 
 // Set a custom property accessible on the request object AND limit reporting
 // to the first three occurrences
-s.onBreakpoint("file.scala", 37, CustomProperty("key", "value"), MaxTriggerFilter(3))
+s.getOrCreateBreakpointRequest(
+  "file.scala", 
+  37, 
+  CustomProperty("key", "value"), 
+  MaxTriggerFilter(3)
+)
 ```
+
+## How It Works
+
+![JDI Event Process Steps][jdi-event-process-steps]
+
+1. Callbacks in the form of event handlers and event pipelines are retrieved
+   for requests that correspond to the incoming JDI event
+2. Filters are applied on the event to determine if it is relevant to the
+   callbacks
+3. Custom data stored on the request and the event are extracted to be
+   returned to the callbacks when provided _event data request_ arguments
+4. Callbacks that passed their associated filters are invoked with any
+   extracted data alongside the actual JDI event
+5. The associated threads are resumed after all callbacks have finished, unless
+   `NoResume` or another special event argument is provided
+
 
 ## Request Arguments
 
@@ -72,6 +93,9 @@ pipelines. Common use cases include filtering based on a provided unique id
 or custom property to a request (as the associated request is available in an
 event).
 
+There are also a couple of event arguments that directly extend
+`JDIEventArgument` and are used for special purposes.
+
 ### Event Data Request
 
 | Case Class                | Description                                                             |
@@ -80,19 +104,29 @@ event).
 
 ### Event Filter
 
-| Case Class           | Description                                                                                                       |
-| ----------           | -----------                                                                                                       |
-| MaxTriggerFilter     | Limits triggering of event callbacks and pipelines to the first N events.                                         |
-| MinTriggerFilter     | Limits triggering of event callbacks and pipelines to all but the first N events.                                 |
-| MethodNameFilter     | Limits triggering of event callbacks and pipelines if they are locatable to only those whose method name matches. |
-| CustomPropertyFilter | Limits triggering of event callbacks and pipelines to events whose requests contain a matching custom property.   |
-| UniquePRopertyFilter | Limits triggering of event callbacks and pipelines to events whose requests contain a matching unique id.         |
+| Case Class             | Description                                                                                                         |
+| ----------             | -----------                                                                                                         |
+| MaxTriggerFilter       | Limits triggering of event callbacks and pipelines to the first N events.                                           |
+| MinTriggerFilter       | Limits triggering of event callbacks and pipelines to all but the first N events.                                   |
+| MethodNameFilter       | Limits triggering of event callbacks and pipelines if they are locatable to only those whose method name matches.   |
+| CustomPropertyFilter   | Limits triggering of event callbacks and pipelines to events whose requests contain a matching custom property.     |
+| UniqueIdPropertyFilter | Limits triggering of event callbacks and pipelines to events whose requests contain a matching unique id.           |
+| WildcardPatternFilter  | Limits triggering of event callbacks and pipelines to events whose method or class name matches the given wildcard. |
 
 | Case Class | Description                                                                          |
 | ---------- | -----------                                                                          |
 | AndFilter  | Combines the truthiness of two other filters such that BOTH must allow the event.    |
 | OrFilter   | Combines the truthiness of two other filters such that EITHER must allow the event.  |
 | NotFilter  | Flips a filter such that an event is allowed only if the filter disallows the event. |
+
+### Miscellaneous Event Arguments
+
+| Case Class | Description                                                                         |
+| ---------- | -----------                                                                         |
+| NoResume   | If provided, does not resume the JVM after the event is processed.                  |
+| YesResume  | If provided, does resume the JVM after the event is processed. This is the default. |
+
+[jdi-event-process-steps]: /img/api/advanced-topics/jdi-event-process-steps.png
 
 *[JDI]: Java Debugger Interface
 

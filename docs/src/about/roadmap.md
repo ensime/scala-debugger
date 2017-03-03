@@ -1,5 +1,5 @@
 ---
-weight: 0
+weight: 1
 ---
 # Roadmap
 
@@ -10,18 +10,26 @@ indicates new features, and a revision update indicates bug fixes.
 
 ---
 
+## Version 1.2.0
+
+- Add expression evaluator
+- Improve Scala debug profiles to handle more scenarios
+
 ## Version 1.1.0
 
-- See the [wiki][wiki] for the current roadmap!
+- Add JDB implementation using Scala Debugger API (SDB)
+- Add SBT plugin providing JDB-like interface
+- Add basic Scala profile to support name demangling
+- Add freeze support to serialize/deserialize debug information
+- Improve stability of library
 
 ## Version 1.0.0
 
-- Create high-level profile system (only pure profile needed now)
+- Create high-level profile system (only Java profile needed now)
 - Create low-level managers for JDI requests
 - Add support for pending requests to be applied as soon as possible
 - Architect "extra argument" system
 - Create documentation website
 
-[wiki]: https://github.com/ensime/scala-debugger/wiki
 *[JDI]: Java Debugger Interface
-
+[wiki]: https://github.com/ensime/scala-debugger/wiki

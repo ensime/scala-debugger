@@ -3,7 +3,7 @@ package org.scaladebugger.api.virtualmachines
 import com.sun.jdi._
 import org.scaladebugger.api.lowlevel.ManagerContainer
 import org.scaladebugger.api.profiles.{StandardProfileManager, ProfileManager}
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.java.JavaDebugProfile
 import org.scaladebugger.api.profiles.swappable.SwappableDebugProfile
 import org.scaladebugger.api.profiles.traits.DebugProfile
 
@@ -129,7 +129,7 @@ class DummyScalaVirtualMachine private[api] (
 
 object DummyScalaVirtualMachine {
   /** Represents the default profile used by new instances of the dummy vm. */
-  val DefaultProfileName = PureDebugProfile.Name
+  val DefaultProfileName = JavaDebugProfile.Name
 
   /**
    * Creates a new instance of the dummy Scala virtual machine using a new

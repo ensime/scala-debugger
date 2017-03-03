@@ -3,7 +3,7 @@ package org.scaladebugger.api.profiles.scala210.info
 import com.sun.jdi._
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
-import org.scaladebugger.api.profiles.pure.info.PureLocalVariableInfo
+import org.scaladebugger.api.profiles.java.info.JavaLocalVariableInfo
 
 /**
  * Represents an implementation of a local variable profile that adds Scala
@@ -29,7 +29,7 @@ class Scala210LocalVariableInfo(
 )(
   override protected val _virtualMachine: VirtualMachine =
     _localVariable.virtualMachine()
-) extends PureLocalVariableInfo(
+) extends JavaLocalVariableInfo(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,
   frame = frame,

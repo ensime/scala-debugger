@@ -8,7 +8,7 @@ import org.scaladebugger.api.lowlevel.exceptions.PendingExceptionSupport
 import org.scaladebugger.api.lowlevel.methods.{PendingMethodEntrySupport, PendingMethodExitSupport}
 import org.scaladebugger.api.lowlevel.utils.JDIHelperMethods
 import org.scaladebugger.api.lowlevel.watchpoints.{PendingAccessWatchpointSupport, PendingModificationWatchpointSupport}
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.java.JavaDebugProfile
 import org.scaladebugger.api.profiles.ProfileManager
 import org.scaladebugger.api.profiles.traits.DebugProfile
 import org.scaladebugger.api.utils.{Logging, LoopingTaskRunner}
@@ -185,8 +185,8 @@ class StandardScalaVirtualMachine(
 
   private def registerStandardProfiles(): Unit = {
     this.register(
-      PureDebugProfile.Name,
-      new PureDebugProfile(this, lowlevel)(_virtualMachine)
+      JavaDebugProfile.Name,
+      new JavaDebugProfile(this, lowlevel)(_virtualMachine)
     )
 
     this.register(

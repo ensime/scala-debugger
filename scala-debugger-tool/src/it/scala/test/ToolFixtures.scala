@@ -2,7 +2,7 @@ package test
 
 import java.io.IOException
 
-import org.scaladebugger.api.profiles.pure.PureDebugProfile
+import org.scaladebugger.api.profiles.java.JavaDebugProfile
 import org.scaladebugger.api.utils.{JDITools, Logging}
 import org.scaladebugger.test.helpers.ControlledParallelSuite
 import org.scaladebugger.tool.Repl
@@ -169,12 +169,12 @@ trait ToolFixtures extends ToolTestUtilities with Logging {
       try {
         repl = Some(Repl.newInstance(newTerminal = (_,_) => virtualTerminal))
 
-        // Using pure profile to guarantee test consistency
+        // Using java profile to guarantee test consistency
         // regardless of default profile
         val q = "\""
-        val profile = PureDebugProfile.Name
+        val profile = JavaDebugProfile.Name
 
-        // Queue up pure profile and attach action
+        // Queue up java profile and attach action
         virtualTerminal.newInputLine(s"profile $q$profile$q")
         virtualTerminal.newInputLine(s"attach $port")
 

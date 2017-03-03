@@ -23,7 +23,7 @@ object SDBPlugin extends AutoPlugin {
     scalaDebuggerSettings(ScalaDebugger, Compile) ++
     scalaDebuggerSettings(ScalaDebuggerTest, Test)
 
-  // Same as Defaults.runTask from SBT, but accepting default arguments too
+  // Same as Defaults.runTask from sbt, but accepting default arguments too
   def runTask(
     classpath: Initialize[Task[Classpath]],
     mainClassTask: Initialize[Task[Option[String]]],

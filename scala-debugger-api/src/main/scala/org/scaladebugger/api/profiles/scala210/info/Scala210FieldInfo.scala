@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.scala210.info
 
 import com.sun.jdi._
-import org.scaladebugger.api.profiles.pure.info.PureFieldInfo
+import org.scaladebugger.api.profiles.java.info.JavaFieldInfo
 import org.scaladebugger.api.profiles.traits.info._
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
@@ -29,7 +29,7 @@ class Scala210FieldInfo(
   override val offsetIndex: Int
 )(
   override protected val _virtualMachine: VirtualMachine = _field.virtualMachine()
-) extends PureFieldInfo(
+) extends JavaFieldInfo(
   scalaVirtualMachine = scalaVirtualMachine,
   infoProducer = infoProducer,
   _container = _container,

@@ -22,14 +22,18 @@ import scala.annotation.tailrec
  *               larger weights should appear last (right/bottom)
  * @param fake If marked as fake, indicates that the menu item should not be
  *             used and is around for other purposes
+ * @param page The page associated with the menu item, which will be the fake
+ *             child page if representing a directory or the actual page if
+ *             representing a normal page
  */
-case class MenuItem(
+case class MenuItem private (
   name: String,
   link: Option[String] = None,
   children: Seq[MenuItem] = Nil,
   selected: Boolean = false,
   weight: Double = MenuItem.DefaultWeight,
-  fake: Boolean = false
+  fake: Boolean = false,
+  page: Option[Page] = None
 ) {
   /**
    * Indicates whether or not the menu item represents the specified page.
@@ -37,10 +41,7 @@ case class MenuItem(
    * @param page The page to compare to the menu item
    * @return True if the menu item represents the page, otherwise false
    */
-  def representsPage(page: Page): Boolean = {
-    if (page.isDirectory) page.name == name
-    else page.title == name
-  }
+  def representsPage(page: Page): Boolean = this.page.exists(_ == page)
 
   /**
    * Indicates whether or not this menu item or any of its children (or one of
@@ -175,7 +176,8 @@ object MenuItem {
       link = link,
       children = normalChildren,
       weight = weight,
-      fake = isFake
+      fake = isFake,
+      page = if (isDir) fakeChild.flatMap(_.page) else Some(page)
     )
   }
 }

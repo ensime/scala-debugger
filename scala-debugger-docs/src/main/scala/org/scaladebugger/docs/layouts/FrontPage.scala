@@ -10,7 +10,10 @@ import org.scaladebugger.docs.styles.Implicits._
  * Represents the layout for the front page of the site.
  */
 class FrontPage extends Page(
-  postHeadContent = Seq(FrontPageStyle.global.toStyleTag),
+  postHeadContent = Seq(
+    FrontPageStyle.global.toStyleTag,
+    FrontPageStyle.toStyleTag
+  ),
   syntaxHighlightTheme = "default"
 ) {
   private val ApiExampleCode =
@@ -31,7 +34,13 @@ class FrontPage extends Page(
 
   private val LanguageExampleCode =
     """
-      |TODO: Implement language example here
+      |myFunc := func(a, b) {
+      |  a + b
+      |}
+      |
+      |result := myFunc 3 9
+      |
+      |print("Result is " ++ result)
     """.stripMargin
 
   /**
@@ -51,8 +60,25 @@ class FrontPage extends Page(
           span(PageStyle.heroSubtitle)(
             "Scala abstractions and tooling around the Java Debugger Interface."
           ),
-          div(PageStyle.buttonCls)(
-            a(href := "/about")("Learn More")
+          span(FrontPageStyle.inlineButtonContainer)(
+            Button(
+              "Learn More",
+              context.mainMenuItems
+                .find(_.name.toLowerCase == "about")
+                .flatMap(_.link)
+                .getOrElse(throw new RuntimeException("Missing about section!")),
+              PageStyle.buttonMargin
+            ),
+            Button(
+              "Source Code",
+              "https://www.github.com/ensime/scala-debugger",
+              PageStyle.buttonMargin
+            ),
+            Button(
+              "Community",
+              "https://www.gitter.im/ensime/scala-debugger",
+              PageStyle.buttonMargin
+            )
           )
         )
       ),
@@ -114,7 +140,7 @@ class FrontPage extends Page(
             ),
 
             // Visual Debugger
-            Tabs.Tab(
+            /*Tabs.Tab(
               name = "visual debugger",
               LinedContent("download jar", Button(
                 name = "vsdb 1.1.0-M3 built with Scala 2.10",
@@ -128,9 +154,9 @@ class FrontPage extends Page(
                 name = "vsdb 1.1.0-M3 built with Scala 2.12",
                 link = "/downloads/vsdb/1.1.0-M3/vsdb-2.12.jar"
               ))
-            ),
+            ),*/
 
-            // SBT plugin
+            // sbt plugin
             Tabs.Tab(
               name = "sbt",
               LinedContent("sbt plugin", ScalaCodeBlock(
@@ -185,12 +211,12 @@ class FrontPage extends Page(
             ),
 
             // Visual Debugger
-            Tabs.Tab.NoInner(
+            /*Tabs.Tab.NoInner(
               name = "visual debugger",
               Video("/videos/examples/", "visual-debugger")
-            ),
+            ),*/
 
-            // SBT plugin
+            // sbt plugin
             Tabs.Tab.NoInner(
               name = "sbt",
               Video("/videos/examples/", "sbt-plugin")
