@@ -3,21 +3,29 @@ package org.scaladebugger.docs.layouts
 import org.scaladebugger.docs.layouts.partials.common.SideMenu
 import org.scaladebugger.docs.styles.Implicits._
 import org.scaladebugger.docs.styles.{DocPageStyle, SidebarNavStyle}
+import org.senkbeil.sitegen.layouts.Context
 
 import scalatags.Text.all._
 
 /**
  * Represents the layout for the front page of the site.
  */
-class DocPage extends SitePage(
-  postHeadContent = _ => Seq(
-    DocPageStyle.global.toStyleTag,
-    DocPageStyle.toStyleTag,
-    SidebarNavStyle.global.toStyleTag,
-    SidebarNavStyle.toStyleTag
-  ),
-  bodyModifiers = _ => Seq(DocPageStyle.bodyCls)
-) {
+class DocPage extends SitePage {
+  override protected def postHeadContent(context: Context): Seq[Modifier] = {
+    super.postHeadContent(context) ++ Seq(
+      DocPageStyle.global.toStyleTag,
+      DocPageStyle.toStyleTag,
+      SidebarNavStyle.global.toStyleTag,
+      SidebarNavStyle.toStyleTag
+    )
+  }
+
+  override protected def bodyModifiers(context: Context): Seq[Modifier] = {
+    val baseModifiers = super.bodyModifiers(context)
+    val newModifiers: Seq[Modifier] = Seq(DocPageStyle.bodyCls)
+    baseModifiers ++ newModifiers
+  }
+
   /**
    * Renders a page of documentation.
    *

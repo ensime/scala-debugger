@@ -5,17 +5,12 @@ import org.scaladebugger.docs.styles.{FrontPageStyle, PageStyle}
 
 import scalatags.Text.all._
 import org.scaladebugger.docs.styles.Implicits._
+import org.senkbeil.sitegen.layouts.Context
 
 /**
  * Represents the layout for the front page of the site.
  */
-class FrontPage extends SitePage(
-  postHeadContent = _ => Seq(
-    FrontPageStyle.global.toStyleTag,
-    FrontPageStyle.toStyleTag
-  ),
-  syntaxHighlightTheme = "default"
-) {
+class FrontPage extends SitePage(syntaxHighlightTheme = "default") {
   private val ApiExampleCode =
     s"""
       |val fileName = "file.scala"
@@ -42,6 +37,14 @@ class FrontPage extends SitePage(
       |
       |print("Result is " ++ result)
     """.stripMargin
+
+
+  override protected def preHeadContent(context: Context): Seq[Modifier] = {
+    super.preHeadContent(context) ++ Seq(
+      FrontPageStyle.global.toStyleTag,
+      FrontPageStyle.toStyleTag
+    )
+  }
 
   /**
    * Renders the front page.
