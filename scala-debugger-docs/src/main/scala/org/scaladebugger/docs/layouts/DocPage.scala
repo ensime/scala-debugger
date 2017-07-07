@@ -9,14 +9,14 @@ import scalatags.Text.all._
 /**
  * Represents the layout for the front page of the site.
  */
-class DocPage extends Page(
-  postHeadContent = Seq(
+class DocPage extends SitePage(
+  postHeadContent = _ => Seq(
     DocPageStyle.global.toStyleTag,
     DocPageStyle.toStyleTag,
     SidebarNavStyle.global.toStyleTag,
     SidebarNavStyle.toStyleTag
   ),
-  bodyModifiers = Seq(DocPageStyle.bodyCls)
+  bodyModifiers = _ => Seq(DocPageStyle.bodyCls)
 ) {
   /**
    * Renders a page of documentation.

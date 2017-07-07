@@ -4,11 +4,11 @@ import Keys._
 import scala.util.Try
 
 object Common {
-  lazy val scalaTestSpanScaleFactor = settingKey[Double](
+  lazy val scalaTestSpanScaleFactor: SettingKey[Double] = settingKey[Double](
     "Sets scaling factor of running tests that are wrapped in scale(...)"
   )
 
-  def settings = Seq(
+  def settings: Seq[Setting[_]] = Seq(
     version := "1.1.0-M3",
 
     organization := "org.scala-debugger",

@@ -9,8 +9,8 @@ import org.scaladebugger.docs.styles.Implicits._
 /**
  * Represents the layout for the front page of the site.
  */
-class FrontPage extends Page(
-  postHeadContent = Seq(
+class FrontPage extends SitePage(
+  postHeadContent = _ => Seq(
     FrontPageStyle.global.toStyleTag,
     FrontPageStyle.toStyleTag
   ),
