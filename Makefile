@@ -17,7 +17,6 @@ SBT=$(shell which sbt 2> /dev/null)
 CLOC=$(shell which cloc 2> /dev/null)
 FIND=$(shell which find 2> /dev/null)
 DOCKER=$(shell which docker 2> /dev/null)
-SCALA_DOC_GEN=scala-debugger-docs/target/scala-2.10/scala-debugger-docs-assembly-1.1.0-M3.jar
 
 # Scala config
 SCALA_2.10_VERSION=2.10.6
@@ -117,26 +116,14 @@ push-docker:
 # =============================================================================
 # = DOCS SECTION
 # =============================================================================
-docs: $(SCALA_DOC_GEN)
-	@$(JAVA) -jar $(SCALA_DOC_GEN) --generate
+docs: 
+	@$(SBT) generateSite
 
-serve-docs: $(SCALA_DOC_GEN)
-	@$(JAVA) -jar $(SCALA_DOC_GEN) \
-		--generate \
-		--serve \
-		--allow-unsupported-media-types
+serve-docs: 
+	@$(SBT) serveSite
 
-push-docs: $(SCALA_DOC_GEN)
-	@$(JAVA) -jar $(SCALA_DOC_GEN) \
-		--generate \
-		--publish \
-		--site-host='https://scala-debugger.org' \
-		--publish-author-email='chip.senkbeil@gmail.com' \
-		--publish-author-name='Chip Senkbeil' \
-		--publish-remote-name='upstream'
-
-scala-debugger-docs/target/scala-2.10/scala-debugger-docs-assembly-%:
-	@$(SBT) "scalaDebuggerDocs/assembly"
+push-docs: docs
+	@$(SBT) publishSite
 
 # =============================================================================
 # = STATISTICS SECTION

@@ -59,6 +59,45 @@ make assembly
 
 This will assemble relevant modules such as `sdb` for Scala 2.10, 2.11, and 2.12.
 
+## Documentation
+
+Make sure that you have some form of _sbt_ installed and available on your path
+as it is used to compile the Scala Debugger documentation module. Furthermore,
+you must have the
+[Scala Site Generator](https://github.com/chipsenkbeil/scala-site-generator)
+plugin enabled for your version of sbt. This can be done by adding the
+following to `~/.sbt/0.13/plugins/sitegen.sbt`:
+
+```
+addSbtPlugin("org.senkbeil" %% "sbt-site-generator" % "0.1.0")
+```
+
+### Building the documentation
+
+From the root of the project:
+
+```bash
+make docs
+```
+
+### Serving the documentation locally
+
+From the root of the project:
+
+```bash
+make serve-docs
+```
+
+### Publishing the documentation to remote host
+
+From the root of the project:
+
+```bash
+make push-docs
+```
+
+_This requires having contributor access to the repository._
+
 ## Running tests
 
 Make sure that you have [sbt-extras](https://github.com/paulp/sbt-extras)
