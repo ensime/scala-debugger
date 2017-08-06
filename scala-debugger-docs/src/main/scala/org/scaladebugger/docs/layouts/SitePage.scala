@@ -5,7 +5,7 @@ import java.net.URL
 import org.scaladebugger.docs.layouts.partials.common._
 import org.scaladebugger.docs.layouts.partials.common.vendor._
 import org.scaladebugger.docs.styles.{PageStyle, TabsStyle, TopbarNavStyle}
-import org.senkbeil.sitegen.layouts.{Context, Page}
+import org.senkbeil.grus.layouts.{Context, Page}
 
 import scalatags.Text.all._
 import org.scaladebugger.docs.styles.Implicits._

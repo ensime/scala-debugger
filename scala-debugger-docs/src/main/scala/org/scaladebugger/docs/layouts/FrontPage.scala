@@ -5,7 +5,7 @@ import org.scaladebugger.docs.styles.{FrontPageStyle, PageStyle}
 
 import scalatags.Text.all._
 import org.scaladebugger.docs.styles.Implicits._
-import org.senkbeil.sitegen.layouts.Context
+import org.senkbeil.grus.layouts.Context
 
 /**
  * Represents the layout for the front page of the site.

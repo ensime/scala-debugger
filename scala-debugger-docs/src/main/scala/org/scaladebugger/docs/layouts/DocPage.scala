@@ -3,7 +3,7 @@ package org.scaladebugger.docs.layouts
 import org.scaladebugger.docs.layouts.partials.common.SideMenu
 import org.scaladebugger.docs.styles.Implicits._
 import org.scaladebugger.docs.styles.{DocPageStyle, SidebarNavStyle}
-import org.senkbeil.sitegen.layouts.Context
+import org.senkbeil.grus.layouts.Context
 
 import scalatags.Text.all._
 

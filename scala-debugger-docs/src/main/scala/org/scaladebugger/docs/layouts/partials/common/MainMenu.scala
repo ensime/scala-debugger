@@ -1,7 +1,7 @@
 package org.scaladebugger.docs.layouts.partials.common
 
 import org.scaladebugger.docs.styles.TopbarNavStyle
-import org.senkbeil.sitegen.structures.MenuItem
+import org.senkbeil.grus.structures.MenuItem
 
 import scalatags.Text.all._
 
