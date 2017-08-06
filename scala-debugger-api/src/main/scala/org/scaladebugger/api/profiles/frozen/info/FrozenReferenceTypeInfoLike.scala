@@ -14,6 +14,9 @@ trait FrozenReferenceTypeInfoLike extends ReferenceTypeInfo with FrozenTypeInfoL
   protected val _visibleFields: Try[Seq[FieldVariableInfo]]
   protected val _indexedVisibleFields: Try[Seq[FieldVariableInfo]]
 
+  protected val _allMethods: Try[Seq[MethodInfo]]
+  protected val _visibleMethods: Try[Seq[MethodInfo]]
+
   /**
    * Retrieves all fields declared in this type, its superclasses, implemented
    * interfaces, and superinterfaces.
@@ -71,7 +74,8 @@ trait FrozenReferenceTypeInfoLike extends ReferenceTypeInfo with FrozenTypeInfoL
    *
    * @return The collection of methods as method info profiles
    */
-  override def allMethods: Seq[MethodInfo] = ???
+  @throws[FrozenException]
+  override def allMethods: Seq[MethodInfo] = _allMethods.get
 
   /**
    * Retrieves unhidden and unambiguous methods in this type. Methods hidden
@@ -81,7 +85,8 @@ trait FrozenReferenceTypeInfoLike extends ReferenceTypeInfo with FrozenTypeInfoL
    *
    * @return The collection of methods as method info profiles
    */
-  override def visibleMethods: Seq[MethodInfo] = ???
+  @throws[FrozenException]
+  override def visibleMethods: Seq[MethodInfo] = _visibleMethods.get
 
   /**
    * Retrieves the visible methods with the matching name.
@@ -89,7 +94,9 @@ trait FrozenReferenceTypeInfoLike extends ReferenceTypeInfo with FrozenTypeInfoL
    * @param name The name of the method to retrieve
    * @return The collection of method info profiles
    */
-  override def methods(name: String): Seq[MethodInfo] = ???
+  @throws[FrozenException]
+  override def methods(name: String): Seq[MethodInfo] =
+    visibleMethods.filter(_.name == name)
 
   /**
    * Retrieves the classloader object which loaded the class associated with
