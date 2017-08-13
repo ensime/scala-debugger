@@ -6,7 +6,7 @@ import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 /**
  * Represents common methods between information-gathering profiles.
  */
-trait CommonInfo extends JavaInfo with FrozenInfo {
+trait CommonInfo extends JavaInfo {
   /**
    * Returns the Scala virtual machine containing this instance.
    *

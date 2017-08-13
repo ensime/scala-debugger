@@ -1,13 +1,14 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Value
+import org.scaladebugger.macros.freeze.Freezable
 
 import scala.util.Try
 
 /**
  * Represents information about a value.
  */
-trait ValueInfo extends CommonInfo {
+@Freezable trait ValueInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of
    * low-level Java instead of a higher-level abstraction.
@@ -115,7 +116,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if null, otherwise false
    */
-  def isNull: Boolean
+  @Freezable def isNull: Boolean
 
   /**
    * Returns whether or not this value is void.
