@@ -1,7 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Type
-import org.scaladebugger.api.profiles.frozen.info.FrozenTypeInfo
 
 import scala.util.Try
 
@@ -284,19 +283,4 @@ trait TypeInfo extends CommonInfo {
    * @return The human-readable description
    */
   override def toPrettyString: String = s"Type $name ($signature)"
-
-  /**
-   * Freezes the information, collecting all data at the current point in time.
-   *
-   * @return The information frozen at the current point in time
-   */
-  override def freeze(): FrozenTypeInfo = FrozenTypeInfo(
-    name = this.name,
-    signature = this.signature,
-    _arrayType = this.tryToArrayType,
-    _classType = this.tryToClassType,
-    _interfaceType = this.tryToInterfaceType,
-    _referenceType = this.tryToReferenceType,
-    _primitiveType = this.tryToPrimitiveType
-  )
 }

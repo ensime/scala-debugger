@@ -1,7 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Value
-import org.scaladebugger.api.profiles.frozen.info.FrozenValueInfo
 
 import scala.util.Try
 
@@ -274,24 +273,4 @@ trait ValueInfo extends CommonInfo {
       else "???"
     }.getOrElse("<ERROR>")
   }
-
-  /**
-   * Freezes the information, collecting all data at the current point in time.
-   *
-   * @return The information frozen at the current point in time
-   */
-  override def freeze(): FrozenValueInfo = FrozenValueInfo(
-    `type` = this.`type`,
-    isNull = this.isNull,
-    isVoid = this.isVoid,
-    _localValue = this.tryToLocalValue,
-    _arrayInfo = this.tryToArrayInfo,
-    _stringInfo = this.tryToStringInfo,
-    _objectInfo = this.tryToObjectInfo,
-    _threadInfo = this.tryToThreadInfo,
-    _threadGroupInfo = this.tryToThreadGroupInfo,
-    _classObjectInfo = this.tryToClassObjectInfo,
-    _classLoaderInfo = this.tryToClassLoaderInfo,
-    _primitiveInfo = this.tryToPrimitiveInfo
-  )
 }
