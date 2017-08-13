@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Value
-import org.scaladebugger.macros.freeze.Freezable
+import org.scaladebugger.macros.freeze.{Freezable, Unfreezable}
 
 import scala.util.Try
 
@@ -16,21 +16,21 @@ import scala.util.Try
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  override def toJavaInfo: ValueInfo
+  @Freezable override def toJavaInfo: ValueInfo
 
   /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance
    */
-  override def toJdiInstance: Value
+  @Unfreezable override def toJdiInstance: Value
 
   /**
    * Returns the type information for the value.
    *
    * @return The profile containing type information
    */
-  def `type`: TypeInfo
+  @Freezable def `type`: TypeInfo
 
   /**
    * Returns the type information for the value.
@@ -53,63 +53,63 @@ import scala.util.Try
    *
    * @return The value as a local instance
    */
-  def toLocalValue: Any
+  @Freezable def toLocalValue: Any
 
   /**
    * Returns whether or not this value represents a primitive.
    *
    * @return True if a primitive, otherwise false
    */
-  def isPrimitive: Boolean
+  @Freezable def isPrimitive: Boolean
 
   /**
    * Returns whether or not this value represents an array.
    *
    * @return True if an array, otherwise false
    */
-  def isArray: Boolean
+  @Freezable def isArray: Boolean
 
   /**
    * Returns whether or not this value represents a class loader.
    *
    * @return True if a class loader, otherwise false
    */
-  def isClassLoader: Boolean
+  @Freezable def isClassLoader: Boolean
 
   /**
    * Returns whether or not this value represents a class object.
    *
    * @return True if a class object, otherwise false
    */
-  def isClassObject: Boolean
+  @Freezable def isClassObject: Boolean
 
   /**
    * Returns whether or not this value represents a thread group.
    *
    * @return True if a thread group, otherwise false
    */
-  def isThreadGroup: Boolean
+  @Freezable def isThreadGroup: Boolean
 
   /**
    * Returns whether or not this value represents a thread.
    *
    * @return True if a thread, otherwise false
    */
-  def isThread: Boolean
+  @Freezable def isThread: Boolean
 
   /**
    * Returns whether or not this value represents an object.
    *
    * @return True if an object, otherwise false
    */
-  def isObject: Boolean
+  @Freezable def isObject: Boolean
 
   /**
    * Returns whether or not this value represents a string.
    *
    * @return True if a string, otherwise false
    */
-  def isString: Boolean
+  @Freezable def isString: Boolean
 
   /**
    * Returns whether or not this value is null.
@@ -123,7 +123,7 @@ import scala.util.Try
    *
    * @return True if void, otherwise false
    */
-  def isVoid: Boolean
+  @Freezable def isVoid: Boolean
 
   /**
    * Returns the value as a primitive (profile).
@@ -139,7 +139,7 @@ import scala.util.Try
    * @return The primitive profile wrapping this value
    */
   @throws[AssertionError]
-  def toPrimitiveInfo: PrimitiveInfo
+  @Freezable def toPrimitiveInfo: PrimitiveInfo
 
   /**
    * Returns the value as a class loader (profile).
@@ -155,7 +155,7 @@ import scala.util.Try
    * @return The class loader profile wrapping this value
    */
   @throws[AssertionError]
-  def toClassLoaderInfo: ClassLoaderInfo
+  @Freezable def toClassLoaderInfo: ClassLoaderInfo
 
   /**
    * Returns the value as a class object (profile).
@@ -171,7 +171,7 @@ import scala.util.Try
    * @return The class object profile wrapping this value
    */
   @throws[AssertionError]
-  def toClassObjectInfo: ClassObjectInfo
+  @Freezable def toClassObjectInfo: ClassObjectInfo
 
   /**
    * Returns the value as a thread group (profile).
@@ -187,7 +187,7 @@ import scala.util.Try
    * @return The thread group profile wrapping this value
    */
   @throws[AssertionError]
-  def toThreadGroupInfo: ThreadGroupInfo
+  @Freezable def toThreadGroupInfo: ThreadGroupInfo
 
   /**
    * Returns the value as a thread (profile).
@@ -203,7 +203,7 @@ import scala.util.Try
    * @return The thread profile wrapping this value
    */
   @throws[AssertionError]
-  def toThreadInfo: ThreadInfo
+  @Freezable def toThreadInfo: ThreadInfo
 
   /**
    * Returns the value as an object (profile).
@@ -219,7 +219,7 @@ import scala.util.Try
    * @return The object profile wrapping this value
    */
   @throws[AssertionError]
-  def toObjectInfo: ObjectInfo
+  @Freezable def toObjectInfo: ObjectInfo
 
   /**
    * Returns the value as a string (profile).
@@ -235,7 +235,7 @@ import scala.util.Try
    * @return The string profile wrapping this value
    */
   @throws[AssertionError]
-  def toStringInfo: StringInfo
+  @Freezable def toStringInfo: StringInfo
 
   /**
    * Returns the value as an array (profile).
@@ -251,7 +251,7 @@ import scala.util.Try
    * @return The array profile wrapping this value
    */
   @throws[AssertionError]
-  def toArrayInfo: ArrayInfo
+  @Freezable def toArrayInfo: ArrayInfo
 
   /**
    * Returns a string presenting a better human-readable description of

@@ -1,10 +1,12 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import org.scaladebugger.macros.freeze.Freezable
+
 /**
  * Represents a profile that provides common methods to convert info profiles
  * to their low-level Java equivalents.
  */
-trait JavaInfo {
+@Freezable trait JavaInfo {
   /**
    * Returns whether or not this info profile represents the low-level Java
    * implementation.
@@ -13,7 +15,7 @@ trait JavaInfo {
    *         otherwise this profile represents something higher-level like
    *         Scala, Jython, or JRuby
    */
-  def isJavaInfo: Boolean
+  @Freezable def isJavaInfo: Boolean
 
   /**
    * Converts the current profile instance to a representation of
@@ -22,5 +24,5 @@ trait JavaInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  def toJavaInfo: AnyRef
+  @Freezable def toJavaInfo: AnyRef
 }

@@ -2,9 +2,25 @@ package org.scaladebugger.macros.freeze
 
 import scala.reflect.macros.Context
 import scala.language.experimental.macros
-import scala.annotation.StaticAnnotation
+import scala.annotation.{StaticAnnotation, tailrec}
 import scala.reflect.internal.annotations.compileTimeOnly
 
+/**
+ * <summary>Represents a freezable bit of information.</summary>
+ *
+ * <p>If placed on a trait, injects a `freeze()` method along with a `Frozen`
+ * class implementing the trait.</p>
+ *
+ * <p>Any internal method marked with this annotation will have its live value
+ * from an implementation stored at freeze time.</p>
+ *
+ * <p>Any internal method marked with the
+ * [[org.scaladebugger.macros.freeze.Unfreezable]] annotation will
+ * be marked to always throw an exception when accessed.</p>
+ *
+ * <p>Any internal method not marked with either annotation will keep its
+ * current implementation from the trait itself.</p>
+ */
 @compileTimeOnly("enable macro paradise to expand macro annotations")
 class Freezable extends StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro FreezableMacro.impl
@@ -14,108 +30,156 @@ object FreezableMacro {
   def impl(c: Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
     import c.universe._
 
-    def isFreezableAnnotation(t: Tree): Boolean = t match {
+    def findClassPackage(classDef: ClassDef): TermName = {
+      val dummyClassName = newTypeName(s"Dummy${newTypeName(c.fresh())}")
+      val dummyClass = c.typeCheck(q"class $dummyClassName")
+      newTermName(packageFromSymbol(dummyClass.symbol.owner))
+    }
+
+    def packageFromSymbol(symbol: Symbol): String = {
+      @tailrec def buildPackage(symbol: Symbol, tokens: Seq[String]): String = {
+        if (symbol == NoSymbol) tokens.mkString(".")
+        else buildPackage(symbol.owner, symbol.name.decoded +: tokens)
+      }
+
+      buildPackage(symbol, Nil)
+    }
+
+    def containsAnnotation(d: DefDef, aName: String): Boolean =
+      d.mods.annotations.exists(a => isAnnotation(a, aName))
+
+    def isAnnotation(t: Tree, aName: String): Boolean = t match {
       case Apply(f, args) => f match {
-        case Select(qual, name) =>
-          println(s"Freezable: ${qual.getClass.getName} $name")
-          false
-        case _ => false
+        case Select(qual, name) => qual match {
+          case New(tpt) => tpt match {
+            case Ident(iName) => iName.decoded == aName
+            case _ => false
+          }
+          case _ => false
+        }
       }
       case _ => false
     }
 
+    def isTrait(classDef: ClassDef): Boolean = {
+      try {
+        val q"""
+          $mods trait $tpname[..$tparams] extends {
+            ..$earlydefns
+          } with ..$parents { $self =>
+            ..$body
+          }
+        """ = classDef
+        true
+      } catch {
+        case _: Throwable => false
+      }
+    }
+
 
     val (annottee, expandees) = annottees.map(_.tree) match {
-      case (classDef: ClassDef) :: rest =>
-        // TODO: Should we be using
-        // q"$mods trait $tpname[..$tparams] extends { ..$earlydefns } with ..$parents { $self => ..$stats }"
+      case (classDef: ClassDef) :: Nil if isTrait(classDef) =>
         val q"""
-          $mods class $tpname[..$tparams] $ctorMods(...$paramss) extends {
+          $mods trait $tpname[..$tparams] extends {
             ..$earlydefns
           } with ..$parents { $self =>
             ..$body
           }
         """ = classDef
 
-        val frozenClass = {
-          // TODO: Have an annotation of @Unfreezable that will force
-          //       the method to throw an exception when frozen, so we can
-          //       use that to fill in exception methods
-          //
-          //       We leave methods with no annotation alone?
-          //
-          //       Methods with Freezable will be replaced with the .get
-          //       of a Try object and used as part of the Frozen constructor
-          val internals = body.map {
-            // TODO: Can we include other modifiers/annotations still?
-            case q"@Freezable $mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
-              if (paramss.nonEmpty) c.abort(
+        // Represents name of companion object
+        val traitTypeName: TypeName = tpname
+        val oName = newTermName(traitTypeName.toString)
+
+        // Represents name of variable passed to freeze method
+        val freezeObjName = newTermName("valueToFreeze")
+
+        val (frozenClass, freezeMethod) = {
+          val cParams = collection.mutable.ArrayBuffer[Tree]()
+          val cArgs = collection.mutable.ArrayBuffer[Tree]()
+          val bodyTrees: List[Tree] = body
+          val internals = bodyTrees.collect {
+            case d: DefDef if containsAnnotation(d, "Freezable") =>
+              val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
+
+              val paramTrees: List[List[ValDef]] = paramss
+              if (paramTrees.nonEmpty) c.abort(
                 c.enclosingPosition,
                 s"Unable to freeze $tname! Must have zero arguments!"
               )
 
-              // TODO: Should/do we need to mark this as overriden since
-              //       that's what we are doing to the parent class?
-              q"def $tname[..$tparams](...$paramss): $tpt = $tname(...$args)"
-            case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
-              // TODO: Should this only throw an exception if there is no
-              //       body? In other words, just fill abstract methods with
-              //       the exception
-              q"def $tname[..$tparams](...$paramss): $tpt = throw new Exception"
-            case t => t
-          }
+              val name = newTermName(s"$$$tname")
+              cParams.append(q"""
+                private val $name: scala.util.Try[$tpt]
+              """)
+              cArgs.append(q"""
+                scala.util.Try.apply($freezeObjName.$tname)
+              """)
 
-          // TODO: scala.util.Try is not marked as serializable in 2.10/2.11;
-          //       happens in 2.12; Success/Failure are case classes and a
-          //       throwable in Java is already serializable.
-          //
-          //       Make a wrapper for this that implements serializable?
-          //
-          //       Any method not marked Freezable needs to have its
-          //       implementation changed to throw a NotFrozenException
-          //
-          //       Any method marked Freezable needs to use the .get method
-          //       from the scala.util.Try equivalent as the implementation
-          //
-          //       Constructor to class needs to take scala.util.Try equivalent
-          //       as input for each method marked Freezable
-          q"""
-            class Frozen private(...$paramss) extends $tpname with java.io.Serializable { $self =>
+              // Add override if not already there
+              val oldMods: Modifiers = mods
+              val newMods = Modifiers(
+                flags = Flag.OVERRIDE | oldMods.flags,
+                privateWithin = oldMods.privateWithin,
+                annotations = oldMods.annotations.filterNot(a => {
+                  isAnnotation(a, "Freezable") ||
+                  isAnnotation(a, "Unfreezable")
+                })
+              )
+
+              q"$newMods def $tname[..$tparams](...$paramss): $tpt = this.$name.get"
+            case d: DefDef if containsAnnotation(d, "Unfreezable") =>
+              val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
+
+              // Add override if not already there
+              val oldMods: Modifiers = mods
+              val newMods = Modifiers(
+                flags = Flag.OVERRIDE | oldMods.flags,
+                privateWithin = oldMods.privateWithin,
+                annotations = oldMods.annotations.filterNot(a => {
+                  isAnnotation(a, "Freezable") ||
+                  isAnnotation(a, "Unfreezable")
+                })
+              )
+
+              q"""
+                $newMods def $tname[..$tparams](...$paramss): $tpt =
+                  throw new IllegalStateException("Method not frozen!")
+              """
+            case d: DefDef =>
+              val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
+              val exprTree: Tree = expr
+              if (exprTree.isEmpty) c.abort(
+                c.enclosingPosition,
+                s"$tname has no implementation and is not marked as freezable or unfreezable!"
+              )
+              null
+          }.filterNot(_ == null)
+
+          val klass = q"""
+            class Frozen(..$cParams) extends $tpname with java.io.Serializable { $self =>
                 ..$internals
             }
           """
-        }
-
-        val freezeMethod = {
-          // TODO: Arguments need to be calls to scala.util.Try equivalent
-          //       with input as call to parent class' method name
-          val args = List().map(t => q"""scala.util.Try.apply($t)""")
-          q"""
-            def freeze(): ${frozenClass.name} = new ${frozenClass.name} {
-              ..$args
-            }
+          val method = q"""
+            def freeze($freezeObjName: $tpname): Frozen = new Frozen(..$cArgs)
           """
-        }
 
-        val newContent = List(frozenClass, freezeMethod)
+          (klass, method)
+        }
 
         // Generate a new class containing the helper methods and
-        // inner "Frozen" class representation
-        val newClassDef = q"""
-          $mods class $tpname[..$tparams] $ctorMods(...$paramss) extends {
-            ..$earlydefns
-          } with ..$parents { $self =>
-            ..$body
-            ..$newContent
+        // object containing "Frozen" class representation
+        val newObjDef = q"""
+          object $oName {
+            $frozenClass
+            $freezeMethod
           }
         """
 
-        (EmptyTree, newClassDef +: rest)
-      /*case (d: ClassDef) :: rest =>
-        println(q"""
-          @Freezable private def potato: Int = 3
-        """)
-        (EmptyTree, d +: rest)*/
+        println("NEW OBJ:: " + newObjDef)
+
+        (EmptyTree, List(classDef, newObjDef))
       case (d: DefDef) :: rest =>
         if (d.tparams.nonEmpty) c.abort(
           c.enclosingPosition,
@@ -123,21 +187,12 @@ object FreezableMacro {
         )
 
         (EmptyTree, d +: rest)
-      case (d: ValDef) :: rest => d.tpt match {
-        // TODO: What types can we support here?
-        case _: Constant => (EmptyTree, d +: rest)
-        case _ => c.abort(
-          c.enclosingPosition,
-          "Freezable can only be placed on vals of constants!"
-        )
-      }
       case _ =>
         c.abort(
           c.enclosingPosition,
-          "Freezable can only be placed on traits/classes, vals, and methods!"
+          "Freezable can only be placed on traits and methods!"
         )
     }
-    //println((annottee, expandees))
     val outputs = expandees
     c.Expr[Any](Block(outputs, Literal(Constant(()))))
   }

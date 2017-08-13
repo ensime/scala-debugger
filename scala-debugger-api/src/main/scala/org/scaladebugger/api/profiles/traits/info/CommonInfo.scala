@@ -2,24 +2,25 @@ package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Mirror
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.macros.freeze.{Freezable, Unfreezable}
 
 /**
  * Represents common methods between information-gathering profiles.
  */
-trait CommonInfo extends JavaInfo {
+@Freezable trait CommonInfo extends JavaInfo {
   /**
    * Returns the Scala virtual machine containing this instance.
    *
    * @return The Scala virtual machine instance
    */
-  def scalaVirtualMachine: ScalaVirtualMachine
+  @Unfreezable def scalaVirtualMachine: ScalaVirtualMachine
 
   /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance
    */
-  def toJdiInstance: Mirror
+  @Unfreezable def toJdiInstance: Mirror
 
   /**
    * Returns a string presenting a better human-readable description of
@@ -27,7 +28,7 @@ trait CommonInfo extends JavaInfo {
    *
    * @return The human-readable description
    */
-  def toPrettyString: String
+  @Freezable def toPrettyString: String
 
   /**
    * Converts the current profile instance to a representation of
@@ -36,5 +37,5 @@ trait CommonInfo extends JavaInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  override def toJavaInfo: CommonInfo
+  @Freezable override def toJavaInfo: CommonInfo
 }
