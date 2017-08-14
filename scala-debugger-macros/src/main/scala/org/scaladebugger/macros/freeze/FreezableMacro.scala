@@ -2,10 +2,12 @@ package org.scaladebugger.macros.freeze
 
 import scala.annotation.tailrec
 import scala.language.experimental.macros
-import scala.reflect.macros.whitebox.Context
+import macrocompat.bundle
+import scala.reflect.macros.whitebox
 
-object FreezableMacro {
-  def impl(c: Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
+@bundle
+class FreezableMacro(val c: whitebox.Context) {
+  def impl(annottees: c.Expr[Any]*): c.Expr[Any] = {
     import c.universe._
 
     def findClassPackage(classDef: ClassDef): TermName = {
@@ -113,7 +115,7 @@ object FreezableMacro {
 
             // Add override if not already there
             val oldMods: Modifiers = mods
-            val newMods = Modifiers(
+            val newMods = c.universe.Modifiers(
               flags = Flag.OVERRIDE | oldMods.flags,
               privateWithin = oldMods.privateWithin,
               annotations = oldMods.annotations.filterNot(a => {
@@ -128,7 +130,7 @@ object FreezableMacro {
 
             // Add override if not already there
             val oldMods: Modifiers = mods
-            val newMods = Modifiers(
+            val newMods = c.universe.Modifiers(
               flags = Flag.OVERRIDE | oldMods.flags,
               privateWithin = oldMods.privateWithin,
               annotations = oldMods.annotations.filterNot(a => {

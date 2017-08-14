@@ -14,9 +14,11 @@ object Macros {
 
   /** Macro-specific project settings. */
   val settings = pluginSettings ++ Seq(
-    libraryDependencies += {
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "macro-compat" % "1.1.1",
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
       scalaVersion("org.scala-lang" % "scala-reflect" % _).value
-    },
+    ),
 
     libraryDependencies ++= (
       if (scalaVersion.value.startsWith("2.10")) Seq(
