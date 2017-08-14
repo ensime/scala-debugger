@@ -77,7 +77,7 @@ object FreezableMacro {
       }
     }
 
-    def processTrait(classDef: ClassDef): (ClassDef, ModuleDef) = {
+    def processTrait(classDef: ClassDef): List[Tree] = {
       val q"""
         $mods trait $tpname[..$tparams] extends {
           ..$earlydefns
@@ -100,7 +100,7 @@ object FreezableMacro {
     def processTraitAndObj(
       classDef: ClassDef,
       moduleDef: ModuleDef
-    ): (ClassDef, ModuleDef) = {
+    ): List[Tree] = {
       val q"""
         $mods trait $tpname[..$tparams] extends {
           ..$earlydefns
@@ -195,30 +195,44 @@ object FreezableMacro {
           }
         """ = moduleDef
 
+        val implicitMethodName = newTypeName(s"${tpname}FrozenWrapper")
+        val implicitFreezeMethod = q"""
+          implicit class $implicitMethodName(private val $freezeObjName: $tpname) {
+            def freeze(): Frozen = $tname.freeze($freezeObjName)
+          }
+        """
+
+        val oldBody: List[Tree] = body
+        val newBody = oldBody ++ List(
+          frozenClass,
+          freezeMethod,
+          q"object Implicits { $implicitFreezeMethod }"
+        )
+
         q"""
           $mods object $tname extends {
             ..$earlydefns
           } with ..$parents { $self =>
-            ..$body
-            $frozenClass
-            $freezeMethod
+            ..$newBody
           }
         """
       }
 
-      (classDef, newModuleDef)
+      List(classDef, newModuleDef)
     }
 
 
     val (annottee, expandees) = annottees.map(_.tree) match {
       case (classDef: ClassDef) :: (moduleDef: ModuleDef) :: Nil if isTrait(classDef) =>
-        //println("INPUT CLASS AND MODULE :: " + classDef + " :: " + moduleDef)
-        val (newClassDef, newObjDef) = processTraitAndObj(classDef, moduleDef)
-        (EmptyTree, List(classDef, newObjDef))
+        println("INPUT CLASS AND MODULE :: " + classDef + " :: " + moduleDef)
+        val results = processTraitAndObj(classDef, moduleDef)
+        println("RESULTS :: " + results)
+        (EmptyTree, results)
       case (classDef: ClassDef) :: Nil if isTrait(classDef) =>
-        //println("INPUT CLASS ONLY :: " + classDef)
-        val (newClassDef, newObjDef) = processTrait(classDef)
-        (EmptyTree, List(classDef, newObjDef))
+        println("INPUT CLASS ONLY :: " + classDef)
+        val results = processTrait(classDef)
+        println("RESULTS :: " + results)
+        (EmptyTree, results)
       case _ =>
         c.abort(
           c.enclosingPosition,
@@ -229,7 +243,6 @@ object FreezableMacro {
     val outputs = expandees
     val block = Block(outputs, Literal(Constant(())))
 
-    //println(block)
     c.Expr[Any](block)
   }
 }
