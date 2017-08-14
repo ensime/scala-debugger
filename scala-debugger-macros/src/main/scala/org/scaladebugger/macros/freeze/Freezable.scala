@@ -8,14 +8,15 @@ import scala.reflect.internal.annotations.compileTimeOnly
 /**
  * <summary>Represents a freezable bit of information.</summary>
  *
- * <p>If placed on a trait, injects a `freeze()` method along with a `Frozen`
+ * <p>Injects a `freeze()` method along with a `Frozen`
  * class implementing the trait.</p>
  *
- * <p>Any internal method marked with this annotation will have its live value
+ * <p>Any internal method marked with
+ * [[org.scaladebugger.macros.freeze.CanFreeze]] will have its live value
  * from an implementation stored at freeze time.</p>
  *
  * <p>Any internal method marked with the
- * [[org.scaladebugger.macros.freeze.Unfreezable]] annotation will
+ * [[org.scaladebugger.macros.freeze.CannotFreeze]] annotation will
  * be marked to always throw an exception when accessed.</p>
  *
  * <p>Any internal method not marked with either annotation will keep its
@@ -99,7 +100,7 @@ object FreezableMacro {
           val cArgs = collection.mutable.ArrayBuffer[Tree]()
           val bodyTrees: List[Tree] = body
           val internals = bodyTrees.collect {
-            case d: DefDef if containsAnnotation(d, "Freezable") =>
+            case d: DefDef if containsAnnotation(d, "CanFreeze") =>
               val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
 
               val paramTrees: List[List[ValDef]] = paramss
@@ -122,13 +123,13 @@ object FreezableMacro {
                 flags = Flag.OVERRIDE | oldMods.flags,
                 privateWithin = oldMods.privateWithin,
                 annotations = oldMods.annotations.filterNot(a => {
-                  isAnnotation(a, "Freezable") ||
-                  isAnnotation(a, "Unfreezable")
+                  isAnnotation(a, "CanFreeze") ||
+                  isAnnotation(a, "CannotFreeze")
                 })
               )
 
               q"$newMods def $tname[..$tparams](...$paramss): $tpt = this.$name.get"
-            case d: DefDef if containsAnnotation(d, "Unfreezable") =>
+            case d: DefDef if containsAnnotation(d, "CannotFreeze") =>
               val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
 
               // Add override if not already there
@@ -137,8 +138,8 @@ object FreezableMacro {
                 flags = Flag.OVERRIDE | oldMods.flags,
                 privateWithin = oldMods.privateWithin,
                 annotations = oldMods.annotations.filterNot(a => {
-                  isAnnotation(a, "Freezable") ||
-                  isAnnotation(a, "Unfreezable")
+                  isAnnotation(a, "CanFreeze") ||
+                  isAnnotation(a, "CannotFreeze")
                 })
               )
 
@@ -177,16 +178,9 @@ object FreezableMacro {
           }
         """
 
-        println("NEW OBJ:: " + newObjDef)
+        //println("NEW OBJ:: " + newObjDef)
 
         (EmptyTree, List(classDef, newObjDef))
-      case (d: DefDef) :: rest =>
-        if (d.tparams.nonEmpty) c.abort(
-          c.enclosingPosition,
-          "Freezable cannot be placed on a method with arguments!"
-        )
-
-        (EmptyTree, d +: rest)
       case _ =>
         c.abort(
           c.enclosingPosition,
@@ -194,6 +188,7 @@ object FreezableMacro {
         )
     }
     val outputs = expandees
+    println(outputs)
     c.Expr[Any](Block(outputs, Literal(Constant(()))))
   }
 }

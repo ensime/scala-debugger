@@ -1,6 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
-import org.scaladebugger.macros.freeze.Freezable
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 /**
  * Represents a profile that provides common methods to convert info profiles
@@ -15,7 +15,7 @@ import org.scaladebugger.macros.freeze.Freezable
    *         otherwise this profile represents something higher-level like
    *         Scala, Jython, or JRuby
    */
-  @Freezable def isJavaInfo: Boolean
+  @CanFreeze def isJavaInfo: Boolean
 
   /**
    * Converts the current profile instance to a representation of
@@ -24,5 +24,5 @@ import org.scaladebugger.macros.freeze.Freezable
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  @Freezable def toJavaInfo: AnyRef
+  @CannotFreeze def toJavaInfo: AnyRef
 }

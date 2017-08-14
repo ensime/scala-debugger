@@ -1,14 +1,13 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Value
-import org.scaladebugger.macros.freeze.{Freezable, Unfreezable}
 
 import scala.util.Try
 
 /**
  * Represents information about a value.
  */
-@Freezable trait ValueInfo extends CommonInfo {
+trait ValueInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of
    * low-level Java instead of a higher-level abstraction.
@@ -16,21 +15,21 @@ import scala.util.Try
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  @Freezable override def toJavaInfo: ValueInfo
+  override def toJavaInfo: ValueInfo
 
   /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance
    */
-  @Unfreezable override def toJdiInstance: Value
+  override def toJdiInstance: Value
 
   /**
    * Returns the type information for the value.
    *
    * @return The profile containing type information
    */
-  @Freezable def `type`: TypeInfo
+  def `type`: TypeInfo
 
   /**
    * Returns the type information for the value.
@@ -53,77 +52,77 @@ import scala.util.Try
    *
    * @return The value as a local instance
    */
-  @Freezable def toLocalValue: Any
+  def toLocalValue: Any
 
   /**
    * Returns whether or not this value represents a primitive.
    *
    * @return True if a primitive, otherwise false
    */
-  @Freezable def isPrimitive: Boolean
+  def isPrimitive: Boolean
 
   /**
    * Returns whether or not this value represents an array.
    *
    * @return True if an array, otherwise false
    */
-  @Freezable def isArray: Boolean
+  def isArray: Boolean
 
   /**
    * Returns whether or not this value represents a class loader.
    *
    * @return True if a class loader, otherwise false
    */
-  @Freezable def isClassLoader: Boolean
+  def isClassLoader: Boolean
 
   /**
    * Returns whether or not this value represents a class object.
    *
    * @return True if a class object, otherwise false
    */
-  @Freezable def isClassObject: Boolean
+  def isClassObject: Boolean
 
   /**
    * Returns whether or not this value represents a thread group.
    *
    * @return True if a thread group, otherwise false
    */
-  @Freezable def isThreadGroup: Boolean
+  def isThreadGroup: Boolean
 
   /**
    * Returns whether or not this value represents a thread.
    *
    * @return True if a thread, otherwise false
    */
-  @Freezable def isThread: Boolean
+  def isThread: Boolean
 
   /**
    * Returns whether or not this value represents an object.
    *
    * @return True if an object, otherwise false
    */
-  @Freezable def isObject: Boolean
+  def isObject: Boolean
 
   /**
    * Returns whether or not this value represents a string.
    *
    * @return True if a string, otherwise false
    */
-  @Freezable def isString: Boolean
+  def isString: Boolean
 
   /**
    * Returns whether or not this value is null.
    *
    * @return True if null, otherwise false
    */
-  @Freezable def isNull: Boolean
+  def isNull: Boolean
 
   /**
    * Returns whether or not this value is void.
    *
    * @return True if void, otherwise false
    */
-  @Freezable def isVoid: Boolean
+  def isVoid: Boolean
 
   /**
    * Returns the value as a primitive (profile).
@@ -139,7 +138,7 @@ import scala.util.Try
    * @return The primitive profile wrapping this value
    */
   @throws[AssertionError]
-  @Freezable def toPrimitiveInfo: PrimitiveInfo
+  def toPrimitiveInfo: PrimitiveInfo
 
   /**
    * Returns the value as a class loader (profile).
@@ -155,7 +154,7 @@ import scala.util.Try
    * @return The class loader profile wrapping this value
    */
   @throws[AssertionError]
-  @Freezable def toClassLoaderInfo: ClassLoaderInfo
+  def toClassLoaderInfo: ClassLoaderInfo
 
   /**
    * Returns the value as a class object (profile).
@@ -171,7 +170,7 @@ import scala.util.Try
    * @return The class object profile wrapping this value
    */
   @throws[AssertionError]
-  @Freezable def toClassObjectInfo: ClassObjectInfo
+  def toClassObjectInfo: ClassObjectInfo
 
   /**
    * Returns the value as a thread group (profile).
@@ -187,7 +186,7 @@ import scala.util.Try
    * @return The thread group profile wrapping this value
    */
   @throws[AssertionError]
-  @Freezable def toThreadGroupInfo: ThreadGroupInfo
+  def toThreadGroupInfo: ThreadGroupInfo
 
   /**
    * Returns the value as a thread (profile).
@@ -203,7 +202,7 @@ import scala.util.Try
    * @return The thread profile wrapping this value
    */
   @throws[AssertionError]
-  @Freezable def toThreadInfo: ThreadInfo
+  def toThreadInfo: ThreadInfo
 
   /**
    * Returns the value as an object (profile).
@@ -219,7 +218,7 @@ import scala.util.Try
    * @return The object profile wrapping this value
    */
   @throws[AssertionError]
-  @Freezable def toObjectInfo: ObjectInfo
+  def toObjectInfo: ObjectInfo
 
   /**
    * Returns the value as a string (profile).
@@ -235,7 +234,7 @@ import scala.util.Try
    * @return The string profile wrapping this value
    */
   @throws[AssertionError]
-  @Freezable def toStringInfo: StringInfo
+  def toStringInfo: StringInfo
 
   /**
    * Returns the value as an array (profile).
@@ -251,7 +250,7 @@ import scala.util.Try
    * @return The array profile wrapping this value
    */
   @throws[AssertionError]
-  @Freezable def toArrayInfo: ArrayInfo
+  def toArrayInfo: ArrayInfo
 
   /**
    * Returns a string presenting a better human-readable description of

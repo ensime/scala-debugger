@@ -7,4 +7,4 @@ import scala.annotation.StaticAnnotation
  * component as unable to be frozen, which means it will be swapped with an
  * exception when frozen.
  */
-class Unfreezable extends StaticAnnotation
+class CannotFreeze extends StaticAnnotation
