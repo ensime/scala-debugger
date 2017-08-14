@@ -21,7 +21,7 @@ object Common {
     homepage := Some(url("https://scala-debugger.org")),
 
     // Default version when not cross-compiling
-    scalaVersion := "2.10.6",
+    scalaVersion := "2.11.8",
 
     crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
 
