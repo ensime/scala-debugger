@@ -222,7 +222,7 @@ object FreezableMacro {
       case _ =>
         c.abort(
           c.enclosingPosition,
-          "Freezable can only be placed on traits and methods!"
+          "Freezable can only be placed on traits!"
         )
     }
 
