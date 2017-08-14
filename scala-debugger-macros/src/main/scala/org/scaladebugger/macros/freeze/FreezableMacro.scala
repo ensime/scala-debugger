@@ -205,13 +205,15 @@ import macrocompat.bundle
           q"object Implicits { $implicitFreezeMethod }"
         )
 
-        q"""
+        val newObjDef = q"""
           $mods object $tname extends {
             ..$earlydefns
           } with ..$parents { $self =>
             ..$newBody
           }
         """
+
+        newObjDef match { case m: ModuleDef => m }
       }
 
       List(classDef, newModuleDef)
