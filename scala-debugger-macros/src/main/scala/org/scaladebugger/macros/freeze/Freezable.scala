@@ -1,8 +1,7 @@
 package org.scaladebugger.macros.freeze
 
 import scala.language.experimental.macros
-import scala.annotation.StaticAnnotation
-import scala.reflect.internal.annotations.compileTimeOnly
+import scala.annotation.{StaticAnnotation, compileTimeOnly}
 
 /**
  * <summary>Represents a freezable bit of information.</summary>

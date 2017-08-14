@@ -1,12 +1,13 @@
 package org.scaladebugger.macros.freeze
 
-import scala.annotation.tailrec
 import scala.language.experimental.macros
-import macrocompat.bundle
+import scala.annotation.tailrec
 import scala.reflect.macros.whitebox
+import macrocompat.bundle
 
-@bundle
-class FreezableMacro(val c: whitebox.Context) {
+@bundle class FreezableMacro(val c: whitebox.Context) {
+  // NOTE: Stuck with c.Expr[Any] instead of c.Tree for now;
+  //       blows up in Scala 2.10 even with @bundle otherwise
   def impl(annottees: c.Expr[Any]*): c.Expr[Any] = {
     import c.universe._
 
@@ -120,7 +121,7 @@ class FreezableMacro(val c: whitebox.Context) {
               privateWithin = oldMods.privateWithin,
               annotations = oldMods.annotations.filterNot(a => {
                 isAnnotation(a, "CanFreeze") ||
-                isAnnotation(a, "CannotFreeze")
+                  isAnnotation(a, "CannotFreeze")
               })
             )
 
@@ -135,7 +136,7 @@ class FreezableMacro(val c: whitebox.Context) {
               privateWithin = oldMods.privateWithin,
               annotations = oldMods.annotations.filterNot(a => {
                 isAnnotation(a, "CanFreeze") ||
-                isAnnotation(a, "CannotFreeze")
+                  isAnnotation(a, "CannotFreeze")
               })
             )
 
@@ -200,7 +201,6 @@ class FreezableMacro(val c: whitebox.Context) {
       List(classDef, newModuleDef)
     }
 
-
     val (annottee, expandees) = annottees.map(_.tree) match {
       case (classDef: ClassDef) :: (moduleDef: ModuleDef) :: Nil if isTrait(classDef) =>
         println("INPUT CLASS AND MODULE :: " + classDef + " :: " + moduleDef)
@@ -220,8 +220,9 @@ class FreezableMacro(val c: whitebox.Context) {
     }
 
     val outputs = expandees
-    val block = Block(outputs, Literal(Constant(())))
-
-    c.Expr[Any](block)
+    c.Expr[Any](
+      Block(outputs, Literal(Constant(())))
+    )
   }
 }
+
