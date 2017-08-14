@@ -180,6 +180,41 @@ import macrocompat.bundle
         (klass, method)
       }
 
+      // TODO: Remove this hack that is injecting ??? into all
+      //       non-implemented methods
+      val newClassDef: ClassDef = {
+        val bodyTrees: List[Tree] = body match {
+          case l: List[Tree] => l
+        }
+        val newBody = bodyTrees.map {
+          /*case vDef: ValDef if vDef.rhs.isEmpty => ValDef(
+            mods = vDef.mods,
+            name = vDef.name,
+            tpt = vDef.tpt,
+            rhs = q"throw new NotImplementedError"
+          )
+          case dDef: DefDef if dDef.rhs.isEmpty => DefDef(
+            mods = dDef.mods,
+            name = dDef.name,
+            tparams = dDef.tparams,
+            vparamss = dDef.vparamss,
+            tpt = dDef.tpt,
+            rhs = q"throw new NotImplementedError"
+          )*/
+          case t => t
+        }
+
+        val tree = q"""
+          $mods trait $tpname[..$tparams] extends {
+            ..$earlydefns
+          } with ..$parents { $self =>
+            ..$newBody
+          }
+        """
+
+        tree match { case c: ClassDef => c }
+      }
+
       val newModuleDef: ModuleDef = {
         val q"""
           $mods object $tname extends {
@@ -216,7 +251,7 @@ import macrocompat.bundle
         newObjDef match { case m: ModuleDef => m }
       }
 
-      List(classDef, newModuleDef)
+      List(newClassDef, newModuleDef)
     }
 
     val (annottee, expandees) = annottees.map(_.tree) match {
