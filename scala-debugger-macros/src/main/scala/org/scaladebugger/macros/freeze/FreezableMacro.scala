@@ -67,12 +67,16 @@ import macrocompat.bundle
       """ = classDef
 
       // Represents name of companion object
-      val traitTypeName: TypeName = tpname
+      val traitTypeName: TypeName = tpname match {
+        case t: TypeName => t
+      }
       val oName = TermName(traitTypeName.toString)
 
       // Generate a new class containing the helper methods and
       // object containing "Frozen" class representation
-      val moduleDef: ModuleDef = q"object $oName {}"
+      val moduleDef: ModuleDef = q"object $oName {}" match {
+        case m: ModuleDef => m
+      }
 
       processTraitAndObj(classDef, moduleDef)
     }
@@ -95,12 +99,16 @@ import macrocompat.bundle
       val (frozenClass, freezeMethod) = {
         val cParams = collection.mutable.ArrayBuffer[Tree]()
         val cArgs = collection.mutable.ArrayBuffer[Tree]()
-        val bodyTrees: List[Tree] = body
+        val bodyTrees: List[Tree] = body match {
+          case l: List[Tree] => l
+        }
         val internals = bodyTrees.collect {
           case d: DefDef if containsAnnotation(d, "CanFreeze") =>
             val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
 
-            val paramTrees: List[List[ValDef]] = paramss
+            val paramTrees: List[List[ValDef]] = paramss match {
+              case l: List[List[ValDef]] => l
+            }
             if (paramTrees.nonEmpty) c.abort(
               c.enclosingPosition,
               s"Unable to freeze $tname! Must have zero arguments!"
@@ -115,7 +123,9 @@ import macrocompat.bundle
             """)
 
             // Add override if not already there
-            val oldMods: Modifiers = mods
+            val oldMods: Modifiers = mods match {
+              case m: Modifiers => m
+            }
             val newMods = c.universe.Modifiers(
               flags = Flag.OVERRIDE | oldMods.flags,
               privateWithin = oldMods.privateWithin,
@@ -130,7 +140,9 @@ import macrocompat.bundle
             val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
 
             // Add override if not already there
-            val oldMods: Modifiers = mods
+            val oldMods: Modifiers = mods match {
+              case m: Modifiers => m
+            }
             val newMods = c.universe.Modifiers(
               flags = Flag.OVERRIDE | oldMods.flags,
               privateWithin = oldMods.privateWithin,
@@ -146,7 +158,9 @@ import macrocompat.bundle
             """
           case d: DefDef =>
             val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
-            val exprTree: Tree = expr
+            val exprTree: Tree = expr match {
+              case t: Tree => t
+            }
             if (exprTree.isEmpty) c.abort(
               c.enclosingPosition,
               s"$tname has no implementation and is not marked as freezable or unfreezable!"
@@ -182,7 +196,9 @@ import macrocompat.bundle
           }
         """
 
-        val oldBody: List[Tree] = body
+        val oldBody: List[Tree] = body match {
+          case l: List[Tree] => l
+        }
         val newBody = oldBody ++ List(
           frozenClass,
           freezeMethod,
