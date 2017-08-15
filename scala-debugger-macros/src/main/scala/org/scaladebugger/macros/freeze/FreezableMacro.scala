@@ -185,7 +185,7 @@ import macrocompat.bundle
     // Represents name of variable passed to freeze method
     val freezeObjName = TermName("valueToFreeze")
 
-    val (frozenClass, freezeMethod) = {
+    val freezeTrees = {
       val cParams = collection.mutable.ArrayBuffer[Tree]()
       val cArgs = collection.mutable.ArrayBuffer[Tree]()
       val bodyTrees: List[Tree] = body match {
@@ -286,9 +286,9 @@ import macrocompat.bundle
           )
 
           q"""
-              $newMods def $tname[..$tparams](...$paramss): $tpt =
-                throw new IllegalStateException("Method not frozen!")
-            """
+            $newMods def $tname[..$tparams](...$paramss): $tpt =
+              throw new IllegalStateException("Method not frozen!")
+          """
         case d: DefDef =>
           val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
           val exprTree: Tree = expr match {
@@ -302,15 +302,15 @@ import macrocompat.bundle
       }.filterNot(_ == null)
 
       val klass = q"""
-        class Frozen(..$cParams) extends $tpname with java.io.Serializable { $self =>
+        final class Frozen(..$cParams) extends $tpname with java.io.Serializable { $self =>
           ..$internals
         }
       """
       val method = q"""
-        def freeze($freezeObjName: $tpname): Frozen = new Frozen(..$cArgs)
+        def freeze($freezeObjName: $tpname): $tpname = new Frozen(..$cArgs)
       """
 
-      (klass, method)
+      List(klass, method)
     }
 
     // TODO: Inject freeze method directly into trait rather than
@@ -352,10 +352,7 @@ import macrocompat.bundle
       val oldBody: List[Tree] = body match {
         case l: List[Tree] => l
       }
-      val newBody = oldBody ++ List(
-        frozenClass,
-        freezeMethod
-      )
+      val newBody = oldBody ++ freezeTrees
 
       val newObjDef = q"""
           $mods object $tname extends {
