@@ -1,13 +1,14 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Value
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents information about a value.
  */
-trait ValueInfo extends CommonInfo {
+@Freezable trait ValueInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of
    * low-level Java instead of a higher-level abstraction.
@@ -15,21 +16,21 @@ trait ValueInfo extends CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  override def toJavaInfo: ValueInfo
+  @CannotFreeze override def toJavaInfo: ValueInfo
 
   /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance
    */
-  override def toJdiInstance: Value
+  @CannotFreeze override def toJdiInstance: Value
 
   /**
    * Returns the type information for the value.
    *
    * @return The profile containing type information
    */
-  def `type`: TypeInfo
+  @CanFreeze def `type`: TypeInfo
 
   /**
    * Returns the type information for the value.
@@ -52,77 +53,77 @@ trait ValueInfo extends CommonInfo {
    *
    * @return The value as a local instance
    */
-  def toLocalValue: Any
+  @CannotFreeze def toLocalValue: Any
 
   /**
    * Returns whether or not this value represents a primitive.
    *
    * @return True if a primitive, otherwise false
    */
-  def isPrimitive: Boolean
+  @CanFreeze def isPrimitive: Boolean
 
   /**
    * Returns whether or not this value represents an array.
    *
    * @return True if an array, otherwise false
    */
-  def isArray: Boolean
+  @CanFreeze def isArray: Boolean
 
   /**
    * Returns whether or not this value represents a class loader.
    *
    * @return True if a class loader, otherwise false
    */
-  def isClassLoader: Boolean
+  @CanFreeze def isClassLoader: Boolean
 
   /**
    * Returns whether or not this value represents a class object.
    *
    * @return True if a class object, otherwise false
    */
-  def isClassObject: Boolean
+  @CanFreeze def isClassObject: Boolean
 
   /**
    * Returns whether or not this value represents a thread group.
    *
    * @return True if a thread group, otherwise false
    */
-  def isThreadGroup: Boolean
+  @CanFreeze def isThreadGroup: Boolean
 
   /**
    * Returns whether or not this value represents a thread.
    *
    * @return True if a thread, otherwise false
    */
-  def isThread: Boolean
+  @CanFreeze def isThread: Boolean
 
   /**
    * Returns whether or not this value represents an object.
    *
    * @return True if an object, otherwise false
    */
-  def isObject: Boolean
+  @CanFreeze def isObject: Boolean
 
   /**
    * Returns whether or not this value represents a string.
    *
    * @return True if a string, otherwise false
    */
-  def isString: Boolean
+  @CanFreeze def isString: Boolean
 
   /**
    * Returns whether or not this value is null.
    *
    * @return True if null, otherwise false
    */
-  def isNull: Boolean
+  @CanFreeze def isNull: Boolean
 
   /**
    * Returns whether or not this value is void.
    *
    * @return True if void, otherwise false
    */
-  def isVoid: Boolean
+  @CanFreeze def isVoid: Boolean
 
   /**
    * Returns the value as a primitive (profile).
@@ -138,7 +139,7 @@ trait ValueInfo extends CommonInfo {
    * @return The primitive profile wrapping this value
    */
   @throws[AssertionError]
-  def toPrimitiveInfo: PrimitiveInfo
+  @CanFreeze def toPrimitiveInfo: PrimitiveInfo
 
   /**
    * Returns the value as a class loader (profile).
@@ -154,7 +155,7 @@ trait ValueInfo extends CommonInfo {
    * @return The class loader profile wrapping this value
    */
   @throws[AssertionError]
-  def toClassLoaderInfo: ClassLoaderInfo
+  @CanFreeze def toClassLoaderInfo: ClassLoaderInfo
 
   /**
    * Returns the value as a class object (profile).
@@ -170,7 +171,7 @@ trait ValueInfo extends CommonInfo {
    * @return The class object profile wrapping this value
    */
   @throws[AssertionError]
-  def toClassObjectInfo: ClassObjectInfo
+  @CanFreeze def toClassObjectInfo: ClassObjectInfo
 
   /**
    * Returns the value as a thread group (profile).
@@ -186,7 +187,7 @@ trait ValueInfo extends CommonInfo {
    * @return The thread group profile wrapping this value
    */
   @throws[AssertionError]
-  def toThreadGroupInfo: ThreadGroupInfo
+  @CanFreeze def toThreadGroupInfo: ThreadGroupInfo
 
   /**
    * Returns the value as a thread (profile).
@@ -202,7 +203,7 @@ trait ValueInfo extends CommonInfo {
    * @return The thread profile wrapping this value
    */
   @throws[AssertionError]
-  def toThreadInfo: ThreadInfo
+  @CanFreeze def toThreadInfo: ThreadInfo
 
   /**
    * Returns the value as an object (profile).
@@ -218,7 +219,7 @@ trait ValueInfo extends CommonInfo {
    * @return The object profile wrapping this value
    */
   @throws[AssertionError]
-  def toObjectInfo: ObjectInfo
+  @CanFreeze def toObjectInfo: ObjectInfo
 
   /**
    * Returns the value as a string (profile).
@@ -234,7 +235,7 @@ trait ValueInfo extends CommonInfo {
    * @return The string profile wrapping this value
    */
   @throws[AssertionError]
-  def toStringInfo: StringInfo
+  @CanFreeze def toStringInfo: StringInfo
 
   /**
    * Returns the value as an array (profile).
@@ -250,7 +251,7 @@ trait ValueInfo extends CommonInfo {
    * @return The array profile wrapping this value
    */
   @throws[AssertionError]
-  def toArrayInfo: ArrayInfo
+  @CanFreeze def toArrayInfo: ArrayInfo
 
   /**
    * Returns a string presenting a better human-readable description of
