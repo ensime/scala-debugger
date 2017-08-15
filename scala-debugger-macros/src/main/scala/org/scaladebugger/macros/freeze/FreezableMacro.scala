@@ -265,9 +265,7 @@ import macrocompat.bundle
             flags = Flag.OVERRIDE | oldMods.flags,
             privateWithin = oldMods.privateWithin,
             annotations = oldMods.annotations.filterNot(a => {
-              isAnnotation(a, "CanFreeze") ||
-                isAnnotation(a, "CannotFreeze") ||
-                isAnnotation(a, "FreezeMetadata")
+              isAnnotation(a, "CanFreeze") || isAnnotation(a, "CannotFreeze")
             })
           )
 
@@ -283,9 +281,7 @@ import macrocompat.bundle
             flags = Flag.OVERRIDE | oldMods.flags,
             privateWithin = oldMods.privateWithin,
             annotations = oldMods.annotations.filterNot(a => {
-              isAnnotation(a, "CanFreeze") ||
-                isAnnotation(a, "CannotFreeze") ||
-                isAnnotation(a, "FreezeMetadata")
+              isAnnotation(a, "CanFreeze") || isAnnotation(a, "CannotFreeze")
             })
           )
 
