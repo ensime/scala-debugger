@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Location
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -35,8 +35,7 @@ trait LocationInfo extends CommonInfo {
    *
    * @return The reference type information
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def declaringType: ReferenceTypeInfo
 
   /**
@@ -44,8 +43,7 @@ trait LocationInfo extends CommonInfo {
    *
    * @return The method information
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def method: MethodInfo
 
   /**

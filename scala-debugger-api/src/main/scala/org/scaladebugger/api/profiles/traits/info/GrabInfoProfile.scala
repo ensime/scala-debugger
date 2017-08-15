@@ -1,7 +1,8 @@
 package org.scaladebugger.api.profiles.traits.info
 
-import com.sun.jdi._
 import java.util.NoSuchElementException
+
+import com.sun.jdi._
 
 import scala.annotation.tailrec
 import scala.util.Try

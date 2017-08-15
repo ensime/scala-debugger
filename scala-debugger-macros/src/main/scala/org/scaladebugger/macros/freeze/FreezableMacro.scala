@@ -35,20 +35,6 @@ import macrocompat.bundle
     )
   }
 
-  private def findClassPackage(classDef: ClassDef): TermName = {
-    val dummyClass = c.typecheck(classDef.duplicate)
-    TermName(packageFromSymbol(dummyClass.symbol.owner))
-  }
-
-  private def packageFromSymbol(symbol: Symbol): String = {
-    @tailrec def buildPackage(symbol: Symbol, tokens: Seq[String]): String = {
-      if (symbol == NoSymbol) tokens.mkString(".")
-      else buildPackage(symbol.owner, symbol.name.decodedName.toString +: tokens)
-    }
-
-    buildPackage(symbol, Nil)
-  }
-
   private def containsAnnotation(d: DefDef, aName: String): Boolean =
     findAnnotation(d, aName).nonEmpty
 
@@ -195,9 +181,6 @@ import macrocompat.bundle
     val inheritedMethods = extractInheritedMethods(
       extractParentTypes(parents.asInstanceOf[List[Tree]]).flatten
     )
-    println("INHERTED METHODS FOR " + tpname.toString() + " :: " + inheritedMethods.map(m =>
-      m.name.toString + " from " + m.owner.name.toString
-    ).mkString(" | "))
 
     // Represents name of variable passed to freeze method
     val freezeObjName = TermName("valueToFreeze")
@@ -208,17 +191,11 @@ import macrocompat.bundle
       val bodyTrees: List[Tree] = body match {
         case l: List[Tree] => l
       }
-      val internalMethods = bodyTrees.collect {
-        case d: DefDef =>
-          /*println("Running type check on " + d.name.decodedName.toString +
-            " returning " + d.tpt.toString() +
-            " from " + classDef.name.decodedName.toString)
-          println("Method Type: " + c.typecheck(d.duplicate).tpe)*/
-          d
-      }
+      val internalMethods = bodyTrees.collect { case d: DefDef => d }
 
       // TODO: Also process inherited methods that are not covered
       //       by the tree methods
+      // TODO: CHIP CHIP CHIP CHIP CHIP CHIP CHIP CHIP CHIP CHIP CHIP
       val internals = internalMethods.map {
         case d: DefDef if containsAnnotation(d, "CanFreeze") =>
           val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
@@ -238,32 +215,46 @@ import macrocompat.bundle
 
           // TODO: Remove runtime checks by getting better understanding of
           //       return type, if it contains a freeze method, etc.
-          findAnnotation(d, "FreezeMetadata") match {
-            case Some(a) =>
-              import FreezeMetadata.{ReturnType => RT}
-              type RT = FreezeMetadata.ReturnType.ReturnType
-              a match {
-                case Literal(Constant(rt: RT)) if rt == RT.Normal =>
-                  cArgs.append(q"""
-                    scala.util.Try.apply($freezeObjName.$tname)
-                  """)
-                case Literal(Constant(rt: RT)) if rt == RT.FreezeObject =>
-                  cArgs.append(q"""
-                    scala.util.Try.apply($freezeObjName.$tname).map(_.freeze())
-                  """)
-                case Literal(Constant(rt: RT)) if rt == RT.FreezeCollection =>
-                  cArgs.append(q"""
-                    scala.util.Try.apply($freezeObjName.$tname).map(_map(_.freeze()))
-                  """)
-                case Literal(Constant(rt: RT)) if rt == RT.FreezeOption =>
-                  cArgs.append(q"""
-                    scala.util.Try.apply($freezeObjName.$tname).map(_map(_.freeze()))
-                  """)
-              }
-            case None =>
+          findAnnotation(d, "CanFreeze").get match {
+            case q"new CanFreeze()" =>
               cArgs.append(q"""
                 scala.util.Try.apply($freezeObjName.$tname)
+                  .asInstanceOf[scala.util.Try[$tpt]]
               """)
+            case q"new CanFreeze($returnType)" =>
+              // TODO: Find better way to match against the input
+              import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+              val r = ReturnType.withName(returnType.toString().split('.').last)
+
+              r match {
+                case ReturnType.Normal =>
+                  cArgs.append(q"""
+                    scala.util.Try.apply($freezeObjName.$tname)
+                      .asInstanceOf[scala.util.Try[$tpt]]
+                  """)
+                case ReturnType.FreezeObject =>
+                  cArgs.append(q"""
+                    scala.util.Try.apply($freezeObjName.$tname).map(_.freeze())
+                      .asInstanceOf[scala.util.Try[$tpt]]
+                  """)
+                case ReturnType.FreezeCollection =>
+                  cArgs.append(q"""
+                    scala.util.Try.apply($freezeObjName.$tname).map(_.map(_.freeze()))
+                      .asInstanceOf[scala.util.Try[$tpt]]
+                  """)
+                case ReturnType.FreezeOption =>
+                  cArgs.append(q"""
+                    scala.util.Try.apply($freezeObjName.$tname).map(_.map(_.freeze()))
+                      .asInstanceOf[scala.util.Try[$tpt]]
+                  """)
+                case ReturnType.FreezeEither =>
+                  cArgs.append(q"""
+                    scala.util.Try.apply($freezeObjName.$tname).map(r => r match {
+                      case scala.util.Left(o) => scala.util.Left(o.freeze())
+                      case scala.util.Right(o) => scala.util.Right(o.freeze())
+                    }).asInstanceOf[scala.util.Try[$tpt]]
+                  """)
+              }
           }
 
           // Add override if not already there
@@ -333,13 +324,22 @@ import macrocompat.bundle
         case l: List[Tree] => l
       }
 
+      // TODO: Find better way to know when to mark as overriden
+      val o = TermName(tpname.toString())
+      val freezeMethod =
+        if (inheritedMethods.exists(_.name.toString == "freeze"))
+          q"override def freeze(): $tpname = $o.freeze(this)"
+        else
+          q"def freeze(): $tpname = $o.freeze(this)"
+
       val tree = q"""
-          $mods trait $tpname[..$tparams] extends {
-            ..$earlydefns
-          } with ..$parents { $self =>
-            ..$bodyTrees
-          }
-        """
+        $mods trait $tpname[..$tparams] extends {
+          ..$earlydefns
+        } with ..$parents { $self =>
+          ..$bodyTrees
+          $freezeMethod
+        }
+      """
 
       tree match { case c: ClassDef => c }
     }
@@ -353,20 +353,12 @@ import macrocompat.bundle
         }
       """ = moduleDef
 
-      val implicitMethodName = TypeName(s"${tpname}FrozenWrapper")
-      val implicitFreezeMethod = q"""
-        implicit class $implicitMethodName(private val $freezeObjName: $tpname) {
-          def freeze(): Frozen = $tname.freeze($freezeObjName)
-        }
-      """
-
       val oldBody: List[Tree] = body match {
         case l: List[Tree] => l
       }
       val newBody = oldBody ++ List(
         frozenClass,
-        freezeMethod,
-        q"object Implicits { $implicitFreezeMethod }"
+        freezeMethod
       )
 
       val newObjDef = q"""

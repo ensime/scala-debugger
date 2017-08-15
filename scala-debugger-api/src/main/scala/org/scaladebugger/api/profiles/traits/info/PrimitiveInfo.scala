@@ -1,9 +1,9 @@
 package org.scaladebugger.api.profiles.traits.info
 
 
-import com.sun.jdi.{PrimitiveValue, Value}
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import com.sun.jdi.Value
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.{Failure, Success, Try}
 
@@ -35,8 +35,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   override def `type`: PrimitiveTypeInfo
 
   /**

@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.ThreadReference
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -42,8 +42,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *
    * @return The thread's status as a profile
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def status: ThreadStatusInfo
 
   /**
@@ -51,8 +50,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *
    * @return The profile of the thread group
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def threadGroup: ThreadGroupInfo
 
   /**
@@ -100,8 +98,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *
    * @return The collection of frame profiles
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def frames: Seq[FrameInfo]
 
   /**

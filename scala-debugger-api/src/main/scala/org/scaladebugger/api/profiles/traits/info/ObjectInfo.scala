@@ -2,8 +2,8 @@ package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.ObjectReference
 import org.scaladebugger.api.lowlevel.JDIArgument
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -35,8 +35,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   override def `type`: ReferenceTypeInfo
 
   /**
@@ -63,8 +62,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *       yield the reference type for String, not AnyRef.
    * @return The reference type information
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def referenceType: ReferenceTypeInfo
 
   /**
@@ -228,8 +226,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The profiles wrapping the visible fields in this object
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def fields: Seq[FieldVariableInfo]
 
   /**
@@ -245,8 +242,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The profiles wrapping the visible fields in this object
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def indexedFields: Seq[FieldVariableInfo]
 
   /**
@@ -321,8 +317,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The profiles wrapping the visible methods in this object
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def methods: Seq[MethodInfo]
 
   /**

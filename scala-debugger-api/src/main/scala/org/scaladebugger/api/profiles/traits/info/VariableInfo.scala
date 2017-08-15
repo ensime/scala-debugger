@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Mirror
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -66,8 +66,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def `type`: TypeInfo
 
   /**
@@ -115,8 +114,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return The profile representing the value
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toValueInfo: ValueInfo
 
   /**

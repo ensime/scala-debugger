@@ -7,20 +7,23 @@ import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 /**
  * Represents common methods between information-gathering profiles.
  */
-@Freezable trait CommonInfo extends JavaInfo {
+@Freezable
+trait CommonInfo extends JavaInfo {
   /**
    * Returns the Scala virtual machine containing this instance.
    *
    * @return The Scala virtual machine instance
    */
-  @CannotFreeze def scalaVirtualMachine: ScalaVirtualMachine
+  @CannotFreeze
+  def scalaVirtualMachine: ScalaVirtualMachine
 
   /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance
    */
-  @CannotFreeze def toJdiInstance: Mirror
+  @CannotFreeze
+  def toJdiInstance: Mirror
 
   /**
    * Returns a string presenting a better human-readable description of
@@ -28,7 +31,8 @@ import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
    *
    * @return The human-readable description
    */
-  @CanFreeze def toPrettyString: String
+  @CanFreeze
+  def toPrettyString: String
 
   /**
    * Converts the current profile instance to a representation of
@@ -37,5 +41,6 @@ import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  @CannotFreeze override def toJavaInfo: CommonInfo
+  @CannotFreeze
+  override def toJavaInfo: CommonInfo
 }

@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Value
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -34,8 +34,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return The profile containing type information
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def `type`: TypeInfo
 
   /**
@@ -156,8 +155,7 @@ trait ValueInfo extends CommonInfo {
    * @return The primitive profile wrapping this value
    */
   @throws[AssertionError]
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toPrimitiveInfo: PrimitiveInfo
 
   /**
@@ -174,8 +172,7 @@ trait ValueInfo extends CommonInfo {
    * @return The class loader profile wrapping this value
    */
   @throws[AssertionError]
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toClassLoaderInfo: ClassLoaderInfo
 
   /**
@@ -192,8 +189,7 @@ trait ValueInfo extends CommonInfo {
    * @return The class object profile wrapping this value
    */
   @throws[AssertionError]
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toClassObjectInfo: ClassObjectInfo
 
   /**
@@ -210,8 +206,7 @@ trait ValueInfo extends CommonInfo {
    * @return The thread group profile wrapping this value
    */
   @throws[AssertionError]
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toThreadGroupInfo: ThreadGroupInfo
 
   /**
@@ -228,8 +223,7 @@ trait ValueInfo extends CommonInfo {
    * @return The thread profile wrapping this value
    */
   @throws[AssertionError]
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toThreadInfo: ThreadInfo
 
   /**
@@ -246,8 +240,7 @@ trait ValueInfo extends CommonInfo {
    * @return The object profile wrapping this value
    */
   @throws[AssertionError]
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toObjectInfo: ObjectInfo
 
   /**
@@ -264,8 +257,7 @@ trait ValueInfo extends CommonInfo {
    * @return The string profile wrapping this value
    */
   @throws[AssertionError]
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toStringInfo: StringInfo
 
   /**
@@ -282,8 +274,7 @@ trait ValueInfo extends CommonInfo {
    * @return The array profile wrapping this value
    */
   @throws[AssertionError]
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toArrayInfo: ArrayInfo
 
   /**

@@ -1,11 +1,11 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.ArrayReference
+import org.scaladebugger.api.profiles.traits.info.ArrayInfo._
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
-import ArrayInfo._
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
 
 /**
  * Contains constants available to all array-focused information profiles.
@@ -48,8 +48,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   override def `type`: ArrayTypeInfo
 
   /**
@@ -133,8 +132,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    *
    * @return The retrieved values
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def values: Seq[ValueInfo]
 
   /**

@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.StackFrame
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -64,8 +64,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return Some profile of this object, or None if not available
    */
-  @FreezeMetadata(ReturnType.FreezeOption)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeOption)
   def thisObjectOption: Option[ObjectInfo]
 
   /**
@@ -80,8 +79,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The profile of the thread
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def currentThread: ThreadInfo
 
   /**
@@ -96,8 +94,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The profile of the location
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def location: LocationInfo
 
   /**
@@ -115,8 +112,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of argument values in order as provided to the frame
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def argumentValues: Seq[ValueInfo]
 
   /**
@@ -278,8 +274,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def allVariables: Seq[VariableInfo]
 
   /**
@@ -287,8 +282,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def argumentLocalVariables: Seq[IndexedVariableInfo]
 
   /**
@@ -296,8 +290,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def nonArgumentLocalVariables: Seq[IndexedVariableInfo]
 
   /**
@@ -305,8 +298,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def localVariables: Seq[IndexedVariableInfo]
 
   /**
@@ -314,8 +306,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def fieldVariables: Seq[FieldVariableInfo]
 
   /**
@@ -323,8 +314,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def indexedAllVariables: Seq[VariableInfo]
 
   /**
@@ -333,8 +323,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def indexedArgumentLocalVariables: Seq[IndexedVariableInfo]
 
   /**
@@ -343,8 +332,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def indexedNonArgumentLocalVariables: Seq[IndexedVariableInfo]
 
   /**
@@ -353,8 +341,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def indexedLocalVariables: Seq[IndexedVariableInfo]
 
   /**
@@ -363,8 +350,7 @@ trait FrameInfo extends CommonInfo {
    *
    * @return The collection of variables as their profile equivalents
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def indexedFieldVariables: Seq[FieldVariableInfo]
 
   /**

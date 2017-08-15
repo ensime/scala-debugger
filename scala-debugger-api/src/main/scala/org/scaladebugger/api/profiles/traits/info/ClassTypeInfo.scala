@@ -2,8 +2,8 @@ package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.ClassType
 import org.scaladebugger.api.lowlevel.JDIArgument
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -36,8 +36,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The collection of interface type info profiles
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def allInterfaces: Seq[InterfaceTypeInfo]
 
   /**
@@ -54,8 +53,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The collection of interface type info profiles
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def interfaces: Seq[InterfaceTypeInfo]
 
   /**
@@ -71,8 +69,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The collection of class type info profiles
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def subclasses: Seq[ClassTypeInfo]
 
   /**
@@ -80,8 +77,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return Some class type info if the super class exists, otherwise None
    */
-  @FreezeMetadata(ReturnType.FreezeOption)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeOption)
   def superclassOption: Option[ClassTypeInfo]
 
   /**

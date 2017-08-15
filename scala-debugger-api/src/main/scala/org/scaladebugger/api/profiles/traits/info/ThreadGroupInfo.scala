@@ -1,9 +1,9 @@
 package org.scaladebugger.api.profiles.traits.info
 
 
-import com.sun.jdi.{ThreadGroupReference, ThreadReference}
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import com.sun.jdi.ThreadGroupReference
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 /**
  * Represents the interface for thread-based interaction.
@@ -41,8 +41,7 @@ trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
    *
    * @return Some thread group if a parent exists, otherwise None if top-level
    */
-  @FreezeMetadata(ReturnType.FreezeOption)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeOption)
   def parent: Option[ThreadGroupInfo]
 
   /**
@@ -65,8 +64,7 @@ trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
    *
    * @return The collection of threads
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def threads: Seq[ThreadInfo]
 
   /**
@@ -75,8 +73,7 @@ trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
    *
    * @return The collection of thread groups
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def threadGroups: Seq[ThreadGroupInfo]
 
   /**

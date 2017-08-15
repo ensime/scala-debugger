@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Field
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -37,8 +37,7 @@ trait FieldVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
    * @return The reference type information (if a static field) or object
    *         information (if a non-static field)
    */
-  @FreezeMetadata(ReturnType.FreezeEither)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeEither)
   def parent: Either[ObjectInfo, ReferenceTypeInfo]
 
   /**
@@ -46,8 +45,7 @@ trait FieldVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
    *
    * @return The reference type information that declared this field
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def declaringType: ReferenceTypeInfo
 
   /**

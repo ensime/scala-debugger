@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Type
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -163,8 +163,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The array type profile wrapping this type
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toArrayType: ArrayTypeInfo
 
   /**
@@ -180,8 +179,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The class type profile wrapping this type
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toClassType: ClassTypeInfo
 
   /**
@@ -197,8 +195,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The interface type profile wrapping this type
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toInterfaceType: InterfaceTypeInfo
 
   /**
@@ -214,8 +211,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The reference type profile wrapping this type
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toReferenceType: ReferenceTypeInfo
 
   /**
@@ -231,8 +227,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The primitive type profile wrapping this type
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def toPrimitiveType: PrimitiveTypeInfo
 
   /**

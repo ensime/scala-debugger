@@ -1,7 +1,7 @@
 package org.scaladebugger.api.profiles.traits.info
 
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 
 /**
@@ -25,8 +25,7 @@ trait IndexedVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
    *
    * @return The profile of the frame
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def frame: FrameInfo
 
   /**

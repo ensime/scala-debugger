@@ -1,8 +1,8 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.ReferenceType
-import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -35,8 +35,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of fields as variable info profiles
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def allFields: Seq[FieldVariableInfo]
 
   /**
@@ -56,8 +55,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of fields as variable info profiles
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def visibleFields: Seq[FieldVariableInfo]
 
   /**
@@ -80,8 +78,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of fields as variable info profiles
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def indexedVisibleFields: Seq[FieldVariableInfo]
 
   /**
@@ -162,8 +159,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of methods as method info profiles
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def allMethods: Seq[MethodInfo]
 
   /**
@@ -183,8 +179,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of methods as method info profiles
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def visibleMethods: Seq[MethodInfo]
 
   /**
@@ -233,8 +228,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    * @return Some profile representing the classloader,
    *         otherwise None if loaded through the bootstrap classloader
    */
-  @FreezeMetadata(ReturnType.FreezeOption)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeOption)
   def classLoaderOption: Option[ClassLoaderInfo]
 
   /**
@@ -242,8 +236,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The profile representing the class
    */
-  @FreezeMetadata(ReturnType.FreezeObject)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeObject)
   def classObject: ClassObjectInfo
 
   /**
@@ -348,8 +341,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of location information
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def allLineLocations: Seq[LocationInfo]
 
   /**
@@ -429,8 +421,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of reference type information
    */
-  @FreezeMetadata(ReturnType.FreezeCollection)
-  @CanFreeze
+  @CanFreeze(ReturnType.FreezeCollection)
   def nestedTypes: Seq[ReferenceTypeInfo]
 
   /**
