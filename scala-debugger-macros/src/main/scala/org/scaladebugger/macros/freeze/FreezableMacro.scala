@@ -269,7 +269,11 @@ import macrocompat.bundle
             })
           )
 
-          q"$newMods def $tname[..$tparams](...$paramss): $tpt = this.$name.get"
+          q"""
+            $newMods def $tname[..$tparams](...$paramss): $tpt = {
+              this.$name.get
+            }
+          """
         case d: DefDef if containsAnnotation(d, "CannotFreeze") =>
           val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
 
@@ -286,8 +290,9 @@ import macrocompat.bundle
           )
 
           q"""
-            $newMods def $tname[..$tparams](...$paramss): $tpt =
+            $newMods def $tname[..$tparams](...$paramss): $tpt = {
               throw new IllegalStateException("Method not frozen!")
+            }
           """
         case d: DefDef =>
           val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
