@@ -1,11 +1,14 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import org.scaladebugger.macros.freeze.{CannotFreeze, Freezable}
+
 import scala.util.Try
 
 /**
  * Represents the interface that needs to be implemented to provide
  * ability to create data using a specific debug profile.
  */
+@Freezable
 trait CreateInfo {
   /**
    * Creates the provided value on the remote JVM.
@@ -13,6 +16,7 @@ trait CreateInfo {
    * @param value The value to create (mirror) on the remote JVM
    * @return The information about the remote value
    */
+  @CannotFreeze
   def createRemotely(value: AnyVal): ValueInfo
 
   /**
@@ -31,6 +35,7 @@ trait CreateInfo {
    * @param value The value to create (mirror) on the remote JVM
    * @return The information about the remote value
    */
+  @CannotFreeze
   def createRemotely(value: String): ValueInfo
 
   /**

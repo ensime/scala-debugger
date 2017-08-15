@@ -1,10 +1,13 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.ClassLoaderReference
+import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
 
 /**
  * Represents the interface for "class loader"-based interaction.
  */
+@Freezable
 trait ClassLoaderInfo extends ObjectInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -13,6 +16,7 @@ trait ClassLoaderInfo extends ObjectInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ClassLoaderInfo
 
   /**
@@ -20,6 +24,7 @@ trait ClassLoaderInfo extends ObjectInfo with CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: ClassLoaderReference
 
   /**
@@ -27,6 +32,8 @@ trait ClassLoaderInfo extends ObjectInfo with CommonInfo {
    *
    * @return The collection of reference types for the loaded classes
    */
+  @FreezeMetadata(ReturnType.FreezeCollection)
+  @CanFreeze
   def definedClasses: Seq[ReferenceTypeInfo]
 
   /**
@@ -35,5 +42,7 @@ trait ClassLoaderInfo extends ObjectInfo with CommonInfo {
    *
    * @return The collection of reference types for the initiated classes
    */
+  @FreezeMetadata(ReturnType.FreezeCollection)
+  @CanFreeze
   def visibleClasses: Seq[ReferenceTypeInfo]
 }

@@ -1,8 +1,11 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import org.scaladebugger.macros.freeze.{CannotFreeze, Freezable}
+
 /**
  * Represents the interface for retrieving primitive type-based information.
  */
+@Freezable
 trait PrimitiveTypeInfo extends TypeInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -11,6 +14,7 @@ trait PrimitiveTypeInfo extends TypeInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: PrimitiveTypeInfo
 
   /**

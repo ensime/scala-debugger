@@ -4,6 +4,8 @@ import com.sun.jdi.ArrayReference
 
 import scala.util.Try
 import ArrayInfo._
+import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
 
 /**
  * Contains constants available to all array-focused information profiles.
@@ -19,6 +21,7 @@ object ArrayInfo {
 /**
  * Represents the interface for array-based interaction.
  */
+@Freezable
 trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
   import scala.reflect.runtime.universe.{TypeTag, typeOf}
 
@@ -29,6 +32,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ArrayInfo
 
   /**
@@ -36,6 +40,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: ArrayReference
 
   /**
@@ -43,6 +48,8 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   override def `type`: ArrayTypeInfo
 
   /**
@@ -50,6 +57,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    *
    * @return The length of the array
    */
+  @CanFreeze
   def length: Int
 
   /**
@@ -66,6 +74,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    * @param index The location in the array to retrieve a value
    * @return The retrieved value
    */
+  @CannotFreeze
   def value(index: Int): ValueInfo
 
   /**
@@ -97,6 +106,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    *               all remaining values to the end of the array
    * @return The retrieved values
    */
+  @CannotFreeze
   def values(index: Int, length: Int): Seq[ValueInfo]
 
   /**
@@ -123,6 +133,8 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    *
    * @return The retrieved values
    */
+  @FreezeMetadata(ReturnType.FreezeCollection)
+  @CanFreeze
   def values: Seq[ValueInfo]
 
   /**
@@ -190,6 +202,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    * @param value The new value to place in the array
    * @return The updated remote value
    */
+  @CannotFreeze
   def setValueFromInfo(index: Int, value: ValueInfo): ValueInfo
 
   /**
@@ -278,6 +291,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    *               beginning of the index
    * @return The updated remote values
    */
+  @CannotFreeze
   def setValuesFromInfo(
     index: Int,
     values: Seq[ValueInfo],
@@ -324,6 +338,7 @@ trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
    * @param values The new values to use when overwriting elements in the array
    * @return The updated remote values
    */
+  @CannotFreeze
   def setValuesFromInfo(values: Seq[ValueInfo]): Seq[ValueInfo]
 
   /**

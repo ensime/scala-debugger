@@ -1,12 +1,15 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Type
+import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
 
 import scala.util.Try
 
 /**
  * Represents the interface for retrieving type-based information.
  */
+@Freezable
 trait TypeInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +18,7 @@ trait TypeInfo extends CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: TypeInfo
 
   /**
@@ -22,6 +26,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: Type
 
   /**
@@ -29,6 +34,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The text representation of the type
    */
+  @CanFreeze
   def name: String
 
   /**
@@ -38,6 +44,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The JNI-style signature
    */
+  @CanFreeze
   def signature: String
 
   /**
@@ -108,6 +115,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if an array type, otherwise false
    */
+  @CanFreeze
   def isArrayType: Boolean
 
   /**
@@ -115,6 +123,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if a class type, otherwise false
    */
+  @CanFreeze
   def isClassType: Boolean
 
   /**
@@ -122,6 +131,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if an interface type, otherwise false
    */
+  @CanFreeze
   def isInterfaceType: Boolean
 
   /**
@@ -129,6 +139,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if a reference type, otherwise false
    */
+  @CanFreeze
   def isReferenceType: Boolean
 
   /**
@@ -136,6 +147,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if a primitive type, otherwise false
    */
+  @CanFreeze
   def isPrimitiveType: Boolean
 
   /**
@@ -143,6 +155,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if representing the type of a null value, otherwise false
    */
+  @CanFreeze
   def isNullType: Boolean
 
   /**
@@ -150,6 +163,8 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The array type profile wrapping this type
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   def toArrayType: ArrayTypeInfo
 
   /**
@@ -165,6 +180,8 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The class type profile wrapping this type
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   def toClassType: ClassTypeInfo
 
   /**
@@ -180,6 +197,8 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The interface type profile wrapping this type
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   def toInterfaceType: InterfaceTypeInfo
 
   /**
@@ -195,6 +214,8 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The reference type profile wrapping this type
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   def toReferenceType: ReferenceTypeInfo
 
   /**
@@ -210,6 +231,8 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The primitive type profile wrapping this type
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   def toPrimitiveType: PrimitiveTypeInfo
 
   /**

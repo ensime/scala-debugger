@@ -18,6 +18,7 @@ object FreezeMetadata {
   /** Return type of method being frozen. */
   object ReturnType extends Enumeration {
     type ReturnType = Value
-    val Normal, FreezeObject, FreezeCollection = Value
+    val Normal, FreezeObject, FreezeCollection,
+    FreezeOption, FreezeEither = Value
   }
 }

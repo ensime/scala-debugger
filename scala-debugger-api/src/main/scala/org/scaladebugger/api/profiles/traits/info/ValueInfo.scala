@@ -1,14 +1,16 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Value
-import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
+import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
 
 import scala.util.Try
 
 /**
  * Represents information about a value.
  */
-@Freezable trait ValueInfo extends CommonInfo {
+@Freezable
+trait ValueInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of
    * low-level Java instead of a higher-level abstraction.
@@ -16,21 +18,25 @@ import scala.util.Try
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  @CannotFreeze override def toJavaInfo: ValueInfo
+  @CannotFreeze
+  override def toJavaInfo: ValueInfo
 
   /**
    * Returns the JDI representation this profile instance wraps.
    *
    * @return The JDI instance
    */
-  @CannotFreeze override def toJdiInstance: Value
+  @CannotFreeze
+  override def toJdiInstance: Value
 
   /**
    * Returns the type information for the value.
    *
    * @return The profile containing type information
    */
-  @CanFreeze def `type`: TypeInfo
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
+  def `type`: TypeInfo
 
   /**
    * Returns the type information for the value.
@@ -53,77 +59,88 @@ import scala.util.Try
    *
    * @return The value as a local instance
    */
-  @CannotFreeze def toLocalValue: Any
+  @CannotFreeze
+  def toLocalValue: Any
 
   /**
    * Returns whether or not this value represents a primitive.
    *
    * @return True if a primitive, otherwise false
    */
-  @CanFreeze def isPrimitive: Boolean
+  @CanFreeze
+  def isPrimitive: Boolean
 
   /**
    * Returns whether or not this value represents an array.
    *
    * @return True if an array, otherwise false
    */
-  @CanFreeze def isArray: Boolean
+  @CanFreeze
+  def isArray: Boolean
 
   /**
    * Returns whether or not this value represents a class loader.
    *
    * @return True if a class loader, otherwise false
    */
-  @CanFreeze def isClassLoader: Boolean
+  @CanFreeze
+  def isClassLoader: Boolean
 
   /**
    * Returns whether or not this value represents a class object.
    *
    * @return True if a class object, otherwise false
    */
-  @CanFreeze def isClassObject: Boolean
+  @CanFreeze
+  def isClassObject: Boolean
 
   /**
    * Returns whether or not this value represents a thread group.
    *
    * @return True if a thread group, otherwise false
    */
-  @CanFreeze def isThreadGroup: Boolean
+  @CanFreeze
+  def isThreadGroup: Boolean
 
   /**
    * Returns whether or not this value represents a thread.
    *
    * @return True if a thread, otherwise false
    */
-  @CanFreeze def isThread: Boolean
+  @CanFreeze
+  def isThread: Boolean
 
   /**
    * Returns whether or not this value represents an object.
    *
    * @return True if an object, otherwise false
    */
-  @CanFreeze def isObject: Boolean
+  @CanFreeze
+  def isObject: Boolean
 
   /**
    * Returns whether or not this value represents a string.
    *
    * @return True if a string, otherwise false
    */
-  @CanFreeze def isString: Boolean
+  @CanFreeze
+  def isString: Boolean
 
   /**
    * Returns whether or not this value is null.
    *
    * @return True if null, otherwise false
    */
-  @CanFreeze def isNull: Boolean
+  @CanFreeze
+  def isNull: Boolean
 
   /**
    * Returns whether or not this value is void.
    *
    * @return True if void, otherwise false
    */
-  @CanFreeze def isVoid: Boolean
+  @CanFreeze
+  def isVoid: Boolean
 
   /**
    * Returns the value as a primitive (profile).
@@ -139,7 +156,9 @@ import scala.util.Try
    * @return The primitive profile wrapping this value
    */
   @throws[AssertionError]
-  @CanFreeze def toPrimitiveInfo: PrimitiveInfo
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
+  def toPrimitiveInfo: PrimitiveInfo
 
   /**
    * Returns the value as a class loader (profile).
@@ -155,7 +174,9 @@ import scala.util.Try
    * @return The class loader profile wrapping this value
    */
   @throws[AssertionError]
-  @CanFreeze def toClassLoaderInfo: ClassLoaderInfo
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
+  def toClassLoaderInfo: ClassLoaderInfo
 
   /**
    * Returns the value as a class object (profile).
@@ -171,7 +192,9 @@ import scala.util.Try
    * @return The class object profile wrapping this value
    */
   @throws[AssertionError]
-  @CanFreeze def toClassObjectInfo: ClassObjectInfo
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
+  def toClassObjectInfo: ClassObjectInfo
 
   /**
    * Returns the value as a thread group (profile).
@@ -187,7 +210,9 @@ import scala.util.Try
    * @return The thread group profile wrapping this value
    */
   @throws[AssertionError]
-  @CanFreeze def toThreadGroupInfo: ThreadGroupInfo
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
+  def toThreadGroupInfo: ThreadGroupInfo
 
   /**
    * Returns the value as a thread (profile).
@@ -203,7 +228,9 @@ import scala.util.Try
    * @return The thread profile wrapping this value
    */
   @throws[AssertionError]
-  @CanFreeze def toThreadInfo: ThreadInfo
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
+  def toThreadInfo: ThreadInfo
 
   /**
    * Returns the value as an object (profile).
@@ -219,7 +246,9 @@ import scala.util.Try
    * @return The object profile wrapping this value
    */
   @throws[AssertionError]
-  @CanFreeze def toObjectInfo: ObjectInfo
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
+  def toObjectInfo: ObjectInfo
 
   /**
    * Returns the value as a string (profile).
@@ -235,7 +264,9 @@ import scala.util.Try
    * @return The string profile wrapping this value
    */
   @throws[AssertionError]
-  @CanFreeze def toStringInfo: StringInfo
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
+  def toStringInfo: StringInfo
 
   /**
    * Returns the value as an array (profile).
@@ -251,7 +282,9 @@ import scala.util.Try
    * @return The array profile wrapping this value
    */
   @throws[AssertionError]
-  @CanFreeze def toArrayInfo: ArrayInfo
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
+  def toArrayInfo: ArrayInfo
 
   /**
    * Returns a string presenting a better human-readable description of

@@ -1,10 +1,13 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.ClassObjectReference
+import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
 
 /**
  * Represents the interface for "class object"-based interaction.
  */
+@Freezable
 trait ClassObjectInfo extends ObjectInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -13,6 +16,7 @@ trait ClassObjectInfo extends ObjectInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ClassObjectInfo
 
   /**
@@ -20,6 +24,7 @@ trait ClassObjectInfo extends ObjectInfo with CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: ClassObjectReference
 
   /**
@@ -28,5 +33,7 @@ trait ClassObjectInfo extends ObjectInfo with CommonInfo {
    *
    * @return The reference type information
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   def reflectedType: ReferenceTypeInfo
 }

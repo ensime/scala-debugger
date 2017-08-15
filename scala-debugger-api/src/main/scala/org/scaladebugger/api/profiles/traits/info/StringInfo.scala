@@ -1,15 +1,12 @@
 package org.scaladebugger.api.profiles.traits.info
 
-
-import com.sun.jdi.{ArrayReference, StringReference}
-import org.scaladebugger.api.profiles.traits.info.ArrayInfo._
-
-import scala.util.Try
-
+import com.sun.jdi.StringReference
+import org.scaladebugger.macros.freeze.{CannotFreeze, Freezable}
 
 /**
  * Represents the interface for string-based interaction.
  */
+@Freezable
 trait StringInfo extends ObjectInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -18,6 +15,7 @@ trait StringInfo extends ObjectInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: StringInfo
 
   /**
@@ -25,6 +23,7 @@ trait StringInfo extends ObjectInfo with CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: StringReference
 
   /**

@@ -1,10 +1,14 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
+
 
 /**
  * Represents the interface for variable-based interaction with indexed
  * location information.
  */
+@Freezable
 trait IndexedVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -13,6 +17,7 @@ trait IndexedVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: IndexedVariableInfo
 
   /**
@@ -20,6 +25,8 @@ trait IndexedVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
    *
    * @return The profile of the frame
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   def frame: FrameInfo
 
   /**
@@ -27,5 +34,6 @@ trait IndexedVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
    *
    * @return The frame starting from 0 (top of the stack)
    */
+  @CanFreeze
   def frameIndex: Int
 }

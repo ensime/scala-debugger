@@ -2,12 +2,13 @@ package org.scaladebugger.api.profiles.traits.info
 
 
 import com.sun.jdi.{ThreadGroupReference, ThreadReference}
-
-import scala.util.Try
+import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
 
 /**
  * Represents the interface for thread-based interaction.
  */
+@Freezable
 trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -16,6 +17,7 @@ trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ThreadGroupInfo
 
   /**
@@ -23,6 +25,7 @@ trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: ThreadGroupReference
 
   /**
@@ -30,6 +33,7 @@ trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
    *
    * @return The thread group name as a string
    */
+  @CanFreeze
   def name: String
 
   /**
@@ -37,18 +41,22 @@ trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
    *
    * @return Some thread group if a parent exists, otherwise None if top-level
    */
+  @FreezeMetadata(ReturnType.FreezeOption)
+  @CanFreeze
   def parent: Option[ThreadGroupInfo]
 
   /**
    * Resumes all threads in the thread group and subgroups. This is not an
    * atomic operation, so new threads added to a group will be unaffected.
    */
+  @CannotFreeze
   def resume(): Unit
 
   /**
    * Suspends all threads in the thread group and subgroups. This is not an
    * atomic operation, so new threads added to a group will be unaffected.
    */
+  @CannotFreeze
   def suspend(): Unit
 
   /**
@@ -57,6 +65,8 @@ trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
    *
    * @return The collection of threads
    */
+  @FreezeMetadata(ReturnType.FreezeCollection)
+  @CanFreeze
   def threads: Seq[ThreadInfo]
 
   /**
@@ -65,6 +75,8 @@ trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
    *
    * @return The collection of thread groups
    */
+  @FreezeMetadata(ReturnType.FreezeCollection)
+  @CanFreeze
   def threadGroups: Seq[ThreadGroupInfo]
 
   /**

@@ -1,12 +1,15 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.InterfaceType
+import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
 
 import scala.util.Try
 
 /**
  * Represents the interface for retrieving interface type-based information.
  */
+@Freezable
 trait InterfaceTypeInfo extends ReferenceTypeInfo with TypeInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +18,7 @@ trait InterfaceTypeInfo extends ReferenceTypeInfo with TypeInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: InterfaceTypeInfo
 
   /**
@@ -22,6 +26,7 @@ trait InterfaceTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: InterfaceType
 
   /**
@@ -29,6 +34,8 @@ trait InterfaceTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The collection of class type info profiles
    */
+  @FreezeMetadata(ReturnType.FreezeCollection)
+  @CanFreeze
   def implementors: Seq[ClassTypeInfo]
 
   /**
@@ -36,6 +43,8 @@ trait InterfaceTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The collection of interface type info profiles
    */
+  @FreezeMetadata(ReturnType.FreezeCollection)
+  @CanFreeze
   def subinterfaces: Seq[InterfaceTypeInfo]
 
   /**
@@ -43,6 +52,8 @@ trait InterfaceTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The collection of interface type info profiles
    */
+  @FreezeMetadata(ReturnType.FreezeCollection)
+  @CanFreeze
   def superinterfaces: Seq[InterfaceTypeInfo]
 
   /**

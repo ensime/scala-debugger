@@ -209,7 +209,12 @@ import macrocompat.bundle
         case l: List[Tree] => l
       }
       val internalMethods = bodyTrees.collect {
-        case d: DefDef => d
+        case d: DefDef =>
+          /*println("Running type check on " + d.name.decodedName.toString +
+            " returning " + d.tpt.toString() +
+            " from " + classDef.name.decodedName.toString)
+          println("Method Type: " + c.typecheck(d.duplicate).tpe)*/
+          d
       }
 
       // TODO: Also process inherited methods that are not covered
@@ -247,6 +252,10 @@ import macrocompat.bundle
                     scala.util.Try.apply($freezeObjName.$tname).map(_.freeze())
                   """)
                 case Literal(Constant(rt: RT)) if rt == RT.FreezeCollection =>
+                  cArgs.append(q"""
+                    scala.util.Try.apply($freezeObjName.$tname).map(_map(_.freeze()))
+                  """)
+                case Literal(Constant(rt: RT)) if rt == RT.FreezeOption =>
                   cArgs.append(q"""
                     scala.util.Try.apply($freezeObjName.$tname).map(_map(_.freeze()))
                   """)
@@ -306,46 +315,29 @@ import macrocompat.bundle
       }.filterNot(_ == null)
 
       val klass = q"""
-          class Frozen(..$cParams) extends $tpname with java.io.Serializable { $self =>
-              ..$internals
-          }
-        """
+        class Frozen(..$cParams) extends $tpname with java.io.Serializable { $self =>
+          ..$internals
+        }
+      """
       val method = q"""
-          def freeze($freezeObjName: $tpname): Frozen = new Frozen(..$cArgs)
-        """
+        def freeze($freezeObjName: $tpname): Frozen = new Frozen(..$cArgs)
+      """
 
       (klass, method)
     }
 
-    // TODO: Remove this hack that is injecting ??? into all
-    //       non-implemented methods
+    // TODO: Inject freeze method directly into trait rather than
+    //       relying on object implicit
     val newClassDef: ClassDef = {
       val bodyTrees: List[Tree] = body match {
         case l: List[Tree] => l
-      }
-      val newBody = bodyTrees.map {
-        /*case vDef: ValDef if vDef.rhs.isEmpty => ValDef(
-          mods = vDef.mods,
-          name = vDef.name,
-          tpt = vDef.tpt,
-          rhs = q"throw new NotImplementedError"
-        )
-        case dDef: DefDef if dDef.rhs.isEmpty => DefDef(
-          mods = dDef.mods,
-          name = dDef.name,
-          tparams = dDef.tparams,
-          vparamss = dDef.vparamss,
-          tpt = dDef.tpt,
-          rhs = q"throw new NotImplementedError"
-        )*/
-        case t => t
       }
 
       val tree = q"""
           $mods trait $tpname[..$tparams] extends {
             ..$earlydefns
           } with ..$parents { $self =>
-            ..$newBody
+            ..$bodyTrees
           }
         """
 
@@ -354,19 +346,19 @@ import macrocompat.bundle
 
     val newModuleDef: ModuleDef = {
       val q"""
-          $mods object $tname extends {
-            ..$earlydefns
-          } with ..$parents { $self =>
-            ..$body
-          }
-        """ = moduleDef
+        $mods object $tname extends {
+          ..$earlydefns
+        } with ..$parents { $self =>
+          ..$body
+        }
+      """ = moduleDef
 
       val implicitMethodName = TypeName(s"${tpname}FrozenWrapper")
       val implicitFreezeMethod = q"""
-          implicit class $implicitMethodName(private val $freezeObjName: $tpname) {
-            def freeze(): Frozen = $tname.freeze($freezeObjName)
-          }
-        """
+        implicit class $implicitMethodName(private val $freezeObjName: $tpname) {
+          def freeze(): Frozen = $tname.freeze($freezeObjName)
+        }
+      """
 
       val oldBody: List[Tree] = body match {
         case l: List[Tree] => l

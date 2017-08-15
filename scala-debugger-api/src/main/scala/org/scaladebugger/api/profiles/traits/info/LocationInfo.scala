@@ -1,12 +1,15 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Location
+import org.scaladebugger.macros.freeze.FreezeMetadata.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable, FreezeMetadata}
 
 import scala.util.Try
 
 /**
  * Represents the interface for location-based interaction.
  */
+@Freezable
 trait LocationInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +18,7 @@ trait LocationInfo extends CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: LocationInfo
 
   /**
@@ -22,6 +26,7 @@ trait LocationInfo extends CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: Location
 
   /**
@@ -30,6 +35,8 @@ trait LocationInfo extends CommonInfo {
    *
    * @return The reference type information
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   def declaringType: ReferenceTypeInfo
 
   /**
@@ -37,6 +44,8 @@ trait LocationInfo extends CommonInfo {
    *
    * @return The method information
    */
+  @FreezeMetadata(ReturnType.FreezeObject)
+  @CanFreeze
   def method: MethodInfo
 
   /**
@@ -44,6 +53,7 @@ trait LocationInfo extends CommonInfo {
    *
    * @return The code position, or -1 if not available
    */
+  @CanFreeze
   def codeIndex: Long
 
   /**
@@ -58,6 +68,7 @@ trait LocationInfo extends CommonInfo {
    *
    * @return The line number, or -1 if not available
    */
+  @CanFreeze
   def lineNumber: Int
 
   /**
@@ -73,6 +84,7 @@ trait LocationInfo extends CommonInfo {
    *
    * @return The identifying name
    */
+  @CanFreeze
   def sourceName: String
 
   /**
@@ -88,6 +100,7 @@ trait LocationInfo extends CommonInfo {
    *
    * @return The source path
    */
+  @CanFreeze
   def sourcePath: String
 
   /**
