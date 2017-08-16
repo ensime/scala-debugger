@@ -150,6 +150,36 @@ import org.scaladebugger.macros.MacroUtils
     )
   }
 
+  private def generateFreezeMethodBody(
+    r: org.scaladebugger.macros.freeze.CanFreeze.ReturnType.ReturnType,
+    freezeObjName: TermName,
+    methodName: TermName,
+    returnType: Tree
+  ): Tree = {
+    import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+    r match {
+      case ReturnType.Normal =>
+        q"""scala.util.Try.apply($freezeObjName.$methodName)
+          .asInstanceOf[scala.util.Try[$returnType]]"""
+      case ReturnType.FreezeObject =>
+        q"""scala.util.Try.apply($freezeObjName.$methodName).map(_.freeze())
+          .asInstanceOf[scala.util.Try[$returnType]]"""
+      case ReturnType.FreezeCollection =>
+        q"""scala.util.Try.apply($freezeObjName.$methodName).map(_.map(_.freeze()))
+          .asInstanceOf[scala.util.Try[$returnType]]"""
+      case ReturnType.FreezeOption =>
+        q"""scala.util.Try.apply($freezeObjName.$methodName).map(_.map(_.freeze()))
+          .asInstanceOf[scala.util.Try[$returnType]]"""
+      case ReturnType.FreezeEither =>
+        q"""
+          scala.util.Try.apply($freezeObjName.$methodName).map(r => r match {
+            case scala.util.Left(o) => scala.util.Left(o.freeze())
+            case scala.util.Right(o) => scala.util.Right(o.freeze())
+          }).asInstanceOf[scala.util.Try[$returnType]]
+        """
+    }
+  }
+
   private def generateTrees(body: List[Tree], traitTypeName: TypeName): List[Tree] = {
     val freezeObjName = TermName("valueToFreeze")
 
@@ -186,47 +216,17 @@ import org.scaladebugger.macros.MacroUtils
     val cArgs = freezableMethods.map { d =>
       val q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" = d
 
-      M.findAnnotation(d, "CanFreeze").get match {
+      // TODO: Find better way to match against the input
+      val r = M.findAnnotation(d, "CanFreeze").get match {
         case q"new CanFreeze()" =>
-          q"""
-            scala.util.Try.apply($freezeObjName.$tname)
-              .asInstanceOf[scala.util.Try[$tpt]]
-          """
-        case q"new CanFreeze($returnType)" =>
-          // TODO: Find better way to match against the input
           import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
-          val r = ReturnType.withName(returnType.toString().split('.').last)
-
-          r match {
-            case ReturnType.Normal =>
-              q"""
-                scala.util.Try.apply($freezeObjName.$tname)
-                  .asInstanceOf[scala.util.Try[$tpt]]
-              """
-            case ReturnType.FreezeObject =>
-              q"""
-                scala.util.Try.apply($freezeObjName.$tname).map(_.freeze())
-                  .asInstanceOf[scala.util.Try[$tpt]]
-              """
-            case ReturnType.FreezeCollection =>
-              q"""
-                scala.util.Try.apply($freezeObjName.$tname).map(_.map(_.freeze()))
-                  .asInstanceOf[scala.util.Try[$tpt]]
-              """
-            case ReturnType.FreezeOption =>
-              q"""
-                scala.util.Try.apply($freezeObjName.$tname).map(_.map(_.freeze()))
-                  .asInstanceOf[scala.util.Try[$tpt]]
-              """
-            case ReturnType.FreezeEither =>
-              q"""
-                scala.util.Try.apply($freezeObjName.$tname).map(r => r match {
-                  case scala.util.Left(o) => scala.util.Left(o.freeze())
-                  case scala.util.Right(o) => scala.util.Right(o.freeze())
-                }).asInstanceOf[scala.util.Try[$tpt]]
-              """
-          }
+          ReturnType.Normal
+        case q"new CanFreeze($returnType)" =>
+          import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+          ReturnType.withName(returnType.toString().split('.').last)
       }
+
+      generateFreezeMethodBody(r, freezeObjName, tname, tpt)
     }
 
     val newFreezableMethods = freezableMethods.map {
