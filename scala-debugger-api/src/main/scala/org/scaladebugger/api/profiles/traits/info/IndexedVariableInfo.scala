@@ -8,7 +8,7 @@ import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
  * Represents the interface for variable-based interaction with indexed
  * location information.
  */
-@Freezable
+//@Freezable
 trait IndexedVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of

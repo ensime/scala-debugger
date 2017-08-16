@@ -9,7 +9,7 @@ import scala.util.Try
 /**
  * Represents the interface for variable-based interaction.
  */
-@Freezable
+//@Freezable
 trait VariableInfo extends CreateInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of

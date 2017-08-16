@@ -6,7 +6,7 @@ import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
  * Represents a profile that provides common methods to convert info profiles
  * to their low-level Java equivalents.
  */
-@Freezable
+//@Freezable
 trait JavaInfo {
   /**
    * Returns whether or not this info profile represents the low-level Java

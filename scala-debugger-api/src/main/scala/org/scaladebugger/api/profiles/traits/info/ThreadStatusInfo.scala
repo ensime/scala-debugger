@@ -5,7 +5,7 @@ import org.scaladebugger.macros.freeze.{CanFreeze, Freezable}
 /**
  * Represents information about a thread's status.
  */
-@Freezable
+//@Freezable
 trait ThreadStatusInfo {
   /**
    * Represents the status code for the thread.

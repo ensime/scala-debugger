@@ -7,7 +7,7 @@ import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 /**
  * Represents common methods between information-gathering profiles.
  */
-@Freezable
+//@Freezable
 trait CommonInfo extends JavaInfo {
   /**
    * Returns the Scala virtual machine containing this instance.

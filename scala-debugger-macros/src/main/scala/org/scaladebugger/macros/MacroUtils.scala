@@ -100,15 +100,23 @@ import macrocompat.bundle
       baseTypeNames.contains(name)
     }
 
+    // NOTE: CHIP CHIP CHIP CHIP CHIP
+    // Changed withMacrosDisabled = true for testing
     parent match {
       case Ident(name) if !isBaseType(name) =>
         val typeName = name.toTypeName
-        val typedTree = scala.util.Try(c.typecheck(q"null.asInstanceOf[$typeName]"))
+        val typedTree = scala.util.Try(c.typecheck(
+          q"null.asInstanceOf[$typeName]",
+          withMacrosDisabled = true
+        ))
         typedTree.toOption.flatMap(tt => Option(tt.tpe))
       case Select(Ident(name), typeName) if !isBaseType(name, typeName) =>
         val t1 = name.toTermName
         val t2 = typeName.toTypeName
-        val typedTree = scala.util.Try(c.typecheck(q"null.asInstanceOf[$t1.$t2]"))
+        val typedTree = scala.util.Try(c.typecheck(
+          q"null.asInstanceOf[$t1.$t2]",
+          withMacrosDisabled = true
+        ))
         typedTree.toOption.flatMap(tt => Option(tt.tpe))
       case a =>
         None
