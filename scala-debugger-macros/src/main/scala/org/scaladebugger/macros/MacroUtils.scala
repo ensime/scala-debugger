@@ -1,0 +1,125 @@
+package org.scaladebugger.macros
+
+import scala.language.experimental.macros
+import scala.annotation.tailrec
+import scala.reflect.macros.whitebox
+import macrocompat.bundle
+
+@bundle class MacroUtils[C <: whitebox.Context](val c: C) {
+  import c.universe._
+
+  def containsAnnotation(d: DefDef, aName: String): Boolean =
+    findAnnotation(d, aName).nonEmpty
+
+  def findAnnotation(d: DefDef, aName: String): Option[Tree] =
+    d.mods.annotations.find(a => isAnnotation(a, aName))
+
+  def isAnnotation(t: Tree, aName: String): Boolean = t match {
+    case Apply(f, args) => f match {
+      case Select(qual, name) => qual match {
+        case New(tpt) => tpt match {
+          case Ident(iName) => iName.decodedName.toString == aName
+          case _ => false
+        }
+        case _ => false
+      }
+    }
+    case _ => false
+  }
+
+  def isTrait(classDef: ClassDef): Boolean = {
+    try {
+      val q"""
+          $mods trait $tpname[..$tparams] extends {
+            ..$earlydefns
+          } with ..$parents { $self =>
+            ..$body
+          }
+        """ = classDef
+      true
+    } catch {
+      case _: Throwable => false
+    }
+  }
+
+  def extractInheritedMethods(parents: List[Type]): List[MethodSymbol] = {
+    val anyTypeSymbol = typeOf[Any].typeSymbol
+    val objectTypeSymbol = typeOf[Object].typeSymbol
+
+    def stripDuplicateMethods(methods: List[MethodSymbol]): List[MethodSymbol] = {
+      val overrides = methods.flatMap(_.overrides)
+      methods.filterNot(overrides.contains)
+    }
+
+    @tailrec def extract(types: List[Type], methods: List[MethodSymbol]): List[MethodSymbol] = {
+      val parentMethods = types.flatMap(pt => {
+        pt.members
+          .filter(_.isMethod)
+          .filter(_.owner == pt.typeSymbol)
+          .map(_.asMethod)
+      })
+      val parentTypes = types
+        .flatMap(t => {
+          t.baseClasses.filterNot(c =>
+            c == t.typeSymbol ||
+              c == anyTypeSymbol ||
+              c == objectTypeSymbol
+          )
+        })
+        .filter(_.isClass)
+        .map(_.asClass.toType)
+
+      val allMethods = stripDuplicateMethods(methods ++ parentMethods)
+
+      if (parentTypes.nonEmpty) extract(parentTypes, allMethods)
+      else allMethods
+    }
+
+    extract(parents, Nil)
+  }
+
+  def extractParentTypes(parents: List[Tree]): List[Option[Type]] = {
+    parents match {
+      case p: List[Tree] => p.map(extractParentType)
+    }
+  }
+
+  private def extractParentType(parent: Tree): Option[Type] = {
+    def isBaseType(n1: Name, n2: Name = null): Boolean = {
+      val name = if (n2 != null) {
+        n1.toString + "." + n2.toString
+      } else {
+        n1.toString
+      }
+
+      val baseTypeNames = Seq(
+        "Any", "scala.Any", "AnyRef", "scala.AnyRef",
+        "AnyVal", "scala.AnyVal", "java.lang.Object"
+      )
+
+      baseTypeNames.contains(name)
+    }
+
+    parent match {
+      case Ident(name) if !isBaseType(name) =>
+        val typeName = name.toTypeName
+        val typedTree = scala.util.Try(c.typecheck(q"null.asInstanceOf[$typeName]"))
+        typedTree.toOption.flatMap(tt => Option(tt.tpe))
+      case Select(Ident(name), typeName) if !isBaseType(name, typeName) =>
+        val t1 = name.toTermName
+        val t2 = typeName.toTypeName
+        val typedTree = scala.util.Try(c.typecheck(q"null.asInstanceOf[$t1.$t2]"))
+        typedTree.toOption.flatMap(tt => Option(tt.tpe))
+      case a =>
+        None
+    }
+  }
+
+  def newEmptyObject(name: String): ModuleDef = {
+    val oName = TermName(name)
+    val moduleDef: ModuleDef = q"object $oName {}" match {
+      case m: ModuleDef => m
+    }
+    moduleDef
+  }
+}
