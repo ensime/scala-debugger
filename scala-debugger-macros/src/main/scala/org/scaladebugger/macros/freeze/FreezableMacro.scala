@@ -261,8 +261,13 @@ import macrocompat.bundle
           val oldMods: Modifiers = mods match {
             case m: Modifiers => m
           }
+
+          // TODO: Is there a way to filter out just the DEFERRED flag?
+          val newFlags = Flag.OVERRIDE |
+            (if (oldMods.hasFlag(Flag.FINAL)) Flag.FINAL else NoFlags)
+
           val newMods = c.universe.Modifiers(
-            flags = Flag.OVERRIDE | oldMods.flags,
+            flags = newFlags,
             privateWithin = oldMods.privateWithin,
             annotations = oldMods.annotations.filterNot(a => {
               isAnnotation(a, "CanFreeze") || isAnnotation(a, "CannotFreeze")
@@ -281,8 +286,13 @@ import macrocompat.bundle
           val oldMods: Modifiers = mods match {
             case m: Modifiers => m
           }
+
+          // TODO: Is there a way to filter out just the DEFERRED flag?
+          val newFlags = Flag.OVERRIDE |
+            (if (oldMods.hasFlag(Flag.FINAL)) Flag.FINAL else NoFlags)
+
           val newMods = c.universe.Modifiers(
-            flags = Flag.OVERRIDE | oldMods.flags,
+            flags = newFlags,
             privateWithin = oldMods.privateWithin,
             annotations = oldMods.annotations.filterNot(a => {
               isAnnotation(a, "CanFreeze") || isAnnotation(a, "CannotFreeze")
