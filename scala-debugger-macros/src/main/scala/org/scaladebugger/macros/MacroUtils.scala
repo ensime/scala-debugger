@@ -131,16 +131,21 @@ import macrocompat.bundle
     moduleDef
   }
 
-  def fqcnToTree(fqcn: String): Tree = {
+  def classNameToTree(fqcn: String): Tree = {
     val tokens = fqcn.split('.')
-    val packageName = tokens.take(tokens.length - 1)
-    val className = tokens.last
 
+    val packageName = tokens.take(tokens.length - 1)
     val pTermNames = packageName.map(TermName.apply)
-    val pRef = pTermNames.tail.foldLeft(Ident(pTermNames.head): RefTree) {
-      case (s, n) => Select(s, n)
-    }
+
+    val className = tokens.last
     val cTypeName = TypeName(className)
-    Select(pRef, cTypeName)
+
+    if (tokens.length <= 1) Ident(cTypeName)
+    else {
+      val pRef = pTermNames.tail.foldLeft(Ident(pTermNames.head): RefTree) {
+        case (s, n) => Select(s, n)
+      }
+      Select(pRef, cTypeName)
+    }
   }
 }
