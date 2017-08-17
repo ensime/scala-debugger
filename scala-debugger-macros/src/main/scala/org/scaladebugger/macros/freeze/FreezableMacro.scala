@@ -206,6 +206,15 @@ import org.scaladebugger.macros.MacroUtils
     val unfreezableMethods = internalGroups.getOrElse("CannotFreeze", Nil)
     val otherMethods = internalGroups.getOrElse("Other", Nil)
 
+    // Validate that we don't have a method left behind without an implementation
+    otherMethods.foreach {
+      case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
+        if (expr.isEmpty) c.abort(
+          c.enclosingPosition,
+          s"$tname has no implementation and is not marked as @CanFreeze or @CannotFreeze!"
+        )
+    }
+
     // TODO: Figure out why multiple of method symbol show up here,
     //       resulting in us using distinct
     val filteredInheritedMethods = inheritedMethods.distinct.filterNot(m => {
@@ -320,23 +329,7 @@ import org.scaladebugger.macros.MacroUtils
           throw new IllegalStateException("Method not frozen!")"""
     }
 
-    // Validate that we don't have a method left behind without an implementation
-    val newSuperMethods = otherMethods.map {
-      case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
-        if (expr.isEmpty) c.abort(
-          c.enclosingPosition,
-          s"$tname has no implementation and is not marked as @CanFreeze or @CannotFreeze!"
-        )
-
-        val newMods: Modifiers = markModifiersOverride(mods match {
-          case m: Modifiers => m
-        })
-
-        q"""$newMods def $tname[..$tparams](...$paramss): $tpt =
-          super.$tname[..$tparams](...$paramss)"""
-    }
-
-    val newInheritedMethods = filteredInheritedMethods.map(m => {
+    val newInheritedMethods = filteredInheritedMethods.flatMap(m => {
       val methodName = m.name.decodedName.toString
       val mods = m.annotations.map(_.tree)
       val tname = TermName(methodName)
@@ -375,16 +368,17 @@ import org.scaladebugger.macros.MacroUtils
         ).mkString(" ")
       )
 
-      if (aFreezable.nonEmpty) {
+      val methodTree = if (aFreezable.nonEmpty) {
         val name = TermName(s"$$$tname")
         q"override def $tname[..$tparams](...$paramss): $tpt = this.$name.get"
       } else if (aUnfreezable.nonEmpty) {
         q"""override def $tname[..$tparams](...$paramss): $tpt =
           throw new IllegalStateException("Method not frozen!")"""
       } else {
-        q"""override def $tname[..$tparams](...$paramss): $tpt =
-          super.$tname[..$tparams](...$paramss)"""
+        null
       }
+
+      Option(methodTree)
     })
 
     val klass = q"""
@@ -398,15 +392,6 @@ import org.scaladebugger.macros.MacroUtils
     val method = q"""
       def $FreezeMethodName($freezeObjName: $traitTypeName): $traitTypeName = new $FrozenClassName(..$cArgs)
     """
-
-    object Q {
-      object Y
-      type T = Test
-      class Test extends scala.AnyRef
-      trait Pants
-    }
-    val x: Q.Test = null
-    val y: Q.Pants = null
 
     List(klass, method)
   }
