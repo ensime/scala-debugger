@@ -9,7 +9,7 @@ import scala.util.Try
 /**
  * Represents the interface for retrieving interface type-based information.
  */
-@Freezable
+//@Freezable
 trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
   /**
    * Converts the current profile instance to a representation of

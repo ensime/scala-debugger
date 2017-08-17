@@ -9,7 +9,7 @@ import scala.util.Try
 /**
  * Represents the interface for location-based interaction.
  */
-@Freezable
+//@Freezable
 trait LocationInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of

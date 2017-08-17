@@ -132,9 +132,9 @@ import macrocompat.bundle
   }
 
   def classNameToTree(fqcn: String): Tree = {
-    val tokens = fqcn.split('.')
+    val tokens = fqcn.split('.').filter(_.nonEmpty)
 
-    val packageName = tokens.take(tokens.length - 1)
+    val packageName = tokens.take(tokens.length - 1).toList
     val pTermNames = packageName.map(TermName.apply)
 
     val className = tokens.last

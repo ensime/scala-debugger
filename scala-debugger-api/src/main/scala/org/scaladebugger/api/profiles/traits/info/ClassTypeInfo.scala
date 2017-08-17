@@ -10,7 +10,7 @@ import scala.util.Try
 /**
  * Represents the interface for retrieving class type-based information.
  */
-@Freezable
+//@Freezable
 trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
   /**
    * Converts the current profile instance to a representation of

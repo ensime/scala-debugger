@@ -10,7 +10,7 @@ import scala.util.{Failure, Success, Try}
 /**
  * Represents information about a primitive value.
  */
-@Freezable
+//@Freezable
 trait PrimitiveInfo extends ValueInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
