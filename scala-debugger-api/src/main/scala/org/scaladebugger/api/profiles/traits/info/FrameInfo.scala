@@ -9,7 +9,7 @@ import scala.util.Try
 /**
  * Represents the interface for frame-based interaction.
  */
-//@Freezable
+@Freezable
 trait FrameInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of

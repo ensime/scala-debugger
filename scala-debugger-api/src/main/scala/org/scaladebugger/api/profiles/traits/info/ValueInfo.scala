@@ -9,7 +9,7 @@ import scala.util.Try
 /**
  * Represents information about a value.
  */
-//@Freezable
+@Freezable
 trait ValueInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of

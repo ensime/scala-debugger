@@ -9,7 +9,7 @@ import scala.util.Try
 /**
  * Represents the interface for retrieving type-based information.
  */
-//@Freezable
+@Freezable
 trait TypeInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of

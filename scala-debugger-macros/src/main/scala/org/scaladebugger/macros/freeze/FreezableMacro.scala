@@ -26,7 +26,9 @@ import org.scaladebugger.macros.MacroUtils
         println("PROCESSING -- " + classDef.name.decodedName.toString + " -- " + id)
         //println("INPUT CLASS ONLY :: " + classDef)
         val results = processTrait(classDef)
-        println("RESULTS :: " + results)
+        //println("RESULTS :: " + results)
+        if (classDef.name.decodedName.toString == "ValueInfo")
+          println("RESULTS :: " + results)
         println("DONE -- " + id)
         (EmptyTree, results)
       case _ =>
@@ -75,15 +77,13 @@ import org.scaladebugger.macros.MacroUtils
       }
     """ = classDef
 
-    val inheritedMethods = M.extractInheritedMethods(
-      M.extractParentTypes(parents.asInstanceOf[List[Tree]]).flatten
-    )
-
-    // Represents name of variable passed to freeze method
+    val parentTypes = M.extractTypes(parents.asInstanceOf[List[Tree]]).flatten
+    val inheritedMethods = M.extractInheritedMethods(parentTypes)
 
     val freezeTrees = generateTrees(
       body match { case l: List[Tree] => l },
       tpname match { case t: TypeName => t },
+      parentTypes,
       inheritedMethods
     )
 
@@ -218,6 +218,7 @@ import org.scaladebugger.macros.MacroUtils
   private def generateTrees(
     body: List[Tree],
     traitTypeName: TypeName,
+    parentTypes: List[Type],
     inheritedMethods: List[MethodSymbol]
   ): List[Tree] = {
     val freezeObjName = TermName("valueToFreeze")
@@ -232,32 +233,6 @@ import org.scaladebugger.macros.MacroUtils
     val unfreezableMethods = internalGroups.getOrElse("CannotFreeze", Nil)
     val otherMethods = internalGroups.getOrElse("Other", Nil)
 
-    // TODO: Figure out why multiple of method symbol show up here,
-    //       resulting in us using distinct
-    val filteredInheritedMethods = inheritedMethods.distinct.filterNot(m => {
-      internalMethodTrees.exists(t =>
-        t.name.decodedName.toString == m.name.decodedName.toString &&
-          t.vparamss.size == m.paramLists.size &&
-          t.vparamss.zip(m.paramLists).forall { case (valDefList, paramList) =>
-            valDefList.size == paramList.size &&
-              valDefList.zip(paramList).forall { case (valDef, param) =>
-                // TODO: Verify this actually works -- can we encounter
-                //       a scenario where tpt is not the full name?
-                valDef.tpt.toString() == param.typeSignature.toString
-              }
-          }
-      )
-    })
-    val inheritedGroups = filteredInheritedMethods.groupBy(m => {
-      val a = m.annotations
-      if (a.exists(_.tree.tpe =:= typeOf[CanFreeze])) "CanFreeze"
-      else if (a.exists(_.tree.tpe =:= typeOf[CannotFreeze])) "CannotFreeze"
-      else "Other"
-    })
-    val iFreezableMethods = inheritedGroups.getOrElse("CanFreeze", Nil)
-    val iUnfreezableMethods = inheritedGroups.getOrElse("CannotFreeze", Nil)
-    val iOtherMethods = inheritedGroups.getOrElse("Other", Nil)
-
     // Validate that we don't have a method left behind without an implementation
     otherMethods.foreach {
       case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
@@ -267,11 +242,31 @@ import org.scaladebugger.macros.MacroUtils
         )
     }
 
+    // TODO: Figure out why multiple of method symbol show up here,
+    //       resulting in us using distinct
+    val filteredInheritedMethods = inheritedMethods.distinct.filterNot(m => {
+      internalMethodTrees.exists(t =>
+        t.name.decodedName.toString == m.name.decodedName.toString &&
+        t.vparamss.size == m.paramLists.size &&
+        t.vparamss.zip(m.paramLists).forall { case (valDefList, paramList) =>
+          valDefList.size == paramList.size &&
+          valDefList.zip(paramList).forall { case (valDef, param) =>
+            // TODO: Verify this actually works -- can we encounter
+            //       a scenario where tpt is not the full name?
+            valDef.tpt.toString() == param.typeSignature.toString
+          }
+        }
+      )
+    })
+    val iFreezableMethods = filteredInheritedMethods.filter(
+      _.annotations.exists(_.tree.tpe =:= typeOf[CanFreeze])
+    )
+
     // Build up constructor parameters for frozen class
     val cParams = freezableMethods.map {
       case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
         val name = TermName(s"$$$tname")
-        q"private val $name: scala.util.Try[$tpt]"
+        q"protected val $name: scala.util.Try[$tpt]"
     } ++ iFreezableMethods.map(m => {
       val name = TermName(s"$$${m.name.decodedName.toString}")
 
@@ -281,12 +276,8 @@ import org.scaladebugger.macros.MacroUtils
         if (m.returnType.toString == "<error>") traitTypeName
         else TypeName(m.returnType.toString)
 
-      println("GENERATING CPARAM FOR " + m.name + " OF " + m.owner.name)
-      val t = q"private val $name: scala.util.Try[$tpt]"
-      println("RESULT = " + t)
-      t
+      q"protected val $name: scala.util.Try[$tpt]"
     })
-    println("CPARAMS :: " + cParams.mkString("\n"))
 
     // TODO: Remove runtime checks by getting better understanding of
     //       return type, if it contains a freeze method, etc.
@@ -329,7 +320,6 @@ import org.scaladebugger.macros.MacroUtils
         ReturnType.withName(fullArgs.last.split('.').last)
       ).getOrElse(ReturnType.Normal)
 
-      //println("GENERATING CARG FOR " + m.name + " OF " + m.owner.name)
       generateFreezeMethodBody(r, freezeObjName, tname, tpt)
     })
 
@@ -359,70 +349,40 @@ import org.scaladebugger.macros.MacroUtils
           throw new IllegalStateException("Method not frozen!")"""
     }
 
-    // Filter out inherited methods that have been overidden in current trait
-    val newInheritedMethods = filteredInheritedMethods.flatMap(m => {
-      val methodName = m.name.decodedName.toString
-      val mods = m.annotations.map(_.tree)
-      val tname = TermName(methodName)
-      val tparams = m.typeParams.map(tp => TypeName(tp.fullName))
-      val paramss = m.paramLists.map(_.map(p => {
-        val name = TermName(p.name.decodedName.toString)
-        val typeName = TypeName(p.typeSignature.toString)
+    val frozenParents = parentTypes.map(t =>
+      M.fqcnToTree(t.typeSymbol.fullName + ".Frozen")
+    )
 
-        // TODO: Support default values?
-        // TODO: Support annotations?
-        q"val $name: $typeName"
-      }))
+    val parents = frozenParents ++ List(
+       typeOf[java.io.Serializable]
+    ).map(t => TypeTree(t))
 
-      // TODO: This is a hack to get around <error> appearing when method
-      //       returns type of trait we are currently inspecting
-      val tpt =
-        if (m.returnType.toString == "<error>") traitTypeName
-        else TypeName(m.returnType.toString)
-
-      val aFreezable = m.annotations.find(_.tree.tpe =:= typeOf[CanFreeze])
-      val aUnfreezable = m.annotations.find(_.tree.tpe =:= typeOf[CannotFreeze])
-
-      val hasAnnotation = aFreezable.nonEmpty || aUnfreezable.nonEmpty
-      if (hasAnnotation && m.isFinal) c.abort(
-        c.enclosingPosition,
-        s"Inherited $methodName is marked as final and cannot be overridden!"
-      )
-      if (!hasAnnotation && m.isAbstract) c.abort(
-        c.enclosingPosition,
-        Seq(
-          s"Inherited $methodName has no implementation and",
-          "is not marked as @CanFreeze or @CannotFreeze!"
-        ).mkString(" ")
-      )
-
-      val methodTree = if (aFreezable.nonEmpty) {
-        val name = TermName(s"$$$tname")
-        q"override def $tname[..$tparams](...$paramss): $tpt = this.$name.get"
-      } else if (aUnfreezable.nonEmpty) {
-        q"""override def $tname[..$tparams](...$paramss): $tpt =
-          throw new IllegalStateException("Method not frozen!")"""
-      } else {
-        null
-      }
-
-      //println("GENERATING METHOD FOR " + m.name + " OF " + m.owner.name)
-      Option(methodTree)
-    })
-
-    val klass = q"""
-      final class Frozen(..$cParams) extends $traitTypeName with java.io.Serializable {
+    val interface = q"""
+      trait Frozen extends $traitTypeName with ..$parents {
+        ..$cParams
         ..$newFreezableMethods
         ..$newUnfreezableMethods
-        ..$newInheritedMethods
       }
+    """
+
+    val klass = q"""
+      final class FrozenImpl(..$cParams) extends Frozen
     """
 
     val method = q"""
-      def freeze($freezeObjName: $traitTypeName): $traitTypeName = new Frozen(..$cArgs)
+      def freeze($freezeObjName: $traitTypeName): $traitTypeName = new FrozenImpl(..$cArgs)
     """
 
-    List(klass, method)
+    object Q {
+      object Y
+      type T = Test
+      class Test extends scala.AnyRef
+      trait Pants
+    }
+    val x: Q.Test = null
+    val y: Q.Pants = null
+
+    List(interface, klass, method)
   }
 }
 

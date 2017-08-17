@@ -62,8 +62,8 @@ import macrocompat.bundle
         .flatMap(t => {
           t.baseClasses.filterNot(c =>
             c == t.typeSymbol ||
-              c == anyTypeSymbol ||
-              c == objectTypeSymbol
+            c == anyTypeSymbol ||
+            c == objectTypeSymbol
           )
         })
         .filter(_.isClass)
@@ -75,16 +75,18 @@ import macrocompat.bundle
       else allMethods
     }
 
-    extract(parents, Nil)
+    // TODO: Getting paramLists and materializing seems to trigger the
+    //       appearance of our static annotations; figure out why and fix
+    extract(parents, Nil).map(m => {
+      m.paramLists.toString
+      m
+    })
   }
 
-  def extractParentTypes(parents: List[Tree]): List[Option[Type]] = {
-    parents match {
-      case p: List[Tree] => p.map(extractParentType)
-    }
-  }
+  def extractTypes(trees: List[Tree]): List[Option[Type]] =
+    trees.map(extractType)
 
-  private def extractParentType(parent: Tree): Option[Type] = {
+  def extractType(tree: Tree): Option[Type] = {
     def isBaseType(n1: Name, n2: Name = null): Boolean = {
       val name = if (n2 != null) {
         n1.toString + "." + n2.toString
@@ -100,9 +102,7 @@ import macrocompat.bundle
       baseTypeNames.contains(name)
     }
 
-    // NOTE: CHIP CHIP CHIP CHIP CHIP
-    // Changed withMacrosDisabled = true for testing
-    parent match {
+    tree match {
       case Ident(name) if !isBaseType(name) =>
         val typeName = name.toTypeName
         val typedTree = scala.util.Try(c.typecheck(
@@ -129,5 +129,18 @@ import macrocompat.bundle
       case m: ModuleDef => m
     }
     moduleDef
+  }
+
+  def fqcnToTree(fqcn: String): Tree = {
+    val tokens = fqcn.split('.')
+    val packageName = tokens.take(tokens.length - 1)
+    val className = tokens.last
+
+    val pTermNames = packageName.map(TermName.apply)
+    val pRef = pTermNames.tail.foldLeft(Ident(pTermNames.head): RefTree) {
+      case (s, n) => Select(s, n)
+    }
+    val cTypeName = TypeName(className)
+    Select(pRef, cTypeName)
   }
 }
