@@ -123,6 +123,23 @@ import macrocompat.bundle
     }
   }
 
+  def currentPackage(): String = {
+    val typeName = TypeName("Dummy" + c.freshName())
+    val dummyType = c.typecheck(q"class $typeName").tpe
+    dummyType.typeConstructor
+    val ownerSymbol = dummyType.typeSymbol.owner
+    println("TYPE SYMBOL OF " + typeName + " IS " + dummyType.typeSymbol)
+    println("TERM SYMBOL OF " + typeName + " IS " + dummyType.termSymbol)
+    println("OWNER OF " + typeName + " IS " + ownerSymbol)
+
+    @tailrec def buildPackage(owner: Symbol, tokens: List[String]): String = {
+      if (owner == NoSymbol) tokens.mkString(".")
+      else buildPackage(owner.owner, owner.name.decodedName.toString +: tokens)
+    }
+
+    buildPackage(ownerSymbol, Nil)
+  }
+
   def newEmptyObject(name: String): ModuleDef = {
     val oName = TermName(name)
     val moduleDef: ModuleDef = q"object $oName {}" match {

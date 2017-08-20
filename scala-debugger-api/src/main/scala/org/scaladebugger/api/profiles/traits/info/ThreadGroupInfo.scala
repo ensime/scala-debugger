@@ -8,7 +8,7 @@ import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 /**
  * Represents the interface for thread-based interaction.
  */
-//@Freezable
+@Freezable
 trait ThreadGroupInfo extends ObjectInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of

@@ -9,7 +9,7 @@ import scala.util.Try
 /**
  * Represents the interface for thread-based interaction.
  */
-//@Freezable
+@Freezable
 trait ThreadInfo extends ObjectInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of

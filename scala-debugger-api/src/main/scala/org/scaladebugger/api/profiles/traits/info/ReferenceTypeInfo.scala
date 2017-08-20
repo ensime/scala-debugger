@@ -9,7 +9,7 @@ import scala.util.Try
 /**
  * Represents the interface for "reference type"-based interaction.
  */
-//@Freezable
+@Freezable
 trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
   /**
    * Converts the current profile instance to a representation of

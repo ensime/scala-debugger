@@ -19,20 +19,10 @@ import org.scaladebugger.macros.MacroUtils
     val id = java.util.UUID.randomUUID().toString
     val (annottee, expandees) = annottees.map(_.tree) match {
       case (classDef: ClassDef) :: (moduleDef: ModuleDef) :: Nil if M.isTrait(classDef) =>
-        println("PROCESSING -- " + classDef.name.decodedName.toString + " -- " + id)
-        //println("INPUT CLASS AND MODULE :: " + classDef + " :: " + moduleDef)
         val results = processTraitAndObj(classDef, moduleDef)
-        //println("RESULTS :: " + results)
-        println("DONE -- " + id)
         (EmptyTree, results)
       case (classDef: ClassDef) :: Nil if M.isTrait(classDef) =>
-        println("PROCESSING -- " + classDef.name.decodedName.toString + " -- " + id)
-        //println("INPUT CLASS ONLY :: " + classDef)
         val results = processTrait(classDef)
-        //println("RESULTS :: " + results)
-        //println("RESULTS :: " + results.map(r => showCode(r)))
-        println("RESULTS :: " + results)
-        println("DONE -- " + id)
         (EmptyTree, results)
       case _ =>
         c.abort(
@@ -42,6 +32,16 @@ import org.scaladebugger.macros.MacroUtils
     }
 
     val outputs = expandees
+    val fileName = c.enclosingPosition.source.file.name
+    val fileContent = outputs.map(o => showRaw(o))
+    val f = new java.io.File("/tmp/tmp/" + fileName)
+    Console.out.print("Writing out " + f.getPath + "... ")
+    Console.out.flush()
+    val pw = new java.io.PrintWriter(f)
+    pw.write(fileContent.mkString(System.getProperty("line.separator")))
+    pw.close()
+    Console.out.println("done")
+
     c.Expr[Any](
       Block(outputs, Literal(Constant(())))
     )
@@ -97,7 +97,7 @@ import org.scaladebugger.macros.MacroUtils
         case l: List[Tree] => l
       }
 
-      // TODO: Find better way to know when to mark as overriden
+      // TODO: Find better way to know when to mark as overridden
       val o = TermName(tpname.toString())
       val freezeMethod =
         if (inheritedMethods.exists(_.name.toString == FreezeMethodName.toString))
@@ -140,7 +140,7 @@ import org.scaladebugger.macros.MacroUtils
       newObjDef match { case m: ModuleDef => m }
     }
 
-    List(newClassDef, newModuleDef)
+    List(classDef, newModuleDef)
   }
 
   private def markModifiersOverride(modifiers: Modifiers): Modifiers = {
@@ -244,14 +244,13 @@ import org.scaladebugger.macros.MacroUtils
     } ++ iFreezableMethods.map(m => {
       val name = TermName(s"$$${m.name.decodedName.toString}")
 
-      // TODO: This is a hack to get around <error> appearing when method
-      //       returns type of trait we are currently inspecting
       val retTypeStr = m.returnType.toString
       val tpt =
-        if (retTypeStr == "<error>" || retTypeStr == "...")
-          M.classNameToTree(traitTypeName.decodedName.toString)
-        else
+        if (retTypeStr == "<error>" || retTypeStr == "...") {
+          tq""
+        } else {
           M.classNameToTree(retTypeStr)
+        }
 
       q"protected val $name: scala.util.Try[$tpt]"
     })
@@ -278,14 +277,13 @@ import org.scaladebugger.macros.MacroUtils
     } ++ iFreezableMethods.map(m => {
       val tname = TermName(m.name.decodedName.toString)
 
-      // TODO: This is a hack to get around <error> appearing when method
-      //       returns type of trait we are currently inspecting
       val retTypeStr = m.returnType.toString
       val tpt =
-        if (retTypeStr == "<error>" || retTypeStr == "...")
-          M.classNameToTree(traitTypeName.decodedName.toString)
-        else
+        if (retTypeStr == "<error>" || retTypeStr == "...") {
+          tq""
+        } else {
           M.classNameToTree(retTypeStr)
+        }
 
       val a = m.annotations.find(_.tree.tpe =:= typeOf[CanFreeze])
       if (a.isEmpty) c.abort(
@@ -343,14 +341,13 @@ import org.scaladebugger.macros.MacroUtils
         q"val $name: $typeName"
       }))
 
-      // TODO: This is a hack to get around <error> appearing when method
-      //       returns type of trait we are currently inspecting
       val retTypeStr = m.returnType.toString
       val tpt =
-        if (retTypeStr == "<error>" || retTypeStr == "...")
-          M.classNameToTree(traitTypeName.decodedName.toString)
-        else
+        if (retTypeStr == "<error>" || retTypeStr == "...") {
+          tq""
+        } else {
           M.classNameToTree(retTypeStr)
+        }
 
       val aFreezable = m.annotations.find(_.tree.tpe =:= typeOf[CanFreeze])
       val aUnfreezable = m.annotations.find(_.tree.tpe =:= typeOf[CannotFreeze])

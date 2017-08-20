@@ -7,7 +7,7 @@ import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 /**
  * Represents the interface for "class object"-based interaction.
  */
-//@Freezable
+@Freezable
 trait ClassObjectInfo extends ObjectInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of

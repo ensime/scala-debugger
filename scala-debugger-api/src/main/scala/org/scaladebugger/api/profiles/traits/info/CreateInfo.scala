@@ -8,7 +8,7 @@ import scala.util.Try
  * Represents the interface that needs to be implemented to provide
  * ability to create data using a specific debug profile.
  */
-//@Freezable
+@Freezable
 trait CreateInfo {
   /**
    * Creates the provided value on the remote JVM.

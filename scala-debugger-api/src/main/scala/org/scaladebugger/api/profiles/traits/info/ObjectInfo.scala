@@ -10,7 +10,7 @@ import scala.util.Try
 /**
  * Represents the interface for object-based interaction.
  */
-//@Freezable
+@Freezable
 trait ObjectInfo extends ValueInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
