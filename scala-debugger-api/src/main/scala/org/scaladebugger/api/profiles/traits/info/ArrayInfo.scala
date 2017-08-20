@@ -21,7 +21,7 @@ object ArrayInfo {
 /**
  * Represents the interface for array-based interaction.
  */
-@Freezable
+//@Freezable
 trait ArrayInfo extends ObjectInfo with CreateInfo with CommonInfo {
   import scala.reflect.runtime.universe.{TypeTag, typeOf}
 

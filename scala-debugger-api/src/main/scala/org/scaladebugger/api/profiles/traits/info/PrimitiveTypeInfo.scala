@@ -5,7 +5,7 @@ import org.scaladebugger.macros.freeze.{CannotFreeze, Freezable}
 /**
  * Represents the interface for retrieving primitive type-based information.
  */
-@Freezable
+//@Freezable
 trait PrimitiveTypeInfo extends TypeInfo {
   /**
    * Converts the current profile instance to a representation of

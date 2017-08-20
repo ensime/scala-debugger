@@ -8,8 +8,10 @@ import org.scaladebugger.macros.MacroUtils
 @bundle class FreezableMacro(val c: whitebox.Context) {
   import c.universe._
 
+  val InternalConstructorName = "$init$"
   val FreezeMethodName = TermName("freeze")
-  val FrozenClassName = TypeName("Frozen")
+  val FrozenTraitName = TypeName("Frozen")
+  val FrozenClassName = TypeName("FrozenImpl")
 
   val M = new MacroUtils[c.type](c)
 
@@ -32,15 +34,9 @@ import org.scaladebugger.macros.MacroUtils
     }
 
     val outputs = expandees
-    val fileName = c.enclosingPosition.source.file.name
-    val fileContent = outputs.map(o => showRaw(o))
-    val f = new java.io.File("/tmp/tmp/" + fileName)
-    Console.out.print("Writing out " + f.getPath + "... ")
-    Console.out.flush()
-    val pw = new java.io.PrintWriter(f)
-    pw.write(fileContent.mkString(System.getProperty("line.separator")))
-    pw.close()
-    Console.out.println("done")
+    println(outputs)
+    //println(showRaw(q"val x: scala.util.Try[Seq[java.lang.String]]"))
+    //println(showRaw(q"val x: scala.util.Try[Seq[_]]"))
 
     c.Expr[Any](
       Block(outputs, Literal(Constant(())))
@@ -140,7 +136,7 @@ import org.scaladebugger.macros.MacroUtils
       newObjDef match { case m: ModuleDef => m }
     }
 
-    List(classDef, newModuleDef)
+    List(newClassDef, newModuleDef)
   }
 
   private def markModifiersOverride(modifiers: Modifiers): Modifiers = {
@@ -197,7 +193,11 @@ import org.scaladebugger.macros.MacroUtils
     val freezeObjName = TermName("valueToFreeze")
 
     val internalMethodTrees = body.collect { case d: DefDef => d }
-    val internalGroups = internalMethodTrees.groupBy(d => {
+    val internalGroups = internalMethodTrees.filterNot {
+      case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
+        val name = tname.toString()
+        name == InternalConstructorName.toString
+    }.groupBy(d => {
       if (M.containsAnnotation(d, "CanFreeze")) "CanFreeze"
       else if (M.containsAnnotation(d, "CannotFreeze")) "CannotFreeze"
       else "Other"
@@ -218,6 +218,7 @@ import org.scaladebugger.macros.MacroUtils
     // TODO: Figure out why multiple of method symbol show up here,
     //       resulting in us using distinct
     val filteredInheritedMethods = inheritedMethods.distinct.filterNot(m => {
+      m.name.decodedName.toString == InternalConstructorName.toString ||
       m.name.decodedName.toString == FreezeMethodName.toString ||
       internalMethodTrees.exists(t =>
         t.name.decodedName.toString == m.name.decodedName.toString &&
@@ -235,6 +236,50 @@ import org.scaladebugger.macros.MacroUtils
     val iFreezableMethods = filteredInheritedMethods.filter(
       _.annotations.exists(_.tree.tpe =:= typeOf[CanFreeze])
     )
+    val iOtherMethods = filteredInheritedMethods.filterNot(
+      _.annotations.map(_.tree.tpe).exists(t =>
+        t =:= typeOf[CanFreeze] || t =:= typeOf[CannotFreeze])
+    )
+
+    // Build up dependencies for frozen trait
+    val cDeps = freezableMethods.map {
+      case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
+        val name = TermName(s"$$$tname")
+        q"protected val $name: scala.util.Try[$tpt]"
+    } ++ iFreezableMethods.map(m => {
+      val name = TermName(s"$$${m.name.decodedName.toString}")
+
+      val retTypeStr = m.returnType.toString
+      val tpt =
+        if (retTypeStr == "<error>" || retTypeStr == "...") {
+          tq""
+        } else {
+          M.classNameToTree(retTypeStr)
+        }
+
+      q"protected val $name: scala.util.Try[$tpt]"
+    }) ++ otherMethods.flatMap {
+      case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
+        val name = TermName(s"$$$tname")
+
+        if (paramss.nonEmpty) None
+        else Some(q"override protected val $name: scala.util.Try[$tpt] = scala.util.Try.apply(this.$tname)")
+    } ++ iOtherMethods.flatMap(m => {
+      val mname = TermName(m.name.decodedName.toString)
+      val name = TermName(s"$$${m.name.decodedName.toString}")
+
+      val retTypeStr = m.returnType.toString
+      val tpt =
+        if (retTypeStr == "<error>" || retTypeStr == "...") {
+          tq""
+        } else {
+          M.classNameToTree(retTypeStr)
+        }
+
+      if (m.paramLists.nonEmpty) None
+      else Some(q"override protected val $name: scala.util.Try[$tpt] = scala.util.Try.apply(this.$mname)")
+
+    })
 
     // Build up constructor parameters for frozen class
     val cParams = freezableMethods.map {
@@ -327,6 +372,16 @@ import org.scaladebugger.macros.MacroUtils
           throw new IllegalStateException("Method not frozen!")"""
     }
 
+    val newSuperMethods = otherMethods.map {
+      case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
+        val newMods: Modifiers = markModifiersOverride(mods match {
+          case m: Modifiers => m
+        })
+
+        q"""$newMods def $tname[..$tparams](...$paramss): $tpt =
+          super.$tname[..$tparams](...$paramss)"""
+    }
+
     val newInheritedMethods = filteredInheritedMethods.flatMap(m => {
       val methodName = m.name.decodedName.toString
       val mods = m.annotations.map(_.tree)
@@ -378,19 +433,27 @@ import org.scaladebugger.macros.MacroUtils
       Option(methodTree)
     })
 
-    val klass = q"""
-      final class $FrozenClassName private[$traitTypeName](..$cParams) extends $traitTypeName {
+    val parents = parentTypes
+      .map(_.typeSymbol.fullName + "." + FrozenTraitName)
+      .map(M.classNameToTree)
+
+    val interface = q"""
+      trait $FrozenTraitName extends $traitTypeName with ..$parents {
+        ..$cDeps
         ..$newFreezableMethods
         ..$newUnfreezableMethods
-        ..$newInheritedMethods
       }
+    """
+
+    val klass = q"""
+      final class $FrozenClassName private[$traitTypeName](..$cParams) extends $FrozenTraitName
     """
 
     val method = q"""
       def $FreezeMethodName($freezeObjName: $traitTypeName): $traitTypeName = new $FrozenClassName(..$cArgs)
     """
 
-    List(klass, method)
+    List(interface, klass, method)
   }
 }
 

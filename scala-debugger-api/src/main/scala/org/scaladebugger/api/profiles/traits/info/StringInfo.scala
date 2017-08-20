@@ -6,7 +6,7 @@ import org.scaladebugger.macros.freeze.{CannotFreeze, Freezable}
 /**
  * Represents the interface for string-based interaction.
  */
-@Freezable
+//@Freezable
 trait StringInfo extends ObjectInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of

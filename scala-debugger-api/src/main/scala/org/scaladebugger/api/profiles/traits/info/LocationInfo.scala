@@ -1,6 +1,7 @@
 package org.scaladebugger.api.profiles.traits.info
 
 import com.sun.jdi.Location
+import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
 import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
@@ -9,7 +10,7 @@ import scala.util.Try
 /**
  * Represents the interface for location-based interaction.
  */
-@Freezable
+//@Freezable
 trait LocationInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of

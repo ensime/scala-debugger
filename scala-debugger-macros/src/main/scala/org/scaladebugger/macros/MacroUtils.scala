@@ -149,6 +149,23 @@ import macrocompat.bundle
   }
 
   def classNameToTree(fqcn: String): Tree = {
+    if (fqcn == "...") {
+      tq""
+    } else {
+      val classNames = fqcn.split("\\[|\\]").filter(_.nonEmpty)
+      if (classNames.length <= 1) singleClassNameToTree(classNames.head)
+      else {
+        // NOTE: Assuming type param is only one, not more than one
+        AppliedTypeTree(
+          classNameToTree(classNames.head),
+          classNames.tail.map(classNameToTree).toList
+        )
+      }
+    }
+  }
+
+  // Only converts my.class.Name, not my.class.Name[my.TypeA, my.TypeB]
+  private def singleClassNameToTree(fqcn: String): Tree = {
     val tokens = fqcn.split('.').filter(_.nonEmpty)
 
     val packageName = tokens.take(tokens.length - 1).toList
