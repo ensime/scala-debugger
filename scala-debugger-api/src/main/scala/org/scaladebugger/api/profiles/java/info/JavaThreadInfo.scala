@@ -147,6 +147,9 @@ class JavaThreadInfo(
    */
   override def totalFrames: Int = _threadReference.frameCount()
 
+  protected def newValueConverter(value: Value): ValueConverter =
+    JavaValueConverter.from()
+
   protected def newFrameProfile(
     stackFrame: StackFrame,
     index: Int

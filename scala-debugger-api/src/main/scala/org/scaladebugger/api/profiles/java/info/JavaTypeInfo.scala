@@ -22,8 +22,8 @@ object JavaTypeInfo {
  */
 class JavaTypeInfo(
   val scalaVirtualMachine: ScalaVirtualMachine,
-  protected val infoProducer: InfoProducer,
-  private val _type: Type
+  protected[info] val infoProducer: InfoProducer,
+  private[info] val _type: Type
 ) extends TypeInfo {
   /**
    * Returns whether or not this info profile represents the low-level Java
@@ -121,106 +121,6 @@ class JavaTypeInfo(
    */
   override def isNullType: Boolean = _type == null
 
-  /**
-   * Returns the type as an array type (profile).
-   *
-   * @return The array type profile wrapping this type
-   */
-  @throws[AssertionError]
-  override def toArrayType: ArrayTypeInfo = {
-    assert(isArrayType, "Type must be an array type!")
-    newArrayTypeProfile(_type.asInstanceOf[ArrayType])
-  }
-
-  /**
-   * Returns the type as an class type (profile).
-   *
-   * @return The class type profile wrapping this type
-   */
-  @throws[AssertionError]
-  override def toClassType: ClassTypeInfo = {
-    assert(isClassType, "Type must be a class type!")
-    newClassTypeProfile(_type.asInstanceOf[ClassType])
-  }
-
-  /**
-   * Returns the type as an interface type (profile).
-   *
-   * @return The interface type profile wrapping this type
-   */
-  @throws[AssertionError]
-  override def toInterfaceType: InterfaceTypeInfo = {
-    assert(isInterfaceType, "Type must be an interface type!")
-    newInterfaceTypeProfile(_type.asInstanceOf[InterfaceType])
-  }
-
-  /**
-   * Returns the type as an reference type (profile).
-   *
-   * @return The reference type profile wrapping this type
-   */
-  @throws[AssertionError]
-  override def toReferenceType: ReferenceTypeInfo = {
-    assert(isReferenceType, "Type must be a reference type!")
-    newReferenceTypeProfile(_type.asInstanceOf[ReferenceType])
-  }
-
-  /**
-   * Returns the type as an primitive type (profile).
-   *
-   * @return The primitive type profile wrapping this type
-   */
-  @throws[AssertionError]
-  override def toPrimitiveType: PrimitiveTypeInfo = {
-    assert(isPrimitiveType, "Type must be a primitive type!")
-    _type match {
-      case p: PrimitiveType => newPrimitiveTypeProfile(p)
-      case v: VoidType      => newPrimitiveTypeProfile(v)
-    }
-  }
-
   protected def newTypeProfile(_type: Type): TypeInfo =
     infoProducer.newTypeInfo(scalaVirtualMachine, _type)
-
-  protected def newReferenceTypeProfile(
-    referenceType: ReferenceType
-  ): ReferenceTypeInfo = infoProducer.newReferenceTypeInfo(
-    scalaVirtualMachine,
-    referenceType
-  )
-
-  protected def newArrayTypeProfile(
-    arrayType: ArrayType
-  ): ArrayTypeInfo = infoProducer.newArrayTypeInfo(
-    scalaVirtualMachine,
-    arrayType
-  )
-
-  protected def newClassTypeProfile(
-    classType: ClassType
-  ): ClassTypeInfo = infoProducer.newClassTypeInfo(
-    scalaVirtualMachine,
-    classType
-  )
-
-  protected def newInterfaceTypeProfile(
-    interfaceType: InterfaceType
-  ): InterfaceTypeInfo = infoProducer.newInterfaceTypeInfo(
-    scalaVirtualMachine,
-    interfaceType
-  )
-
-  protected def newPrimitiveTypeProfile(
-    primitiveType: PrimitiveType
-  ): PrimitiveTypeInfo = infoProducer.newPrimitiveTypeInfo(
-    scalaVirtualMachine,
-    primitiveType
-  )
-
-  protected def newPrimitiveTypeProfile(
-    voidType: VoidType
-  ): PrimitiveTypeInfo = infoProducer.newPrimitiveTypeInfo(
-    scalaVirtualMachine,
-    voidType
-  )
 }

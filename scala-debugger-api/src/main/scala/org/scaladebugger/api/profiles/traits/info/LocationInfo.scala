@@ -1,5 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.Location
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 import org.scaladebugger.macros.freeze.CanFreeze.ReturnType

@@ -27,7 +27,7 @@ class JavaInfoProducer extends InfoProducer {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
-  override def toJavaInfo: InfoProducer = new JavaInfoProducer
+  override def toJavaInfo: InfoProducer = this
 
   /**
    * Retrieves the event info producer tied to this info producer.

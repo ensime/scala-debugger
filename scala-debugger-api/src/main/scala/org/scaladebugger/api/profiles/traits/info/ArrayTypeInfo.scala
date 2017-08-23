@@ -1,5 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.ArrayType
 import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
 import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}

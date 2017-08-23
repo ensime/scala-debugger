@@ -1,4 +1,5 @@
 package org.scaladebugger.api.profiles.traits.info
+import acyclic.file
 
 /**
  * Represents an exception that occurs when a local value is trying to be

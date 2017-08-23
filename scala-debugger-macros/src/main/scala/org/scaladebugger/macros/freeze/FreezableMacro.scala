@@ -250,31 +250,26 @@ import org.scaladebugger.macros.MacroUtils
       val name = TermName(s"$$${m.name.decodedName.toString}")
 
       val retTypeStr = m.returnType.toString
-      val tpt =
-        if (retTypeStr == "<error>" || retTypeStr == "...") {
-          tq""
-        } else {
-          M.classNameToTree(retTypeStr)
-        }
+      val tpt = M.classNameToTree(retTypeStr, Some(traitTypeName.toString))
 
+      println("FOR METHOD: " + name + " TYPE IS " + tpt)
       q"protected val $name: scala.util.Try[$tpt]"
     }) ++ otherMethods.flatMap {
       case q"$mods def $tname[..$tparams](...$paramss): $tpt = $expr" =>
         val name = TermName(s"$$$tname")
+        val m = mods match { case mm: Modifiers => mm }
 
         if (paramss.nonEmpty) None
-        else Some(q"override protected val $name: scala.util.Try[$tpt] = scala.util.Try.apply(this.$tname)")
+        else if (m.hasFlag(Flag.OVERRIDE))
+          Some(q"override protected val $name: scala.util.Try[$tpt] = scala.util.Try.apply(this.$tname)")
+        else
+          Some(q"protected val $name: scala.util.Try[$tpt] = scala.util.Try.apply(this.$tname)")
     } ++ iOtherMethods.flatMap(m => {
       val mname = TermName(m.name.decodedName.toString)
       val name = TermName(s"$$${m.name.decodedName.toString}")
 
       val retTypeStr = m.returnType.toString
-      val tpt =
-        if (retTypeStr == "<error>" || retTypeStr == "...") {
-          tq""
-        } else {
-          M.classNameToTree(retTypeStr)
-        }
+      val tpt = M.classNameToTree(retTypeStr, Some(traitTypeName.toString))
 
       if (m.paramLists.nonEmpty) None
       else Some(q"override protected val $name: scala.util.Try[$tpt] = scala.util.Try.apply(this.$mname)")
@@ -290,12 +285,7 @@ import org.scaladebugger.macros.MacroUtils
       val name = TermName(s"$$${m.name.decodedName.toString}")
 
       val retTypeStr = m.returnType.toString
-      val tpt =
-        if (retTypeStr == "<error>" || retTypeStr == "...") {
-          tq""
-        } else {
-          M.classNameToTree(retTypeStr)
-        }
+      val tpt = M.classNameToTree(retTypeStr, Some(traitTypeName.toString))
 
       q"protected val $name: scala.util.Try[$tpt]"
     })
@@ -323,12 +313,7 @@ import org.scaladebugger.macros.MacroUtils
       val tname = TermName(m.name.decodedName.toString)
 
       val retTypeStr = m.returnType.toString
-      val tpt =
-        if (retTypeStr == "<error>" || retTypeStr == "...") {
-          tq""
-        } else {
-          M.classNameToTree(retTypeStr)
-        }
+      val tpt = M.classNameToTree(retTypeStr, Some(traitTypeName.toString))
 
       val a = m.annotations.find(_.tree.tpe =:= typeOf[CanFreeze])
       if (a.isEmpty) c.abort(
@@ -397,12 +382,7 @@ import org.scaladebugger.macros.MacroUtils
       }))
 
       val retTypeStr = m.returnType.toString
-      val tpt =
-        if (retTypeStr == "<error>" || retTypeStr == "...") {
-          tq""
-        } else {
-          M.classNameToTree(retTypeStr)
-        }
+      val tpt = M.classNameToTree(retTypeStr, Some(traitTypeName.toString))
 
       val aFreezable = m.annotations.find(_.tree.tpe =:= typeOf[CanFreeze])
       val aUnfreezable = m.annotations.find(_.tree.tpe =:= typeOf[CannotFreeze])

@@ -1,5 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import java.util.NoSuchElementException
 
 import com.sun.jdi._

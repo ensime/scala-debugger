@@ -149,16 +149,20 @@ import macrocompat.bundle
   }
 
   def classNameToTree(fqcn: String): Tree = {
-    if (fqcn == "...") {
-      tq""
+    classNameToTree(fqcn, fallback = None)
+  }
+
+  def classNameToTree(fqcn: String, fallback: Option[String]): Tree = {
+    if (fqcn == "..." || fqcn == "<error>" || fqcn == "<type ?>") {
+      fallback.map(f => classNameToTree(f)).getOrElse(tq"")
     } else {
       val classNames = fqcn.split("\\[|\\]").filter(_.nonEmpty)
       if (classNames.length <= 1) singleClassNameToTree(classNames.head)
       else {
         // NOTE: Assuming type param is only one, not more than one
         AppliedTypeTree(
-          classNameToTree(classNames.head),
-          classNames.tail.map(classNameToTree).toList
+          classNameToTree(classNames.head, fallback),
+          classNames.tail.map(n => classNameToTree(n, fallback)).toList
         )
       }
     }

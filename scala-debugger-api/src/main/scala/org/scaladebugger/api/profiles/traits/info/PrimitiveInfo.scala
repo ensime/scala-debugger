@@ -1,6 +1,7 @@
 package org.scaladebugger.api.profiles.traits.info
 
 
+import acyclic.file
 import com.sun.jdi.Value
 import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
 import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
@@ -10,7 +11,7 @@ import scala.util.{Failure, Success, Try}
 /**
  * Represents information about a primitive value.
  */
-@Freezable
+//@Freezable
 trait PrimitiveInfo extends ValueInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
