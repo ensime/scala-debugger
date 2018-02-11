@@ -35,7 +35,7 @@ object SDBPlugin extends AutoPlugin {
       val mainClass = mainClassTask.value getOrElse sys.error("No main class detected.")
       val userArgs = parser.parsed
       val args = if (userArgs.isEmpty) defaultArgs.value else userArgs
-      toError(scalaRun.value.run(mainClass, data(classpath.value), args, streams.value.log))
+      scalaRun.value.run(mainClass, data(classpath.value), args, streams.value.log) foreach sys.error
     }
   }
 
