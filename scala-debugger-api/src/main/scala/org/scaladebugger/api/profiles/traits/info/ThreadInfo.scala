@@ -1,12 +1,16 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.ThreadReference
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents the interface for thread-based interaction.
  */
+//@Freezable
 trait ThreadInfo extends ObjectInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +19,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ThreadInfo
 
   /**
@@ -22,6 +27,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: ThreadReference
 
   /**
@@ -29,6 +35,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *
    * @return The thread name as a string
    */
+  @CanFreeze
   def name: String
 
   /**
@@ -36,6 +43,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *
    * @return The thread's status as a profile
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def status: ThreadStatusInfo
 
   /**
@@ -43,6 +51,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *
    * @return The profile of the thread group
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def threadGroup: ThreadGroupInfo
 
   /**
@@ -50,11 +59,13 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    * counter. If the counter remains greater than zero, the thread remains
    * suspended.
    */
+  @CannotFreeze
   def resume(): Unit
 
   /**
    * Suspends the thread by incrementing the pending suspension counter.
    */
+  @CannotFreeze
   def suspend(): Unit
 
   /**
@@ -65,6 +76,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    * @tparam T The return type of the block of code
    * @return Success containing the result of the thunk, or a failure
    */
+  @CannotFreeze
   def suspendAndExecute[T](thunk: => T): Try[T] = {
     suspend()
 
@@ -87,6 +99,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *
    * @return The collection of frame profiles
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def frames: Seq[FrameInfo]
 
   /**
@@ -136,6 +149,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *               at index
    * @return The collection of frame profiles
    */
+  @CannotFreeze
   protected def rawFrames(index: Int, length: Int): Seq[FrameInfo]
 
   /**
@@ -150,6 +164,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *
    * @return The total number of frames
    */
+  @CanFreeze
   def totalFrames: Int
 
   /**
@@ -169,6 +184,7 @@ trait ThreadInfo extends ObjectInfo with CommonInfo {
    *              profile to retrieve
    * @return The new frame profile instance
    */
+  @CannotFreeze
   def frame(index: Int): FrameInfo
 
   /**

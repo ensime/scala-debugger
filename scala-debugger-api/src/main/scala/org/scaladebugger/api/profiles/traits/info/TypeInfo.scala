@@ -1,12 +1,15 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.Type
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents the interface for retrieving type-based information.
  */
+//@Freezable
 trait TypeInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +18,7 @@ trait TypeInfo extends CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: TypeInfo
 
   /**
@@ -22,6 +26,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: Type
 
   /**
@@ -29,6 +34,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The text representation of the type
    */
+  @CanFreeze
   def name: String
 
   /**
@@ -38,6 +44,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return The JNI-style signature
    */
+  @CanFreeze
   def signature: String
 
   /**
@@ -108,6 +115,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if an array type, otherwise false
    */
+  @CanFreeze
   def isArrayType: Boolean
 
   /**
@@ -115,6 +123,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if a class type, otherwise false
    */
+  @CanFreeze
   def isClassType: Boolean
 
   /**
@@ -122,6 +131,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if an interface type, otherwise false
    */
+  @CanFreeze
   def isInterfaceType: Boolean
 
   /**
@@ -129,6 +139,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if a reference type, otherwise false
    */
+  @CanFreeze
   def isReferenceType: Boolean
 
   /**
@@ -136,6 +147,7 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if a primitive type, otherwise false
    */
+  @CanFreeze
   def isPrimitiveType: Boolean
 
   /**
@@ -143,82 +155,8 @@ trait TypeInfo extends CommonInfo {
    *
    * @return True if representing the type of a null value, otherwise false
    */
+  @CanFreeze
   def isNullType: Boolean
-
-  /**
-   * Returns the type as an array type (profile).
-   *
-   * @return The array type profile wrapping this type
-   */
-  def toArrayType: ArrayTypeInfo
-
-  /**
-   * Returns the type as an array type (profile).
-   *
-   * @return Success containing the array type profile wrapping this type,
-   *         otherwise a failure
-   */
-  def tryToArrayType: Try[ArrayTypeInfo] = Try(toArrayType)
-
-  /**
-   * Returns the type as an class type (profile).
-   *
-   * @return The class type profile wrapping this type
-   */
-  def toClassType: ClassTypeInfo
-
-  /**
-   * Returns the type as an class type (profile).
-   *
-   * @return Success containing the class type profile wrapping this type,
-   *         otherwise a failure
-   */
-  def tryToClassType: Try[ClassTypeInfo] = Try(toClassType)
-
-  /**
-   * Returns the type as an interface type (profile).
-   *
-   * @return The interface type profile wrapping this type
-   */
-  def toInterfaceType: InterfaceTypeInfo
-
-  /**
-   * Returns the type as an interface type (profile).
-   *
-   * @return Success containing the interface type profile wrapping this type,
-   *         otherwise a failure
-   */
-  def tryToInterfaceType: Try[InterfaceTypeInfo] = Try(toInterfaceType)
-
-  /**
-   * Returns the type as an reference type (profile).
-   *
-   * @return The reference type profile wrapping this type
-   */
-  def toReferenceType: ReferenceTypeInfo
-
-  /**
-   * Returns the type as an reference type (profile).
-   *
-   * @return Success containing the reference type profile wrapping this type,
-   *         otherwise a failure
-   */
-  def tryToReferenceType: Try[ReferenceTypeInfo] = Try(toReferenceType)
-
-  /**
-   * Returns the type as an primitive type (profile).
-   *
-   * @return The primitive type profile wrapping this type
-   */
-  def toPrimitiveType: PrimitiveTypeInfo
-
-  /**
-   * Returns the type as an primitive type (profile).
-   *
-   * @return Success containing the primitive type profile wrapping this type,
-   *         otherwise a failure
-   */
-  def tryToPrimitiveType: Try[PrimitiveTypeInfo] = Try(toPrimitiveType)
 
   /**
    * Attempts to cast the provided primitive to this type, performing any

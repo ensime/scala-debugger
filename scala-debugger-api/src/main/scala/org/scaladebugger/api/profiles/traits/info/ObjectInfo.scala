@@ -1,13 +1,17 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.ObjectReference
 import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents the interface for object-based interaction.
  */
+//@Freezable
 trait ObjectInfo extends ValueInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -16,6 +20,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ObjectInfo
 
   /**
@@ -23,6 +28,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: ObjectReference
 
   /**
@@ -30,6 +36,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
+  @CanFreeze(ReturnType.FreezeObject)
   override def `type`: ReferenceTypeInfo
 
   /**
@@ -37,6 +44,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The unique id as a long
    */
+  @CanFreeze
   def uniqueId: Long
 
   /**
@@ -55,6 +63,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *       yield the reference type for String, not AnyRef.
    * @return The reference type information
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def referenceType: ReferenceTypeInfo
 
   /**
@@ -197,6 +206,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *                     method invocation
    * @return The resulting value of the invocation
    */
+  @CannotFreeze
   def invoke(
     thread: ThreadInfo,
     method: MethodInfo,
@@ -217,6 +227,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The profiles wrapping the visible fields in this object
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def fields: Seq[FieldVariableInfo]
 
   /**
@@ -232,6 +243,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The profiles wrapping the visible fields in this object
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def indexedFields: Seq[FieldVariableInfo]
 
   /**
@@ -263,6 +275,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    * @param name The name of the field
    * @return Some profile wrapping the field, or None if doesn't exist
    */
+  @CannotFreeze
   def indexedFieldOption(name: String): Option[FieldVariableInfo]
 
   /**
@@ -289,6 +302,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    * @param name The name of the field
    * @return Some profile wrapping the field, or None if doesn't exist
    */
+  @CannotFreeze
   def fieldOption(name: String): Option[FieldVariableInfo]
 
   /**
@@ -304,6 +318,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *
    * @return The profiles wrapping the visible methods in this object
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def methods: Seq[MethodInfo]
 
   /**
@@ -342,6 +357,7 @@ trait ObjectInfo extends ValueInfo with CommonInfo {
    *                           of the method to find
    * @return Some profile wrapping the method, otherwise None if doesn't exist
    */
+  @CannotFreeze
   def methodOption(
     name: String,
     parameterTypeNames: String*

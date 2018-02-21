@@ -1,13 +1,17 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.ClassType
 import org.scaladebugger.api.lowlevel.JDIArgument
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents the interface for retrieving class type-based information.
  */
+//@Freezable
 trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -16,6 +20,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ClassTypeInfo
 
   /**
@@ -23,6 +28,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: ClassType
 
   /**
@@ -31,6 +37,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The collection of interface type info profiles
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def allInterfaces: Seq[InterfaceTypeInfo]
 
   /**
@@ -47,6 +54,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The collection of interface type info profiles
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def interfaces: Seq[InterfaceTypeInfo]
 
   /**
@@ -62,6 +70,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The collection of class type info profiles
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def subclasses: Seq[ClassTypeInfo]
 
   /**
@@ -69,6 +78,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return Some class type info if the super class exists, otherwise None
    */
+  @CanFreeze(ReturnType.FreezeOption)
   def superclassOption: Option[ClassTypeInfo]
 
   /**
@@ -76,6 +86,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return True if it is an enumeration, otherwise false
    */
+  @CanFreeze
   def isEnumeration: Boolean
 
   /**
@@ -86,6 +97,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    * @param signature The JNI signature of the method
    * @return Some method if found, otherwise None
    */
+  @CannotFreeze
   def methodOption(name: String, signature: String): Option[MethodInfo]
 
   /**
@@ -131,6 +143,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *                          the method invocation
    * @return The resulting value of the invocation
    */
+  @CannotFreeze
   def invokeStaticMethod(
     thread: ThreadInfo,
     method: MethodInfo,
@@ -175,6 +188,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *                     method invocation
    * @return The resulting value of the invocation
    */
+  @CannotFreeze
   def invokeStaticMethod(
     thread: ThreadInfo,
     methodName: String,
@@ -220,6 +234,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *                          the constructor invocation
    * @return The instantiated object
    */
+  @CannotFreeze
   def newInstance(
     thread: ThreadInfo,
     constructorName: String,
@@ -238,6 +253,7 @@ trait ClassTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *                          the constructor invocation
    * @return The instantiated object
    */
+  @CannotFreeze
   def newInstance(
     thread: ThreadInfo,
     constructor: MethodInfo,

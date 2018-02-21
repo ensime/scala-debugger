@@ -1,5 +1,6 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
 
 /**

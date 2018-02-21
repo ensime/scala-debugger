@@ -1,17 +1,21 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.Mirror
 import org.scaladebugger.api.virtualmachines.ScalaVirtualMachine
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 /**
  * Represents common methods between information-gathering profiles.
  */
+//@Freezable
 trait CommonInfo extends JavaInfo {
   /**
    * Returns the Scala virtual machine containing this instance.
    *
    * @return The Scala virtual machine instance
    */
+  @CannotFreeze
   def scalaVirtualMachine: ScalaVirtualMachine
 
   /**
@@ -19,6 +23,7 @@ trait CommonInfo extends JavaInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   def toJdiInstance: Mirror
 
   /**
@@ -27,6 +32,7 @@ trait CommonInfo extends JavaInfo {
    *
    * @return The human-readable description
    */
+  @CanFreeze
   def toPrettyString: String
 
   /**
@@ -36,5 +42,6 @@ trait CommonInfo extends JavaInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: CommonInfo
 }

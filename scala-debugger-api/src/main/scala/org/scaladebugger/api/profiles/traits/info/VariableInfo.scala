@@ -1,12 +1,16 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.Mirror
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents the interface for variable-based interaction.
  */
+//@Freezable
 trait VariableInfo extends CreateInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +19,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: VariableInfo
 
   /**
@@ -22,6 +27,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: Mirror
 
   /**
@@ -29,6 +35,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return The name of the variable
    */
+  @CanFreeze
   def name: String
 
   /**
@@ -44,6 +51,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return Non-negative number if provided with an index, otherwise -1
    */
+  @CanFreeze
   def offsetIndex: Int
 
   /**
@@ -51,6 +59,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return The type name as a string
    */
+  @CanFreeze
   def typeName: String
 
   /**
@@ -58,6 +67,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def `type`: TypeInfo
 
   /**
@@ -73,6 +83,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return True if a field, otherwise false
    */
+  @CanFreeze
   def isField: Boolean
 
   /**
@@ -80,6 +91,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return True if a local variable, otherwise false
    */
+  @CanFreeze
   def isLocal: Boolean
 
   /**
@@ -87,6 +99,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return True if an argument, otherwise false
    */
+  @CanFreeze
   def isArgument: Boolean
 
   /**
@@ -102,6 +115,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    *
    * @return The profile representing the value
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def toValueInfo: ValueInfo
 
   /**
@@ -154,6 +168,7 @@ trait VariableInfo extends CreateInfo with CommonInfo {
    * @param valueInfo The remote value to set for the variable
    * @return The info for the variable's new value
    */
+  @CannotFreeze
   def setValueFromInfo(valueInfo: ValueInfo): ValueInfo
 
   /**

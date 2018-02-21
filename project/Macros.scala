@@ -13,10 +13,14 @@ object Macros {
   )
 
   /** Macro-specific project settings. */
-  val settings = pluginSettings ++ Seq(
-    libraryDependencies += {
-      scalaVersion("org.scala-lang" % "scala-reflect" % _).value
-    },
+  val settings: Seq[Setting[_]] = pluginSettings ++ Seq(
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "macro-compat" % "1.1.1",
+      "com.lihaoyi" %% "scalaparse" % "0.4.4",
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+      scalaVersion("org.scala-lang" % "scala-reflect" % _).value,
+      "org.scalatest" %% "scalatest" % "3.0.0" % "test,it"
+    ),
 
     libraryDependencies ++= (
       if (scalaVersion.value.startsWith("2.10")) Seq(

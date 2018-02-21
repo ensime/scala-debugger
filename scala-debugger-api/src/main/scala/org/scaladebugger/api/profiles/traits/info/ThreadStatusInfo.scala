@@ -1,14 +1,19 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
+import org.scaladebugger.macros.freeze.{CanFreeze, Freezable}
+
 /**
  * Represents information about a thread's status.
  */
+//@Freezable
 trait ThreadStatusInfo {
   /**
    * Represents the status code for the thread.
    *
    * @return The status code as a number
    */
+  @CanFreeze
   def statusCode: Int
 
   /**
@@ -34,6 +39,7 @@ trait ThreadStatusInfo {
    *
    * @return False if the status is known, otherwise true
    */
+  @CanFreeze
   def isUnknown: Boolean
 
   /**
@@ -41,6 +47,7 @@ trait ThreadStatusInfo {
    *
    * @return True if a zombie, otherwise false
    */
+  @CanFreeze
   def isZombie: Boolean
 
   /**
@@ -48,6 +55,7 @@ trait ThreadStatusInfo {
    *
    * @return True if running, otherwise false
    */
+  @CanFreeze
   def isRunning: Boolean
 
   /**
@@ -55,6 +63,7 @@ trait ThreadStatusInfo {
    *
    * @return True if sleeping, otherwise false
    */
+  @CanFreeze
   def isSleeping: Boolean
 
   /**
@@ -62,6 +71,7 @@ trait ThreadStatusInfo {
    *
    * @return True if monitoring, otherwise false
    */
+  @CanFreeze
   def isMonitor: Boolean
 
   /**
@@ -69,6 +79,7 @@ trait ThreadStatusInfo {
    *
    * @return True if waiting, otherwise false
    */
+  @CanFreeze
   def isWait: Boolean
 
   /**
@@ -76,6 +87,7 @@ trait ThreadStatusInfo {
    *
    * @return True if has started, otherwise false
    */
+  @CanFreeze
   def isNotStarted: Boolean
 
   /**
@@ -83,6 +95,7 @@ trait ThreadStatusInfo {
    *
    * @return True if suspended at a breakpoint, otherwise false
    */
+  @CanFreeze
   def isAtBreakpoint: Boolean
 
   /**
@@ -90,6 +103,7 @@ trait ThreadStatusInfo {
    *
    * @return True if suspended, otherwise false
    */
+  @CanFreeze
   def isSuspended: Boolean
 
   /**
@@ -97,5 +111,6 @@ trait ThreadStatusInfo {
    *
    * @return The total number of pending suspensions
    */
+  @CanFreeze
   def suspendCount: Int
 }

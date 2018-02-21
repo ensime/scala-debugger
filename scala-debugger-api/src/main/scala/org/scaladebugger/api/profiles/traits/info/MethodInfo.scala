@@ -1,12 +1,16 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.Method
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents the interface for method-based interaction.
  */
+//@Freezable
 trait MethodInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +19,7 @@ trait MethodInfo extends CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: MethodInfo
 
   /**
@@ -22,6 +27,7 @@ trait MethodInfo extends CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: Method
 
   /**
@@ -29,6 +35,7 @@ trait MethodInfo extends CommonInfo {
    *
    * @return The name of the method
    */
+  @CanFreeze
   def name: String
 
   /**
@@ -46,6 +53,7 @@ trait MethodInfo extends CommonInfo {
    *
    * @return The collection of parameter type names
    */
+  @CanFreeze
   def parameterTypeNames: Seq[String]
 
   /**
@@ -53,6 +61,7 @@ trait MethodInfo extends CommonInfo {
    *
    * @return The collection of profiles containing type information
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def parameterTypes: Seq[TypeInfo]
 
   /**
@@ -77,6 +86,7 @@ trait MethodInfo extends CommonInfo {
    *
    * @return The return type name
    */
+  @CanFreeze
   def returnTypeName: String
 
   /**
@@ -84,6 +94,7 @@ trait MethodInfo extends CommonInfo {
    *
    * @return The profile containing type information
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def returnType: TypeInfo
 
   /**
@@ -98,6 +109,7 @@ trait MethodInfo extends CommonInfo {
    *
    * @return The reference type information that declared this method
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def declaringType: ReferenceTypeInfo
 
   /**

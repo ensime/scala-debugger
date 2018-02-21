@@ -1,10 +1,14 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
+
 /**
  * Represents a profile that provides common methods to convert info profiles
  * to their low-level Java equivalents.
  */
-trait JavaInfo {
+//@Freezable
+trait JavaInfo extends java.io.Serializable {
   /**
    * Returns whether or not this info profile represents the low-level Java
    * implementation.
@@ -13,6 +17,7 @@ trait JavaInfo {
    *         otherwise this profile represents something higher-level like
    *         Scala, Jython, or JRuby
    */
+  @CanFreeze
   def isJavaInfo: Boolean
 
   /**
@@ -22,5 +27,6 @@ trait JavaInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   def toJavaInfo: AnyRef
 }

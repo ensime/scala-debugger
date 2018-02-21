@@ -1,12 +1,16 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.Value
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents information about a value.
  */
+//@Freezable
 trait ValueInfo extends CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +19,7 @@ trait ValueInfo extends CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ValueInfo
 
   /**
@@ -22,6 +27,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: Value
 
   /**
@@ -29,6 +35,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return The profile containing type information
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def `type`: TypeInfo
 
   /**
@@ -52,6 +59,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return The value as a local instance
    */
+  @CannotFreeze
   def toLocalValue: Any
 
   /**
@@ -59,6 +67,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if a primitive, otherwise false
    */
+  @CanFreeze
   def isPrimitive: Boolean
 
   /**
@@ -66,6 +75,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if an array, otherwise false
    */
+  @CanFreeze
   def isArray: Boolean
 
   /**
@@ -73,6 +83,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if a class loader, otherwise false
    */
+  @CanFreeze
   def isClassLoader: Boolean
 
   /**
@@ -80,6 +91,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if a class object, otherwise false
    */
+  @CanFreeze
   def isClassObject: Boolean
 
   /**
@@ -87,6 +99,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if a thread group, otherwise false
    */
+  @CanFreeze
   def isThreadGroup: Boolean
 
   /**
@@ -94,6 +107,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if a thread, otherwise false
    */
+  @CanFreeze
   def isThread: Boolean
 
   /**
@@ -101,6 +115,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if an object, otherwise false
    */
+  @CanFreeze
   def isObject: Boolean
 
   /**
@@ -108,6 +123,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if a string, otherwise false
    */
+  @CanFreeze
   def isString: Boolean
 
   /**
@@ -115,6 +131,7 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if null, otherwise false
    */
+  @CanFreeze
   def isNull: Boolean
 
   /**
@@ -122,135 +139,8 @@ trait ValueInfo extends CommonInfo {
    *
    * @return True if void, otherwise false
    */
+  @CanFreeze
   def isVoid: Boolean
-
-  /**
-   * Returns the value as a primitive (profile).
-   *
-   * @return Success containing the primitive profile wrapping this value,
-   *         otherwise a failure
-   */
-  def tryToPrimitiveInfo: Try[PrimitiveInfo] = Try(toPrimitiveInfo)
-
-  /**
-   * Returns the value as a primitive (profile).
-   *
-   * @return The primitive profile wrapping this value
-   */
-  @throws[AssertionError]
-  def toPrimitiveInfo: PrimitiveInfo
-
-  /**
-   * Returns the value as a class loader (profile).
-   *
-   * @return Success containing the class loader profile wrapping this value,
-   *         otherwise a failure
-   */
-  def tryToClassLoaderInfo: Try[ClassLoaderInfo] = Try(toClassLoaderInfo)
-
-  /**
-   * Returns the value as a class loader (profile).
-   *
-   * @return The class loader profile wrapping this value
-   */
-  @throws[AssertionError]
-  def toClassLoaderInfo: ClassLoaderInfo
-
-  /**
-   * Returns the value as a class object (profile).
-   *
-   * @return Success containing the class object profile wrapping this value,
-   *         otherwise a failure
-   */
-  def tryToClassObjectInfo: Try[ClassObjectInfo] = Try(toClassObjectInfo)
-
-  /**
-   * Returns the value as a class object (profile).
-   *
-   * @return The class object profile wrapping this value
-   */
-  @throws[AssertionError]
-  def toClassObjectInfo: ClassObjectInfo
-
-  /**
-   * Returns the value as a thread group (profile).
-   *
-   * @return Success containing the thread group profile wrapping this value,
-   *         otherwise a failure
-   */
-  def tryToThreadGroupInfo: Try[ThreadGroupInfo] = Try(toThreadGroupInfo)
-
-  /**
-   * Returns the value as a thread group (profile).
-   *
-   * @return The thread group profile wrapping this value
-   */
-  @throws[AssertionError]
-  def toThreadGroupInfo: ThreadGroupInfo
-
-  /**
-   * Returns the value as a thread (profile).
-   *
-   * @return Success containing the thread profile wrapping this value,
-   *         otherwise a failure
-   */
-  def tryToThreadInfo: Try[ThreadInfo] = Try(toThreadInfo)
-
-  /**
-   * Returns the value as a thread (profile).
-   *
-   * @return The thread profile wrapping this value
-   */
-  @throws[AssertionError]
-  def toThreadInfo: ThreadInfo
-
-  /**
-   * Returns the value as an object (profile).
-   *
-   * @return Success containing the object profile wrapping this value,
-   *         otherwise a failure
-   */
-  def tryToObjectInfo: Try[ObjectInfo] = Try(toObjectInfo)
-
-  /**
-   * Returns the value as an object (profile).
-   *
-   * @return The object profile wrapping this value
-   */
-  @throws[AssertionError]
-  def toObjectInfo: ObjectInfo
-
-  /**
-   * Returns the value as a string (profile).
-   *
-   * @return Success containing the string profile wrapping this value,
-   *         otherwise a failure
-   */
-  def tryToStringInfo: Try[StringInfo] = Try(toStringInfo)
-
-  /**
-   * Returns the value as an string (profile).
-   *
-   * @return The string profile wrapping this value
-   */
-  @throws[AssertionError]
-  def toStringInfo: StringInfo
-
-  /**
-   * Returns the value as an array (profile).
-   *
-   * @return Success containing the array profile wrapping this value,
-   *         otherwise a failure
-   */
-  def tryToArrayInfo: Try[ArrayInfo] = Try(toArrayInfo)
-
-  /**
-   * Returns the value as an array (profile).
-   *
-   * @return The array profile wrapping this value
-   */
-  @throws[AssertionError]
-  def toArrayInfo: ArrayInfo
 
   /**
    * Returns a string presenting a better human-readable description of
@@ -262,14 +152,14 @@ trait ValueInfo extends CommonInfo {
     Try {
       if (this.isNull) "null"
       else if (this.isVoid) "void"
-      else if (this.isArray) this.toArrayInfo.toPrettyString
-      else if (this.isString) this.toStringInfo.toPrettyString
-      else if (this.isClassLoader) this.toClassLoaderInfo.toPrettyString
-      else if (this.isClassObject) this.toClassObjectInfo.toPrettyString
-      else if (this.isThreadGroup) this.toThreadGroupInfo.toPrettyString
-      else if (this.isThread) this.toThreadInfo.toPrettyString
-      else if (this.isObject) this.toObjectInfo.toPrettyString
-      else if (this.isPrimitive) this.toPrimitiveInfo.toPrettyString
+      else if (this.isArray) "ARRAY TODO"//this.toArrayInfo.toPrettyString
+      else if (this.isString) "STRING TODO"//this.toStringInfo.toPrettyString
+      else if (this.isClassLoader) "CLASS LOADER TODO"//this.toClassLoaderInfo.toPrettyString
+      else if (this.isClassObject) "CLASS OBJECT TODO"//this.toClassObjectInfo.toPrettyString
+      else if (this.isThreadGroup) "THREAD GROUP TODO"//this.toThreadGroupInfo.toPrettyString
+      else if (this.isThread) "THREAD TODO"//this.toThreadInfo.toPrettyString
+      else if (this.isObject) "OBJECT TODO"//this.toObjectInfo.toPrettyString
+      else if (this.isPrimitive) "PRIMITIVE TODO"//this.toPrimitiveInfo.toPrettyString
       else "???"
     }.getOrElse("<ERROR>")
   }

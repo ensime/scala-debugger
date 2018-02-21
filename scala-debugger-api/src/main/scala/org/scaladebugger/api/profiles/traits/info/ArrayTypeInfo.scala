@@ -1,12 +1,16 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.ArrayType
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents the interface for retrieving interface type-based information.
  */
+//@Freezable
 trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +19,7 @@ trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ArrayTypeInfo
 
   /**
@@ -22,6 +27,7 @@ trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: ArrayType
 
   /**
@@ -30,6 +36,7 @@ trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
    * @return The declared type of the elements (the runtime type may be a
    *         subclass of this type)
    */
+  @CanFreeze
   def elementSignature: String
 
   /**
@@ -37,6 +44,7 @@ trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The type name as a string
    */
+  @CanFreeze
   def elementTypeName: String
 
   /**
@@ -44,6 +52,7 @@ trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
    *
    * @return The profile containing type information
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def elementType: TypeInfo
 
   /**
@@ -60,6 +69,7 @@ trait ArrayTypeInfo extends ReferenceTypeInfo with TypeInfo {
    * @param length The total length of the array
    * @return The profile representing the new instance
    */
+  @CannotFreeze
   def newInstance(length: Int): ArrayInfo
 
   /**

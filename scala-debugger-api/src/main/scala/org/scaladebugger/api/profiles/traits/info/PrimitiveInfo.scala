@@ -1,13 +1,17 @@
 package org.scaladebugger.api.profiles.traits.info
 
 
-import com.sun.jdi.{PrimitiveValue, Value}
+import acyclic.file
+import com.sun.jdi.Value
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.{Failure, Success, Try}
 
 /**
  * Represents information about a primitive value.
  */
+//@Freezable
 trait PrimitiveInfo extends ValueInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -16,6 +20,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: PrimitiveInfo
 
   /**
@@ -23,6 +28,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: Value
 
   /**
@@ -30,6 +36,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return The profile containing type information
    */
+  @CanFreeze(ReturnType.FreezeObject)
   override def `type`: PrimitiveTypeInfo
 
   /**
@@ -45,6 +52,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return The value as a local instance
    */
+  @CanFreeze
   override def toLocalValue: AnyVal
 
   /**
@@ -52,6 +60,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return True if the primitive is a boolean, otherwise false
    */
+  @CanFreeze
   def isBoolean: Boolean
 
   /**
@@ -59,6 +68,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return True if the primitive is a byte, otherwise false
    */
+  @CanFreeze
   def isByte: Boolean
 
   /**
@@ -66,6 +76,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return True if the primitive is a char, otherwise false
    */
+  @CanFreeze
   def isChar: Boolean
 
   /**
@@ -73,6 +84,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return True if the primitive is a double, otherwise false
    */
+  @CanFreeze
   def isDouble: Boolean
 
   /**
@@ -80,6 +92,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return True if the primitive is a float, otherwise false
    */
+  @CanFreeze
   def isFloat: Boolean
 
   /**
@@ -87,6 +100,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return True if the primitive is a integer, otherwise false
    */
+  @CanFreeze
   def isInteger: Boolean
 
   /**
@@ -94,6 +108,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return True if the primitive is a long, otherwise false
    */
+  @CanFreeze
   def isLong: Boolean
 
   /**
@@ -101,6 +116,7 @@ trait PrimitiveInfo extends ValueInfo with CommonInfo {
    *
    * @return True if the primitive is a short, otherwise false
    */
+  @CanFreeze
   def isShort: Boolean
 
   /**

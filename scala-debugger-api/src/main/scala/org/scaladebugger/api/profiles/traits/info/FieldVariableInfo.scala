@@ -1,6 +1,9 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.Field
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
@@ -9,6 +12,7 @@ import scala.util.Try
  * Represents the interface for variable-based interaction with field-specific
  * information.
  */
+//@Freezable
 trait FieldVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -17,6 +21,7 @@ trait FieldVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: FieldVariableInfo
 
   /**
@@ -24,6 +29,7 @@ trait FieldVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
     *
     * @return The JDI instance
     */
+  @CannotFreeze
   override def toJdiInstance: Field
 
   /**
@@ -32,6 +38,7 @@ trait FieldVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
    * @return The reference type information (if a static field) or object
    *         information (if a non-static field)
    */
+  @CanFreeze(ReturnType.FreezeEither)
   def parent: Either[ObjectInfo, ReferenceTypeInfo]
 
   /**
@@ -39,6 +46,7 @@ trait FieldVariableInfo extends VariableInfo with CreateInfo with CommonInfo {
    *
    * @return The reference type information that declared this field
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def declaringType: ReferenceTypeInfo
 
   /**

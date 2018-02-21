@@ -1,12 +1,16 @@
 package org.scaladebugger.api.profiles.traits.info
 
+import acyclic.file
 import com.sun.jdi.ReferenceType
+import org.scaladebugger.macros.freeze.CanFreeze.ReturnType
+import org.scaladebugger.macros.freeze.{CanFreeze, CannotFreeze, Freezable}
 
 import scala.util.Try
 
 /**
  * Represents the interface for "reference type"-based interaction.
  */
+//@Freezable
 trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
   /**
    * Converts the current profile instance to a representation of
@@ -15,6 +19,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    * @return The profile instance providing an implementation corresponding
    *         to Java
    */
+  @CannotFreeze
   override def toJavaInfo: ReferenceTypeInfo
 
   /**
@@ -22,6 +27,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The JDI instance
    */
+  @CannotFreeze
   override def toJdiInstance: ReferenceType
 
   /**
@@ -30,6 +36,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of fields as variable info profiles
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def allFields: Seq[FieldVariableInfo]
 
   /**
@@ -49,6 +56,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of fields as variable info profiles
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def visibleFields: Seq[FieldVariableInfo]
 
   /**
@@ -71,6 +79,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of fields as variable info profiles
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def indexedVisibleFields: Seq[FieldVariableInfo]
 
   /**
@@ -104,6 +113,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    * @param name The name of the field to retrieve
    * @return Some field as a variable info profile, or None if doesn't exist
    */
+  @CannotFreeze
   def indexedFieldOption(name: String): Option[FieldVariableInfo]
 
   /**
@@ -123,6 +133,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    * @param name The name of the field to retrieve
    * @return Some field as a variable info profile, or None if doesn't exist
    */
+  @CannotFreeze
   def fieldOption(name: String): Option[FieldVariableInfo]
 
   /**
@@ -149,6 +160,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of methods as method info profiles
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def allMethods: Seq[MethodInfo]
 
   /**
@@ -168,6 +180,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of methods as method info profiles
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def visibleMethods: Seq[MethodInfo]
 
   /**
@@ -187,6 +200,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    * @param name The name of the method to retrieve
    * @return The collection of method info profiles
    */
+  @CannotFreeze
   def methods(name: String): Seq[MethodInfo]
 
   /**
@@ -215,6 +229,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    * @return Some profile representing the classloader,
    *         otherwise None if loaded through the bootstrap classloader
    */
+  @CanFreeze(ReturnType.FreezeOption)
   def classLoaderOption: Option[ClassLoaderInfo]
 
   /**
@@ -222,6 +237,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The profile representing the class
    */
+  @CanFreeze(ReturnType.FreezeObject)
   def classObject: ClassObjectInfo
 
   /**
@@ -229,6 +245,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return Some signature if it exists, otherwise None
    */
+  @CanFreeze
   def genericSignature: Option[String]
 
   /**
@@ -238,6 +255,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *                     to get all reachable instances
    * @return The collection of object instances
    */
+  @CannotFreeze
   def instances(maxInstances: Long): Seq[ObjectInfo]
 
   /**
@@ -271,6 +289,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return True if abstract, otherwise false
    */
+  @CanFreeze
   def isAbstract: Boolean
 
   /**
@@ -278,6 +297,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return True if final, otherwise false
    */
+  @CanFreeze
   def isFinal: Boolean
 
   /**
@@ -287,6 +307,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return True if initialized, otherwise false
    */
+  @CanFreeze
   def isInitialized: Boolean
 
   /**
@@ -294,6 +315,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return True if prepared, otherwise false
    */
+  @CanFreeze
   def isPrepared: Boolean
 
   /**
@@ -301,6 +323,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return True if static, otherwise false
    */
+  @CanFreeze
   def isStatic: Boolean
 
   /**
@@ -310,6 +333,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return True if verified, otherwise false
    */
+  @CanFreeze
   def isVerified: Boolean
 
   /**
@@ -318,6 +342,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of location information
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def allLineLocations: Seq[LocationInfo]
 
   /**
@@ -336,6 +361,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of location information
    */
+  @CannotFreeze
   def locationsOfLine(line: Int): Seq[LocationInfo]
 
   /**
@@ -354,6 +380,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The major version number
    */
+  @CanFreeze
   def majorVersion: Int
 
   /**
@@ -370,6 +397,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The minor version number
    */
+  @CanFreeze
   def minorVersion: Int
 
   /**
@@ -385,6 +413,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The fully-qualified class name
    */
+  @CanFreeze
   def name: String
 
   /**
@@ -393,6 +422,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of reference type information
    */
+  @CanFreeze(ReturnType.FreezeCollection)
   def nestedTypes: Seq[ReferenceTypeInfo]
 
   /**
@@ -400,6 +430,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The source debug extension
    */
+  @CanFreeze
   def sourceDebugExtension: String
 
   /**
@@ -415,6 +446,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of identifying names
    */
+  @CanFreeze
   def sourceNames: Seq[String]
 
   /**
@@ -431,6 +463,7 @@ trait ReferenceTypeInfo extends CommonInfo with TypeInfo {
    *
    * @return The collection of source paths
    */
+  @CanFreeze
   def sourcePaths: Seq[String]
 
   /**

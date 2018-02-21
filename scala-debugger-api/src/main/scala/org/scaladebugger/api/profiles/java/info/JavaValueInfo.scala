@@ -21,8 +21,8 @@ object JavaValueInfo {
  */
 class JavaValueInfo(
   val scalaVirtualMachine: ScalaVirtualMachine,
-  protected val infoProducer: InfoProducer,
-  private val _value: Value
+  protected[info] val infoProducer: InfoProducer,
+  private[info] val _value: Value
 ) extends ValueInfo {
   /**
    * Returns whether or not this info profile represents the low-level Java
@@ -72,97 +72,6 @@ class JavaValueInfo(
     import org.scaladebugger.api.lowlevel.wrappers.Implicits._
     if (!isNull) _value.value()
     else null
-  }
-
-  /**
-   * Returns the value as an array (profile).
-   *
-   * @return The array profile wrapping this value
-   */
-  @throws[AssertionError]
-  override def toArrayInfo: ArrayInfo = {
-    assert(isArray, "Value must be an array!")
-    newArrayProfile(_value.asInstanceOf[ArrayReference])
-  }
-
-  /**
-   * Returns the value as a class loader (profile).
-   *
-   * @return The class loader profile wrapping this value
-   */
-  @throws[AssertionError]
-  override def toClassLoaderInfo: ClassLoaderInfo = {
-    assert(isClassLoader, "Value must be a class loader!")
-    newClassLoaderProfile(_value.asInstanceOf[ClassLoaderReference])
-  }
-
-  /**
-   * Returns the value as a class object (profile).
-   *
-   * @return The class object profile wrapping this value
-   */
-  @throws[AssertionError]
-  override def toClassObjectInfo: ClassObjectInfo = {
-    assert(isClassObject, "Value must be a class object!")
-    newClassObjectProfile(_value.asInstanceOf[ClassObjectReference])
-  }
-
-  /**
-   * Returns the value as a thread (profile).
-   *
-   * @return The thread profile wrapping this value
-   */
-  @throws[AssertionError]
-  override def toThreadInfo: ThreadInfo = {
-    assert(isThread, "Value must be a thread!")
-    newThreadProfile(_value.asInstanceOf[ThreadReference])
-  }
-
-  /**
-   * Returns the value as a thread group (profile).
-   *
-   * @return The thread group profile wrapping this value
-   */
-  @throws[AssertionError]
-  override def toThreadGroupInfo: ThreadGroupInfo = {
-    assert(isThreadGroup, "Value must be a thread group!")
-    newThreadGroupProfile(_value.asInstanceOf[ThreadGroupReference])
-  }
-
-  /**
-   * Returns the value as an object (profile).
-   *
-   * @return The object profile wrapping this value
-   */
-  @throws[AssertionError]
-  override def toObjectInfo: ObjectInfo = {
-    assert(isObject, "Value must be an object!")
-    newObjectProfile(_value.asInstanceOf[ObjectReference])
-  }
-
-  /**
-   * Returns the value as a string (profile).
-   *
-   * @return The string profile wrapping this value
-   */
-  @throws[AssertionError]
-  override def toStringInfo: StringInfo = {
-    assert(isString, "Value must be a string!")
-    newStringProfile(_value.asInstanceOf[StringReference])
-  }
-
-  /**
-   * Returns the value as a primitive (profile).
-   *
-   * @return The primitive profile wrapping this value
-   */
-  @throws[AssertionError]
-  override def toPrimitiveInfo: PrimitiveInfo = {
-    assert(isPrimitive, "Value must be a primitive!")
-    _value match {
-      case p: PrimitiveValue => newPrimitiveProfile(p)
-      case v: VoidValue      => newPrimitiveProfile(v)
-    }
   }
 
   /**
@@ -242,33 +151,6 @@ class JavaValueInfo(
    * @return True if null, otherwise false
    */
   override def isNull: Boolean = _value == null
-
-  protected def newPrimitiveProfile(primitiveValue: PrimitiveValue): PrimitiveInfo =
-    infoProducer.newPrimitiveInfo(scalaVirtualMachine, primitiveValue)
-
-  protected def newPrimitiveProfile(voidValue: VoidValue): PrimitiveInfo =
-    infoProducer.newPrimitiveInfo(scalaVirtualMachine, voidValue)
-
-  protected def newObjectProfile(objectReference: ObjectReference): ObjectInfo =
-    infoProducer.newObjectInfo(scalaVirtualMachine, objectReference)()
-
-  protected def newStringProfile(stringReference: StringReference): StringInfo =
-  infoProducer.newStringInfo(scalaVirtualMachine, stringReference)()
-
-  protected def newArrayProfile(arrayReference: ArrayReference): ArrayInfo =
-    infoProducer.newArrayInfo(scalaVirtualMachine, arrayReference)()
-
-  protected def newClassLoaderProfile(classLoaderReference: ClassLoaderReference): ClassLoaderInfo =
-    infoProducer.newClassLoaderInfo(scalaVirtualMachine, classLoaderReference)()
-
-  protected def newClassObjectProfile(classObjectReference: ClassObjectReference): ClassObjectInfo =
-    infoProducer.newClassObjectInfo(scalaVirtualMachine, classObjectReference)()
-
-  protected def newThreadGroupProfile(threadGroupReference: ThreadGroupReference): ThreadGroupInfo =
-    infoProducer.newThreadGroupInfo(scalaVirtualMachine, threadGroupReference)()
-
-  protected def newThreadProfile(threadReference: ThreadReference): ThreadInfo =
-    infoProducer.newThreadInfo(scalaVirtualMachine, threadReference)()
 
   protected def newTypeProfile(_type: Type): TypeInfo =
     infoProducer.newTypeInfo(scalaVirtualMachine, _type)
