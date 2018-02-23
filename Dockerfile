@@ -17,4 +17,3 @@ RUN git clone $GIT_REPO $GIT_SRC_DIR && \
     cd scala-debugger/ && \
     git checkout $GIT_BRANCH && \
     sbt +update +test:update +it:update
-

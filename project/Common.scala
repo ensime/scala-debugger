@@ -21,7 +21,7 @@ object Common {
     homepage := Some(url("https://scala-debugger.org")),
 
     // Default version when not cross-compiling
-    scalaVersion := "2.10.6",
+    scalaVersion := "2.11.8",
 
     crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
 
@@ -65,10 +65,7 @@ object Common {
 
     // Options provided to forked JVMs through sbt, based on our .jvmopts file
     javaOptions ++= Seq(
-      "-Xms1024M", "-Xmx4096M", "-Xss2m", "-XX:MaxPermSize=256M",
-      "-XX:ReservedCodeCacheSize=256M", "-XX:+TieredCompilation",
-      "-XX:+CMSPermGenSweepingEnabled", "-XX:+CMSClassUnloadingEnabled",
-      "-XX:+UseConcMarkSweepGC", "-XX:+HeapDumpOnOutOfMemoryError"
+      "-Xms1g", "-Xmx1g", "-Xss2m"
     ),
 
     scalaTestSpanScaleFactor := {
